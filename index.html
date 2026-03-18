@@ -568,7 +568,7 @@
                 
                 // Test token validity
                 const accountRes = await fetch(
-                    `https://graph.facebook.com/v19.0/me?fields=ad_accounts&access_token=${token}`
+                    `https://graph.facebook.com/v19.0/me/adaccounts?fields=id,name&access_token=${token}`
                 );
 
                 if (!accountRes.ok) {
@@ -577,13 +577,13 @@
 
                 const accountData = await accountRes.json();
 
-                if (!accountData.ad_accounts || accountData.ad_accounts.data.length === 0) {
-                    throw new Error('Ad account bulunamadı. Token\'da ad_account:manage izni var mı?');
+                if (!accountData.data || accountData.data.length === 0) {
+                    throw new Error('Ad account bulunamadı. Token\'da ads_management izni var mı?');
                 }
 
                 // Store token
                 sessionStorage.setItem('metaToken', token);
-                sessionStorage.setItem('adAccountId', accountData.ad_accounts.data[0].id);
+                sessionStorage.setItem('adAccountId', accountData.data[0].id);
 
                 // Load campaigns
                 await loadCampaigns();
