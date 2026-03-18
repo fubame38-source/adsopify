@@ -787,15 +787,22 @@ async function loadAccounts() {
   const t = document.getElementById('token-input').value.trim();
   if (!t) { showTokenErr('Token girin'); return; }
 
+  const btn = document.getElementById('token-step1').querySelector('button');
   S.token = t;
   showTokenErr('');
-  document.getElementById('token-step1').querySelector('button').textContent = '⏳ Yükleniyor...';
+  btn.textContent = '⏳ Yükleniyor...';
+  btn.disabled = true;
 
   try {
     const r = await gql('/me/adaccounts?fields=id,name,account_id&limit=20');
     const accounts = r.data || [];
 
-    if (!accounts.length) { showTokenErr('Reklam hesabı bulunamadı. Token izinlerini kontrol edin.'); return; }
+    if (!accounts.length) {
+      showTokenErr('Reklam hesabı bulunamadı. Token izinlerini kontrol edin.');
+      btn.textContent = 'Hesapları Listele →';
+      btn.disabled = false;
+      return;
+    }
 
     const list = document.getElementById('acct-list');
     list.innerHTML = '';
@@ -810,9 +817,10 @@ async function loadAccounts() {
     document.getElementById('token-step1').style.display = 'none';
     document.getElementById('token-step2').style.display = 'block';
   } catch (e) {
-    showTokenErr('Hata: ' + (e.message || 'Token geçersiz olabilir'));
+    showTokenErr('Hata: ' + (e.message || 'Bağlantı kurulamadı. Token geçerli mi?'));
   }
-  document.getElementById('token-step1').querySelector('button').textContent = 'Hesapları Listele →';
+  btn.textContent = 'Hesapları Listele →';
+  btn.disabled = false;
 }
 
 function selectAccount(id, name, token) {
