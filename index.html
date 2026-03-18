@@ -380,7 +380,10 @@
       </div>
 
       <div class="card">
-        <div class="card-title">💡 Bugünün Creative Fikirleri</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="margin-bottom:0">💡 Bugünün Creative Fikirleri</div>
+          <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" title="Farklı fikirler getir">↺ Yenile</button>
+        </div>
         <div id="plan-ideas" class="plan-grid"></div>
       </div>
     </div>
@@ -486,7 +489,7 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="generateHooks()">🪝 5 Hook Üret</button>
+      <button class="btn btn-primary" onclick="generateHooks()">↺ Üret / Yenile</button>
     </div>
 
     <div id="hook-results"></div>
@@ -884,18 +887,60 @@ function renderPlan(campaigns, insights) {
     { icon: '💬', title: 'Yorum Madenciliği', desc: 'Reklamlardaki yorumları oku. Sık sorulan sorular = yeni hook fikirleri.', urgent: false }
   ];
 
-  const creativeIdeas = [
-    { icon: '🎬', title: 'POV: WC\'de Dizi İzlerken', desc: '"POV: Tuvalette dizi izlemeyi hiç bu kadar rahat yapmadım" — 35° kaldırılmış bacak pozu + doğal ışık', urgent: false },
-    { icon: '🩺', title: 'Fizyoterapist Yorumu', desc: '"Fizyoterapistim bu tabureti önermeseydi bilmezdim" — uzman sosyal kanıtı', urgent: false },
-    { icon: '📦', title: 'Unboxing Sürprizi', desc: 'Paket açılışı + ilk kullanım anı, ahşap kalitesine odaklan, ürünü sona sakla', urgent: false },
-    { icon: '💡', title: 'Bilim Kancası', desc: '"Türk insanının %90\'ı yanlış oturuyor" — istatistik + çözüm formatı', urgent: false },
-    { icon: '👨‍👩‍👧', title: 'Aile Kullanımı', desc: 'Hem çocuklar hem büyükanne için — "Evdeki herkes için" mesajı', urgent: false }
-  ];
+  const creativeIdeas = pickRandom(ALL_CREATIVE_IDEAS, 5);
 
   document.getElementById('plan-urgent').innerHTML = urgentItems.map(i => '<div class="plan-item urgent"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
   document.getElementById('plan-growth').innerHTML = growthItems.map(i => '<div class="plan-item growth"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
   document.getElementById('plan-ideas').innerHTML = creativeIdeas.map(i => '<div class="plan-item"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
 }
+
+function pickRandom(arr, n) {
+  return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+}
+
+function refreshIdeas() {
+  const btn = document.getElementById('ideas-refresh-btn');
+  btn.textContent = '↺ Yenileniyor...';
+  setTimeout(() => {
+    const ideas = pickRandom(ALL_CREATIVE_IDEAS, 5);
+    document.getElementById('plan-ideas').innerHTML = ideas.map(i => '<div class="plan-item" style="animation:fadeIn 0.25s ease"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
+    btn.textContent = '↺ Yenile';
+  }, 200);
+}
+
+const ALL_CREATIVE_IDEAS = [
+  { icon: '🎬', title: 'POV: WC\'de Dizi İzlerken', desc: '"POV: Tuvalette dizi izlemeyi hiç bu kadar rahat yapmadım" — 35° kaldırılmış bacak pozu + doğal ışık' },
+  { icon: '🩺', title: 'Fizyoterapist Yorumu', desc: '"Fizyoterapistim bu tabureti önermeseydi bilmezdim" — uzman sosyal kanıtı, beyaz önlük' },
+  { icon: '📦', title: 'Unboxing Sürprizi', desc: 'Paket açılışı + ilk kullanım anı, ahşap kalitesine odaklan, ürünü sona sakla' },
+  { icon: '💡', title: 'Bilim Kancası', desc: '"Türk insanının %90\'ı yanlış oturuyor" — istatistik + çözüm formatı' },
+  { icon: '👨‍👩‍👧', title: 'Aile Kullanımı', desc: 'Hem çocuklar hem büyükanne için — "Evdeki herkes için" mesajı' },
+  { icon: '😂', title: 'Komik Reaksiyon', desc: 'İlk kullanımda şaşırma yüzü — "Beklemiyordum ama gerçekten işe yarıyor" UGC tarzı' },
+  { icon: '🔬', title: '35° Açı Animasyonu', desc: 'Şematik çizimle açı gösterimi + "Bağırsak bu açıda tam açılıyor" bilgi kartı' },
+  { icon: '⚖️', title: 'Ahşap vs Plastik Karşılaştırma', desc: 'Yan yana iki ürün: plastik vs meşe ahşap, ellerde tutarak kalite farkı' },
+  { icon: '🌙', title: 'Gece Rutin', desc: '"Gece 02:00 tuvaleti" senaryosu — loş ışık, sakin müzik, konforlu an' },
+  { icon: '📱', title: 'Telefon + Taburet Combo', desc: '"WC\'de telefon kullanıyorsan zaten bu lazım" — relatif içerik, yüksek etkileşim' },
+  { icon: '🎁', title: 'Hediye Kutusu', desc: '"Annem 65 yaşında, en anlamlı doğum günü hediyesini buldım" — duygu kancası' },
+  { icon: '🤸', title: 'Yoga Pozisyonu Analoji', desc: '"Yogadaki çömelme pozisyonunu tuvalette yapmak = AlaTab" — fitness kitlesi için' },
+  { icon: '🏥', title: 'Ameliyattan Kaçınma', desc: '"Hemoroid ameliyatından önce bunu dene" — problem-çözüm, acıdan kaçınma güdüsü' },
+  { icon: '👵', title: 'Büyükanne Reaksiyonu', desc: 'Büyükannenin ilk kullandığında tepkisi — authentik, duygusal, paylaşılabilir' },
+  { icon: '🎤', title: 'Müşteri Yorumu Seslendirme', desc: 'Ekranda yorum metni + seslendirme: "3 aydır kullanıyorum, kabızlık tarihe karıştı"' },
+  { icon: '🌿', title: 'Doğallık Vurgusu', desc: 'Ahşap dokuya close-up + "Plastik yok, kimyasal yok, sadece meşe" yazı overlay' },
+  { icon: '📊', title: 'İstatistik Kreatiifi', desc: '"5.000+ Türk ailesi kullanıyor" — sayaç animasyonu, güven artırıcı sosyal kanıt' },
+  { icon: '🚀', title: 'Hız Testi', desc: '"Normal pozisyon vs AlaTab: Hangisi daha hızlı?" — stopwatch gösteren komik karşılaştırma' },
+  { icon: '💬', title: 'Yorum Bölümü Kolajı', desc: 'Gerçek müşteri yorumlarının screenshot\'larından kolaj — "Hepsi 5 yıldız veriyor"' },
+  { icon: '🧘', title: 'Stres Azaltma', desc: '"WC zamanını meditasyon zamanına çevir" — huzurlu müzik, bambu estetiği' },
+  { icon: '🎯', title: 'Hedef Kitle Hook', desc: '"Bu sadece 40+ yaş için DEĞİL — herkese lazım" — yaş stereotipini yıkan format' },
+  { icon: '📐', title: 'Mühendis Yaklaşımı', desc: '"Patent aldık çünkü bu açı gerçekten farklı" — ürün patentini öne çıkar' },
+  { icon: '🏠', title: 'Ev Turu İçinde', desc: 'Ev turu videosu içinde mutfak/salon derken "banyo" kısmında AlaTab — organik yerleştirme' },
+  { icon: '🌏', title: 'Japonya / Doğu Bağlantısı', desc: '"Japonya\'da her tuvaletin yanında bu var, Türkiye\'ye getirdik" — kültürel merak' },
+  { icon: '💪', title: 'Detoks / Sağlık Trend Bağlantısı', desc: '"Bağırsak sağlığı 2025\'in en büyük trendi — başlangıç noktası bu" — gündem bağlantısı' },
+  { icon: '🎪', title: 'Çocuk Reaksiyonu', desc: 'Çocuğun tuvalette mutlu bir şekilde kitap okuması — "Artık tuvaletten çıkmak istemiyor"' },
+  { icon: '🔑', title: 'Kilit Bilgi', desc: '"Doktorların size söylemediği şey: Klozet tasarımı yanlış" — otoriteye meydan okuma' },
+  { icon: '✈️', title: 'Seyahat / Özlem', desc: '"Tatilde pisuar tuvaleti sonrası eve dönünce ilk yaptığım şey" — hicivli nostalji' },
+  { icon: '📸', title: 'Before/After Banyosu', desc: 'Banyo görüntüsü: AlaTab olmadan vs AlaTab ile — estetik + fonksiyon birlikte' },
+  { icon: '🛒', title: 'İmpulse Buy Tetikleyici', desc: '"₺1.799\'a bu rahatlığı başka nerede bulursun?" — fiyat-değer karşılaştırması direkt' },
+];
+
 
 // ═══════════════════════════════════════════════
 // DASHBOARD
@@ -1205,35 +1250,52 @@ const HOOKS = {
       "POV: Hayatımın en iyi ₺1.799'ını nasıl harcadığımı anlatıyorum",
       "POV: Apartmandaki komşum bu ürünü görünce ne yaptı tahmin et",
       "POV: Doktorum bana bu tabureti önermeseydi bilmezdim",
-      "POV: 3 yıldır banyo rafında duran ürüne bugün baktım ve…"
+      "POV: 3 yıldır banyo rafında duran ürüne bugün baktım",
+      "POV: Sabah rutinini değiştiren tek ürünü buldun",
+      "POV: 10 yıl boyunca tuvalette yanlış oturduğunu öğrendiğinde",
+      "POV: Arkadaşına önerdikten sonra sana teşekkür etti",
+      "POV: Evde misafir var ve banyona girdiklerinde bunu gördüler",
+      "POV: Hamile eşim için aldım ama ben daha çok kullanıyorum",
+      "POV: Online alışverişin en iyi yatırımını yaptım diyebileceğim an",
+      "POV: Çocuğun tuvalet eğitimi için mücadele ederken bunu keşfettin",
     ],
     mom: [
       "POV: Annem bu ürünü görünce 'niye daha önce yok muydu' dedi 😅",
       "POV: Çocuğunun WC sorununu çözmek isteyen bir anne olarak",
-      "POV: Aile doktoru bu ürünü tüm hastalara öneriyor",
       "POV: Kayınvalidem ev hediyesi olarak istedi, gerçekten",
-      "POV: Her evde olması gereken ürünü buldum dedim"
+      "POV: Her evde olması gereken ürünü buldum dedim",
+      "POV: Kızım tuvaletten çıkmak istemez oldu, şikayetçi değilim",
+      "POV: Aile doktoru bu ürünü tüm hastalara öneriyor",
+      "POV: Çocuklarıma en güzel alışveriş hediyesi bu oldu",
+      "POV: Annem 65 yaşında, artık tuvalette hiç zorlanmıyor",
     ],
     elder: [
       "POV: 60 yaş sonrası banyoyu nasıl güvenli hale getirdim",
       "POV: Fizyoterapistim bunu göstermeseydi hiç denemezdim",
-      "POV: Eklemlerim için en faydalı ev aksesuarı hangisi bilir misin?",
+      "POV: Eklemlerim için en faydalı ev aksesuarı hangisi?",
       "POV: Annem bu ürünü kullandıktan sonra kalça ağrısı azaldı",
-      "POV: Doğal tuvaletleme pozisyonunu 50 yaşında keşfettim"
+      "POV: Doğal tuvaletleme pozisyonunu 50 yaşında keşfettim",
+      "POV: Babam 'bu niye daha önce icat edilmedi' dedi",
+      "POV: Diz ağrın varsa tuvalette de hissediyorsundur, işte çözüm",
     ],
     health: [
       "POV: Gastroenterologum bu pozisyonu şiddetle tavsiye etti",
       "POV: Kabızlık için ilaç yerine önce bunu dene",
       "POV: Bağırsak sağlığını iyileştiren ürün ₺1.799",
       "POV: 35° açı neden bu kadar önemli? Doktor anlattı",
-      "POV: Sağlıklı tuvaletleme pozisyonu diye bir şey var ve…"
+      "POV: Sağlıklı tuvaletleme pozisyonu diye bir şey var ve…",
+      "POV: Hemoroid ameliyatından önce keşke bunu kullansaydım",
+      "POV: İrritabl bağırsak sendromu olan biri olarak bunu keşfettim",
+      "POV: Detoks diyetine para harcamadan bağırsağını temizlemenin yolu",
     ],
     men: [
       "POV: Kendi kendime 'buna gerek var mı' dedim, şimdi anneme de aldım",
       "POV: Erkekler de bu ürünü alıyor ve mükemmel oluyor",
       "POV: Telefonda vakit geçirmek isteyenler için ideal",
       "POV: Spor yapan adamlar için önerilen pozisyon bu",
-      "POV: Abimle bahse girdim. Haklıydı, gerçekten işe yarıyor"
+      "POV: Abimle bahse girdim. Haklıydı, gerçekten işe yarıyor",
+      "POV: Sabah kahveni içerken aslında bu bilgiyi öğrenmelisin",
+      "POV: Gym'de core çalışırken öğrendiğim şeyi tuvalet rutinine uyguladım",
     ]
   },
   mistake: {
@@ -1242,14 +1304,20 @@ const HOOKS = {
       "Bu hatayı yapıyorsan bağırsak sağlığını mahvediyorsun",
       "Türk insanının %83'ü tuvalette yanlış pozisyon kullanıyor",
       "Ömür boyu yanlış oturduğunu öğrenince ne hissedeceksin?",
-      "Klozette 5 dakikadan fazla oturuyorsan bu hatayı yapıyorsun"
+      "Klozette 5 dakikadan fazla oturuyorsan bu hatayı yapıyorsun",
+      "WC'de oturma şeklin hemoroid riskini 3 katına çıkarıyor",
+      "Bu yanlışı yapıyorsan sindirim sistemin yıpranıyor",
+      "Modern tuvalet tasarımı aslında vücudumuz için yanlış — işte neden",
+      "Günde 2 kez yaptığın bu hatayı daha fazla yapma",
+      "Kabızlık çekiyorsan büyük ihtimalle bu yüzden",
     ],
     health: [
       "Bu yanlışı yapıyorsan kabızlık geçmez, ilaç da işe yaramaz",
       "Gastroenterologların söylemediği ama bildiği bir hata",
       "Dünyada en sık yapılan bağırsak sağlığı hatası nedir?",
-      "Apandisit riskinizi artıran bir alışkanlık var ve farkında değilsiniz",
-      "Bağırsak kanseri riskini azaltmanın en kolay yolu bu"
+      "Bağırsak kanseri riskini artıran bir alışkanlık var ve farkında değilsiniz",
+      "Probiyotik içiyorsun ama bu hatayı yapıyorsan boşa para",
+      "Detoks çayı işe yaramıyorsa bu hatayı yapıyor olabilirsin",
     ]
   },
   social: {
@@ -1258,7 +1326,12 @@ const HOOKS = {
       "Türkiye'nin en çok satan banyo ürünü bu aylarda bu",
       "Müşterilerimizin %94'ü 'niye daha önce almadım' diyor",
       "Bu hafta 1.200 kişi sipariş verdi. Sen ne bekliyorsun?",
-      "1 yıl önce bu ürünü almak istiyordum, bugün pişman değilim"
+      "1 yıl önce bu ürünü almak istiyordum, bugün pişman değilim",
+      "Arkadaşlarım ısrarla önerdikten sonra aldım — haklıymışlar",
+      "Instagram'da her yerde gördüm, sonunda aldım. Gerçekten çalışıyor",
+      "Doktorum 3 farklı hastasına önerdikten sonra ben de aldım",
+      "Annem ilk sipariş verdi, ben ikinci, kardeşim üçüncü",
+      "2024'ün en çok hediye edilen ev ürünü oldu — sebebi bu",
     ]
   },
   question: {
@@ -1267,7 +1340,12 @@ const HOOKS = {
       "Bağırsak sağlığın için en ucuz yatırım ne biliyor musun?",
       "Klozet taburesi ne işe yarar diye merak ediyorsan izle",
       "Ahşap mı plastik mi? Hangisi daha sağlıklı? Cevabı verdik",
-      "Bebeklerin neden tuvaleti daha kolay yaptığını hiç düşündün mü?"
+      "Bebeklerin neden tuvaleti daha kolay yaptığını hiç düşündün mü?",
+      "Günde kaç dakika WC'de geçiriyorsun? Bu sayıyı azaltmak ister misin?",
+      "35° açı ne demek ve neden önemli? 30 saniyede anlattım",
+      "Hemoroid neden oluşur? Cevap seni şaşırtacak",
+      "Tuvalette bacak uyuşması yaşıyor musun? Sebebi bu",
+      "Sindirim sistemi nasıl daha iyi çalışır? Basit bir cevap var",
     ]
   },
   secret: {
@@ -1276,7 +1354,12 @@ const HOOKS = {
       "WC'de 35 derece: Bağırsak sağlığının sırrı bu açıda saklı",
       "Ahşap vs plastik: İki malzeme arasındaki fark hiç anlatılmadı",
       "Japonya'da her tuvalet kabininde bulunan ürün neden Türkiye'de az biliniyor?",
-      "Bu ürünü kim icat etti ve neden tüm dünya kullanıyor?"
+      "Bu ürünü kim icat etti ve neden tüm dünya kullanıyor?",
+      "Gastroenterologların kliniğinde her zaman önerdiği cihaz bu",
+      "Eski medeniyetler tuvaleti nasıl kullanıyordu? Cevap sürpriz",
+      "Modern klozetin vücuda zarar verdiğini 1966'da keşfettiler",
+      "İskandinav ülkelerinde hemoroid vakalarının neden az olduğunu biliyor musun?",
+      "Çocuklar neden tuvaleti büyüklerden daha kolay yapıyor? Sırrı bu",
     ]
   },
   'before-after': {
@@ -1285,22 +1368,39 @@ const HOOKS = {
       "ÖNCE: Hemoroid kremi. SONRA: Ahşap taburet",
       "ÖNCE: 20 dakika bekliyordum. SONRA: Pozisyon değişti, hayat değişti",
       "ÖNCE: Kabızlık için ilaç. SONRA: ₺1.799 kalıcı çözüm",
-      "ÖNCE: Şüpheliydim. SONRA: Tüm aileye aldım"
+      "ÖNCE: Şüpheliydim. SONRA: Tüm aileye aldım",
+      "ÖNCE: WC'yi korku ile düşünüyordum. SONRA: Günün en rahat anı",
+      "ÖNCE: Sabahları 30 dakika. SONRA: 7 dakika. Fark: Bu taburet",
+      "ÖNCE: Gastroenteroloğa 500₺. SONRA: 1799₺ kalıcı çözüm",
+      "ÖNCE: Her gece gaz sancısı. SONRA: Bağırsak rutini düzeldi",
     ]
   }
 };
 
+// Track last shown hooks to avoid repeats
+const _lastHooks = {};
+
 function generateHooks() {
   const format = document.getElementById('hook-format').value;
   const audience = document.getElementById('hook-audience').value;
+  const key = format + '_' + audience;
 
-  let pool = (HOOKS[format] && HOOKS[format][audience]) || (HOOKS[format] && HOOKS[format]['general']) || HOOKS['pov']['general'];
+  let pool = (HOOKS[format] && HOOKS[format][audience])
+    || (HOOKS[format] && HOOKS[format]['general'])
+    || HOOKS['pov']['general'];
 
-  // Shuffle
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  // Exclude last shown set
+  const last = _lastHooks[key] || [];
+  let available = pool.filter(h => !last.includes(h));
+  if (available.length < 5) available = pool; // reset if exhausted
+
+  const shuffled = [...available].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 5);
+  _lastHooks[key] = selected;
 
-  const html = selected.map((hook, i) => '<div class="hook-card" onclick="copyHook(this)" id="hook-' + i + '"><div>' + hook + '</div><div class="copy-hint">📋 Tıkla, kopyala</div></div>').join('');
+  const html = selected.map((hook, i) =>
+    '<div class="hook-card" onclick="copyHook(this)" style="animation:fadeIn 0.2s ease ' + (i * 0.05) + 's both"><div>' + hook + '</div><div class="copy-hint">📋 Tıkla, kopyala</div></div>'
+  ).join('');
   document.getElementById('hook-results').innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' + html + '</div>';
 }
 
