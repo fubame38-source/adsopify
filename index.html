@@ -325,6 +325,7 @@
   <span id="mob-menu" onclick="toggleSidebar()">☰</span>
   <span class="brand">Ala<span>Tab</span> Ads</span>
   <div class="spacer"></div>
+  <div id="fatigue-alert" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer" onclick="nav('creative')" title="Creative yorgunluğu olan kampanyalar var">⚠️ <span id="fatigue-count"></span> yorgun kampanya</div>
   <div class="stat-badge" id="top-spend"><span>Bugün:</span> <strong id="top-spend-val">—</strong></div>
   <div class="stat-badge live" id="top-acct" style="display:none"><strong id="top-acct-name">—</strong></div>
   <button class="btn btn-ghost btn-sm" onclick="refreshData()" title="Yenile">↺</button>
@@ -336,10 +337,12 @@
   <div class="nav-section">Ana</div>
   <div class="nav-item active" onclick="nav('plan')" data-sec="plan"><span class="icon">📋</span>Günlük Plan</div>
   <div class="nav-item" onclick="nav('dash')" data-sec="dash"><span class="icon">📊</span>Dashboard</div>
+  <div class="nav-item" onclick="nav('weekly')" data-sec="weekly"><span class="icon">📅</span>Haftalık Özet</div>
 
   <div class="nav-section">Optimizasyon</div>
   <div class="nav-item" onclick="nav('scale')" data-sec="scale"><span class="icon">🚀</span>Ölçekleme</div>
   <div class="nav-item" onclick="nav('creative')" data-sec="creative"><span class="icon">🎨</span>Creative Skor</div>
+  <div class="nav-item" onclick="nav('budget')" data-sec="budget"><span class="icon">🗓️</span>Bütçe Planlayıcı</div>
 
   <div class="nav-section">İçerik</div>
   <div class="nav-item" onclick="nav('hook')" data-sec="hook"><span class="icon">🪝</span>Hook Üretici</div>
@@ -624,9 +627,101 @@
     </div>
   </div>
 
-</div>
+  <!-- HAFTALIK ÖZET -->
+  <div id="sec-weekly" class="section">
+    <div class="page-title">Haftalık Özet</div>
+    <div class="page-sub">Bu hafta vs geçen hafta karşılaştırması</div>
+    <div id="weekly-loading" class="loading-row" style="display:none"><div class="spinner"></div> Veriler yükleniyor...</div>
+    <button class="btn btn-primary mb-16" onclick="loadWeekly()">📅 Haftalık Analizi Getir</button>
 
-<script>
+    <div id="weekly-content" style="display:none">
+      <!-- Trend KPIs -->
+      <div class="kpi-grid" id="weekly-kpis" style="margin-bottom:24px"></div>
+
+      <!-- This week vs last week table -->
+      <div class="card mb-16">
+        <div class="card-title">Bu Hafta vs Geçen Hafta</div>
+        <div class="tbl-wrap" style="border:none;border-radius:0">
+          <table>
+            <thead><tr>
+              <th>Metrik</th>
+              <th>Geçen Hafta</th>
+              <th>Bu Hafta</th>
+              <th>Değişim</th>
+            </tr></thead>
+            <tbody id="weekly-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Campaign week comparison -->
+      <div class="card">
+        <div class="card-title">Kampanya Bazlı Karşılaştırma</div>
+        <div id="weekly-camps"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BÜTÇE PLANLAYICI -->
+  <div id="sec-budget" class="section">
+    <div class="page-title">Bütçe Planlayıcı</div>
+    <div class="page-sub">Aylık hedeften günlük bütçeye — kampanya dağılımı</div>
+
+    <div class="card mb-16">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+        <div>
+          <label>Aylık Toplam Bütçe (₺)</label>
+          <input type="number" id="bp-monthly" value="30000" />
+        </div>
+        <div>
+          <label>Hedef Aylık Satış Adedi</label>
+          <input type="number" id="bp-sales" value="50" />
+        </div>
+        <div>
+          <label>Hedef ROAS</label>
+          <input type="number" id="bp-roas" value="3" step="0.1" />
+        </div>
+        <div>
+          <label>Aktif Kampanya Sayısı</label>
+          <input type="number" id="bp-camps" value="3" min="1" max="10" />
+        </div>
+        <div>
+          <label>Haftalık Test Bütçesi (%)</label>
+          <input type="number" id="bp-test-pct" value="20" min="0" max="50" />
+        </div>
+        <div>
+          <label>Ürün Fiyatı (₺)</label>
+          <input type="number" id="bp-price" value="1799" />
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="calcBudget()">🗓️ Plan Oluştur</button>
+    </div>
+
+    <div id="budget-results" style="display:none">
+      <!-- Summary KPIs -->
+      <div class="kpi-grid mb-16" id="budget-kpis"></div>
+
+      <!-- Daily breakdown -->
+      <div class="card mb-16">
+        <div class="card-title">Günlük Bütçe Dağılımı</div>
+        <div id="budget-daily"></div>
+      </div>
+
+      <!-- Campaign split -->
+      <div class="card mb-16">
+        <div class="card-title">Kampanya Başına Bütçe Önerisi</div>
+        <div id="budget-camps"></div>
+      </div>
+
+      <!-- Scaling milestones -->
+      <div class="card">
+        <div class="card-title">📈 Ölçekleme Kilometre Taşları</div>
+        <div id="budget-milestones" style="font-size:13px;line-height:2;color:var(--text2)"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
@@ -837,6 +932,7 @@ async function loadPlan() {
     document.getElementById('plan-budget-badge').textContent = 'Bugün ₺' + totalSpend.toFixed(2) + (totalPurchases > 0 ? ' • ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
 
     renderPlan(campaigns, insights);
+    checkFatigueAlert(insights);
   } catch (e) {
     document.getElementById('plan-loading').innerHTML = '<span style="color:var(--red)">Hata: ' + e.message + '</span>';
     return;
@@ -889,23 +985,32 @@ function renderPlan(campaigns, insights) {
 
   const creativeIdeas = pickRandom(ALL_CREATIVE_IDEAS, 5);
 
+  // Creative ideas — sadece büyüme adımlarını render eder, fikirler ayrı fonksiyonla
   document.getElementById('plan-urgent').innerHTML = urgentItems.map(i => '<div class="plan-item urgent"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
   document.getElementById('plan-growth').innerHTML = growthItems.map(i => '<div class="plan-item growth"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
-  document.getElementById('plan-ideas').innerHTML = creativeIdeas.map(i => '<div class="plan-item"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
+  refreshIdeas();
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function pickRandom(arr, n) {
-  return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+  return shuffleArray(arr).slice(0, n);
 }
 
 function refreshIdeas() {
   const btn = document.getElementById('ideas-refresh-btn');
-  btn.textContent = '↺ Yenileniyor...';
-  setTimeout(() => {
-    const ideas = pickRandom(ALL_CREATIVE_IDEAS, 5);
-    document.getElementById('plan-ideas').innerHTML = ideas.map(i => '<div class="plan-item" style="animation:fadeIn 0.25s ease"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
-    btn.textContent = '↺ Yenile';
-  }, 200);
+  if (btn) { btn.textContent = '✓'; setTimeout(() => { btn.textContent = '↺ Yenile'; }, 600); }
+  const picked = shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 5);
+  document.getElementById('plan-ideas').innerHTML = picked.map(function(i) {
+    return '<div class="plan-item" style="animation:fadeIn 0.2s ease"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>';
+  }).join('');
 }
 
 const ALL_CREATIVE_IDEAS = [
@@ -941,6 +1046,192 @@ const ALL_CREATIVE_IDEAS = [
   { icon: '🛒', title: 'İmpulse Buy Tetikleyici', desc: '"₺1.799\'a bu rahatlığı başka nerede bulursun?" — fiyat-değer karşılaştırması direkt' },
 ];
 
+
+// ═══════════════════════════════════════════════
+// FATIGUE ALERT (topbar)
+// ═══════════════════════════════════════════════
+function checkFatigueAlert(insights) {
+  const fatigued = (insights || []).filter(i => parseFloat(i.frequency || 0) > 3);
+  const el = document.getElementById('fatigue-alert');
+  if (!el) return;
+  if (fatigued.length > 0) {
+    document.getElementById('fatigue-count').textContent = fatigued.length;
+    el.style.display = 'flex';
+    el.title = fatigued.map(i => i.campaign_name + ' (Freq ' + parseFloat(i.frequency).toFixed(1) + ')').join('\n');
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// HAFTALIK ÖZET
+// ═══════════════════════════════════════════════
+async function loadWeekly() {
+  document.getElementById('weekly-loading').style.display = 'flex';
+  document.getElementById('weekly-content').style.display = 'none';
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const weekStart = new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0];
+    const lastWeekEnd = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+    const lastWeekStart = new Date(Date.now() - 13 * 86400000).toISOString().split('T')[0];
+
+    const [thisWeek, lastWeek] = await Promise.all([
+      getInsights(weekStart, today),
+      getInsights(lastWeekStart, lastWeekEnd)
+    ]);
+
+    const sumF = (arr, f) => arr.reduce((s, i) => s + parseFloat(i[f] || 0), 0);
+    const sumI = (arr, f) => arr.reduce((s, i) => s + parseInt(i[f] || 0), 0);
+    const sumP = (arr, p) => arr.reduce((s, i) => s + (i[p] || 0), 0);
+
+    const tw = {
+      spend: sumF(thisWeek, 'spend'), imp: sumI(thisWeek, 'impressions'),
+      clicks: sumI(thisWeek, 'clicks'), purchases: sumP(thisWeek, '_purchases'), revenue: sumP(thisWeek, '_revenue')
+    };
+    const lw = {
+      spend: sumF(lastWeek, 'spend'), imp: sumI(lastWeek, 'impressions'),
+      clicks: sumI(lastWeek, 'clicks'), purchases: sumP(lastWeek, '_purchases'), revenue: sumP(lastWeek, '_revenue')
+    };
+
+    tw.ctr = tw.imp > 0 ? tw.clicks / tw.imp * 100 : 0;
+    tw.cpc = tw.clicks > 0 ? tw.spend / tw.clicks : 0;
+    tw.roas = tw.spend > 0 && tw.revenue > 0 ? tw.revenue / tw.spend : 0;
+    tw.cpa = tw.purchases > 0 ? tw.spend / tw.purchases : 0;
+    lw.ctr = lw.imp > 0 ? lw.clicks / lw.imp * 100 : 0;
+    lw.cpc = lw.clicks > 0 ? lw.spend / lw.clicks : 0;
+    lw.roas = lw.spend > 0 && lw.revenue > 0 ? lw.revenue / lw.spend : 0;
+    lw.cpa = lw.purchases > 0 ? lw.spend / lw.purchases : 0;
+
+    const trendCard = (label, twVal, lwVal, fmtFn, higherIsBetter) => {
+      const diff = lwVal > 0 ? ((twVal - lwVal) / lwVal * 100) : 0;
+      const good = higherIsBetter ? diff >= 0 : diff <= 0;
+      const arrow = diff > 1 ? '▲' : diff < -1 ? '▼' : '→';
+      const color = Math.abs(diff) < 1 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
+      return '<div class="kpi-card"><div class="label">' + label + '</div><div class="value">' + fmtFn(twVal) + '</div><div class="sub" style="color:' + color + '">' + arrow + ' ' + Math.abs(diff).toFixed(1) + '% geçen haftaya göre</div></div>';
+    };
+
+    document.getElementById('weekly-kpis').innerHTML =
+      trendCard('Harcama', tw.spend, lw.spend, v => '₺' + v.toFixed(0), false) +
+      trendCard('Satış', tw.purchases, lw.purchases, v => v > 0 ? v.toFixed(0) : '—', true) +
+      trendCard('Gelir', tw.revenue, lw.revenue, v => v > 0 ? '₺' + fmt(Math.round(v)) : '—', true) +
+      trendCard('ROAS', tw.roas, lw.roas, v => v > 0 ? v.toFixed(2) + 'x' : '—', true) +
+      trendCard('CTR', tw.ctr, lw.ctr, v => '%' + v.toFixed(2), true) +
+      trendCard('CPC', tw.cpc, lw.cpc, v => '₺' + v.toFixed(2), false);
+
+    const metrics = [
+      { label: 'Harcama', lw: '₺' + lw.spend.toFixed(0), tw: '₺' + tw.spend.toFixed(0), diff: tw.spend - lw.spend, base: lw.spend, higher: false },
+      { label: 'Gösterim', lw: fmt(lw.imp), tw: fmt(tw.imp), diff: tw.imp - lw.imp, base: lw.imp, higher: true },
+      { label: 'Tıklama', lw: fmt(lw.clicks), tw: fmt(tw.clicks), diff: tw.clicks - lw.clicks, base: lw.clicks, higher: true },
+      { label: 'CTR', lw: '%' + lw.ctr.toFixed(2), tw: '%' + tw.ctr.toFixed(2), diff: tw.ctr - lw.ctr, base: lw.ctr, higher: true },
+      { label: 'CPC', lw: '₺' + lw.cpc.toFixed(2), tw: '₺' + tw.cpc.toFixed(2), diff: tw.cpc - lw.cpc, base: lw.cpc, higher: false },
+      { label: 'Satış', lw: lw.purchases > 0 ? lw.purchases.toFixed(0) : '—', tw: tw.purchases > 0 ? tw.purchases.toFixed(0) : '—', diff: tw.purchases - lw.purchases, base: lw.purchases, higher: true },
+      { label: 'ROAS', lw: lw.roas > 0 ? lw.roas.toFixed(2) + 'x' : '—', tw: tw.roas > 0 ? tw.roas.toFixed(2) + 'x' : '—', diff: tw.roas - lw.roas, base: lw.roas, higher: true },
+      { label: 'CPA', lw: lw.cpa > 0 ? '₺' + lw.cpa.toFixed(0) : '—', tw: tw.cpa > 0 ? '₺' + tw.cpa.toFixed(0) : '—', diff: tw.cpa - lw.cpa, base: lw.cpa, higher: false },
+    ];
+
+    document.getElementById('weekly-tbody').innerHTML = metrics.map(m => {
+      const pct = m.base > 0 ? Math.abs(m.diff / m.base * 100).toFixed(1) : null;
+      const good = m.higher ? m.diff >= 0 : m.diff <= 0;
+      const arrow = m.diff > 0 ? '▲' : m.diff < 0 ? '▼' : '→';
+      const color = !pct || parseFloat(pct) < 1 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
+      return '<tr><td style="font-weight:500">' + m.label + '</td><td style="color:var(--text2)">' + m.lw + '</td><td><strong>' + m.tw + '</strong></td><td><span style="color:' + color + ';font-weight:600">' + arrow + ' ' + (pct ? pct + '%' : '—') + '</span></td></tr>';
+    }).join('');
+
+    const campMap = {};
+    [...thisWeek, ...lastWeek].forEach(i => { if (!campMap[i.campaign_name]) campMap[i.campaign_name] = { tw: null, lw: null }; });
+    thisWeek.forEach(i => { campMap[i.campaign_name].tw = i; });
+    lastWeek.forEach(i => { campMap[i.campaign_name].lw = i; });
+
+    document.getElementById('weekly-camps').innerHTML = Object.entries(campMap).map(([name, d]) => {
+      const twS = d.tw ? parseFloat(d.tw.spend || 0) : 0;
+      const lwS = d.lw ? parseFloat(d.lw.spend || 0) : 0;
+      const twR = d.tw ? (d.tw._roas || 0) : 0;
+      const twC = d.tw ? parseFloat(d.tw.ctr || 0) : 0;
+      const lwC = d.lw ? parseFloat(d.lw.ctr || 0) : 0;
+      const spendDiff = lwS > 0 ? ((twS - lwS) / lwS * 100).toFixed(1) : null;
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
+        '<div style="font-weight:500;font-size:13px;flex:2;min-width:160px">' + name + '</div>' +
+        '<span class="badge gray">₺' + twS.toFixed(0) + (spendDiff ? ' (' + (twS >= lwS ? '▲' : '▼') + Math.abs(parseFloat(spendDiff)).toFixed(1) + '%)' : '') + '</span>' +
+        (twR > 0 ? '<span class="badge ' + (twR >= 2 ? 'green' : twR >= 1 ? 'yellow' : 'red') + '">ROAS ' + twR.toFixed(2) + 'x</span>' : '') +
+        '<span class="badge gray" style="color:' + (twC >= lwC ? 'var(--green)' : 'var(--red)') + '">CTR %' + twC.toFixed(2) + '</span>' +
+        '</div>';
+    }).join('') || '<div style="color:var(--text3);font-size:13px;padding:16px">Veri yok</div>';
+
+  } catch (e) {
+    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px">Hata: ' + e.message + '</div>';
+  }
+  document.getElementById('weekly-loading').style.display = 'none';
+  document.getElementById('weekly-content').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════
+// BÜTÇE PLANLAYICI
+// ═══════════════════════════════════════════════
+function calcBudget() {
+  const monthly  = parseFloat(document.getElementById('bp-monthly').value) || 30000;
+  const targetSales = parseFloat(document.getElementById('bp-sales').value) || 50;
+  const targetRoas  = parseFloat(document.getElementById('bp-roas').value) || 3;
+  const numCamps    = parseInt(document.getElementById('bp-camps').value) || 3;
+  const testPct     = parseFloat(document.getElementById('bp-test-pct').value) / 100 || 0.2;
+  const price       = parseFloat(document.getElementById('bp-price').value) || 1799;
+
+  const dailyTotal  = monthly / 30;
+  const testBudget  = monthly * testPct;
+  const scaleBudget = monthly * (1 - testPct);
+  const dailyScale  = scaleBudget / 30;
+  const dailyTest   = testBudget / 30;
+  const targetRevenue = targetSales * price;
+  const impliedSpend  = targetRevenue / targetRoas;
+  const impliedCPA    = impliedSpend / targetSales;
+  const campBudget    = scaleBudget / numCamps;
+  const dailyCampBudget = campBudget / 30;
+
+  document.getElementById('budget-kpis').innerHTML =
+    '<div class="kpi-card accent"><div class="label">Günlük Toplam</div><div class="value">₺' + dailyTotal.toFixed(0) + '</div><div class="sub">₺' + monthly.toFixed(0) + ' / ay</div></div>' +
+    '<div class="kpi-card"><div class="label">Hedef Gelir</div><div class="value">₺' + fmt(Math.round(targetRevenue)) + '</div><div class="sub">' + targetSales + ' satış × ₺' + price.toFixed(0) + '</div></div>' +
+    '<div class="kpi-card"><div class="label">Hedef ROAS</div><div class="value">' + targetRoas.toFixed(1) + 'x</div><div class="sub">₺' + impliedSpend.toFixed(0) + ' reklam bütçesi</div></div>' +
+    '<div class="kpi-card"><div class="label">Maks CPA</div><div class="value">₺' + impliedCPA.toFixed(0) + '</div><div class="sub">Bu üstü zarardır</div></div>';
+
+  const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+  const dayWeights = [0.13, 0.13, 0.14, 0.14, 0.15, 0.16, 0.15];
+  document.getElementById('budget-daily').innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px">' +
+    days.map((d, i) => {
+      const db = dailyTotal * dayWeights[i] * 7;
+      const iw = i >= 5;
+      return '<div style="text-align:center;padding:12px 8px;background:' + (iw ? 'var(--accent-light)' : 'var(--surface2)') + ';border:1px solid var(--border);border-radius:10px">' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px">' + d + '</div>' +
+        '<div style="font-size:14px;font-weight:600;color:' + (iw ? 'var(--accent)' : 'var(--text)') + '">₺' + db.toFixed(0) + '</div>' +
+        (iw ? '<div style="font-size:10px;color:var(--accent)">↑ hafta sonu</div>' : '') + '</div>';
+    }).join('') + '</div>' +
+    '<div style="font-size:11px;color:var(--text3);margin-top:8px">Hafta sonu dönüşüm oranı genellikle daha yüksektir — bütçeyi ona göre kaydır.</div>';
+
+  document.getElementById('budget-camps').innerHTML =
+    Array.from({ length: numCamps }, (_, i) => {
+      const isMain = i < Math.ceil(numCamps * 0.7);
+      const db = isMain ? dailyCampBudget * 1.2 : dailyCampBudget * 0.6;
+      const label = i === 0 ? 'Ana Kampanya (En iyi performans)' : isMain ? 'Ölçekleme Kampanyası ' + (i + 1) : 'Test Kampanyası ' + (i + 1);
+      return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">' +
+        '<div style="flex:2;font-size:13px;font-weight:500">' + label + '</div>' +
+        '<div style="text-align:right"><div style="font-size:16px;font-weight:600;color:var(--accent)">₺' + db.toFixed(0) + '/gün</div><div style="font-size:11px;color:var(--text3)">₺' + (db * 30).toFixed(0) + '/ay</div></div>' +
+        '<div style="width:120px"><div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden"><div style="height:100%;border-radius:99px;background:var(--accent);width:' + Math.min(100, db / dailyTotal * 100) + '%"></div></div></div>' +
+        '</div>';
+    }).join('') +
+    '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;flex-wrap:wrap">' +
+    '<div style="flex:2;font-size:13px;font-weight:500;color:var(--yellow)">🧪 Test Bütçesi (yeni creative / kitle)</div>' +
+    '<div style="text-align:right"><div style="font-size:16px;font-weight:600;color:var(--yellow)">₺' + dailyTest.toFixed(0) + '/gün</div><div style="font-size:11px;color:var(--text3)">₺' + testBudget.toFixed(0) + '/ay (%' + (testPct * 100).toFixed(0) + ')</div></div>' +
+    '</div>';
+
+  document.getElementById('budget-milestones').innerHTML =
+    '📍 <strong>Hafta 1:</strong> Kampanyaları başlat, günlük ₺' + dailyTotal.toFixed(0) + ' harca. CPA\'yı izle — ₺' + impliedCPA.toFixed(0) + ' altında kalmalı.<br>' +
+    '📍 <strong>Hafta 2:</strong> En iyi ROAS\'lı kampanyaya bütçe kaydır. Zayıf olanı %20 düşür.<br>' +
+    '📍 <strong>Hafta 3:</strong> Kazanan kampanyayı günde %20 artır. Yeni creative testi başlat.<br>' +
+    '📍 <strong>Hafta 4:</strong> Ay sonu analizi — ROAS ' + targetRoas + 'x ulaşıldıysa bir sonraki ay bütçeyi %30 artır.<br><br>' +
+    '🎯 <strong>Hedef:</strong> Ayda ' + targetSales + ' satış → ₺' + fmt(Math.round(targetRevenue)) + ' gelir → ROAS ' + targetRoas + 'x';
+
+  document.getElementById('budget-results').style.display = 'block';
+}
 
 // ═══════════════════════════════════════════════
 // DASHBOARD
