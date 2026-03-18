@@ -29,16 +29,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 #app{display:none}
 #app.show{display:flex;min-height:100vh}
 
-.sidebar{width:64px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:20px 0;position:fixed;height:100vh;z-index:50;box-shadow:2px 0 20px rgba(0,0,0,.04)}
-.sb-logo{font-size:18px;font-weight:900;letter-spacing:-1px;color:var(--blue);margin-bottom:24px}
-.sb-btn{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .15s;margin-bottom:4px;position:relative}
-.sb-btn:hover{background:var(--bg)}
-.sb-btn.on{background:var(--blue)}
-.tip{position:absolute;left:56px;background:var(--text);color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;font-family:'Inter',sans-serif;z-index:100}
-.sb-btn:hover .tip{opacity:1}
-.sb-foot{margin-top:auto;display:flex;flex-direction:column;gap:4px}
+.sidebar{width:180px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;position:fixed;height:100vh;z-index:50;box-shadow:2px 0 20px rgba(0,0,0,.04);overflow-y:auto}
+.sb-logo{font-size:20px;font-weight:900;letter-spacing:-1px;color:var(--blue);margin-bottom:6px;padding:4px 8px}
+.sb-logo em{font-style:normal}
+.sb-ver{font-size:10px;color:var(--t3);padding:0 8px;margin-bottom:20px;letter-spacing:.5px}
+.sb-sec{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:2px;text-transform:uppercase;padding:0 8px;margin:14px 0 6px}
+.sb-btn{width:100%;height:38px;border-radius:10px;display:flex;align-items:center;gap:10px;padding:0 10px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px;color:var(--t2);position:relative}
+.sb-btn:hover{background:var(--bg);color:var(--text)}
+.sb-btn.on{background:var(--blue);color:#fff;font-weight:700}
+.sb-btn .ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-btn .lbl{font-size:13px}
+.tip{display:none}
+.sb-foot{margin-top:auto;display:flex;flex-direction:column;gap:2px;border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
 
-.main{margin-left:64px;flex:1}
+.main{margin-left:180px;flex:1}
 .topbar{height:56px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:40;display:flex;align-items:center;padding:0 24px;gap:12px}
 .topbar-title{font-size:15px;font-weight:700}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
@@ -200,22 +204,25 @@ textarea:focus{background:#fff;border-color:var(--blue)}
 
 <div id="app">
   <div class="sidebar">
-    <div class="sb-logo">A</div>
-    <div class="sb-btn on" onclick="go('plan')" data-p="plan">📋<span class="tip">Günlük Plan</span></div>
-    <div class="sb-btn" onclick="go('dash')" data-p="dash">📊<span class="tip">Dashboard</span></div>
-    <div class="sb-btn" onclick="go('ai')" data-p="ai">◆<span class="tip">AI Hoca</span></div>
-    <div class="sb-btn" onclick="go('scale')" data-p="scale">↑<span class="tip">Ölçekleme</span></div>
-    <div class="sb-btn" onclick="go('score')" data-p="score">◑<span class="tip">Creative Skor</span></div>
-    <div class="sb-btn" onclick="go('hook')" data-p="hook">✦<span class="tip">Hook Üretici</span></div>
-    <div class="sb-btn" onclick="go('metin')" data-p="metin">≡<span class="tip">Reklam Metni</span></div>
-    <div class="sb-btn" onclick="go('kar')" data-p="kar">◎<span class="tip">Kâr Hesabı</span></div>
-    <div class="sb-btn" onclick="go('log')" data-p="log">◷<span class="tip">Günlük</span></div>
+    <div class="sb-logo">Ala<em>Tab</em></div>
+    <div class="sb-ver">REKLAM MERKEZİ</div>
+    <div class="sb-sec">Ana</div>
+    <div class="sb-btn on" onclick="go('plan')" data-p="plan"><span class="ic">📋</span><span class="lbl">Günlük Plan</span></div>
+    <div class="sb-btn" onclick="go('dash')" data-p="dash"><span class="ic">📊</span><span class="lbl">Dashboard</span></div>
+    <div class="sb-btn" onclick="go('ai')" data-p="ai"><span class="ic">◆</span><span class="lbl">AI Hoca</span></div>
+    <div class="sb-sec">Analiz</div>
+    <div class="sb-btn" onclick="go('scale')" data-p="scale"><span class="ic">↑</span><span class="lbl">Ölçekleme</span></div>
+    <div class="sb-btn" onclick="go('score')" data-p="score"><span class="ic">◑</span><span class="lbl">Creative Skor</span></div>
+    <div class="sb-sec">Araçlar</div>
+    <div class="sb-btn" onclick="go('hook')" data-p="hook"><span class="ic">✦</span><span class="lbl">Hook Üretici</span></div>
+    <div class="sb-btn" onclick="go('metin')" data-p="metin"><span class="ic">≡</span><span class="lbl">Reklam Metni</span></div>
+    <div class="sb-btn" onclick="go('kar')" data-p="kar"><span class="ic">◎</span><span class="lbl">Kâr Hesabı</span></div>
+    <div class="sb-btn" onclick="go('log')" data-p="log"><span class="ic">◷</span><span class="lbl">Günlük</span></div>
     <div class="sb-foot">
-      <div class="sb-btn" onclick="loadAll()">↻<span class="tip">Yenile</span></div>
-      <div class="sb-btn" onclick="doOut()">⏏<span class="tip">Çıkış</span></div>
+      <div class="sb-btn" onclick="loadAll()"><span class="ic">↻</span><span class="lbl">Yenile</span></div>
+      <div class="sb-btn" onclick="doOut()"><span class="ic">⏏</span><span class="lbl">Çıkış</span></div>
     </div>
   </div>
-
   <div class="main">
     <div class="topbar">
       <span class="topbar-title" id="PT">Günlük Plan</span>
