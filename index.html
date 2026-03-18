@@ -568,7 +568,7 @@
                 
                 // Test token validity
                 const accountRes = await fetch(
-                    `https://graph.instagram.com/v19.0/me?fields=ad_accounts&access_token=${token}`
+                    `https://graph.facebook.com/v19.0/me?fields=ad_accounts&access_token=${token}`
                 );
 
                 if (!accountRes.ok) {
@@ -609,7 +609,7 @@
 
             try {
                 const res = await fetch(
-                    `https://graph.instagram.com/v19.0/${accountId}/campaigns?fields=id,name,status,insights.date_preset(last_30d){spend,impressions,clicks,ctr,cpc,cpp,actions,action_values}&access_token=${token}`
+                    `https://graph.facebook.com/v19.0/${accountId}/campaigns?fields=id,name,status,insights.date_preset(last_30d){spend,impressions,clicks,ctr,cpc,cpp,actions,action_values}&access_token=${token}`
                 );
 
                 if (!res.ok) throw new Error('Kampanyalar yüklenemedi');
