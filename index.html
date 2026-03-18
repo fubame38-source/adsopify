@@ -738,6 +738,19 @@ const S = {
 
 const API = 'https://graph.facebook.com/v19.0';
 
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(arr, n) {
+  return shuffleArray(arr).slice(0, n);
+}
+
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
@@ -985,25 +998,12 @@ function renderPlan(campaigns, insights) {
     { icon: '💬', title: 'Yorum Madenciliği', desc: 'Reklamlardaki yorumları oku. Sık sorulan sorular = yeni hook fikirleri.', urgent: false }
   ];
 
-  const creativeIdeas = pickRandom(ALL_CREATIVE_IDEAS, 5);
+  const creativeIdeas = [];
 
   // Creative ideas — sadece büyüme adımlarını render eder, fikirler ayrı fonksiyonla
   document.getElementById('plan-urgent').innerHTML = urgentItems.map(i => '<div class="plan-item urgent"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
   document.getElementById('plan-growth').innerHTML = growthItems.map(i => '<div class="plan-item growth"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>').join('');
   refreshIdeas();
-}
-
-function shuffleArray(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function pickRandom(arr, n) {
-  return shuffleArray(arr).slice(0, n);
 }
 
 function refreshIdeas() {
@@ -1015,7 +1015,7 @@ function refreshIdeas() {
   }).join('');
 }
 
-const ALL_CREATIVE_IDEAS = [
+var ALL_CREATIVE_IDEAS = [
   { icon: '🎬', title: 'POV: WC\'de Dizi İzlerken', desc: '"POV: Tuvalette dizi izlemeyi hiç bu kadar rahat yapmadım" — 35° kaldırılmış bacak pozu + doğal ışık' },
   { icon: '🩺', title: 'Fizyoterapist Yorumu', desc: '"Fizyoterapistim bu tabureti önermeseydi bilmezdim" — uzman sosyal kanıtı, beyaz önlük' },
   { icon: '📦', title: 'Unboxing Sürprizi', desc: 'Paket açılışı + ilk kullanım anı, ahşap kalitesine odaklan, ürünü sona sakla' },
@@ -1536,7 +1536,7 @@ function scoreRow(label, score, note) {
 // ═══════════════════════════════════════════════
 // HOOK ÜRETİCİ
 // ═══════════════════════════════════════════════
-const HOOKS = {
+var HOOKS = {
   pov: {
     general: [
       "POV: WC'de en rahat oturma pozisyonunu yeni keşfettim 🚿",
@@ -1671,7 +1671,7 @@ const HOOKS = {
 };
 
 // Track last shown hooks to avoid repeats
-const _lastHooks = {};
+var _lastHooks = {};
 
 function generateHooks() {
   const format = document.getElementById('hook-format').value;
