@@ -1111,19 +1111,14 @@ function smartReply(msg) {
   if (spend === 0) return 'Secili donemde veri yok. Ustten 7 Gun veya 30 Gun sec ve tekrar sor.';
 
   if (low.indexOf('analiz')!==-1 || low.indexOf('kampanya')!==-1 || low.indexOf('durum')!==-1) {
-    var lines = ['Kampanya analizi:
-'];
+    var lines = ['Kampanya analizi:\n'];
     lines.push('Harcama: ' + spend.toFixed(2) + ' TL — ' + c.length + ' kampanya, ' + active.length + ' aktif');
     lines.push('CTR: %' + ctr.toFixed(2) + ' ' + (ctr>2?'(iyi)':'(dusuk — hook degismeli)'));
     lines.push('CPC: ' + cpc.toFixed(2) + ' TL ' + (cpc<10?'(normal)':'(yuksek — mudahale lazim)'));
-    if (best) { var bi=best.insights.data[0]; lines.push('
-En iyi: "' + best.name + '" — CTR %' + parseFloat(bi.ctr).toFixed(2) + ', CPC ' + parseFloat(bi.cpc||0).toFixed(2) + ' TL'); }
-    if (highCpc.length) lines.push('
-ACIL: ' + highCpc.map(function(x){return '"'+x.name+'"';}).join(', ') + ' — CPC 12 TL ustu, durdur!');
-    lines.push('
-Aksiyon: ' + (ctr<2?'Hook degistir. CTR %2 uzeri cek.':best?'"'+best.name.slice(0,20)+'" butcesini %20 artir.':'Yeni creative testi baslat.'));
-    return lines.join('
-');
+    if (best) { var bi=best.insights.data[0]; lines.push('\nEn iyi: "' + best.name + '" — CTR %' + parseFloat(bi.ctr).toFixed(2) + ', CPC ' + parseFloat(bi.cpc||0).toFixed(2) + ' TL'); }
+    if (highCpc.length) lines.push('\nACIL: ' + highCpc.map(function(x){return '"'+x.name+'"';}).join(', ') + ' — CPC 12 TL ustu, durdur!');
+    lines.push('\nAksiyon: ' + (ctr<2?'Hook degistir. CTR %2 uzeri cek.':best?'"'+best.name.slice(0,20)+'" butcesini %20 artir.':'Yeni creative testi baslat.'));
+    return lines.join('\n');
   }
   if (low.indexOf('kapat')!==-1 || low.indexOf('hangi')!==-1 || low.indexOf('durdur')!==-1) {
     var results = [];
@@ -1135,96 +1130,38 @@ Aksiyon: ' + (ctr<2?'Hook degistir. CTR %2 uzeri cek.':best?'"'+best.name.slice(
       else if (score>=4) results.push('DEVAM: "' + x.name.slice(0,25) + '" — CTR %' + xctr.toFixed(2) + ' iyi');
       else results.push('IZLE: "' + x.name.slice(0,25) + '" — 3 gun daha bekle');
     });
-    return results.join('
-') + '
-
-Aksiyon: Kapatilacaklari durdur, butcelerini en iyiye kaydir.';
+    return results.join('\n') + '\n\nAksiyon: Kapatilacaklari durdur, butcelerini en iyiye kaydir.';
   }
   if (low.indexOf('butce')!==-1 || low.indexOf('para')!==-1) {
-    return 'Butce plani:
-
-Gunluk toplam: ' + totalBgt.toFixed(0) + ' TL
-' +
-      (best ? '"' + best.name.slice(0,22) + '" en iyi — butcenin %60ini buraya ver (' + (totalBgt*0.6).toFixed(0) + ' TL/gun)
-' : '') +
-      'Yeni hook testi: %30 (' + (totalBgt*0.3).toFixed(0) + ' TL/gun)
-' +
-      'Retargeting: %10 (' + (totalBgt*0.1).toFixed(0) + ' TL/gun)
-
-' +
+    return 'Butce plani:\n\nGunluk toplam: ' + totalBgt.toFixed(0) + ' TL\n' +
+      (best ? '"' + best.name.slice(0,22) + '" en iyi — butcenin %60ini buraya ver (' + (totalBgt*0.6).toFixed(0) + ' TL/gun)\n' : '') +
+      'Yeni hook testi: %30 (' + (totalBgt*0.3).toFixed(0) + ' TL/gun)\n' +
+      'Retargeting: %10 (' + (totalBgt*0.1).toFixed(0) + ' TL/gun)\n\n' +
       'Aksiyon: CPC ' + cpc.toFixed(2) + ' TL — ' + (cpc>10?'yuksek, hedeflemeyi genislet.':'normal, kazanana artir.');
   }
   if (low.indexOf('ctr')!==-1 || low.indexOf('hook')!==-1) {
-    return 'CTR %' + ctr.toFixed(2) + ' — ' + (ctr>2?'iyi':'dusuk, mudahale lazim') + '
-
-Hook onerileri:
-
-1. "Evime kim geldiyse bunu sordu"
-2. "Tuvalette yanlis oturuyor olabilirsiniz"
-3. "Kabizligin sebebi klozet olabilir"
-4. "Arkadasimin evinde buna rastladim"
-
-Her birini 100 TL/gun, 3 gun test et.';
+    return 'CTR %' + ctr.toFixed(2) + ' — ' + (ctr>2?'iyi':'dusuk, mudahale lazim') + '\n\nHook onerileri:\n\n1. "Evime kim geldiyse bunu sordu"\n2. "Tuvalette yanlis oturuyor olabilirsiniz"\n3. "Kabizligin sebebi klozet olabilir"\n4. "Arkadasimin evinde buna rastladim"\n\nHer birini 100 TL/gun, 3 gun test et.';
   }
   if (low.indexOf('cpc')!==-1 || low.indexOf('maliyet')!==-1) {
-    return 'CPC ' + cpc.toFixed(2) + ' TL — ' + (cpc>10?'yuksek':'normal') + '
-
-Dusurme plani:
-1. Advantage+ audience dene
-2. Reels yerlesimini aktif et
-3. Hedeflemeyi genislet
-4. CTR artarsa CPC otomatik duser
-
-Aksiyon: Kampanya hedeflemesini Genis Kitle yap, 3 gun test et.';
+    return 'CPC ' + cpc.toFixed(2) + ' TL — ' + (cpc>10?'yuksek':'normal') + '\n\nDusurme plani:\n1. Advantage+ audience dene\n2. Reels yerlesimini aktif et\n3. Hedeflemeyi genislet\n4. CTR artarsa CPC otomatik duser\n\nAksiyon: Kampanya hedeflemesini Genis Kitle yap, 3 gun test et.';
   }
   if (low.indexOf('olcekle')!==-1 || low.indexOf('artir')!==-1 || low.indexOf('hazir')!==-1) {
     if (!best) return 'Once iyi bir kampanya bul. 7 Gun sec ve analiz et.';
     var bi2=best.insights.data[0]; var b2=best.daily_budget?(best.daily_budget/100):0;
     var ready = parseFloat(bi2.ctr)>2 && parseFloat(bi2.cpc||0)<12;
-    return (ready?'OLCEKLEMEYE HAZIR':'Henuz hazir degil') + '
-
-"' + best.name + '"
-CTR: %' + parseFloat(bi2.ctr).toFixed(2) + ' ' + (parseFloat(bi2.ctr)>2?'(iyi)':'(dusuk)') + '
-CPC: ' + parseFloat(bi2.cpc||0).toFixed(2) + ' TL ' + (parseFloat(bi2.cpc||0)<12?'(iyi)':'(yuksek)') + '
-
-' + (ready?'Aksiyon: Butceyi ' + (b2*1.2).toFixed(0) + ' TL/gun yap. 3 gun bekle.':'Once CTR %2 uzeri cek, CPC 12 TL altina indir.');
+    return (ready?'OLCEKLEMEYE HAZIR':'Henuz hazir degil') + '\n\n"' + best.name + '"\nCTR: %' + parseFloat(bi2.ctr).toFixed(2) + ' ' + (parseFloat(bi2.ctr)>2?'(iyi)':'(dusuk)') + '\nCPC: ' + parseFloat(bi2.cpc||0).toFixed(2) + ' TL ' + (parseFloat(bi2.cpc||0)<12?'(iyi)':'(yuksek)') + '\n\n' + (ready?'Aksiyon: Butceyi ' + (b2*1.2).toFixed(0) + ' TL/gun yap. 3 gun bekle.':'Once CTR %2 uzeri cek, CPC 12 TL altina indir.');
   }
   if (low.indexOf('plan')!==-1 || low.indexOf('2 kat')!==-1 || low.indexOf('strateji')!==-1) {
-    return '30 gunde 2 kat satis plani:
-
-Hafta 1: En iyi kampanyayi bul, digerlerini durdur. 3 hook testi baslat.
-Hafta 2: Kazanan hooku tum reklamlara uygula. Butceyi %25 artir.
-Hafta 3: Lookalike %1 kitle kur. Retargeting ekle.
-Hafta 4: Kazanan formati standartlastir. Haftada 1 yeni creative.
-
-Su an: ' + (ctr<2?'Hook degistir acil. CTR %'+ctr.toFixed(2)+' dusuk.':cpc>12?'CPC '+cpc.toFixed(2)+' TL yuksek. Once bunu coz.':'Iyi gidiyorsun. Kazanani olcekle.');
+    return '30 gunde 2 kat satis plani:\n\nHafta 1: En iyi kampanyayi bul, digerlerini durdur. 3 hook testi baslat.\nHafta 2: Kazanan hooku tum reklamlara uygula. Butceyi %25 artir.\nHafta 3: Lookalike %1 kitle kur. Retargeting ekle.\nHafta 4: Kazanan formati standartlastir. Haftada 1 yeni creative.\n\nSu an: ' + (ctr<2?'Hook degistir acil. CTR %'+ctr.toFixed(2)+' dusuk.':cpc>12?'CPC '+cpc.toFixed(2)+' TL yuksek. Once bunu coz.':'Iyi gidiyorsun. Kazanani olcekle.');
   }
   if (low.indexOf('creative')!==-1 || low.indexOf('video')!==-1 || low.indexOf('fikir')!==-1) {
-    return 'Bu hafta test et:
-
-1. POV Kesif (15sn)
-   Evi dolasir gibi tabureyi kesifet.
-   Hook: "Evimi gezerken bunu fark ettim"
-
-2. Problem Hook
-   "Bu yuzden tuvalette zorlaniyorsunuz"
-   Ilk 3sn problem, son 5sn AlaTab cozum
-
-3. Sosyal Kanit
-   5 kisinin kisa yorumu arka arkaya
-   "1000+ kisi kullandi"
-
-Her birine 100-150 TL/gun, 3 gun ver.';
+    return 'Bu hafta test et:\n\n1. POV Kesif (15sn)\n   Evi dolasir gibi tabureyi kesifet.\n   Hook: "Evimi gezerken bunu fark ettim"\n\n2. Problem Hook\n   "Bu yuzden tuvalette zorlaniyorsunuz"\n   Ilk 3sn problem, son 5sn AlaTab cozum\n\n3. Sosyal Kanit\n   5 kisinin kisa yorumu arka arkaya\n   "1000+ kisi kullandi"\n\nHer birine 100-150 TL/gun, 3 gun ver.';
   }
-  return 'Anliyorum. Verilere gore en kritik aksiyon:
-
-' +
+  return 'Anliyorum. Verilere gore en kritik aksiyon:\n\n' +
     (ctr<1.5?'Hook degistir. CTR %'+ctr.toFixed(2)+' cok dusuk.':
      cpc>12?'CPC '+cpc.toFixed(2)+' TL yuksek. Creative veya hedeflemeyi degistir.':
      best?'"'+best.name.slice(0,22)+'" kampanyasini olcekle. En iyi CTR burada.':
-     'Daha uzun donem sec ve tekrar sor.') + '
-
-Baska ne sormak istersin?';
+     'Daha uzun donem sec ve tekrar sor.') + '\n\nBaska ne sormak istersin?';
 }
 
 function addBubble(text, who) {
@@ -1323,8 +1260,7 @@ var HDB = {
     low_ctr:  ["Evime kim geldiyse bunu sordu","Arkadaşımın evinde buna rastladım","Komşum kullanıyor — merak ettim denedim","Gelinimin evinde gördüm — hemen aldım"],
     high_cpc: ["1000+ kişi bu ürünü bir daha bırakmadı"],
     fatigue:  ["Yorum yorumu geçiyor — neden bu kadar seviyorlar?"],
-    new_test: ["Türkiye'de bu kadar konuşulan ürün az gördüm"],
-    seasonal: ["Anneler Günü'nde en çok sorulan hediye bu oldu"],
+    new_test: ["Türkiye'de bu kadar konuşulan ürün az gördüm"],\n    seasonal: ["Anneler Günü'nde en çok sorulan hediye bu oldu"],
   },
   doctor:{
     low_ctr:  ["Fizyoterapistler bu pozisyonu neden öneriyor","Doktor kliniğinde gördüm, araştırdım","Gastroenterologlar bunu tavsiye ediyor"],
@@ -1341,22 +1277,7 @@ var HDB = {
     high_cpc: ["Buna güldüler, 1 ay sonra aldılar"],
   },
   curiosity:{
-    low_ctr:  ["Neden Asya'da bağırsak problemi daha az?","Bu soruyu soran kimseye cevap vermiyorlardı","Bağırsaklarınıza en büyük iyiliği nasıl yaparsınız?"],
-    high_cpc: ["Günde 5 dakikayla nasıl bu kadar fark olur?"],
-    fatigue:  ["Neden Japon insanların bağırsak sağlığı daha iyi?"],
-    new_test: ["Bu kadar basit çözümün bu kadar etkili olması nasıl mümkün?"],
-    seasonal: ["Kışın bağırsak neden yavaşlar?"],
-  },
-};
-
-function doHooks() {
-  var reason = document.getElementById('hkReason').value;
-  var format = document.getElementById('hkFormat').value;
-  var note   = document.getElementById('hkNote').value;
-  var db = HDB[format] || {};
-  var hooks = (db[reason] || db['low_ctr'] || []).slice(0, 5);
-  if (!hooks.length) { document.getElementById('hookOut').innerHTML = '<div class="empty">Kombinasyon bulunamadı</div>'; return; }
-  var noteHtml = note ? '<div style="font-size:11px;color:var(--t3);font-family:\'JetBrains Mono\',monospace;margin-bottom:12px">Not: ' + note + '</div>' : '';
+    low_ctr:  ["Neden Asya'da bağırsak problemi daha az?","Bu soruyu soran kimseye cevap vermiyorlardı","Bağırsaklarınıza en büyük iyiliği nasıl yaparsınız?"],\n    high_cpc: ["Günde 5 dakikayla nasıl bu kadar fark olur?"],\n    fatigue:  ["Neden Japon insanların bağırsak sağlığı daha iyi?"],\n    new_test: ["Bu kadar basit çözümün bu kadar etkili olması nasıl mümkün?"],\n    seasonal: ["Kışın bağırsak neden yavaşlar?"],\n  },\n};\n\nfunction doHooks() {\n  var reason = document.getElementById('hkReason').value;\n  var format = document.getElementById('hkFormat').value;\n  var note   = document.getElementById('hkNote').value;\n  var db = HDB[format] || {};\n  var hooks = (db[reason] || db['low_ctr'] || []).slice(0, 5);\n  if (!hooks.length) { document.getElementById('hookOut').innerHTML = '<div class="empty">Kombinasyon bulunamadı</div>'; return; }\n  var noteHtml = note ? '<div style="font-size:11px;color:var(--t3);font-family:\'JetBrains Mono\',monospace;margin-bottom:12px">Not: ' + note + '</div>' : '';
   document.getElementById('hookOut').innerHTML =
     '<div class="card-hd"><h3>Öneriler</h3><span class="tag">' + format + '</span></div>' +
     noteHtml +
