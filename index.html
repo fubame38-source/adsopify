@@ -442,6 +442,7 @@
                 <div class="auth-section">
                     <input type="password" id="accessToken" placeholder="Meta Access Token gir...">
                     <button class="btn btn-primary" onclick="connectToMeta()">Bağlan</button>
+                    <select id="accountSelect" style="display:none; padding:10px 12px; border:2px solid #E5E7EB; border-radius:8px; font-size:13px; cursor:pointer;" onchange="switchAccount()"></select>
                     <span class="status-badge disconnected" id="statusBadge">
                         <span style="display: inline-block; width: 8px; height: 8px; background: var(--danger); border-radius: 50%;"></span>
                         Bağlı Değil
@@ -555,6 +556,12 @@
         let chartInstances = {};
         let campaignData = [];
 
+        async function switchAccount() {
+            const select = document.getElementById('accountSelect');
+            sessionStorage.setItem('adAccountId', select.value);
+            await loadCampaigns();
+        }
+
         async function connectToMeta() {
             const token = document.getElementById('accessToken').value.trim();
             
@@ -583,7 +590,19 @@
 
                 // Store token
                 sessionStorage.setItem('metaToken', token);
-                sessionStorage.setItem('adAccountId', accountData.data[0].id);
+
+                // Populate account dropdown
+                const select = document.getElementById('accountSelect');
+                select.innerHTML = '';
+                accountData.data.forEach(acc => {
+                    const opt = document.createElement('option');
+                    opt.value = acc.id;
+                    opt.textContent = acc.name;
+                    if (acc.name === 'AlaTab') opt.selected = true;
+                    select.appendChild(opt);
+                });
+                select.style.display = 'block';
+                sessionStorage.setItem('adAccountId', select.value);
 
                 // Load campaigns
                 await loadCampaigns();
