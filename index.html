@@ -248,7 +248,8 @@ textarea:focus{background:#fff;border-color:var(--blue)}
         <div class="pcard"><div class="pcard-hd"><h3>🚨 Acil Aksiyonlar</h3></div><div class="pcard-body" id="PA"><div class="loading"><div class="spin"></div></div></div></div>
         <div class="pcard"><div class="pcard-hd"><h3>📈 Büyüme Adımları</h3></div><div class="pcard-body" id="PB"><div class="loading"><div class="spin"></div></div></div></div>
       </div>
-      <div class="creative-card"><div class="ctag">💡 Bugünün Creative Fikri</div><div id="PC2"><div class="loading"><div class="spin"></div></div></div></div>
+      <div class="pcard" style="margin-bottom:14px"><div class="pcard-hd"><h3>🎯 Kampanya Bazlı Analizim</h3></div><div class="pcard-body" id="CAMP_ANALYSIS"><div class="loading"><div class="spin"></div></div></div></div>
+      <div class="creative-card"><div class="ctag">💡 Bugün Test Et — 5 Fikir</div><div id="PC2"><div class="loading"><div class="spin"></div></div></div></div>
     </div>
 
     <div class="pg" id="pg-dash">
@@ -342,7 +343,6 @@ textarea:focus{background:#fff;border-color:var(--blue)}
 <div id="toast">Kopyalandı</div>
 
 <script>
-var AKEY='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';
 var TOK='',ACC='',PER='today';
 var mD=null,cD=null,logs=[],hist=[];
 
@@ -493,34 +493,114 @@ function renderPlan(){
   if(!cD||!mD) return;
   var m=mD,c=cD;
   var ctr=parseFloat(m.ctr||0),cpc=parseFloat(m.cpc||0),spend=parseFloat(m.spend||0);
+  var clicks=parseInt(m.clicks||0);
   var active=c.filter(function(x){return x.status==='ACTIVE';});
   var wd=c.filter(function(x){return x.insights&&x.insights.data&&x.insights.data[0]&&x.insights.data[0].ctr;});
   wd.sort(function(a,b){return parseFloat(b.insights.data[0].ctr)-parseFloat(a.insights.data[0].ctr);});
   var best=wd[0];
+  var worst=wd[wd.length-1];
   var highCpc=active.filter(function(x){return parseFloat(x.insights&&x.insights.data&&x.insights.data[0]?x.insights.data[0].cpc:0)>12;});
   var lowCtr=active.filter(function(x){var sp=parseFloat(x.insights&&x.insights.data&&x.insights.data[0]?x.insights.data[0].spend:0);return parseFloat(x.insights&&x.insights.data&&x.insights.data[0]?x.insights.data[0].ctr:0)<1.5&&sp>0;});
+  var totalBgt=active.reduce(function(s,x){return s+(x.daily_budget?x.daily_budget/100:0);},0);
+
+  // ACİL
   var acil=[];
-  if(highCpc.length) acil.push({c:'r',t:highCpc.map(function(x){return '"'+x.name.slice(0,22)+'"';}).join(', ')+' kapat veya creative değiştir',d:'CPC ₺12+ — para yakıyor. Hemen durdur, bütçeyi kazanana kaydır.'});
-  if(lowCtr.length) acil.push({c:'r',t:lowCtr.length+' kampanyada hook değiştir',d:'"Tuvalette yanlış oturuyor olabilirsiniz" dene. CTR %1.5 altı.'});
+  if(highCpc.length) acil.push({c:'r',t:highCpc.map(function(x){return '"'+x.name.slice(0,22)+'"';}).join(', ')+' — DURDUR',d:'CPC ₺'+parseFloat(highCpc[0].insights.data[0].cpc).toFixed(2)+' ile para yakıyor. Hemen durdur, bütçeyi en iyi kampanyaya kaydır.'});
+  if(lowCtr.length) acil.push({c:'r',t:lowCtr.length+' kampanyada hook acil değişmeli',d:'CTR %1.5 altı: '+lowCtr.map(function(x){return '"'+x.name.slice(0,18)+'"';}).join(', ')+'. Yeni açılış cümlesi lazım.'});
   if(spend===0) acil.push({c:'y',t:'Bugün için veri yok',d:'Dün veya 7 Gün seçerek bak.'});
-  if(!acil.length) acil.push({c:'g',t:'Kritik sorun yok',d:'Metrikler normal. Büyüme adımlarına odaklan.'});
+  if(cpc>10&&!highCpc.length) acil.push({c:'y',t:'Genel CPC yüksek: ₺'+cpc.toFixed(2),d:'Advantage+ audience dene veya Reels yerleşimini aktif et. CPM düşürülmeli.'});
+  if(!acil.length) acil.push({c:'g',t:'Kritik sorun yok',d:'Metrikler normal seviyede. Büyüme adımlarına odaklan.'});
+
+  // BÜYÜME
   var buyume=[];
-  if(best){var bi=best.insights.data[0];var bgt=best.daily_budget?(best.daily_budget/100):0;buyume.push({c:'g',t:'"'+best.name.slice(0,26)+'" bütçesini artır',d:'CTR %'+parseFloat(bi.ctr).toFixed(2)+' — en iyi. %20 artır → ₺'+(bgt*1.2).toFixed(0)+'/gün.'});}
-  buyume.push({c:'y',t:'Bu hafta 2 yeni hook testi başlat',d:'Her birine ₺100-150/gün, 3 gün. Hook Üretici sayfasından al.'});
-  function mkA(items){return items.map(function(a,i){return '<div class="arow"><div class="anum '+a.c+'">'+(i+1)+'</div><div class="abody"><h4>'+a.t+'</h4><p>'+a.d+'</p></div><div class="achk" onclick="this.classList.toggle(\'done\')"></div></div>';}).join('');}
+  if(best){
+    var bi=best.insights.data[0];
+    var bgt2=best.daily_budget?(best.daily_budget/100):0;
+    buyume.push({c:'g',t:'"'+best.name.slice(0,26)+'" ölçekle',d:'CTR %'+parseFloat(bi.ctr).toFixed(2)+' — en iyi kampanya. Bütçeyi ₺'+(bgt2*1.2).toFixed(0)+'/gün yap (%20 artış).'});
+  }
+  buyume.push({c:'y',t:'2 yeni hook bu hafta test et',d:'Hook Üretici sayfasından al. Her birine ₺100-150/gün, 3 gün ver.'});
+  if(totalBgt>1000) buyume.push({c:'y',t:'Bütçe dağılımını optimize et',d:'Toplam ₺'+totalBgt.toFixed(0)+'/gün harcıyorsun. En iyi kampanyaya %60, yeni teste %30, retargeting %10 ver.'});
+  if(!buyume.some(function(b){return b.t.indexOf('Lookalike')!==-1;}))
+    buyume.push({c:'g',t:'Lookalike %1 kitle kur',d:'Mevcut müşteri listesinden benzer kitle oluştur. Genellikle en iyi ROI burada çıkar.'});
+
+  function mkA(items){
+    return items.map(function(a,i){
+      return '<div class="arow"><div class="anum '+a.c+'">'+(i+1)+'</div><div class="abody"><h4>'+a.t+'</h4><p>'+a.d+'</p></div><div class="achk" onclick="this.classList.toggle('done')"></div></div>';
+    }).join('');
+  }
   document.getElementById('PA').innerHTML=mkA(acil);
   document.getElementById('PB').innerHTML=mkA(buyume);
-  var creatives=[
-    {t:'POV Keşif (15 saniye)',d:'Eline kamerayı al. Evi dolaşır gibi yürü, banyoya gir, tabureyi keşfetmiş gibi göster. Hook: "Evimi gezerken bunu fark ettim." Handheld, düzenlenmemiş his. Son: "Evime kim geldiyse bunu sordu."'},
-    {t:'Problem Agitation',d:'İlk 3 saniye: "Bu yüzden tuvalette zorlanıyorsunuz." Orta: yanlış pozisyonu göster. Son 5 saniye: AlaTab ile çözüm. Altyazı ekle.'},
-    {t:'Sosyal Kanıt Montajı',d:'5 farklı kişinin 2-3 saniyelik yorumu arka arkaya. Son frame: "5.000+ mutlu kullanıcı." Hook: "1000 kişi bu ürünü bir daha bırakmadı."'},
-    {t:'Tartışma Başlatıcı',d:'Hook: "Klozet taburesi saçmalık mı?" — İki farklı görüş sun. Yorum bait: "Siz ne düşünüyorsunuz?"'},
-    {t:'Doktor / Otorite Formatı',d:'Doğrudan kameraya bak: "Fizyoterapist olarak bunu öneriyorum." Beyaz arka plan, net ses, 15-20 saniye.'},
-    {t:'Before / After Dönüşüm',d:'Önce: yanlış oturma, zorlanma. Sonra: AlaTab ile rahat pozisyon. Dramatik müzik geçişi. 20-25 saniye.'},
-    {t:'Merak Kancası',d:'Hook: "Neden Japonlar 100 yıl yaşıyor?" — Bağırsak sağlığı bağlantısı. Son: AlaTab çözüm. Retention çok yüksek.'},
+
+  // KAMPANYA BAZLI ANALİZ
+  var campAnalysis=c.map(function(x){
+    var i=(x.insights&&x.insights.data&&x.insights.data[0])?x.insights.data[0]:{};
+    var xctr=parseFloat(i.ctr||0),xcpc=parseFloat(i.cpc||0),xspend=parseFloat(i.spend||0);
+    var xbgt=x.daily_budget?(x.daily_budget/100):0;
+    var score=(xctr>2?2:xctr>1?1:0)+(xcpc<7?2:xcpc<12?1:0);
+    var icon=score>=4?'🟢':score>=2?'🟡':'🔴';
+    var verdict=score>=4?'İyi gidiyor':'';
+    var tip='';
+    if(x.status==='PAUSED') {icon='⏸';tip='Duraklatılmış — reaktif et veya sil.';}
+    else if(xctr>2.5&&xcpc<8){tip='Güçlü metrikler. Bütçeyi %20 artır → ₺'+( xbgt*1.2).toFixed(0)+'/gün yap.';}
+    else if(xctr<1.5&&xspend>0){tip='Hook çok zayıf. Creative tamamen değiştir. "Evime kim geldiyse bunu sordu" dene.';}
+    else if(xcpc>12){tip='CPC ₺'+xcpc.toFixed(2)+' — sürdürülemez. Hedeflemeyi genişlet veya durdur.';}
+    else if(xctr>=1.5&&xctr<2){tip='CTR orta. Yeni hook testi başlat, 3 farklı açılış cümlesi dene.';}
+    else if(xspend===0){tip='Veri yok. Daha uzun dönem seç.';}
+    else{tip='Dengeli gidiyor. İzlemeye devam et.';}
+    return '<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--bg);align-items:flex-start">'+
+      '<span style="font-size:18px;flex-shrink:0">'+icon+'</span>'+
+      '<div style="flex:1">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">'+
+          '<span style="font-size:13px;font-weight:700">'+x.name.slice(0,28)+'</span>'+
+          (xspend>0?'<span style="font-size:11px;color:var(--t2)">₺'+n(i.spend)+' harcandı</span>':'')+
+        '</div>'+
+        '<div style="font-size:12px;color:var(--t2);margin-bottom:4px">'+
+          (xctr>0?'CTR %'+xctr.toFixed(2)+' · ':'')+
+          (xcpc>0?'CPC ₺'+xcpc.toFixed(2)+' · ':'')+
+          (xbgt>0?'Bütçe ₺'+xbgt.toFixed(0)+'/gün':'')+
+        '</div>'+
+        '<div style="font-size:13px;color:var(--text);font-weight:500">→ '+tip+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('CAMP_ANALYSIS').innerHTML = campAnalysis || '<div style="padding:12px;color:var(--t2);font-size:13px">Veri yükleniyor...</div>';
+
+  // 5 GÜNLÜK FİKİR
+  var allIdeas=[
+    {t:'POV Keşif (15sn)',d:'Eline kamerayı al, evi dolaşır gibi tabureyi keşfet. Hook: "Evimi gezerken bunu fark ettim." Handheld, düzenlenmemiş his.'},
+    {t:'Problem Hook Testi',d:'"Kabızlığın sebebi klozet olabilir" — bu cümleyle video çek. İlk 3 saniye problem, son 5 saniye AlaTab.'},
+    {t:'Sosyal Kanıt Montajı',d:'5 farklı kişinin kısa yorumunu arka arkaya koy. "5.000+ mutlu kullanıcı" finali.'},
+    {t:'Tartışma Başlatıcı',d:'"Klozet taburesi saçmalık mı?" diye sor. Yorumda savaş başlar, algoritma sever.'},
+    {t:'Doktor Format',d:'Doğrudan kameraya: "Fizyoterapist olarak bunu öneriyorum." 15 saniye, beyaz arka plan.'},
+    {t:'Stories Formatı',d:'Feed reklamını Stories boyutuna çevir. CPM genellikle daha düşük çıkıyor.'},
+    {t:'Ses Kapalı Test',d:'Altyazılı versiyon vs. seslı versiyon. Reels'de %60 ses kapalı izleniyor.'},
+    {t:'Before/After',d:'Önce: zorlanma, ağrı. Sonra: AlaTab ile rahatlama. Dramatik müzik geçişi.'},
+    {t:'Merak Kancası',d:'"Neden Japonlar 100 yıl yaşıyor?" — bağırsak sağlığına bağla, AlaTab ile bitir.'},
+    {t:'Retargeting Kampanyası',d:'Son 7 gün site ziyaretçilerine özel kampanya kur. ₺100/gün yeterli.'},
+    {t:'Lookalike %1 Testi',d:'Müşteri listesinden %1 benzer kitle oluştur. Bu hafta başlat.'},
+    {t:'CTA Değiştir',d:'"İncele" yerine "Şimdi Sipariş Ver" veya "Ücretsiz Kargo — Bugün Al" dene.'},
+    {t:'Frekans Kontrolü',d:'Aynı kişiye 3 kezden fazla gösterim varsa kitleyi yenile veya rotasyon yap.'},
+    {t:'Reels vs Feed Testi',d:'Aynı reklamı hem Reels hem Feed'de yayınla, CPM ve CTR'yi karşılaştır.'},
   ];
-  var idea=creatives[new Date().getDay()%creatives.length];
-  document.getElementById('PC2').innerHTML='<h3>'+idea.t+'</h3><p style="margin-top:8px">'+idea.d+'</p>';
+
+  // Kampanya verisine göre EKSTRA fikirler
+  var extraIdeas=[];
+  if(cpc>9) extraIdeas.push({t:'CPC Düşürme — Hedefleme Genişlet',d:'CPC ₺'+cpc.toFixed(2)+' yüksek. Advantage+ audience veya geniş hedefleme dene. Dar kitle pahalılaştırıyor.'});
+  if(ctr<2) extraIdeas.push({t:'Hook Acil Değişmeli — CTR %'+ctr.toFixed(2),d:'İlk 2 saniyeyi tamamen değiştir. Mevcut hook izleyiciyi tutmuyor. "Tuvalette yanlış oturuyor olabilirsiniz" dene.'});
+  if(best) {var bi2=best.insights.data[0];if(parseFloat(bi2.ctr)>2.5) extraIdeas.push({t:'"'+best.name.slice(0,20)+'" formatını kopyala',d:'Bu kampanyanın CTR %'+parseFloat(bi2.ctr).toFixed(2)+'. Ne farklı yapıyor? Aynı hook ve formatı diğer reklamlara uygula.'});}
+  if(worst&&parseFloat(worst.insights.data[0].ctr)<1.5&&worst.status==='ACTIVE') extraIdeas.push({t:'"'+worst.name.slice(0,20)+'" kapat',d:'CTR %'+parseFloat(worst.insights.data[0].ctr).toFixed(2)+' — en kötü kampanya. Durdur ve bütçeyi kazanana ver.'});
+
+  var combined=extraIdeas.concat(allIdeas);
+  var day=new Date().getDay();
+  var rotated=combined.slice(day%combined.length).concat(combined.slice(0,day%combined.length));
+  var show=rotated.slice(0,5);
+
+  document.getElementById('PC2').innerHTML=show.map(function(idea,i){
+    return '<div style="display:flex;gap:12px;padding:13px 0;border-bottom:1px solid rgba(0,0,0,.05);align-items:flex-start">'+
+      '<div style="width:26px;height:26px;background:var(--blue2);color:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0">'+(i+1)+'</div>'+
+      '<div><div style="font-size:14px;font-weight:700;margin-bottom:3px">'+idea.t+'</div><div style="font-size:13px;color:var(--t2);line-height:1.5">'+idea.d+'</div></div>'+
+    '</div>';
+  }).join('');
 }
 
 function renderScale(c){
@@ -584,22 +664,162 @@ async function ask(msg){
   tw.style.display='flex';
   scrollFeed();
   hist.push({role:'user',content:msg});
-  var sys='Sen AlaTab markanin kisisel Meta Ads danismanisIn. AlaTab ahsap klozet taburesi satiyor (1799TL).\n\nGERCEK VERI:\n'+buildCtx()+'\n\nKURALLAR: Turkce konuş. Spesifik ve aksiyon odaklı ol. "su kampanyayi kapat", "butceyi X TL yap" gibi. Max 200 kelime. Her cevabin sonunda 1 somut aksiyon ver.';
-  try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':AKEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:600,system:sys,messages:hist.slice(-8)})
-    });
-    var data=await resp.json();
-    var reply=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'Yanit alinamadi.';
+  setTimeout(function(){
+    tw.style.display='none';
+    var reply=smartReply(msg);
     hist.push({role:'assistant',content:reply});
-    tw.style.display='none';
     addBub(reply,'ai');
-  }catch(e){
-    tw.style.display='none';
-    addBub('API hatasi: '+e.message,'ai');
+  }, 400+Math.random()*300);
+}
+
+function smartReply(msg){
+  var m=mD||{},c=cD||[];
+  var low=msg.toLowerCase();
+  var ctr=parseFloat(m.ctr||0),cpc=parseFloat(m.cpc||0),spend=parseFloat(m.spend||0),cpm=parseFloat(m.cpm||0);
+  var wd=c.filter(function(x){return x.insights&&x.insights.data&&x.insights.data[0]&&x.insights.data[0].ctr;});
+  wd.sort(function(a,b){return parseFloat(b.insights.data[0].ctr)-parseFloat(a.insights.data[0].ctr);});
+  var best=wd[0],worst=wd[wd.length-1];
+  var active=c.filter(function(x){return x.status==='ACTIVE';});
+  var totalBgt=active.reduce(function(s,x){return s+(x.daily_budget?x.daily_budget/100:0);},0);
+
+  if(spend===0) return 'Seçili dönemde veri yok.
+
+→ Üstten "7 Gün" veya "30 Gün" seç ve tekrar sor.';
+
+  if(low.indexOf('analiz')!==-1||low.indexOf('kampanya')!==-1||low.indexOf('durum')!==-1||low.indexOf('genel')!==-1){
+    var lines=['Kampanya analizi:
+'];
+    lines.push('Toplam harcama: ₺'+n(spend)+' — '+c.length+' kampanya, '+active.length+' aktif');
+    lines.push('CTR: %'+ctr.toFixed(2)+' '+(ctr>2?'(iyi seviye)':'(düşük — hook değişmeli)'));
+    lines.push('CPC: ₺'+cpc.toFixed(2)+' '+(cpc<10?'(kabul edilebilir)':'(yüksek — müdahale lazım)'));
+    if(best){var bi=best.insights.data[0];lines.push('
+En iyi: "'+best.name+'" — CTR %'+parseFloat(bi.ctr).toFixed(2)+', CPC ₺'+parseFloat(bi.cpc||0).toFixed(2));}
+    if(worst&&worst!==best){var wi=worst.insights.data[0];lines.push('En kötü: "'+worst.name+'" — CTR %'+parseFloat(wi.ctr).toFixed(2)+', CPC ₺'+parseFloat(wi.cpc||0).toFixed(2));}
+    var highCpc=active.filter(function(x){return parseFloat(x.insights&&x.insights.data&&x.insights.data[0]?x.insights.data[0].cpc:0)>12;});
+    if(highCpc.length) lines.push('
+🔴 Acil: '+highCpc.map(function(x){return '"'+x.name+'"';}).join(', ')+' — CPC ₺12+ üstünde, durdur!');
+    lines.push('
+→ Aksiyon: '+(ctr<2?'Hook değiştir. CTR %2 üstüne çek.':best?'"'+best.name.slice(0,20)+'" bütçesini %20 artır.':'Yeni creative testi başlat.'));
+    return lines.join('
+');
   }
+  if(low.indexOf('kapat')!==-1||low.indexOf('durdur')!==-1||low.indexOf('hangi')!==-1){
+    var results=[];
+    wd.forEach(function(x){
+      var i=x.insights.data[0];
+      var xctr=parseFloat(i.ctr||0),xcpc=parseFloat(i.cpc||0),xspend=parseFloat(i.spend||0);
+      var score=(xctr>2?2:xctr>1?1:0)+(xcpc<7?2:xcpc<12?1:0);
+      if(score<=1&&xspend>0) results.push('🔴 "'+x.name.slice(0,25)+'" kapat — CTR %'+xctr.toFixed(2)+', CPC ₺'+xcpc.toFixed(2));
+      else if(score>=4) results.push('🟢 "'+x.name.slice(0,25)+'" devam et — CTR %'+xctr.toFixed(2)+' iyi');
+      else results.push('🟡 "'+x.name.slice(0,25)+'" 3 gün daha izle');
+    });
+    return results.join('
+')+'
+
+→ Aksiyon: Kırmızı olanları durdur, bütçelerini yeşil olana kaydır.';
+  }
+  if(low.indexOf('butce')!==-1||low.indexOf('bütçe')!==-1||low.indexOf('para')!==-1){
+    return 'Bütçe planı:
+
+Toplam günlük: ₺'+totalBgt.toFixed(0)+'
+'+(best?'
+• "'+best.name.slice(0,22)+'" → bütçenin %60'ı (₺'+(totalBgt*0.6).toFixed(0)+'/gün)
+':'')+
+    '• Yeni hook testi → %30 (₺'+(totalBgt*0.3).toFixed(0)+'/gün)
+'+
+    '• Retargeting → %10 (₺'+(totalBgt*0.1).toFixed(0)+'/gün)
+
+'+
+    '→ Aksiyon: CPC ₺'+cpc.toFixed(2)+' — '+(cpc>10?'yüksek, hedeflemeyi genişlet.':'normal, bütçeyi kazanana artır.');
+  }
+  if(low.indexOf('ctr')!==-1||low.indexOf('hook')!==-1||(low.indexOf('düşük')!==-1&&low.indexOf('cpc')===-1)){
+    return 'CTR %'+ctr.toFixed(2)+' — '+(ctr>2?'iyi seviyede':'düşük, müdahale lazım')+'
+
+Hook değiştirme planı:
+
+1. "Evime kim geldiyse bunu sordu" — en güçlü
+2. "Tuvalette yanlış oturuyor olabilirsiniz"
+3. "Kabızlığın sebebi klozet olabilir"
+4. "Arkadaşımın evinde buna rastladım"
+
+Her birini ayrı reklam olarak ₺100/gün, 3 gün test et.
+
+→ Aksiyon: Hook Üretici sayfasına git, POV Discovery seç.';
+  }
+  if(low.indexOf('cpc')!==-1||low.indexOf('maliyet')!==-1){
+    return 'CPC ₺'+cpc.toFixed(2)+' — '+(cpc>10?'yüksek':'normal')+'
+
+Düşürme planı:
+
+1. Advantage+ audience dene — Meta'nın otomatik hedeflemesi
+2. Reels yerleşimini aktif et — genellikle daha ucuz
+3. Hedeflemeyi genişlet — dar kitle CPM artırır
+4. CTR'yi artır — CTR yükselince CPC otomatik düşer
+
+→ Aksiyon: Kampanya hedeflemesini "Geniş Kitle" yap, 3 gün test et.';
+  }
+  if(low.indexOf('olçekle')!==-1||low.indexOf('ölçekle')!==-1||low.indexOf('artir')!==-1||low.indexOf('artır')!==-1){
+    if(!best) return 'Önce iyi bir kampanya bul. 7 Gün seç ve analiz et.';
+    var bi3=best.insights.data[0];
+    var b3=best.daily_budget?(best.daily_budget/100):0;
+    var ready=parseFloat(bi3.ctr)>2&&parseFloat(bi3.cpc||0)<12;
+    return (ready?'ÖLÇEKLENMEYE HAZIR':'Henüz hazır değil')+'
+
+"'+best.name+'"
+• CTR: %'+parseFloat(bi3.ctr).toFixed(2)+' '+(parseFloat(bi3.ctr)>2?'✓':'✗ %2 altı')+'
+• CPC: ₺'+parseFloat(bi3.cpc||0).toFixed(2)+' '+(parseFloat(bi3.cpc||0)<12?'✓':'✗ yüksek')+'
+
+'+(ready?'→ Aksiyon: Bütçeyi ₺'+(b3*1.2).toFixed(0)+'/gün yap (%20 artış). 3 gün bekle, stabil kalırsa tekrar %20 artır.':'→ Önce CTR %2 üstüne çek ve CPC ₺12 altına indir. Sonra ölçekle.');
+  }
+  if(low.indexOf('creative')!==-1||low.indexOf('video')!==-1||low.indexOf('fikir')!==-1){
+    return 'Bu hafta test etmen gereken 3 format:
+
+1. POV Keşif (15sn)
+   Evi dolaşır gibi çek, tabureyi keşfet.
+   Hook: "Evimi gezerken bunu fark ettim"
+
+2. Problem Hook
+   "Bu yüzden tuvalette zorlanıyorsunuz"
+   İlk 3sn problem, son 5sn AlaTab çözüm
+
+3. Sosyal Kanıt
+   5 kişinin kısa yorumu arka arkaya
+   "1000+ kişi kullandı"
+
+→ Aksiyon: Her birine ₺100-150/gün, 3 gün ver. En yüksek CTR'ı ölçekle.';
+  }
+  if(low.indexOf('plan')!==-1||low.indexOf('2 kat')!==-1||low.indexOf('strateji')!==-1){
+    return '30 günde 2 kat satış planı:
+
+Hafta 1:
+• En iyi kampanyayı bul, diğerlerini durdur
+• 3 farklı hook testi başlat
+• CTR hedef: %'+Math.max(2.5,ctr+0.5).toFixed(1)+'
+
+Hafta 2:
+• Kazanan hook'u tüm reklamlara uygula
+• Bütçeyi %25 artır
+• Lookalike %1 kitle kur
+
+Hafta 3:
+• Lookalike kampanya başlat
+• Retargeting ekle
+
+Hafta 4:
+• Kazanan formatı standartlaştır
+• Haftada 1 yeni creative testi
+
+→ Şu an: '+(ctr<2?'Hook değiştir acil. CTR %'+ctr.toFixed(2)+' çok düşük.':cpc>12?'CPC ₺'+cpc.toFixed(2)+' yüksek. Önce bunu çöz.':'İyi gidiyorsun. Kazananı ölçekle.');
+  }
+  // Default
+  return 'Anlıyorum. Verilere göre en kritik aksiyon:
+
+'+(ctr<1.5?'🔴 Hook acil değiş. CTR %'+ctr.toFixed(2)+' çok düşük.
+→ "Evime kim geldiyse bunu sordu" ile başla':cpc>12?'🔴 CPC ₺'+cpc.toFixed(2)+' sürdürülemez.
+→ Hedeflemeyi genişlet veya creative değiştir':best?'🟢 "'+best.name.slice(0,20)+'" kampanyasını ölçekle.
+→ Bütçeyi %20 artır':'Veri yetersiz. 7 Gün seç ve tekrar sor.')+'
+
+Başka ne sormak istersin?';
 }
 
 function addBub(txt,who){
