@@ -1292,6 +1292,9 @@ function renderPlan(campaigns, insights) {
   if (!hasPix) urgentItems.push({ icon: '📡', title: 'Pixel Satış Takibi Yok', desc: 'Meta Pixel\'de "purchase" eventi aktif değil. Gerçek ROAS ve CPA görmek için kur.', urgent: true });
   if (urgentItems.length === 0) urgentItems.push({ icon: '✅', title: 'Kritik Sorun Yok', desc: 'Kampanyalar normal seyrinde görünüyor.', urgent: true });
 
+  const brand = S.brand;
+  const brandName = (brand && brand.brandName) ? brand.brandName : null;
+
   const growthItems = [
     { icon: '📈', title: 'CBO Optimizasyonu', desc: 'En iyi ROAS\'a sahip adset\'e bütçe kaydır. Andromeda metodunu uygula.', urgent: false },
     { icon: '🎥', title: 'Yeni Reel Analizi', desc: 'Instagram\'da son 7 günün organik reellerini incele, en iyisini ücretli reklama çevir.', urgent: false },
@@ -2042,20 +2045,37 @@ function copyCopy(btn) {
 }
 
 function buildCopies(goal, tone, existing) {
+  const brand = S.brand;
+  const name = (brand && brand.brandName) ? brand.brandName : 'Markanız';
+  const product = (brand && brand.product) ? brand.product : 'ürününüz';
+  const url = (brand && brand.url) ? brand.url : 'siteniz.com';
+  const adCopy = (brand && brand.adCopy) ? brand.adCopy : '';
+
   const copies = [
     {
       tag: tone === 'urgent' ? 'FOMO + Acil' : 'Sosyal Kanıt',
-      text: 'WC\'de geçirdiğin her dakikayı düşün. 🪵\n\nÜrününüz, bacaklarını 35° kaldırarak bağırsaklarına doğal pozisyonu veriyor.\n\n✅ %100 meşe ahşap\n✅ Hemoroid & kabızlık için önerilen açı\n✅ 1.200+ mutlu müşteri\n\n' + (tone === 'urgent' ? '⚡ Bugün sipariş ver, yarın kapında!\n' : '') + 'Şimdi incele → sizin-siteniz.com\n\n#metareklam #dijitalreklam'
+      text: (adCopy || (name + ' hakkında binlerce kişi konuşuyor. 🔥\n\n' + product + '\n\n✅ Hızlı kargo\n✅ Müşteri memnuniyeti garantisi\n✅ Şimdi keşfet')) +
+        '\n\n' + (tone === 'urgent' ? '⚡ Bugün sipariş ver, yarın kapında!\n' : '') +
+        'Şimdi incele → ' + url + '\n\n#' + name.toLowerCase() + ' #metareklam'
     },
     {
       tag: 'Eğitici + Güven',
-      text: 'Klozette doğal çömelme pozisyonu almak neden bu kadar önemli?\n\n📐 Puborektal kas 35° açıda tam olarak gevşiyor\n🏥 Gastroenterologlar bu pozisyonu tavsiye ediyor\n🌿 Ürününüzle klozette çömelme pozisyonunu yakalayın\n\n₺1.799 — Ücretsiz kargo\nPatentli tasarım, Türkiye\'de üretim\n\nsizin-siteniz.com \'da inceleyin 👆'
+      text: name + ' neden bu kadar çok konuşuluyor?\n\n' + product + '\n\n🏆 Binlerce mutlu müşteri\n✅ Kalite garantisi\n🚀 Hemen dene\n\n' + url + ' \'da inceleyin 👆'
     },
     {
       tag: goal === 'engagement' ? 'Yorum Aldırıcı' : 'Soru Kancalı',
-      text: 'Bunu öğrenince "niye daha önce bilmiyordum" diyeceksin:\n\nTurklerin %90\'ı klozette yanlış oturuyor.\n\nBu yanlış pozisyon:\n❌ Kabızlığa yol açıyor\n❌ Hemoroid riskini artırıyor\n❌ Bağırsak sağlığını bozuyor\n\nÜrününüz = doğru pozisyon = sağlıklı bağırsak.\n\nYoruma "👋" yaz, sana bir numune kodu gönderelim!\n\n#metareklam #dijitalreklam'
+      text: name + ' \'ü duydun mu?\n\n' + product + '\n\nBunu öğrenince "niye daha önce bilmiyordum" diyeceksin.\n\nYoruma "👋" yaz, sana özel indirim kodu gönderelim!\n\n#' + name.toLowerCase() + ' #metareklam'
     }
   ];
+
+  // Eğer AI analizi varsa adCopy'yi birinci versiyona ekle
+  if (brand && brand.adCopy) {
+    copies.unshift({
+      tag: '🎯 AI Analizi — Markaya Özel',
+      text: brand.adCopy + '\n\n' + url
+    });
+  }
+
   return copies;
 }
 
