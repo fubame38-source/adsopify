@@ -406,43 +406,86 @@
   body.light-mode .token-box { background: #fff; }
   body.light-mode input, body.light-mode textarea, body.light-mode select { background: #f8faff; }
   body.light-mode #chat-messages { background: #f8faff; }
-  #swipe-area { position: relative; height: 480px; display: flex; align-items: center; justify-content: center; }
+  #swipe-area { position: relative; height: 300px; display: flex; align-items: center; justify-content: center; }
   .swipe-card {
     position: absolute; width: 100%; max-width: 520px;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 24px; padding: 36px 32px 28px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 22px; padding: 32px 28px 24px;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
     cursor: grab; user-select: none;
     transition: transform 0.1s ease;
     transform-origin: center bottom;
-    min-height: 200px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
   .swipe-card:active { cursor: grabbing; }
-  .swipe-card .hook-cat { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
-  .swipe-card .hook-text { font-size: 22px; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 20px; letter-spacing: -0.4px; }
-  .swipe-card .hook-why { font-size: 13px; color: var(--text3); line-height: 1.6; padding-top: 16px; border-top: 1px solid var(--border); }
-  .swipe-card .hook-tag { font-size: 11px; font-weight: 600; color: var(--text3); margin-top: 4px; }
-  .swipe-overlay-like { position: absolute; top: 24px; left: 24px; background: var(--green); color: #fff; padding: 8px 18px; border-radius: 10px; font-weight: 800; font-size: 18px; opacity: 0; transform: rotate(-12deg); transition: opacity 0.1s; pointer-events: none; letter-spacing: 0.04em; }
-  .swipe-overlay-nope { position: absolute; top: 24px; right: 24px; background: var(--red); color: #fff; padding: 8px 18px; border-radius: 10px; font-weight: 800; font-size: 18px; opacity: 0; transform: rotate(12deg); transition: opacity 0.1s; pointer-events: none; letter-spacing: 0.04em; }
-  .swipe-btns { display: flex; justify-content: center; gap: 20px; margin-top: 28px; }
-  .swipe-btn {
-    width: 68px; height: 68px; border-radius: 50%; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px; transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  .swipe-card .hook-cat {
+    display: inline-flex; align-items: center;
+    padding: 4px 12px; border-radius: 99px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 18px;
   }
-  .swipe-btn:active { transform: scale(0.9) !important; }
-  .swipe-btn.nope { background: rgba(239,68,68,0.15); color: var(--red); }
-  .swipe-btn.nope:hover { background: var(--red); color: #fff; transform: scale(1.12); }
-  .swipe-btn.like { background: rgba(16,185,129,0.15); color: var(--green); }
-  .swipe-btn.like:hover { background: var(--green); color: #fff; transform: scale(1.12); }
-  .swipe-btn.save { background: var(--accent-light); color: var(--accent2); }
-  .swipe-btn.save:hover { background: var(--accent); color: #fff; transform: scale(1.12); }
-  .swipe-counter { text-align: center; font-size: 13px; color: var(--text3); margin-top: 14px; }
-  .swipe-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .swipe-card .hook-text {
+    font-size: 22px; font-weight: 700;
+    line-height: 1.45; color: #fff;
+    margin-bottom: 0; letter-spacing: -0.3px;
+  }
+  .swipe-card .hook-why {
+    font-size: 13px; color: rgba(255,255,255,0.4);
+    line-height: 1.6; padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .swipe-card .hook-tag {
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.2); margin-top: 16px;
+    letter-spacing: 0.04em;
+  }
+  .swipe-overlay-like {
+    position: absolute; top: 20px; left: 20px;
+    background: var(--green); color: #fff;
+    padding: 7px 16px; border-radius: 10px;
+    font-weight: 800; font-size: 16px;
+    opacity: 0; transform: rotate(-12deg);
+    transition: opacity 0.1s; pointer-events: none;
+    letter-spacing: 0.06em;
+  }
+  .swipe-overlay-nope {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--red); color: #fff;
+    padding: 7px 16px; border-radius: 10px;
+    font-weight: 800; font-size: 16px;
+    opacity: 0; transform: rotate(12deg);
+    transition: opacity 0.1s; pointer-events: none;
+    letter-spacing: 0.06em;
+  }
+  .swipe-btns {
+    display: flex; justify-content: center; gap: 20px;
+  }
+  .swipe-btn {
+    width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .swipe-btn:active { transform: scale(0.88) !important; }
+  .swipe-btn.nope { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+  .swipe-btn.nope:hover { background: var(--red); color: #fff; transform: scale(1.1); border-color: transparent; }
+  .swipe-btn.like { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+  .swipe-btn.like:hover { background: var(--green); color: #fff; transform: scale(1.1); border-color: transparent; }
+  .swipe-btn.save { background: rgba(99,102,241,0.2); color: var(--accent2); border: 1px solid rgba(99,102,241,0.2); }
+  .swipe-btn.save:hover { background: var(--accent); color: #fff; transform: scale(1.1); border-color: transparent; }
+  .swipe-counter { text-align: center; font-size: 12px; color: rgba(255,255,255,0.25); }
+  .swipe-empty { text-align: center; padding: 40px 20px; }
   .swipe-empty .big { font-size: 48px; margin-bottom: 12px; }
-  .swipe-saved { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .swipe-saved {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 16px; font-size: 13px;
+    color: var(--text2); margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
 
   /* ── GLOW CARDS ── */
   .glow-green { box-shadow: 0 0 20px rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3) !important; }
@@ -927,26 +970,44 @@
   <!-- HOOK SWIPE -->
   <div id="sec-swipe" class="section">
     <div class="page-title">Hook Swipe</div>
-    <div class="page-sub">Beğendiğin hookları sağa, atlamak istediklerini sola kaydır — yıldızla kaydet</div>
+    <div class="page-sub">Sağa kaydır — dene &nbsp;·&nbsp; Sola — atla &nbsp;·&nbsp; ⭐ — kaydet</div>
 
-    <div style="display:flex;flex-direction:column;align-items:center">
-      <div id="swipe-area" style="width:100%;max-width:540px;position:relative;height:360px;display:flex;align-items:center;justify-content:center;margin-bottom:24px">
-        <div id="swipe-stack" style="width:100%;position:relative"></div>
-      </div>
+    <!-- Swipe arena - dark immersive -->
+    <div style="background:linear-gradient(160deg,#0a0e1a 0%,#111827 60%,#0d1117 100%);border-radius:24px;padding:48px 24px 36px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden">
 
-      <div class="swipe-btns" style="margin-top:0">
-        <button class="swipe-btn nope" onclick="swipeCard('left')" title="Atla">✕</button>
-        <button class="swipe-btn save" onclick="swipeCard('save')" title="Kaydet">⭐</button>
-        <button class="swipe-btn like" onclick="swipeCard('right')" title="Dene">♥</button>
+      <!-- Ambient glow -->
+      <div style="position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(rgba(99,102,241,0.15),transparent 70%);pointer-events:none"></div>
+
+      <!-- Card stack -->
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div id="swipe-area" style="width:100%;max-width:560px;position:relative;height:300px;display:flex;align-items:center;justify-content:center;margin-bottom:32px">
+          <div id="swipe-stack" style="width:100%;position:relative"></div>
+        </div>
+
+        <!-- Hint labels -->
+        <div style="display:flex;justify-content:space-between;max-width:560px;width:100%;margin-bottom:20px;padding:0 8px">
+          <div style="font-size:12px;font-weight:600;color:rgba(239,68,68,0.5);letter-spacing:0.04em">← ATLA</div>
+          <div id="swipe-counter" style="font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:0.04em"></div>
+          <div style="font-size:12px;font-weight:600;color:rgba(16,185,129,0.5);letter-spacing:0.04em">DENE →</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="swipe-btns" style="margin-top:0">
+          <button class="swipe-btn nope" onclick="swipeCard('left')" title="Atla">✕</button>
+          <button class="swipe-btn save" onclick="swipeCard('save')" title="Kaydet">⭐</button>
+          <button class="swipe-btn like" onclick="swipeCard('right')" title="Dene">♥</button>
+        </div>
       </div>
-      <div class="swipe-counter" id="swipe-counter" style="margin-top:16px"></div>
     </div>
 
-    <div style="margin-top:32px" id="swipe-saved-section">
+    <!-- Saved hooks -->
+    <div id="swipe-saved-section">
       <div class="card">
-        <div class="card-title">⭐ Kaydedilen Hooklar</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">⭐ Kaydedilen Hooklar</div>
+          <button class="btn btn-ghost btn-sm" onclick="clearSaved()">🗑 Temizle</button>
+        </div>
         <div id="swipe-saved-list"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="clearSaved()">🗑 Temizle</button>
       </div>
     </div>
   </div>
