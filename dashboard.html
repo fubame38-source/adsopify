@@ -353,13 +353,21 @@
 <!-- TOPBAR -->
 <div id="topbar">
   <span id="mob-menu" onclick="toggleSidebar()">☰</span>
-  <span class="brand">Ads<span>opify</span></span>
+  <a href="index.html" class="brand" style="text-decoration:none;color:inherit">Ads<span>opify</span></a>
   <div class="spacer"></div>
   <div id="fatigue-alert" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer" onclick="nav('creative')" title="Creative yorgunluğu olan kampanyalar var">⚠️ <span id="fatigue-count"></span> yorgun kampanya</div>
   <div class="stat-badge" id="top-spend"><span>Bugün:</span> <strong id="top-spend-val">—</strong></div>
-  <div class="stat-badge live" id="top-acct" style="display:none"><strong id="top-acct-name">—</strong></div>
+  <div class="stat-badge live" id="top-acct" style="display:none;cursor:pointer;position:relative" onclick="toggleAccountMenu()" title="Hesap değiştir">
+    <strong id="top-acct-name">—</strong> <span style="font-size:10px;opacity:0.7">▼</span>
+    <div id="acct-menu" style="display:none;position:absolute;top:36px;right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-md);min-width:200px;z-index:200;padding:8px 0">
+      <div style="padding:8px 14px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Hesap Değiştir</div>
+      <div id="acct-menu-list"></div>
+      <div style="border-top:1px solid var(--border);margin-top:4px;padding-top:4px">
+        <div onclick="logout()" style="padding:9px 14px;font-size:13px;color:var(--red);cursor:pointer;display:flex;gap:8px;align-items:center" onmouseover="this.style.background='var(--red-light)'" onmouseout="this.style.background=''"">⏏ Çıkış Yap</div>
+      </div>
+    </div>
+  </div>
   <button class="btn btn-ghost btn-sm" onclick="refreshData()" title="Yenile">↺</button>
-  <button class="btn btn-ghost btn-sm" onclick="logout()" title="Çıkış">⏏</button>
 </div>
 
 <!-- SIDEBAR -->
@@ -807,7 +815,51 @@ function startApp() {
   document.getElementById('token-screen').style.display = 'none';
   document.getElementById('top-acct').style.display = 'flex';
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
+  loadAllAccounts();
   loadPlan();
+}
+
+async function loadAllAccounts() {
+  try {
+    const r = await gql('/me/adaccounts?fields=id,name&limit=20');
+    const accounts = r.data || [];
+    S.allAccounts = accounts;
+    const list = document.getElementById('acct-menu-list');
+    list.innerHTML = accounts.map(a =>
+      '<div onclick="switchAccount(\'' + a.id + '\',\'' + (a.name||a.id).replace(/'/g,"\\'") + '\')" style="padding:9px 14px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'"><span>' + (a.name||a.id) + '</span>' + (a.id === S.accountId ? '<span style="color:var(--green);font-size:11px">✓ Aktif</span>' : '') + '</div>'
+    ).join('');
+  } catch(e) {}
+}
+
+function switchAccount(id, name) {
+  S.accountId = id;
+  S.accountName = name;
+  localStorage.setItem('adsopify_account_id', id);
+  localStorage.setItem('adsopify_account_name', name);
+  document.getElementById('top-acct-name').textContent = name;
+  document.getElementById('acct-menu').style.display = 'none';
+  loadAllAccounts();
+  loadPlan();
+  const sec = document.querySelector('.section.active').id.replace('sec-', '');
+  if (sec === 'dash') loadDashboard();
+  if (sec === 'scale') { document.getElementById('scale-list').innerHTML = ''; loadScale(); }
+  if (sec === 'creative') { document.getElementById('creative-cards').innerHTML = ''; loadCreative(); }
+}
+
+function toggleAccountMenu() {
+  const menu = document.getElementById('acct-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  if (menu.style.display === 'block') {
+    setTimeout(() => document.addEventListener('click', closeAccountMenu), 0);
+  }
+}
+
+function closeAccountMenu(e) {
+  const acct = document.getElementById('top-acct');
+  if (!acct.contains(e.target)) {
+    document.getElementById('acct-menu').style.display = 'none';
+    document.removeEventListener('click', closeAccountMenu);
+  }
 }
 
 // ═══════════════════════════════════════════════
