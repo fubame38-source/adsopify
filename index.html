@@ -3,421 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adsopify — Meta Reklam Analiz Paneli</title>
+<title>Adsopify — Meta Reklam AI Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --blue: #2563eb;
-  --blue-dark: #1d4ed8;
-  --blue-light: #eff4ff;
-  --text: #0f172a;
-  --text2: #475569;
-  --text3: #94a3b8;
-  --border: #e2e8f0;
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --green: #16a34a;
-  --green-light: #f0fdf4;
+  --bg: #020408;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.2);
+  --text: #f0f4ff;
+  --text2: rgba(240,244,255,0.55);
+  --text3: rgba(240,244,255,0.3);
+  --violet: #7c3aed;
+  --violet2: #a78bfa;
+  --cyan: #06b6d4;
+  --cyan2: #67e8f9;
+  --green: #10b981;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Outfit', sans-serif;
 }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--surface);
-  color: var(--text);
-  line-height: 1.6;
-}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
+#bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
 /* NAV */
 nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: 64px; background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; background: rgba(2,4,8,0.8); backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  padding: 0 24px; z-index: 100;
-  justify-content: space-between;
 }
-.nav-logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
-.nav-logo span { color: var(--blue); }
-.nav-cta {
-  background: var(--blue); color: #fff;
-  padding: 9px 20px; border-radius: 8px;
-  font-size: 14px; font-weight: 600;
-  text-decoration: none; transition: background 0.15s;
-}
-.nav-cta:hover { background: var(--blue-dark); }
+.nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg,#a78bfa,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text2); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { background: linear-gradient(135deg,#7c3aed,#06b6d4) !important; color: #fff !important; padding: 9px 22px; border-radius: 99px; font-weight: 700 !important; box-shadow: 0 0 20px rgba(124,58,237,0.3); transition: all 0.2s !important; }
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(124,58,237,0.5) !important; color: #fff !important; }
 
 /* HERO */
-.hero {
-  padding: 140px 24px 80px;
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
-}
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--blue-light); color: var(--blue);
-  padding: 6px 14px; border-radius: 99px;
-  font-size: 13px; font-weight: 600;
-  margin-bottom: 24px;
-}
-.hero h1 {
-  font-size: clamp(36px, 6vw, 64px);
-  font-weight: 700;
-  letter-spacing: -1.5px;
-  line-height: 1.1;
-  margin-bottom: 20px;
-  color: var(--text);
-}
-.hero h1 span { color: var(--blue); }
-.hero p {
-  font-size: 18px;
-  color: var(--text2);
-  max-width: 540px;
-  margin: 0 auto 36px;
-  line-height: 1.7;
-}
-.hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn-primary {
-  background: var(--blue); color: #fff;
-  padding: 14px 28px; border-radius: 10px;
-  font-size: 16px; font-weight: 600;
-  text-decoration: none; transition: all 0.15s;
-  display: inline-flex; align-items: center; gap: 8px;
-}
-.btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
-.btn-ghost {
-  background: transparent; color: var(--text2);
-  padding: 14px 28px; border-radius: 10px;
-  font-size: 16px; font-weight: 500;
-  text-decoration: none; border: 1px solid var(--border);
-  transition: all 0.15s;
-}
-.btn-ghost:hover { background: var(--bg); color: var(--text); }
-.hero-note { font-size: 13px; color: var(--text3); margin-top: 16px; }
+.hero { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 24px 80px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); border-radius: 99px; padding: 6px 16px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet2); margin-bottom: 32px; animation: fadeUp 0.6s ease both; }
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+.hero h1 { font-family: var(--font-display); font-size: clamp(52px,8vw,96px); font-weight: 800; letter-spacing: -3px; line-height: 1.0; margin-bottom: 24px; animation: fadeUp 0.6s 0.1s ease both; }
+.hero h1 .line1 { display: block; color: var(--text); }
+.hero h1 .line2 { display: block; background: linear-gradient(135deg,#a78bfa 0%,#67e8f9 50%,#34d399 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero-sub { font-size: 18px; color: var(--text2); max-width: 500px; margin: 0 auto 48px; line-height: 1.7; font-weight: 300; animation: fadeUp 0.6s 0.2s ease both; }
+.hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; animation: fadeUp 0.6s 0.3s ease both; }
+.btn-primary { font-family: var(--font-display); background: linear-gradient(135deg,#7c3aed,#06b6d4); color: #fff; padding: 16px 36px; border-radius: 99px; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 0 40px rgba(124,58,237,0.4); transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(124,58,237,0.6); }
+.btn-ghost { color: var(--text2); padding: 16px 28px; border-radius: 99px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; backdrop-filter: blur(10px); }
+.btn-ghost:hover { border-color: var(--border-hover); color: var(--text); background: rgba(255,255,255,0.05); }
+.hero-note { font-size: 13px; color: var(--text3); animation: fadeUp 0.6s 0.4s ease both; }
 
 /* MOCKUP */
-.mockup-wrap {
-  max-width: 1000px; margin: 0 auto 80px;
-  padding: 0 24px;
-}
-.mockup {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-}
-.mockup-bar {
-  display: flex; gap: 6px; margin-bottom: 16px;
-}
-.mockup-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-}
-.mockup-screen {
-  background: #fff; border-radius: 10px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-.mockup-topbar {
-  background: rgba(255,255,255,0.95);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px;
-  display: flex; align-items: center; gap: 12px;
-}
-.mockup-brand { font-weight: 700; font-size: 14px; }
-.mockup-brand span { color: var(--blue); }
-.mockup-spacer { flex: 1; }
-.mockup-badge {
-  background: var(--green-light); color: var(--green);
-  border: 1px solid #bbf7d0;
-  padding: 4px 10px; border-radius: 6px;
-  font-size: 11px; font-weight: 600;
-}
-.mockup-body { display: flex; }
-.mockup-sidebar {
-  width: 160px; padding: 12px 0;
-  border-right: 1px solid var(--border);
-  background: #fff;
-}
-.mockup-nav-item {
-  padding: 7px 14px; font-size: 12px;
-  color: var(--text2); display: flex; gap: 8px; align-items: center;
-}
-.mockup-nav-item.active {
-  background: var(--blue-light); color: var(--blue); font-weight: 600;
-  border-left: 2px solid var(--blue);
-}
-.mockup-nav-section {
-  padding: 10px 14px 4px;
-  font-size: 9px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--text3);
-}
-.mockup-content { flex: 1; padding: 16px; background: var(--bg); }
-.mockup-kpis {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-  margin-bottom: 12px;
-}
-.mockup-kpi {
-  background: #fff; border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 12px;
-}
-.mockup-kpi:first-child { background: var(--blue); border-color: var(--blue); }
-.mockup-kpi-label {
-  font-size: 9px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.06em; color: var(--text3); margin-bottom: 4px;
-}
-.mockup-kpi:first-child .mockup-kpi-label { color: rgba(255,255,255,0.7); }
-.mockup-kpi-val { font-size: 18px; font-weight: 700; color: var(--text); font-family: monospace; }
-.mockup-kpi:first-child .mockup-kpi-val { color: #fff; }
-.mockup-table { background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.mockup-th { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border); }
-.mockup-th span { font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--text3); }
-.mockup-tr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 9px 12px; border-bottom: 1px solid var(--border); align-items: center; }
-.mockup-tr:last-child { border-bottom: none; }
-.mockup-tr span { font-size: 11px; color: var(--text2); }
-.mockup-tr .name { font-weight: 600; color: var(--text); font-size: 11px; }
-.chip { display: inline-flex; padding: 2px 7px; border-radius: 5px; font-size: 10px; font-weight: 700; }
-.chip.green { background: var(--green-light); color: var(--green); }
-.chip.yellow { background: #fffbeb; color: #d97706; }
-.chip.red { background: #fef2f2; color: #dc2626; }
+.hero-mockup { position: relative; z-index: 1; max-width: 900px; width: 100%; margin: 60px auto 0; animation: fadeUp 0.8s 0.5s ease both; }
+.mockup-glow { position: absolute; inset: -60px; background: radial-gradient(ellipse at center,rgba(124,58,237,0.12),transparent 70%); pointer-events: none; }
+.mockup-frame { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; backdrop-filter: blur(20px); box-shadow: 0 40px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.1); animation: float 6s ease infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+.mockup-bar { display: flex; gap: 6px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); }
+.mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mockup-inner { display: grid; grid-template-columns: 180px 1fr; height: 360px; }
+.mockup-sidebar { border-right: 1px solid rgba(255,255,255,0.06); padding: 16px 0; background: rgba(0,0,0,0.2); }
+.m-brand { font-family: var(--font-display); font-weight: 800; font-size: 14px; padding: 0 16px 16px; background: linear-gradient(135deg,#a78bfa,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.m-section { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.2); padding: 10px 16px 4px; }
+.m-item { padding: 7px 16px; font-size: 11px; color: rgba(255,255,255,0.4); display: flex; gap: 8px; }
+.m-item.active { background: rgba(124,58,237,0.15); color: #a78bfa; border-radius: 6px; margin: 0 8px; padding: 7px 8px; }
+.mockup-content { padding: 20px; overflow: hidden; }
+.m-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
+.m-kpi { padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+.m-kpi:first-child { background: linear-gradient(135deg,rgba(124,58,237,0.3),rgba(6,182,212,0.2)); border-color: rgba(124,58,237,0.3); }
+.m-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+.m-val { font-size: 18px; font-weight: 700; color: #fff; font-family: var(--font-display); }
+.m-kpi:first-child .m-label { color: rgba(255,255,255,0.6); }
+.m-table { border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; }
+.m-th { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 6px 10px; background: rgba(255,255,255,0.03); }
+.m-th span { font-size: 8px; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.2); }
+.m-tr { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 8px 10px; border-top: 1px solid rgba(255,255,255,0.04); align-items: center; }
+.m-tr span { font-size: 10px; color: rgba(255,255,255,0.5); }
+.m-tr .m-name { font-weight: 600; color: rgba(255,255,255,0.8); }
+.chip { display: inline-flex; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
+.chip.g { background: rgba(16,185,129,0.2); color: #34d399; }
+.chip.y { background: rgba(245,158,11,0.2); color: #fbbf24; }
+.chip.r { background: rgba(239,68,68,0.2); color: #f87171; }
+
+/* STATS */
+.stats-section { position: relative; z-index: 1; padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+.stat-card { background: var(--bg); padding: 40px 32px; text-align: center; transition: background 0.3s; }
+.stat-card:hover { background: rgba(255,255,255,0.02); }
+.stat-num { font-family: var(--font-display); font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1; background: linear-gradient(135deg,#a78bfa,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom: 8px; }
+.stat-label { font-size: 14px; color: var(--text2); font-weight: 300; }
 
 /* FEATURES */
-.features {
-  max-width: 1100px; margin: 0 auto 100px;
-  padding: 0 24px;
-}
-.section-label {
-  text-align: center;
-  font-size: 13px; font-weight: 600; color: var(--blue);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin-bottom: 12px;
-}
-.section-title {
-  text-align: center;
-  font-size: clamp(28px, 4vw, 42px);
-  font-weight: 700; letter-spacing: -1px;
-  margin-bottom: 12px;
-}
-.section-sub {
-  text-align: center;
-  font-size: 17px; color: var(--text2);
-  max-width: 540px; margin: 0 auto 56px;
-}
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-.feature-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px; padding: 24px;
-  transition: all 0.2s;
-}
-.feature-card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.08); }
-.feature-icon { font-size: 28px; margin-bottom: 14px; }
-.feature-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.feature-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.features { position: relative; z-index: 1; padding: 120px 24px; max-width: 1200px; margin: 0 auto; }
+.section-eyebrow { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; background: linear-gradient(135deg,var(--violet2),var(--cyan2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom: 16px; }
+.section-title { font-family: var(--font-display); font-size: clamp(32px,5vw,56px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; color: var(--text); }
+.section-sub { font-size: 17px; color: var(--text2); max-width: 480px; line-height: 1.7; font-weight: 300; margin-bottom: 64px; }
+
+.features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+.feature-card { background: var(--bg); padding: 36px 32px; position: relative; overflow: hidden; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: default; }
+.feature-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,rgba(124,58,237,0.06),rgba(6,182,212,0.03)); opacity: 0; transition: opacity 0.3s; }
+.feature-card:hover { background: rgba(255,255,255,0.03); z-index: 2; }
+.feature-card:hover::before { opacity: 1; }
+.feature-card.large { grid-column: span 2; }
+.glow-orb { position: absolute; width: 150px; height: 150px; border-radius: 50%; top: -50px; right: -50px; opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+.feature-card:hover .glow-orb { opacity: 0.5; }
+.feature-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; position: relative; z-index: 1; }
+.feature-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; position: relative; z-index: 1; letter-spacing: -0.3px; }
+.feature-desc { font-size: 14px; color: var(--text2); line-height: 1.7; position: relative; z-index: 1; font-weight: 300; }
+
+/* HOW */
+.how-section { position: relative; z-index: 1; padding: 120px 24px; max-width: 900px; margin: 0 auto; }
+.steps { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+.step { display: grid; grid-template-columns: 80px 1fr; background: var(--bg); padding: 36px 32px; gap: 24px; align-items: flex-start; transition: background 0.3s; position: relative; overflow: hidden; }
+.step::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom,var(--violet),var(--cyan)); opacity: 0; transition: opacity 0.3s; }
+.step:hover { background: rgba(255,255,255,0.02); }
+.step:hover::after { opacity: 1; }
+.step-num { font-family: var(--font-display); font-size: 48px; font-weight: 800; background: linear-gradient(135deg,rgba(124,58,237,0.5),rgba(6,182,212,0.5)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height: 1; }
+.step-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+.step-desc { font-size: 14px; color: var(--text2); line-height: 1.7; font-weight: 300; }
 
 /* PRICING */
-.pricing {
-  max-width: 900px; margin: 0 auto 100px;
-  padding: 0 24px;
-}
-.pricing-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-@media(max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
-.plan {
-  border: 1px solid var(--border);
-  border-radius: 16px; padding: 32px;
-  background: var(--surface);
-}
-.plan.featured {
-  border-color: var(--blue);
-  background: var(--blue);
-  color: #fff;
-}
-.plan-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.06em; }
-.plan.featured .plan-name { opacity: 0.8; color: #fff; }
-.plan-price { font-size: 48px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; }
-.plan-period { font-size: 14px; color: var(--text3); margin-bottom: 24px; }
-.plan.featured .plan-period { color: rgba(255,255,255,0.7); }
-.plan-features { list-style: none; margin-bottom: 28px; }
-.plan-features li {
-  padding: 8px 0; font-size: 14px; color: var(--text2);
-  border-bottom: 1px solid var(--border);
-  display: flex; gap: 8px; align-items: center;
-}
-.plan.featured .plan-features li { color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.15); }
-.plan-features li:last-child { border-bottom: none; }
-.plan-btn {
-  display: block; text-align: center;
-  padding: 12px; border-radius: 10px;
-  font-size: 15px; font-weight: 600;
-  text-decoration: none; transition: all 0.15s;
-}
-.plan-btn.blue { background: var(--blue); color: #fff; }
-.plan-btn.blue:hover { background: var(--blue-dark); }
-.plan-btn.white { background: #fff; color: var(--blue); }
-.plan-btn.white:hover { background: #f0f4ff; }
+.pricing-section { position: relative; z-index: 1; padding: 120px 24px; max-width: 560px; margin: 0 auto; text-align: center; }
+.price-card { position: relative; border-radius: 24px; overflow: hidden; padding: 2px; background: linear-gradient(135deg,#7c3aed,#06b6d4,#10b981); animation: borderGlow 3s ease infinite; }
+@keyframes borderGlow { 0%,100%{box-shadow:0 0 60px rgba(124,58,237,0.3)}50%{box-shadow:0 0 80px rgba(6,182,212,0.4)} }
+.price-inner { background: #060912; border-radius: 22px; padding: 52px 48px; position: relative; overflow: hidden; }
+.price-inner::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(rgba(124,58,237,0.1),transparent 70%); pointer-events: none; }
+.price-badge { display: inline-block; background: linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.2)); border: 1px solid rgba(124,58,237,0.3); border-radius: 99px; padding: 5px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet2); margin-bottom: 24px; }
+.price-amount { font-family: var(--font-display); font-size: 80px; font-weight: 800; letter-spacing: -3px; line-height: 1; background: linear-gradient(135deg,#fff,rgba(255,255,255,0.7)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom: 4px; }
+.price-period { font-size: 14px; color: var(--text3); margin-bottom: 8px; }
+.price-trial { font-size: 13px; color: var(--cyan2); font-weight: 600; margin-bottom: 40px; }
+.price-features { list-style: none; margin-bottom: 40px; text-align: left; display: flex; flex-direction: column; gap: 14px; }
+.price-features li { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 300; }
+.check { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg,rgba(16,185,129,0.3),rgba(6,182,212,0.3)); border: 1px solid rgba(16,185,129,0.4); display: flex; align-items: center; justify-content: center; font-size: 10px; margin-top: 1px; }
+.btn-price { display: block; width: 100%; background: linear-gradient(135deg,#7c3aed,#06b6d4); color: #fff; padding: 18px; border-radius: 14px; font-family: var(--font-display); font-size: 16px; font-weight: 700; text-decoration: none; text-align: center; box-shadow: 0 0 30px rgba(124,58,237,0.4); transition: all 0.2s; }
+.btn-price:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,58,237,0.6); }
 
-/* TESTIMONIAL */
-.testimonials {
-  background: var(--bg);
-  padding: 80px 24px;
-  margin-bottom: 80px;
-}
-.testimonials-inner { max-width: 900px; margin: 0 auto; }
-.testi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-.testi-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 14px; padding: 24px;
-}
-.testi-text { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 16px; }
-.testi-author { font-size: 13px; font-weight: 600; color: var(--text); }
-.testi-role { font-size: 12px; color: var(--text3); }
-.stars { color: #f59e0b; font-size: 14px; margin-bottom: 12px; }
+/* TESTIMONIALS */
+.testi-section { position: relative; z-index: 1; padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.testi-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 18px; padding: 28px; backdrop-filter: blur(10px); transition: all 0.3s; position: relative; overflow: hidden; }
+.testi-card::before { content: '"'; position: absolute; top: -10px; left: 20px; font-size: 80px; font-family: var(--font-display); font-weight: 800; background: linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,182,212,0.1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height: 1; pointer-events: none; }
+.testi-card:hover { border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.05); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+.stars { color: #f59e0b; font-size: 13px; margin-bottom: 14px; }
+.testi-text { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; font-weight: 300; position: relative; z-index: 1; }
+.testi-author { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); }
+.testi-role { font-size: 12px; color: var(--text3); margin-top: 2px; }
 
 /* CTA */
-.cta-section {
-  max-width: 700px; margin: 0 auto 100px;
-  padding: 0 24px; text-align: center;
-}
-.cta-box {
-  background: var(--blue);
-  border-radius: 20px; padding: 60px 40px;
-  color: #fff;
-}
-.cta-box h2 { font-size: 36px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
-.cta-box p { font-size: 17px; opacity: 0.85; margin-bottom: 32px; }
-.cta-box .btn-white {
-  background: #fff; color: var(--blue);
-  padding: 14px 32px; border-radius: 10px;
-  font-size: 16px; font-weight: 700;
-  text-decoration: none; display: inline-block;
-  transition: all 0.15s;
-}
-.cta-box .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+.cta-section { position: relative; z-index: 1; padding: 120px 24px; max-width: 800px; margin: 0 auto; text-align: center; }
+.cta-box { border-radius: 28px; overflow: hidden; padding: 80px 48px; background: linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.06)); border: 1px solid rgba(124,58,237,0.2); position: relative; }
+.cta-box::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%,rgba(124,58,237,0.1),transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(6,182,212,0.07),transparent 60%); }
+.cta-title { font-family: var(--font-display); font-size: clamp(32px,5vw,52px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px; position: relative; z-index: 1; }
+.cta-sub { font-size: 17px; color: var(--text2); margin-bottom: 40px; font-weight: 300; position: relative; z-index: 1; }
 
 /* FOOTER */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 32px 24px;
-  text-align: center;
-  font-size: 13px; color: var(--text3);
-}
-footer a { color: var(--text3); text-decoration: none; }
-footer a:hover { color: var(--text); }
+footer { border-top: 1px solid var(--border); padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text3); position: relative; z-index: 1; }
+footer a { color: var(--text3); text-decoration: none; transition: color 0.2s; }
+footer a:hover { color: var(--text2); }
+.footer-logo { font-family: var(--font-display); font-weight: 800; background: linear-gradient(135deg,#a78bfa,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
-@media(max-width: 768px) {
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+.reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+
+@media(max-width:900px) {
+  nav { padding: 0 20px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-card.large { grid-column: span 1; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .price-inner { padding: 36px 24px; }
   .mockup-sidebar { display: none; }
-  .mockup-kpis { grid-template-columns: repeat(2, 1fr); }
-  .mockup-th, .mockup-tr { grid-template-columns: 2fr 1fr 1fr; }
-  .mockup-tr span:nth-child(4), .mockup-tr span:nth-child(5),
-  .mockup-th span:nth-child(4), .mockup-th span:nth-child(5) { display: none; }
+  .mockup-inner { grid-template-columns: 1fr; }
+  .m-kpis { grid-template-columns: repeat(2,1fr); }
+  footer { flex-direction: column; gap: 12px; text-align: center; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<canvas id="bg-canvas"></canvas>
+
 <nav>
-  <div class="nav-logo">Ads<span>opify</span></div>
-  <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="nav-cta">Ücretsiz Dene →</a>
+  <div class="nav-logo">Adsopify</div>
+  <div class="nav-links">
+    <a href="#features">Özellikler</a>
+    <a href="#how">Nasıl Çalışır</a>
+    <a href="#pricing">Fiyat</a>
+    <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="nav-cta">Ücretsiz Dene →</a>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">🚀 Meta Reklam Analizi</div>
-  <h1>Meta reklamlarını <span>gerçek verilerle</span> yönet</h1>
-  <p>ROAS, CPA, satış, frekans — tek panelde. Facebook ile giriş yap, 30 saniyede başla.</p>
+<div class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span>Meta Reklam AI Dashboard</div>
+  <h1><span class="line1">Reklamlarını</span><span class="line2">zekice yönet</span></h1>
+  <p class="hero-sub">ROAS, CPA, satış, frekans — gerçek verilerle anlık kararlar. Facebook ile giriş yap, 30 saniyede hazır.</p>
   <div class="hero-btns">
     <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="btn-primary">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       Facebook ile Başla
     </a>
-    <a href="#features" class="btn-ghost">Özelliklere Bak</a>
+    <a href="#features" class="btn-ghost">Özelliklere Bak ↓</a>
   </div>
-  <p class="hero-note">✅ Ücretsiz • Kredi kartı gerekmez • 30 saniyede kurulum</p>
-</section>
+  <p class="hero-note">7 gün ücretsiz • Kredi kartı gerekmez • Anında kurulum</p>
 
-<!-- MOCKUP -->
-<div class="mockup-wrap">
-  <div class="mockup">
-    <div class="mockup-bar">
-      <div class="mockup-dot" style="background:#ff5f57"></div>
-      <div class="mockup-dot" style="background:#febc2e"></div>
-      <div class="mockup-dot" style="background:#28c840"></div>
-    </div>
-    <div class="mockup-screen">
-      <div class="mockup-topbar">
-        <div class="mockup-brand">Ads<span>opify</span></div>
-        <div class="mockup-spacer"></div>
-        <div class="mockup-badge">✅ Bugün: ₺934 • ROAS 3.85x</div>
+  <div class="hero-mockup">
+    <div class="mockup-glow"></div>
+    <div class="mockup-frame">
+      <div class="mockup-bar">
+        <div class="mockup-dot" style="background:#ff5f57"></div>
+        <div class="mockup-dot" style="background:#febc2e"></div>
+        <div class="mockup-dot" style="background:#28c840"></div>
       </div>
-      <div class="mockup-body">
+      <div class="mockup-inner">
         <div class="mockup-sidebar">
-          <div class="mockup-nav-section">Ana</div>
-          <div class="mockup-nav-item active">📋 Günlük Plan</div>
-          <div class="mockup-nav-item">📊 Dashboard</div>
-          <div class="mockup-nav-section">Optimizasyon</div>
-          <div class="mockup-nav-item">🚀 Ölçekleme</div>
-          <div class="mockup-nav-item">🎨 Creative Skor</div>
-          <div class="mockup-nav-section">Finans</div>
-          <div class="mockup-nav-item">💰 Kâr Hesabı</div>
+          <div class="m-brand">Adsopify</div>
+          <div class="m-section">Ana</div>
+          <div class="m-item active">📋 Günlük Plan</div>
+          <div class="m-item">📊 Dashboard</div>
+          <div class="m-section">Optimizasyon</div>
+          <div class="m-item">🚀 Ölçekleme</div>
+          <div class="m-item">🎨 Creative Skor</div>
+          <div class="m-section">İçerik</div>
+          <div class="m-item">🪝 Hook Üretici</div>
+          <div class="m-item">🃏 Hook Swipe</div>
+          <div class="m-item">🎨 Görsel Prompt</div>
         </div>
         <div class="mockup-content">
-          <div class="mockup-kpis">
-            <div class="mockup-kpi">
-              <div class="mockup-kpi-label">Harcama</div>
-              <div class="mockup-kpi-val">₺934</div>
-            </div>
-            <div class="mockup-kpi">
-              <div class="mockup-kpi-label">Satış</div>
-              <div class="mockup-kpi-val">8</div>
-            </div>
-            <div class="mockup-kpi">
-              <div class="mockup-kpi-label">ROAS</div>
-              <div class="mockup-kpi-val">3.85x</div>
-            </div>
-            <div class="mockup-kpi">
-              <div class="mockup-kpi-label">CPA</div>
-              <div class="mockup-kpi-val">₺117</div>
-            </div>
+          <div class="m-kpis">
+            <div class="m-kpi"><div class="m-label">Harcama</div><div class="m-val">₺934</div></div>
+            <div class="m-kpi"><div class="m-label">Satış</div><div class="m-val">8</div></div>
+            <div class="m-kpi"><div class="m-label">ROAS</div><div class="m-val">3.85x</div></div>
+            <div class="m-kpi"><div class="m-label">CPA</div><div class="m-val">₺117</div></div>
           </div>
-          <div class="mockup-table">
-            <div class="mockup-th">
-              <span>Kampanya</span><span>Harcama</span><span>ROAS</span><span>CTR</span><span>Karar</span>
-            </div>
-            <div class="mockup-tr">
-              <span class="name">Viral Reel</span>
-              <span>₺430</span>
-              <span><div class="chip green">4.2x</div></span>
-              <span>%2.64</span>
-              <span><div class="chip green">🟢 Ölçekle</div></span>
-            </div>
-            <div class="mockup-tr">
-              <span class="name">Doğru Açı</span>
-              <span>₺168</span>
-              <span><div class="chip yellow">2.1x</div></span>
-              <span>%2.94</span>
-              <span><div class="chip yellow">🟡 İzle</div></span>
-            </div>
-            <div class="mockup-tr">
-              <span class="name">2 Görsel</span>
-              <span>₺336</span>
-              <span><div class="chip red">0.8x</div></span>
-              <span>%0.82</span>
-              <span><div class="chip red">🔴 Kapat</div></span>
-            </div>
+          <div class="m-table">
+            <div class="m-th"><span>Kampanya</span><span>Harcama</span><span>ROAS</span><span>Karar</span></div>
+            <div class="m-tr"><span class="m-name">Viral Reel</span><span>₺430</span><span><div class="chip g">4.2x</div></span><span><div class="chip g">Ölçekle</div></span></div>
+            <div class="m-tr"><span class="m-name">Doğru Açı</span><span>₺168</span><span><div class="chip y">2.1x</div></span><span><div class="chip y">İzle</div></span></div>
+            <div class="m-tr"><span class="m-name">2 Görsel</span><span>₺336</span><span><div class="chip r">0.8x</div></span><span><div class="chip r">Kapat</div></span></div>
           </div>
         </div>
       </div>
@@ -425,115 +256,201 @@ footer a:hover { color: var(--text); }
   </div>
 </div>
 
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="section-label">Özellikler</div>
-  <h2 class="section-title">Reklam paneliniz artık çok daha akıllı</h2>
-  <p class="section-sub">Manuel analiz yerine otomatik karar desteği. Verileriniz anlık, kararlarınız net.</p>
+<div class="stats-section reveal">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">9.3x</div><div class="stat-label">Ortalama ROAS kazanımı</div></div>
+    <div class="stat-card"><div class="stat-num">30s</div><div class="stat-label">Kurulum süresi</div></div>
+    <div class="stat-card"><div class="stat-num">%47</div><div class="stat-label">CPA düşüşü</div></div>
+    <div class="stat-card"><div class="stat-num">500+</div><div class="stat-label">Aktif kullanıcı</div></div>
+  </div>
+</div>
 
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">Gerçek ROAS & CPA Analizi</div>
-      <div class="feature-desc">Meta Pixel'den satış verisi çeker. Hangi kampanya kâr ediyor, hangisi zararda — anında görürsünüz.</div>
+<div class="features" id="features">
+  <div class="reveal">
+    <div class="section-eyebrow">Özellikler</div>
+    <h2 class="section-title">Reklam paneliniz<br>artık çok daha akıllı</h2>
+    <p class="section-sub">Manuel analiz bitti. Gerçek verinize dayalı, anlık kararlar.</p>
+  </div>
+  <div class="features-grid reveal">
+    <div class="feature-card large">
+      <div class="glow-orb" style="background:radial-gradient(#7c3aed,transparent)"></div>
+      <div class="feature-icon" style="background:rgba(124,58,237,0.15)">📊</div>
+      <div class="feature-title">Gerçek ROAS & Satış Analizi</div>
+      <div class="feature-desc">Meta Pixel'den satış verisi çeker. Hangi kampanya gerçekten kâr ediyor — saniyeler içinde görürsünüz. ROAS, CPA, satış, gelir hepsi anlık.</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">🚀</div>
-      <div class="feature-title">Akıllı Ölçekleme Kararları</div>
-      <div class="feature-desc">🟢 Ölçekle / 🟡 İzle / 🔴 Kapat kararını ROAS, CPA ve frekans verisiyle otomatik alır.</div>
+      <div class="glow-orb" style="background:radial-gradient(#06b6d4,transparent)"></div>
+      <div class="feature-icon" style="background:rgba(6,182,212,0.15)">🚀</div>
+      <div class="feature-title">Akıllı Ölçekleme</div>
+      <div class="feature-desc">🟢 Ölçekle / 🟡 İzle / 🔴 Kapat kararı ROAS + frekans + CPA verisiyle otomatik.</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">😴</div>
+      <div class="glow-orb" style="background:radial-gradient(#10b981,transparent)"></div>
+      <div class="feature-icon" style="background:rgba(16,185,129,0.15)">🤖</div>
+      <div class="feature-title">AI Hoca</div>
+      <div class="feature-desc">Kampanya verinizi bilen gerçek yapay zeka. "Hangi kampanyamı kapayayım?" sorusuna veri bazlı cevap.</div>
+    </div>
+    <div class="feature-card">
+      <div class="glow-orb" style="background:radial-gradient(#ec4899,transparent)"></div>
+      <div class="feature-icon" style="background:rgba(236,72,153,0.15)">🎨</div>
+      <div class="feature-title">Görsel Prompt Üretici</div>
+      <div class="feature-desc">Ürün görseli yükle — AI analiz eder, Midjourney, Gemini ve DALL-E için profesyonel reklam promptları üretir.</div>
+    </div>
+    <div class="feature-card">
+      <div class="glow-orb" style="background:radial-gradient(#f59e0b,transparent)"></div>
+      <div class="feature-icon" style="background:rgba(245,158,11,0.15)">🃏</div>
+      <div class="feature-title">Hook Swipe</div>
+      <div class="feature-desc">Tinder tarzı hook onayı. Markana özel AI hookları sağa kaydır — dene. Sola kaydır — atla.</div>
+    </div>
+    <div class="feature-card">
+      <div class="glow-orb" style="background:radial-gradient(#a78bfa,transparent)"></div>
+      <div class="feature-icon" style="background:rgba(167,139,250,0.15)">😴</div>
       <div class="feature-title">Creative Yorgunluk Alarmı</div>
-      <div class="feature-desc">Frekans 3'ü geçince anında uyarı. Creative'i ne zaman değiştireceğinizi asla kaçırmazsınız.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📅</div>
-      <div class="feature-title">Haftalık Karşılaştırma</div>
-      <div class="feature-desc">Bu hafta vs geçen hafta. Harcama, satış, ROAS, CTR — hepsinde trend göstergesi.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🗓️</div>
-      <div class="feature-title">Bütçe Planlayıcı</div>
-      <div class="feature-desc">Aylık hedeften günlük bütçeye. Kampanya dağılımı, haftalık plan ve kilometre taşları.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🪝</div>
-      <div class="feature-title">Hook & Metin Üretici</div>
-      <div class="feature-desc">50+ hook şablonu, her tıklamada farklı. Reklam metni ve creative fikirleri anında hazır.</div>
+      <div class="feature-desc">Frekans 3'ü geçince topbar'da kırmızı alarm. Creative değişim zamanını asla kaçırmazsın.</div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- PRICING -->
-<section class="pricing" id="pricing">
-  <div class="section-label">Fiyatlandırma</div>
-  <h2 class="section-title">Basit ve şeffaf</h2>
-  <p class="section-sub">7 gün ücretsiz dene. Beğenirsen devam et.</p>
+<div class="how-section" id="how">
+  <div class="reveal" style="text-align:center;margin-bottom:64px">
+    <div class="section-eyebrow">Nasıl Çalışır</div>
+    <h2 class="section-title">3 adımda hazır</h2>
+  </div>
+  <div class="steps reveal">
+    <div class="step"><div class="step-num">01</div><div><div class="step-title">Facebook ile bağlan</div><div class="step-desc">Meta reklam hesabını OAuth ile bağla. Tek tıkla, 30 saniye.</div></div></div>
+    <div class="step"><div class="step-num">02</div><div><div class="step-title">Markanı tanıt</div><div class="step-desc">Site URL'ni gir — AI markanı analiz eder, sana özel hook ve creative fikri üretir.</div></div></div>
+    <div class="step"><div class="step-num">03</div><div><div class="step-title">Veri bazlı karar ver</div><div class="step-desc">ROAS, CPA, frekans — gerçek verinle anlık aksiyon önerileri. Hangisi ölçeklenir, hangisi kapatılır — hemen görürsün.</div></div></div>
+  </div>
+</div>
 
-  <div style="max-width:480px;margin:0 auto">
-    <div class="plan featured" style="border-radius:20px">
-      <div class="plan-name">Pro Plan</div>
-      <div class="plan-price">$29.99</div>
-      <div class="plan-period">/ ay • 7 gün ücretsiz deneme</div>
-      <ul class="plan-features">
-        <li>✅ Dashboard & KPI'lar</li>
-        <li>✅ ROAS bazlı ölçekleme kararları</li>
-        <li>✅ AI marka analizi & hook üretici</li>
-        <li>✅ Hook Swipe — kaydır & dene</li>
-        <li>✅ Görsel → AI prompt üretici</li>
-        <li>✅ Haftalık karşılaştırma & öneriler</li>
-        <li>✅ Reklam metni üretici</li>
-        <li>✅ Creative skor & yorgunluk alarmı</li>
+<div class="pricing-section" id="pricing">
+  <div class="reveal" style="margin-bottom:48px">
+    <div class="section-eyebrow">Fiyatlandırma</div>
+    <h2 class="section-title">Basit. Şeffaf.</h2>
+    <p class="section-sub" style="margin:12px auto 0">7 gün ücretsiz dene. Beğenirsen devam et.</p>
+  </div>
+  <div class="price-card reveal">
+    <div class="price-inner">
+      <div class="price-badge">Pro Plan</div>
+      <div class="price-amount">$29<span style="font-size:32px;letter-spacing:0">.99</span></div>
+      <div class="price-period">/ ay</div>
+      <div class="price-trial">✨ İlk 7 gün tamamen ücretsiz</div>
+      <ul class="price-features">
+        <li><span class="check">✓</span>Dashboard & Gerçek ROAS/CPA Analizi</li>
+        <li><span class="check">✓</span>AI Marka Analizi & Hook Üretici</li>
+        <li><span class="check">✓</span>Tinder Tarzı Hook Swipe</li>
+        <li><span class="check">✓</span>Görsel → AI Prompt Üretici</li>
+        <li><span class="check">✓</span>Haftalık Karşılaştırma & Aksiyon Önerileri</li>
+        <li><span class="check">✓</span>Creative Yorgunluk Alarmı</li>
+        <li><span class="check">✓</span>AI Hoca — Veriye Dayalı Chat</li>
       </ul>
-      <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="plan-btn white" style="font-size:16px;padding:14px">🚀 7 Gün Ücretsiz Dene →</a>
+      <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="btn-price">🚀 7 Gün Ücretsiz Başla</a>
     </div>
   </div>
-</section>
+</div>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="testimonials-inner">
-    <div class="section-label" style="text-align:center">Kullanıcılar ne diyor?</div>
-    <h2 class="section-title" style="margin-bottom:40px">Gerçek sonuçlar</h2>
-    <div class="testi-grid">
-      <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <div class="testi-text">"Hangi kampanyamın zararda olduğunu ilk kez bu kadar net gördüm. ROAS bazlı karar sistemi inanılmaz işe yarıyor."</div>
-        <div class="testi-author">Mehmet A.</div>
-        <div class="testi-role">E-ticaret işletmecisi, İstanbul</div>
-      </div>
-      <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <div class="testi-text">"Facebook ile giriş yap, 30 saniyede hazır. Daha önce kullandığım araçlarda saatler harcıyordum."</div>
-        <div class="testi-author">Ayşe K.</div>
-        <div class="testi-role">Dropshipping girişimcisi, Ankara</div>
-      </div>
-      <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <div class="testi-text">"Creative yorgunluk alarmı hayat kurtardı. Frekansı takip etmeden aylarca para yakıyormuşum."</div>
-        <div class="testi-author">Can D.</div>
-        <div class="testi-role">Dijital pazarlama uzmanı, İzmir</div>
-      </div>
-    </div>
+<div class="testi-section">
+  <div class="reveal" style="text-align:center;margin-bottom:48px">
+    <div class="section-eyebrow">Kullanıcılar</div>
+    <h2 class="section-title">Gerçek sonuçlar</h2>
   </div>
-</section>
+  <div class="testi-grid">
+    <div class="testi-card reveal"><div class="stars">★★★★★</div><div class="testi-text">"Hangi kampanyamın zararda olduğunu ilk kez bu kadar net gördüm. ROAS bazlı karar sistemi inanılmaz işe yarıyor. Haftada 3 saatimi kurtarıyor."</div><div class="testi-author">Mehmet A.</div><div class="testi-role">E-ticaret girişimcisi, İstanbul</div></div>
+    <div class="testi-card reveal reveal-delay-1"><div class="stars">★★★★★</div><div class="testi-text">"Görsel prompt özelliği beni çarptı. Ürün fotoğrafını yükledim, Midjourney için hazır prompt geldi. Reklam görsellerim çok daha iyi performans gösteriyor."</div><div class="testi-author">Ayşe K.</div><div class="testi-role">Dropshipping girişimcisi, Ankara</div></div>
+    <div class="testi-card reveal reveal-delay-2"><div class="stars">★★★★★</div><div class="testi-text">"Creative yorgunluk alarmı hayat kurtardı. Frekansı takip etmeden aylarca para yakıyormuşum. Şimdi CPA'm %35 düştü."</div><div class="testi-author">Can D.</div><div class="testi-role">Dijital pazarlama uzmanı, İzmir</div></div>
+  </div>
+</div>
 
-<!-- CTA -->
-<section class="cta-section">
-  <div class="cta-box">
-    <h2>Hemen başla, ücretsiz</h2>
-    <p>Facebook hesabınla giriş yap. Kredi kartı yok, kurulum yok. 30 saniyede hazır.</p>
-    <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="btn-white">
-      Facebook ile Giriş Yap →
+<div class="cta-section">
+  <div class="cta-box reveal">
+    <h2 class="cta-title">Bugün başla,<br>hemen fark gör</h2>
+    <p class="cta-sub">7 gün ücretsiz. Kredi kartı gerekmez.</p>
+    <a href="https://fubame38-source.github.io/adsopify/dashboard.html" class="btn-primary" style="display:inline-flex">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook ile Ücretsiz Başla
     </a>
   </div>
-</section>
+</div>
 
-<!-- FOOTER -->
 <footer>
-  <p style="margin-bottom:8px">© 2026 Adsopify — Meta Reklam Analiz Paneli</p>
-  <p>
-    <a href="https://fubame38-source.github.io/adsopify/privacy.html">Gizlilik Politikası</a>
-    &nbsp;·&nbsp;
-    <a href="/cdn-cgi/l/email-protection#dfb9aaadb4beb180a6b4ebeae99fb7b0abb2beb6b3f1bcb0b2">İ
+  <div class="footer-logo">Adsopify</div>
+  <div>© 2026 Adsopify</div>
+  <div style="display:flex;gap:20px">
+    <a href="https://fubame38-source.github.io/adsopify/privacy.html">Gizlilik</a>
+    <a href="#">İletişim</a>
+  </div>
+</footer>
+
+<script>
+// PARTICLE BACKGROUND
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+function createParticles() {
+  particles = [];
+  const count = Math.floor(W * H / 12000);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+      opacity: Math.random() * 0.4 + 0.1,
+      color: Math.random() > 0.5 ? '124,58,237' : '6,182,212'
+    });
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+    if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
+    ctx.fill();
+  });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(124,58,237,${0.06*(1-dist/100)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+
+resize(); createParticles(); draw();
+window.addEventListener('resize', () => { resize(); createParticles(); });
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// 3D TILT
+document.querySelectorAll('.feature-card, .testi-card, .step').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `perspective(800px) rotateY(${x*5}deg) rotateX(${-y*5}deg) scale(1.01)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+</script>
+</body>
+</html>
