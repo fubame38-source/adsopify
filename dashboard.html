@@ -406,35 +406,40 @@
   body.light-mode .token-box { background: #fff; }
   body.light-mode input, body.light-mode textarea, body.light-mode select { background: #f8faff; }
   body.light-mode #chat-messages { background: #f8faff; }
-  #swipe-area { position: relative; height: 420px; display: flex; align-items: center; justify-content: center; }
+  #swipe-area { position: relative; height: 480px; display: flex; align-items: center; justify-content: center; }
   .swipe-card {
-    position: absolute; width: 100%; max-width: 480px;
+    position: absolute; width: 100%; max-width: 520px;
     background: var(--surface);
     border: 1px solid var(--border2);
-    border-radius: 20px; padding: 28px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border-radius: 24px; padding: 36px 32px 28px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
     cursor: grab; user-select: none;
     transition: transform 0.1s ease;
     transform-origin: center bottom;
+    min-height: 200px;
   }
   .swipe-card:active { cursor: grabbing; }
-  .swipe-card .hook-text { font-size: 20px; font-weight: 600; line-height: 1.4; color: var(--text); margin-bottom: 16px; letter-spacing: -0.3px; }
-  .swipe-card .hook-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
-  .swipe-overlay-like { position: absolute; top: 20px; left: 20px; background: var(--green); color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 18px; border: 3px solid var(--green); opacity: 0; transform: rotate(-15deg); transition: opacity 0.1s; pointer-events: none; }
-  .swipe-overlay-nope { position: absolute; top: 20px; right: 20px; background: var(--red); color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 18px; border: 3px solid var(--red); opacity: 0; transform: rotate(15deg); transition: opacity 0.1s; pointer-events: none; }
-  .swipe-btns { display: flex; justify-content: center; gap: 20px; margin-top: 24px; }
+  .swipe-card .hook-cat { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .swipe-card .hook-text { font-size: 22px; font-weight: 700; line-height: 1.4; color: var(--text); margin-bottom: 20px; letter-spacing: -0.4px; }
+  .swipe-card .hook-why { font-size: 13px; color: var(--text3); line-height: 1.6; padding-top: 16px; border-top: 1px solid var(--border); }
+  .swipe-card .hook-tag { font-size: 11px; font-weight: 600; color: var(--text3); margin-top: 4px; }
+  .swipe-overlay-like { position: absolute; top: 24px; left: 24px; background: var(--green); color: #fff; padding: 8px 18px; border-radius: 10px; font-weight: 800; font-size: 18px; opacity: 0; transform: rotate(-12deg); transition: opacity 0.1s; pointer-events: none; letter-spacing: 0.04em; }
+  .swipe-overlay-nope { position: absolute; top: 24px; right: 24px; background: var(--red); color: #fff; padding: 8px 18px; border-radius: 10px; font-weight: 800; font-size: 18px; opacity: 0; transform: rotate(12deg); transition: opacity 0.1s; pointer-events: none; letter-spacing: 0.04em; }
+  .swipe-btns { display: flex; justify-content: center; gap: 20px; margin-top: 28px; }
   .swipe-btn {
-    width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer;
+    width: 68px; height: 68px; border-radius: 50%; border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 24px; transition: all 0.15s; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    font-size: 26px; transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   }
-  .swipe-btn.nope { background: var(--red-light); color: var(--red); }
-  .swipe-btn.nope:hover { background: var(--red); color: #fff; transform: scale(1.1); }
-  .swipe-btn.like { background: var(--green-light); color: var(--green); }
-  .swipe-btn.like:hover { background: var(--green); color: #fff; transform: scale(1.1); }
+  .swipe-btn:active { transform: scale(0.9) !important; }
+  .swipe-btn.nope { background: rgba(239,68,68,0.15); color: var(--red); }
+  .swipe-btn.nope:hover { background: var(--red); color: #fff; transform: scale(1.12); }
+  .swipe-btn.like { background: rgba(16,185,129,0.15); color: var(--green); }
+  .swipe-btn.like:hover { background: var(--green); color: #fff; transform: scale(1.12); }
   .swipe-btn.save { background: var(--accent-light); color: var(--accent2); }
-  .swipe-btn.save:hover { background: var(--accent); color: #fff; transform: scale(1.1); }
-  .swipe-counter { text-align: center; font-size: 13px; color: var(--text3); margin-top: 12px; }
+  .swipe-btn.save:hover { background: var(--accent); color: #fff; transform: scale(1.12); }
+  .swipe-counter { text-align: center; font-size: 13px; color: var(--text3); margin-top: 14px; }
   .swipe-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
   .swipe-empty .big { font-size: 48px; margin-bottom: 12px; }
   .swipe-saved { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -684,6 +689,12 @@
     <div class="card" id="scale-content" style="display:none">
       <div class="card-title">Kampanya Kararları</div>
       <div id="scale-list"></div>
+    </div>
+    <div style="margin-top:16px" id="scale-rec-wrap" style="display:none">
+      <div class="card">
+        <div class="card-title">🚀 AI Büyüme Stratejileri</div>
+        <div id="scale-recommendations"></div>
+      </div>
     </div>
   </div>
 
@@ -2143,11 +2154,78 @@ async function loadScale() {
     }).join('');
 
     document.getElementById('scale-list').innerHTML = html || '<div style="color:var(--text3);font-size:13px;padding:16px">Kampanya bulunamadı</div>';
+
+    // AI büyüme önerileri — sadece veri varsa, ücretsiz (marka bilgisinden)
+    generateScaleRecommendations(insights);
+
   } catch (e) {
     document.getElementById('scale-list').innerHTML = '<div style="color:var(--red);font-size:13px;padding:16px">Hata: ' + e.message + '</div>';
   }
   document.getElementById('scale-loading').style.display = 'none';
   document.getElementById('scale-content').style.display = 'block';
+}
+
+async function generateScaleRecommendations(insights) {
+  const recEl = document.getElementById('scale-recommendations');
+  if (!recEl) return;
+
+  const totalSpend = insights.reduce((s,i) => s + parseFloat(i.spend||0), 0);
+  const totalSales = insights.reduce((s,i) => s + (i._purchases||0), 0);
+  const totalRevenue = insights.reduce((s,i) => s + (i._revenue||0), 0);
+  const avgRoas = totalSpend > 0 && totalRevenue > 0 ? totalRevenue/totalSpend : 0;
+  const avgFreq = insights.length > 0 ? insights.reduce((s,i) => s + parseFloat(i.frequency||0), 0) / insights.length : 0;
+
+  const brand = S.brand;
+  const brandCtx = brand && brand.brandName ? `Marka: ${brand.brandName}. Ürün: ${brand.product||''}. Hedef kitle: ${brand.audience||''}.` : '';
+
+  recEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px">⏳ AI büyüme stratejisi hazırlanıyor...</div>';
+
+  try {
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'Sen Meta reklam ölçekleme uzmanısın. Sadece JSON döndür.',
+        message: `${brandCtx}
+
+Bugünkü veriler:
+- Toplam harcama: ${totalSpend.toFixed(0)} TL
+- Toplam satış: ${totalSales}
+- ROAS: ${avgRoas.toFixed(2)}x
+- Ortalama frekans: ${avgFreq.toFixed(1)}
+- Kampanya sayısı: ${insights.length}
+
+Bu markayı ileri seviyeye taşıyacak 3 somut strateji öner. Her strateji uygulanabilir ve spesifik olsun.
+
+Sadece JSON: {"strategies":[{"title":"strateji başlığı","action":"ne yapılacak 1-2 cümle","impact":"beklenen etki","priority":"yüksek/orta/düşük"},...]}`
+      })
+    });
+    const data = await res.json();
+    const raw = (data.answer||'').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(raw);
+    const strategies = parsed.strategies || [];
+
+    const priorityColors = {
+      'yüksek': { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', text: 'var(--red)', label: '🔴 Yüksek' },
+      'orta':   { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', text: 'var(--yellow)', label: '🟡 Orta' },
+      'düşük':  { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', text: 'var(--green)', label: '🟢 Düşük Risk' },
+    };
+
+    recEl.innerHTML = strategies.map((s, i) => {
+      const p = priorityColors[s.priority?.toLowerCase()] || priorityColors['orta'];
+      return `<div style="background:${p.bg};border:1px solid ${p.border};border-radius:14px;padding:18px 20px;margin-bottom:10px;animation:fadeIn 0.3s ease ${i*0.1}s both">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div style="font-size:14px;font-weight:700;color:var(--text)">${s.title}</div>
+          <span style="font-size:10px;font-weight:700;color:${p.text};white-space:nowrap;margin-left:8px">${p.label}</span>
+        </div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px;line-height:1.6">${s.action}</div>
+        <div style="font-size:12px;color:var(--text3)">📈 ${s.impact}</div>
+      </div>`;
+    }).join('');
+
+  } catch(e) {
+    recEl.innerHTML = '';
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -2506,19 +2584,87 @@ function copyHook(el) {
 // ═══════════════════════════════════════════════
 // REKLAM METNİ
 // ═══════════════════════════════════════════════
-function generateCopy() {
+var _copyHistory = []; // Tekrar üretme
+
+async function generateCopy() {
   const input = document.getElementById('copy-input').value.trim();
   const goal = document.getElementById('copy-goal').value;
   const tone = document.getElementById('copy-tone').value;
 
-  const copies = buildCopies(goal, tone, input);
+  if (!S.brand || !S.brand.brandName) {
+    document.getElementById('copy-results').innerHTML = '<div style="text-align:center;padding:48px 24px"><div style="font-size:40px;margin-bottom:16px">✍️</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:14px;color:var(--text2);margin-bottom:20px">AI, markana özel reklam metinleri yazsın.</div><button class="btn btn-primary" onclick="resetBrand()">Markanı Ekle →</button></div>';
+    return;
+  }
 
-  const html = copies.map((c, i) => '<div class="card mb-16"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="card-title" style="margin-bottom:0">Versiyon ' + (i + 1) + ' — ' + c.tag + '</div><button class="btn btn-ghost btn-sm" onclick="copyCopy(this)">📋 Kopyala</button></div><div class="copy-text" style="font-size:13px;line-height:1.8;white-space:pre-line">' + c.text + '</div></div>').join('');
-  document.getElementById('copy-results').innerHTML = html;
+  const btn = document.querySelector('#sec-copy .btn-primary');
+  if (btn) { btn.textContent = '⏳ Yazılıyor...'; btn.disabled = true; }
+
+  // Loading
+  document.getElementById('copy-results').innerHTML = Array(3).fill(0).map((_, i) =>
+    '<div style="background:var(--surface2);border-radius:16px;padding:24px;margin-bottom:12px;animation:pulse 1.5s ease ' + (i*0.15) + 's infinite"><div style="height:16px;background:var(--surface3);border-radius:6px;width:30%;margin-bottom:16px"></div><div style="height:12px;background:var(--surface3);border-radius:6px;width:90%;margin-bottom:8px"></div><div style="height:12px;background:var(--surface3);border-radius:6px;width:75%;margin-bottom:8px"></div><div style="height:12px;background:var(--surface3);border-radius:6px;width:60%"></div></div>'
+  ).join('');
+
+  const goalLabels = { 'sales': 'Satış/Dönüşüm', 'traffic': 'Trafik/Tıklama', 'awareness': 'Marka Bilinirliği', 'engagement': 'Etkileşim/Yorum' };
+  const toneLabels = { 'warm': 'Sıcak ve samimi', 'urgent': 'Acil/FOMO', 'educational': 'Eğitici', 'humorous': 'Eğlenceli/Mizahi' };
+
+  const prev = _copyHistory.slice(-3).join(' | ');
+
+  try {
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'Sen uzman bir Meta reklam copywriter olarak yalnızca JSON döndürürsün. Başka hiçbir şey yazmazsın.',
+        message: `Marka: ${S.brand.brandName}. Ürün: ${S.brand.product || ''}. Hedef kitle: ${S.brand.audience || ''}. URL: ${S.brand.url || ''}.
+
+Hedef: ${goalLabels[goal]}. Ton: ${toneLabels[tone]}.
+${input ? 'Mevcut metin: ' + input : ''}
+${prev ? 'Daha önce yazılanlar (bunlardan FARKLI ol): ' + prev : ''}
+
+Bu markaya özel 3 farklı Türkçe reklam metni yaz. Her biri gerçekten farklı strateji kullansın.
+
+Sadece JSON döndür: {"copies":[{"tag":"versiyon başlığı","text":"reklam metni emoji ve satır atlamayla"},{"tag":"...","text":"..."},{"tag":"...","text":"..."}]}`
+      })
+    });
+    const data = await res.json();
+    const raw = (data.answer || '').replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(raw);
+    const copies = parsed.copies || [];
+
+    copies.forEach(c => { if (!_copyHistory.includes(c.text)) _copyHistory.push(c.text.slice(0, 50)); });
+    if (_copyHistory.length > 20) _copyHistory = _copyHistory.slice(-20);
+
+    renderCopyCards(copies);
+
+  } catch(e) {
+    // Fallback
+    renderCopyCards(buildCopies(goal, tone, input));
+  }
+
+  if (btn) { btn.textContent = '✍️ Analiz Et ve Yaz'; btn.disabled = false; }
+}
+
+function renderCopyCards(copies) {
+  const colors = [
+    { bg: 'rgba(99,102,241,0.06)', border: 'rgba(99,102,241,0.2)', accent: '#a78bfa' },
+    { bg: 'rgba(16,185,129,0.06)', border: 'rgba(16,185,129,0.2)', accent: '#34d399' },
+    { bg: 'rgba(245,158,11,0.06)', border: 'rgba(245,158,11,0.2)', accent: '#fbbf24' },
+    { bg: 'rgba(236,72,153,0.06)', border: 'rgba(236,72,153,0.2)', accent: '#f9a8d4' },
+  ];
+  document.getElementById('copy-results').innerHTML = copies.map((c, i) => {
+    const col = colors[i % colors.length];
+    return `<div style="background:${col.bg};border:1px solid ${col.border};border-radius:16px;padding:24px;margin-bottom:12px;animation:fadeIn 0.3s ease ${i*0.08}s both">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${col.accent}">${c.tag}</div>
+        <button class="btn btn-ghost btn-sm" onclick="copyCopy(this)">📋 Kopyala</button>
+      </div>
+      <div class="copy-text" style="font-size:14px;line-height:1.8;white-space:pre-line;color:var(--text)">${c.text}</div>
+    </div>`;
+  }).join('');
 }
 
 function copyCopy(btn) {
-  const text = btn.closest('.card').querySelector('.copy-text').textContent;
+  const text = btn.closest('[style]').querySelector('.copy-text').textContent;
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = '✅ Kopyalandı!';
     setTimeout(() => { btn.textContent = '📋 Kopyala'; }, 2000);
@@ -2530,34 +2676,11 @@ function buildCopies(goal, tone, existing) {
   const name = (brand && brand.brandName) ? brand.brandName : 'Markanız';
   const product = (brand && brand.product) ? brand.product : 'ürününüz';
   const url = (brand && brand.url) ? brand.url : 'siteniz.com';
-  const adCopy = (brand && brand.adCopy) ? brand.adCopy : '';
-
-  const copies = [
-    {
-      tag: tone === 'urgent' ? 'FOMO + Acil' : 'Sosyal Kanıt',
-      text: (adCopy || (name + ' hakkında binlerce kişi konuşuyor. 🔥\n\n' + product + '\n\n✅ Hızlı kargo\n✅ Müşteri memnuniyeti garantisi\n✅ Şimdi keşfet')) +
-        '\n\n' + (tone === 'urgent' ? '⚡ Bugün sipariş ver, yarın kapında!\n' : '') +
-        'Şimdi incele → ' + url + '\n\n#' + name.toLowerCase() + ' #metareklam'
-    },
-    {
-      tag: 'Eğitici + Güven',
-      text: name + ' neden bu kadar çok konuşuluyor?\n\n' + product + '\n\n🏆 Binlerce mutlu müşteri\n✅ Kalite garantisi\n🚀 Hemen dene\n\n' + url + ' \'da inceleyin 👆'
-    },
-    {
-      tag: goal === 'engagement' ? 'Yorum Aldırıcı' : 'Soru Kancalı',
-      text: name + ' \'ü duydun mu?\n\n' + product + '\n\nBunu öğrenince "niye daha önce bilmiyordum" diyeceksin.\n\nYoruma "👋" yaz, sana özel indirim kodu gönderelim!\n\n#' + name.toLowerCase() + ' #metareklam'
-    }
+  return [
+    { tag: 'Sosyal Kanıt', text: name + ' hakkında binlerce kişi konuşuyor.\n\n' + product + '\n\n✅ Hızlı kargo\n✅ Müşteri garantisi\n\n→ ' + url },
+    { tag: 'Eğitici + Güven', text: name + ' neden bu kadar popüler?\n\n' + product + '\n\n🏆 Müşteri memnuniyeti\n🚀 Hemen dene\n\n' + url },
+    { tag: 'Soru Kancalı', text: name + ' denemedin mi?\n\n' + product + '\n\nYoruma "bilgi" yaz, sana özel fiyat gönderelim!\n\n' + url },
   ];
-
-  // Eğer AI analizi varsa adCopy'yi birinci versiyona ekle
-  if (brand && brand.adCopy) {
-    copies.unshift({
-      tag: '🎯 AI Analizi — Markaya Özel',
-      text: brand.adCopy + '\n\n' + url
-    });
-  }
-
-  return copies;
 }
 
 // ═══════════════════════════════════════════════
@@ -2871,23 +2994,35 @@ function renderSwipeStack() {
     return;
   }
 
-  // Show top 3 cards (stacked)
   stack.innerHTML = '';
   for (let i = Math.min(_swipeIdx + 2, _swipeCards.length - 1); i >= _swipeIdx; i--) {
     const offset = i - _swipeIdx;
     const card = document.createElement('div');
     card.className = 'swipe-card';
-    card.style.transform = `translateY(${offset * -8}px) scale(${1 - offset * 0.03})`;
+    card.style.transform = `translateY(${offset * -10}px) scale(${1 - offset * 0.03})`;
     card.style.zIndex = 10 - offset;
-    card.style.opacity = offset === 0 ? '1' : (offset === 1 ? '0.7' : '0.4');
+    card.style.opacity = offset === 0 ? '1' : (offset === 1 ? '0.65' : '0.35');
 
+    // Hook string veya object olabilir
+    const hookData = _swipeCards[i];
+    const hookText = typeof hookData === 'object' ? (hookData.text || hookData) : hookData;
+    const hookCat = typeof hookData === 'object' ? hookData.category : null;
+    const hookWhy = typeof hookData === 'object' ? hookData.why : null;
     const isBrand = i < (S.brand && S.brand.hooks ? S.brand.hooks.length : 0);
+
+    // Kategori rengi
+    const catColor = getCatColor ? getCatColor(hookCat) : { bg: 'var(--accent-light)', border: 'rgba(99,102,241,0.3)', text: 'var(--accent2)' };
+
     card.innerHTML = `
-      <div class="swipe-overlay-like" id="overlay-like">✓ DENE</div>
-      <div class="swipe-overlay-nope" id="overlay-nope">✕ ATLA</div>
-      ${isBrand ? '<div style="margin-bottom:12px"><span style="background:var(--accent-light);color:var(--accent2);font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.08em">✨ Markana Özel</span></div>' : ''}
-      <div class="hook-text">${_swipeCards[i]}</div>
-      <div class="hook-tag">Hook #${i + 1} / ${_swipeCards.length}</div>
+      <div class="swipe-overlay-like">✓ DENE</div>
+      <div class="swipe-overlay-nope">✕ ATLA</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+        ${hookCat ? `<span class="hook-cat" style="background:${catColor.bg};color:${catColor.text};border:1px solid ${catColor.border}">${hookCat}</span>` : ''}
+        ${isBrand ? '<span class="hook-cat" style="background:rgba(99,102,241,0.12);color:#a78bfa;border:1px solid rgba(99,102,241,0.25)">✨ Markana Özel</span>' : ''}
+      </div>
+      <div class="hook-text">${hookText}</div>
+      ${hookWhy ? `<div class="hook-why">💡 ${hookWhy}</div>` : ''}
+      <div class="hook-tag" style="margin-top:12px">#${i + 1} / ${_swipeCards.length}</div>
     `;
 
     if (offset === 0) {
