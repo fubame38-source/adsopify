@@ -930,29 +930,46 @@ async function saveOnboarding() {
   if (!url && !desc) { skipOnboarding(); return; }
 
   const btn = document.querySelector('#onboarding-popup button.btn-primary');
-  btn.textContent = '⏳ Kaydediliyor...';
+  btn.textContent = '⏳ Analiz ediliyor...';
   btn.disabled = true;
 
-  // URL'den marka adı çıkar
-  let brandName = '';
   try {
-    const u = new URL(url.startsWith('http') ? url : 'https://' + url);
-    brandName = u.hostname.replace('www.', '').split('.')[0];
-    brandName = brandName.charAt(0).toUpperCase() + brandName.slice(1);
-  } catch(e) { brandName = 'Markanız'; }
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, desc })
+    });
 
-  // Açıklamadan anahtar kelimeler çıkar
-  const descLower = (desc + ' ' + url).toLowerCase();
-  const hooks = generateBrandHooks(brandName, desc);
-  const ideas = generateBrandIdeas(brandName, desc);
+    const brand = await res.json();
+    if (brand.error) throw new Error(brand.error);
 
-  const brand = { url, rawDesc: desc, brandName, hooks, ideas };
-  localStorage.setItem('adsopify_brand', JSON.stringify(brand));
-  S.brand = brand;
+    brand.url = url;
+    brand.rawDesc = desc;
+    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+    S.brand = brand;
+    document.getElementById('onboarding-popup').style.display = 'none';
+    showBrandToast(brand.brandName || 'Markanız');
+    refreshIdeas();
+  } catch (e) {
+    // Fallback: template bazlı
+    let brandName = '';
+    try {
+      const u = new URL(url.startsWith('http') ? url : 'https://' + url);
+      brandName = u.hostname.replace('www.', '').split('.')[0];
+      brandName = brandName.charAt(0).toUpperCase() + brandName.slice(1);
+    } catch(ex) { brandName = 'Markanız'; }
 
-  document.getElementById('onboarding-popup').style.display = 'none';
-  showBrandToast(brandName);
-  refreshIdeas();
+    const brand = {
+      url, rawDesc: desc, brandName,
+      hooks: generateBrandHooks(brandName, desc),
+      ideas: generateBrandIdeas(brandName, desc)
+    };
+    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+    S.brand = brand;
+    document.getElementById('onboarding-popup').style.display = 'none';
+    showBrandToast(brandName);
+    refreshIdeas();
+  }
 
   btn.textContent = '🚀 Analiz Et ve Başla';
   btn.disabled = false;
