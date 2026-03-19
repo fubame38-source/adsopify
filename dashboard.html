@@ -897,12 +897,13 @@ function startApp() {
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
   loadAllAccounts();
 
-  // Onboarding: ilk girişte popup göster
+  // Onboarding: marka analizi yoksa her zaman göster
   const brandData = localStorage.getItem('adsopify_brand');
   if (!brandData) {
     document.getElementById('onboarding-popup').style.display = 'flex';
   } else {
-    S.brand = JSON.parse(brandData);
+    const parsed = JSON.parse(brandData);
+    S.brand = parsed.skipped ? null : parsed;
   }
   loadPlan();
 }
@@ -1416,36 +1417,31 @@ function refreshIdeas() {
 }
 
 var ALL_CREATIVE_IDEAS = [
-  { icon: '🎬', title: 'POV: WC\'de Dizi İzlerken', desc: '"POV: Tuvalette dizi izlemeyi hiç bu kadar rahat yapmadım" — 35° kaldırılmış bacak pozu + doğal ışık' },
-  { icon: '🩺', title: 'Fizyoterapist Yorumu', desc: '"Fizyoterapistim bu tabureti önermeseydi bilmezdim" — uzman sosyal kanıtı, beyaz önlük' },
-  { icon: '📦', title: 'Unboxing Sürprizi', desc: 'Paket açılışı + ilk kullanım anı, ahşap kalitesine odaklan, ürünü sona sakla' },
-  { icon: '💡', title: 'Bilim Kancası', desc: '"Türk insanının %90\'ı yanlış oturuyor" — istatistik + çözüm formatı' },
-  { icon: '👨‍👩‍👧', title: 'Aile Kullanımı', desc: 'Hem çocuklar hem büyükanne için — "Evdeki herkes için" mesajı' },
+  { icon: '🎬', title: 'POV Keşif', desc: '"POV: Bu ürünü keşfedince hayatım değişti" — handheld kamera, doğal ışık, samimi reaksiyon' },
+  { icon: '🩺', title: 'Uzman Yorumu', desc: '"Uzmanım bunu önermeseydi bilmezdim" — uzman sosyal kanıtı, güven verici format' },
+  { icon: '📦', title: 'Unboxing Sürprizi', desc: 'Paket açılışı + ilk kullanım anı, ürün kalitesine odaklan, ürünü sona sakla' },
+  { icon: '💡', title: 'Bilim/İstatistik Kancası', desc: '"İnsanların %X\'i bu hatayı yapıyor" — istatistik + çözüm formatı' },
+  { icon: '👨‍👩‍👧', title: 'Aile Kullanımı', desc: '"Evdeki herkes için" mesajı — geniş kitleye hitap, duygusal bağ' },
   { icon: '😂', title: 'Komik Reaksiyon', desc: 'İlk kullanımda şaşırma yüzü — "Beklemiyordum ama gerçekten işe yarıyor" UGC tarzı' },
-  { icon: '🔬', title: '35° Açı Animasyonu', desc: 'Şematik çizimle açı gösterimi + "Bağırsak bu açıda tam açılıyor" bilgi kartı' },
-  { icon: '⚖️', title: 'Ahşap vs Plastik Karşılaştırma', desc: 'Yan yana iki ürün: plastik vs meşe ahşap, ellerde tutarak kalite farkı' },
-  { icon: '🌙', title: 'Gece Rutin', desc: '"Gece 02:00 tuvaleti" senaryosu — loş ışık, sakin müzik, konforlu an' },
-  { icon: '📱', title: 'Telefon + Taburet Combo', desc: '"WC\'de telefon kullanıyorsan zaten bu lazım" — relatif içerik, yüksek etkileşim' },
-  { icon: '🎁', title: 'Hediye Kutusu', desc: '"Annem 65 yaşında, en anlamlı doğum günü hediyesini buldım" — duygu kancası' },
-  { icon: '🤸', title: 'Yoga Pozisyonu Analoji', desc: '"Yogadaki çömelme pozisyonunu tuvalette yapmak = Ürününüz" — fitness kitlesi için' },
-  { icon: '🏥', title: 'Ameliyattan Kaçınma', desc: '"Hemoroid ameliyatından önce bunu dene" — problem-çözüm, acıdan kaçınma güdüsü' },
-  { icon: '👵', title: 'Büyükanne Reaksiyonu', desc: 'Büyükannenin ilk kullandığında tepkisi — authentik, duygusal, paylaşılabilir' },
-  { icon: '🎤', title: 'Müşteri Yorumu Seslendirme', desc: 'Ekranda yorum metni + seslendirme: "3 aydır kullanıyorum, kabızlık tarihe karıştı"' },
-  { icon: '🌿', title: 'Doğallık Vurgusu', desc: 'Ahşap dokuya close-up + "Plastik yok, kimyasal yok, sadece meşe" yazı overlay' },
-  { icon: '📊', title: 'İstatistik Kreatiifi', desc: '"5.000+ Türk ailesi kullanıyor" — sayaç animasyonu, güven artırıcı sosyal kanıt' },
-  { icon: '🚀', title: 'Hız Testi', desc: '"Normal pozisyon vs Ürününüz: Hangisi daha hızlı?" — stopwatch gösteren komik karşılaştırma' },
-  { icon: '💬', title: 'Yorum Bölümü Kolajı', desc: 'Gerçek müşteri yorumlarının screenshot\'larından kolaj — "Hepsi 5 yıldız veriyor"' },
-  { icon: '🧘', title: 'Stres Azaltma', desc: '"WC zamanını meditasyon zamanına çevir" — huzurlu müzik, bambu estetiği' },
-  { icon: '🎯', title: 'Hedef Kitle Hook', desc: '"Bu sadece 40+ yaş için DEĞİL — herkese lazım" — yaş stereotipini yıkan format' },
-  { icon: '📐', title: 'Mühendis Yaklaşımı', desc: '"Patent aldık çünkü bu açı gerçekten farklı" — ürün patentini öne çıkar' },
-  { icon: '🏠', title: 'Ev Turu İçinde', desc: 'Ev turu videosu içinde mutfak/salon derken "banyo" kısmında ürününüz — organik yerleştirme' },
-  { icon: '🌏', title: 'Japonya / Doğu Bağlantısı', desc: '"Japonya\'da her tuvaletin yanında bu var, Türkiye\'ye getirdik" — kültürel merak' },
-  { icon: '💪', title: 'Detoks / Sağlık Trend Bağlantısı', desc: '"Bağırsak sağlığı 2025\'in en büyük trendi — başlangıç noktası bu" — gündem bağlantısı' },
-  { icon: '🎪', title: 'Çocuk Reaksiyonu', desc: 'Çocuğun tuvalette mutlu bir şekilde kitap okuması — "Artık tuvaletten çıkmak istemiyor"' },
-  { icon: '🔑', title: 'Kilit Bilgi', desc: '"Doktorların size söylemediği şey: Klozet tasarımı yanlış" — otoriteye meydan okuma' },
-  { icon: '✈️', title: 'Seyahat / Özlem', desc: '"Tatilde pisuar tuvaleti sonrası eve dönünce ilk yaptığım şey" — hicivli nostalji' },
-  { icon: '📸', title: 'Before/After Banyosu', desc: 'Banyo görüntüsü: Ürün olmadan vs Ürün ile — estetik + fonksiyon birlikte' },
-  { icon: '🛒', title: 'İmpulse Buy Tetikleyici', desc: '"₺1.799\'a bu rahatlığı başka nerede bulursun?" — fiyat-değer karşılaştırması direkt' },
+  { icon: '⚖️', title: 'Karşılaştırma', desc: 'Eski yöntem vs yeni ürün — ellerde tutarak fark gösterimi' },
+  { icon: '🌙', title: 'Gece Rutin', desc: 'Gece rutini senaryosu — loş ışık, sakin müzik, konforlu an' },
+  { icon: '📱', title: 'Relatif İçerik', desc: 'Günlük hayattan tanıdık bir senaryo + ürünün doğal entegrasyonu' },
+  { icon: '🎁', title: 'Hediye Fikri', desc: '"Sevdiklerim için aldım, kendim de kullanıyorum" — duygu kancası' },
+  { icon: '👵', title: 'Kuşak Arası Reaksiyon', desc: 'Büyükanne/büyükbaba ilk kullandığında tepkisi — authentik, duygusal, paylaşılabilir' },
+  { icon: '🎤', title: 'Müşteri Yorumu Seslendirme', desc: 'Ekranda yorum metni + seslendirme — sosyal kanıt formatı' },
+  { icon: '📊', title: 'Sosyal Kanıt', desc: '"X kişi kullanıyor" — sayaç animasyonu, güven artırıcı format' },
+  { icon: '🚀', title: 'Hız/Kolaylık Testi', desc: '"Eski yol vs yeni yol: Hangisi daha hızlı?" — pratik karşılaştırma' },
+  { icon: '💬', title: 'Yorum Bölümü Kolajı', desc: 'Gerçek müşteri yorumlarından kolaj — "Hepsi 5 yıldız veriyor"' },
+  { icon: '🧘', title: 'Yaşam Tarzı', desc: 'Ürünü bir yaşam tarzıyla ilişkilendir — estetik, huzurlu, özlemli format' },
+  { icon: '🎯', title: 'Hedef Kitle Meydan Okuma', desc: '"Bu sadece X kişi için DEĞİL — herkese lazım" — stereotip kırıcı format' },
+  { icon: '🏠', title: 'Ev Turu Organik', desc: 'Ev turu içinde ürünü doğal şekilde yerleştir — influencer tarzı tanıtım' },
+  { icon: '🔑', title: 'Gizli Bilgi', desc: '"Uzmanların söylemediği şey..." — merak uyandırıcı, otorite kırıcı format' },
+  { icon: '📸', title: 'Önce-Sonra', desc: 'Ürün olmadan vs ürünle — görsel dönüşüm, estetik + fonksiyon birlikte' },
+  { icon: '🛒', title: 'Değer Karşılaştırması', desc: '"Bu fiyata bu kaliteyi başka nerede bulursun?" — fiyat-değer direkt karşılaştırma' },
+  { icon: '🎪', title: 'Çocuk Reaksiyonu', desc: 'Çocuğun ürünle eğlenmesi — "Artık bırakmıyor" — ebeveyn kitlesine hitap' },
+  { icon: '✈️', title: 'Özlem/Nostalji', desc: 'Uzaktayken özlemek ya da eve dönünce ilk yapılan şey — duygusal bağ' },
+  { icon: '💪', title: 'Trend Bağlantısı', desc: 'Ürünü güncel bir trendle ilişkilendir — "2025\'in en çok konuşulan ürünü"' },
+  { icon: '🤸', title: 'Aktivite Analoji', desc: 'Ürünü bilinen bir aktivite veya alışkanlıkla ilişkilendir — akılda kalıcı' },
 ];
 
 
