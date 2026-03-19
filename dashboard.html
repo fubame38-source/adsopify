@@ -2592,43 +2592,7 @@ async function generateVisualPrompts() {
   const platformMap = { instagram:'Instagram Reels/Story (9:16)', facebook:'Facebook Feed (1:1 veya 4:5)', both:'Instagram ve Facebook (9:16 ve 1:1)' };
   const styleMap = { lifestyle:'lifestyle/yaşam tarzı', studio:'stüdyo/ürün odaklı', ugc:'UGC kullanıcı videosu tarzı', cinematic:'sinematik/film tarzı' };
 
-  const prompt = `Bu ürün görselini profesyonel bir reklam direktörü ve AI görsel üretim uzmanı olarak analiz et. ${brandCtx}
-
-Hedef: ${goalMap[goal]} — Platform: ${platformMap[platform]} — Stil: ${styleMap[style]}
-
-ÖNEMLİ: Promptlar çok detaylı ve teknik olmalı. Her prompt en az 4-5 cümle, spesifik ışıklandırma, kompozisyon, renk paleti, kamera açısı, atmosfer detayları içermeli. Genel değil, bu ürüne özgü olmalı.
-
-Sadece JSON döndür:
-{
-  "analysis": "Görselin detaylı analizi: ürün özellikleri, materyal, renk, form, hedef kitleye nasıl hitap ettiği (3-4 cümle)",
-  "productDesc": "Ürünün İngilizce kısa tanımı (prompt'larda kullanmak için)",
-  "prompts": [
-    {
-      "tool": "Midjourney v6 / ChatGPT Image",
-      "style": "Lifestyle Atmosfer",
-      "mood": "Sıcak, davetkar",
-      "prompt": "Çok detaylı İngilizce prompt — spesifik sahne kurgusu, ışıklandırma (örn: soft morning window light, golden hour), kompozisyon (örn: rule of thirds, negative space), arka plan, renk paleti, kamera (örn: 85mm lens, f/1.8), atmosfer, stil referansları, --ar 9:16 --style raw --v 6",
-      "tr": "Bu prompt ne üretiyor ve neden etkili — hedef kitleye nasıl hitap ediyor, hangi duyguyu tetikliyor",
-      "usage": "Instagram Reels thumbnail, Story"
-    },
-    {
-      "tool": "Gemini / Ideogram / Adobe Firefly",
-      "style": "Stüdyo Premium",
-      "mood": "Profesyonel, güven verici",
-      "prompt": "Çok detaylı İngilizce prompt — stüdyo kurgusu, profesyonel ürün fotoğrafçılığı teknikleri, özel ışıklandırma setup (örn: three-point lighting, rim light), yüzey materyali, yansımalar, gölge kontrolü, renk gradyanı arka plan, post-processing tarzı",
-      "tr": "Bu prompt ne üretiyor ve neden etkili",
-      "usage": "Facebook Feed, e-ticaret"
-    },
-    {
-      "tool": "DALL-E 3 / Stable Diffusion XL",
-      "style": "UGC / Sosyal Kanıt",
-      "mood": "Samimi, güvenilir",
-      "prompt": "Çok detaylı İngilizce prompt — gerçekçi UGC tarzı, handheld kamera etkisi, doğal ortam, günlük yaşam sahnesi, gerçek kişi eli veya silüeti, doğal ışık, ham/unfiltered estetik, slight motion blur, authentic feel",
-      "tr": "Bu prompt ne üretiyor ve neden etkili",
-      "usage": "Instagram Reels, viral içerik"
-    }
-  ]
-}`;
+  const prompt = 'Bu urun gorselini profesyonel reklam direktoru olarak analiz et. ' + brandCtx + ' Hedef: ' + goalMap[goal] + '. Platform: ' + platformMap[platform] + '. Stil: ' + styleMap[style] + '. Sadece asagidaki JSON formatinda don, baska hicbir sey yazma. Her prompt cok detayli, spesifik, Ingilizce olmali. analysis alani Turkce olmali. {"analysis":"gorselin detayli analizi turkce 3-4 cumle","prompts":[{"tool":"Midjourney v6","style":"Lifestyle","mood":"Sicak davetkar","prompt":"detailed english prompt with lighting composition camera settings atmosphere style references --ar 9:16 --v 6","tr":"bu prompt ne uretiyor turkce aciklama","usage":"Instagram Story Reels"},{"tool":"Gemini Ideogram","style":"Studio Premium","mood":"Profesyonel","prompt":"detailed english studio product photography prompt with lighting setup surface reflections background","tr":"turkce aciklama","usage":"Facebook Feed"},{"tool":"DALL-E 3","style":"UGC Authentic","mood":"Samimi","prompt":"detailed english ugc style prompt handheld camera natural light everyday scene authentic feel","tr":"turkce aciklama","usage":"Instagram Reels viral"}]}';
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/vision', {
@@ -2707,10 +2671,47 @@ var _swipeCurrentX = 0;
 function initSwipe() {
   _swipeIdx = 0;
   const brand = S.brand;
-  const brandHooks = (brand && brand.hooks) ? brand.hooks : [];
-  const generalHooks = [];
-  Object.values(HOOKS).forEach(fmt => Object.values(fmt).forEach(arr => generalHooks.push(...arr)));
-  _swipeCards = [...brandHooks, ...generalHooks.sort(() => Math.random() - 0.5)].slice(0, 30);
+
+  if (!brand || !brand.brandName) {
+    document.getElementById('swipe-stack').innerHTML = `
+      <div style="text-align:center;padding:48px 24px;max-width:480px;margin:0 auto">
+        <div style="font-size:48px;margin-bottom:16px">🎯</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px">Önce markanı tanıt</div>
+        <div style="font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6">Hook Swipe, markana özel hooklar üretir. Ayarlar'dan markanı gir, AI sana özel 25 hook üretsin.</div>
+        <button class="btn btn-primary" onclick="resetBrand()">🚀 Markanı Ekle →</button>
+      </div>`;
+    document.getElementById('swipe-counter').textContent = '';
+    return;
+  }
+
+  // Sadece marka hookları kullan, genel AlaTab hookları gösterme
+  const brandHooks = (brand.hooks && brand.hooks.length > 0) ? brand.hooks : [];
+
+  // Genel format hookları — markaya özel değil, sadece format
+  const genericFormats = [
+    'POV: ' + brand.brandName + ' ü keşfedince her şey değişti',
+    brand.brandName + ' hakkında kimsenin söylemediği şeyi ben söylüyorum 👇',
+    '"' + brand.brandName + ' olmadan nasıl yaşadım?" — şimdi anlıyorum',
+    'Arkadaşım ' + brand.brandName + ' önermeseydi bilmezdim — gerçekten işe yarıyor',
+    brand.brandName + ' ile ilk haftamda ne oldu? Beklediğimden çok farklı',
+    brand.brandName + ' i denemeden önce şüpheliydim. Şimdi herkese tavsiye ediyorum',
+    'Bu fiyata bu kaliteyi başka nerede bulursun? ' + brand.brandName,
+    brand.brandName + ' alan yorumları okuyunca karar verdim — haklıymışlar',
+    brand.brandName + ' i gördüğümde "buna gerek yok" dedim. Yanılmışım',
+    brand.brandName + ' herkese lazım ama çoğu kişi hâlâ bilmiyor',
+    '"Neden daha önce almadım?" — ' + brand.brandName + ' alanların %90 ı bunu söylüyor',
+    brand.brandName + ': Basit görünüyor, ama farkı hissedince anlıyorsun',
+    'Müşteri yorumlarını okuyunca ' + brand.brandName + ' i almak zorunda kaldım',
+    brand.brandName + ' i hediye ettim — alan kişi beni aradı teşekkür etti',
+    'İlk bakışta sıradan sandım. ' + brand.brandName + ' ı kullanınca şaşırdım',
+    brand.brandName + ' ile hayatımın en iyi kararını verdim',
+    'Sosyal medyada çok gördüm ' + brand.brandName + ' i, sonunda aldım — değdi',
+    brand.brandName + ' hakkında bildiklerini düşünüyorsun ama bilmiyorsun',
+    '3 ay önce ' + brand.brandName + ' aldım — tek pişmanlığım daha önce almamak',
+    brand.brandName + ': İlk gün fark ettim, şimdi vazgeçemiyorum',
+  ];
+
+  _swipeCards = [...brandHooks, ...genericFormats].slice(0, 25).sort(() => Math.random() - 0.5);
   renderSwipeStack();
   renderSaved();
 }
