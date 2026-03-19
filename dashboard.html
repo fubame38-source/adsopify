@@ -64,23 +64,24 @@
     min-height: 100vh;
   }
 
-  /* ── TOPBAR ── */
+  /* ── TOPBAR — Apple Quality ── */
   #topbar {
     position: fixed; top: 0; left: 0; right: 0;
     height: var(--topbar-h);
-    background: rgba(10,14,26,0.85);
-    backdrop-filter: blur(20px);
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-bottom: 1px solid var(--border);
     display: flex; align-items: center;
     padding: 0 24px 0 calc(var(--sidebar-w) + 24px);
-    z-index: 100; gap: 12px;
+    z-index: 100; gap: 10px;
   }
   #topbar .brand { font-weight: 700; font-size: 16px; letter-spacing: -0.3px; color: var(--text); text-decoration: none; }
-  #topbar .brand span { background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #topbar .brand span { color: var(--accent2); }
   #topbar .spacer { flex: 1; }
   #topbar .stat-badge {
     background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 6px 12px;
+    border-radius: 999px; padding: 5px 14px;
     font-size: 12px; font-weight: 500; color: var(--text2);
     display: flex; align-items: center; gap: 6px;
   }
@@ -88,7 +89,7 @@
   #topbar .stat-badge.live { border-color: rgba(16,185,129,0.3); background: var(--green-light); }
   #topbar .stat-badge.live strong { color: var(--green); }
 
-  /* ── SIDEBAR ── */
+  /* ── SIDEBAR — Apple Quality ── */
   #sidebar {
     position: fixed; top: var(--topbar-h); left: 0; bottom: 0;
     width: var(--sidebar-w);
@@ -99,15 +100,26 @@
   #sidebar::-webkit-scrollbar { width: 4px; }
   #sidebar::-webkit-scrollbar-track { background: transparent; }
   #sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-  .nav-section { padding: 16px 16px 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+
+  .nav-section {
+    padding: 16px 16px 6px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3);
+  }
   .nav-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 9px 16px; cursor: pointer; margin: 1px 8px;
+    padding: 8px 12px; cursor: pointer; margin: 1px 8px;
     font-size: 13px; font-weight: 450; color: var(--text2);
     border-radius: 10px; transition: all 0.15s;
   }
   .nav-item:hover { background: var(--surface2); color: var(--text); }
-  .nav-item.active { background: var(--accent-light); color: var(--accent2); font-weight: 600; box-shadow: inset 0 0 0 1px rgba(99,102,241,0.2); }
+  .nav-item.active {
+    background: var(--accent-light);
+    color: var(--accent2);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba(99,102,241,0.2);
+  }
   .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
 
   /* ── MAIN ── */
@@ -127,14 +139,14 @@
   .page-sub { color: var(--text3); font-size: 13px; margin-bottom: 24px; }
   h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
 
-  /* ── CARDS ── */
+  /* ── CARDS — Apple Quality ── */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 16px;
     padding: 20px;
     box-shadow: var(--shadow);
-    transition: border-color 0.15s;
+    transition: border-color 0.18s;
   }
   .card:hover { border-color: var(--border2); }
   .card + .card { margin-top: 16px; }
@@ -171,29 +183,71 @@
   .badge.blue { background: var(--accent-light); color: var(--accent2); }
   .badge.gray { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
 
-  /* ── BUTTONS ── */
+  /* ── BUTTONS — Apple Quality ── */
   .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 16px; border-radius: 9px; font-family: var(--font);
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 18px; border-radius: 999px; font-family: var(--font);
     font-size: 13px; font-weight: 600; cursor: pointer;
-    border: 1px solid transparent; transition: all 0.15s;
+    border: none; transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+    letter-spacing: 0.01em; white-space: nowrap;
   }
-  .btn-primary { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; box-shadow: 0 2px 12px rgba(99,102,241,0.3); }
-  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.4); }
-  .btn-ghost { background: transparent; border-color: var(--border); color: var(--text2); }
-  .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
-  .btn-sm { padding: 6px 11px; font-size: 12px; border-radius: 7px; }
+  .btn:active { transform: scale(0.97) !important; }
 
-  /* ── INPUTS ── */
-  input, textarea, select {
-    width: 100%; padding: 10px 13px; border: 1px solid var(--border);
-    border-radius: 9px; font-family: var(--font); font-size: 13px;
-    background: var(--surface2); color: var(--text);
-    outline: none; transition: border-color 0.15s;
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(99,102,241,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
   }
-  input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-  textarea { resize: vertical; min-height: 80px; }
-  label { font-size: 12px; font-weight: 600; color: var(--text2); display: block; margin-bottom: 6px; }
+  .btn-primary:hover {
+    background: #5b52f0;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    background: var(--surface3);
+    color: var(--text);
+    border-color: var(--border2);
+  }
+
+  .btn-danger {
+    background: rgba(239,68,68,0.12);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+  .btn-success {
+    background: rgba(16,185,129,0.12);
+    color: var(--green);
+    border: 1px solid rgba(16,185,129,0.2);
+  }
+  .btn-success:hover { background: rgba(16,185,129,0.2); }
+
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+  .btn-lg { padding: 13px 28px; font-size: 15px; }
+  .btn-icon { padding: 8px; border-radius: 50%; width: 34px; height: 34px; justify-content: center; }
+
+  /* ── INPUTS — Apple Quality ── */
+  input, textarea, select {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border);
+    border-radius: 12px; font-family: var(--font); font-size: 14px;
+    background: var(--surface2); color: var(--text);
+    outline: none; transition: all 0.18s;
+    -webkit-appearance: none; appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    background: var(--surface);
+  }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  label { font-size: 12px; font-weight: 600; color: var(--text2); display: block; margin-bottom: 6px; letter-spacing: 0.01em; }
   select option { background: var(--surface2); }
 
   /* ── CHAT ── */
@@ -1260,9 +1314,10 @@ function finishOnboarding() {
   document.getElementById('ob-step2').style.display = 'none';
   document.getElementById('ob-step3').style.display = 'none';
   document.getElementById('ob-progress').style.width = '0%';
-  
-  // Tüm içeriği yeni markaya göre güncelle
+  const returnTo = S._returnAfterOnboarding;
+  S._returnAfterOnboarding = null;
   refreshAllBrandContent();
+  if (returnTo) setTimeout(function(){ nav(returnTo); }, 100);
 }
 
 function refreshAllBrandContent() {
@@ -1312,9 +1367,10 @@ function showBrandToast(name) {
   setTimeout(() => t.remove(), 3500);
 }
 
-function resetBrand() {
+function resetBrand(returnTo) {
   localStorage.removeItem('adsopify_brand');
   S.brand = null;
+  S._returnAfterOnboarding = returnTo || null;
   document.getElementById('brand-url').value = '';
   document.getElementById('brand-desc').value = '';
   document.getElementById('ob-step1').style.display = 'block';
@@ -2316,7 +2372,7 @@ var _lastHooks = {};
 
 function generateHooks() {
   if (!S.brand || !S.brand.brandName) {
-    document.getElementById('hook-results').innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🎯</div><div style="font-size:14px;font-weight:500;margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:13px">Ayarlar → Markayı Yeniden Gir</div><button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="resetBrand()">Markanı Ekle →</button></div>';
+    document.getElementById('hook-results').innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🎯</div><div style="font-size:14px;font-weight:500;margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:13px">Ayarlar → Markayı Yeniden Gir</div><button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="resetBrand(&quot;hook&quot;)">Markanı Ekle →</button></div>';
     return;
   }
 
@@ -2678,7 +2734,7 @@ function initSwipe() {
         <div style="font-size:48px;margin-bottom:16px">🎯</div>
         <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px">Önce markanı tanıt</div>
         <div style="font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6">Hook Swipe, markana özel hooklar üretir. Ayarlar'dan markanı gir, AI sana özel 25 hook üretsin.</div>
-        <button class="btn btn-primary" onclick="resetBrand()">🚀 Markanı Ekle →</button>
+        <button class="btn btn-primary" onclick="resetBrand('swipe')">🚀 Markanı Ekle →</button>
       </div>`;
     document.getElementById('swipe-counter').textContent = '';
     return;
