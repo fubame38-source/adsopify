@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AlaTab — Meta Ads Dashboard</title>
+<title>Adsopify — Meta Ads Dashboard</title>
 <script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -320,7 +320,7 @@
 <div id="token-screen">
   <div class="token-box">
     <div style="font-size:28px;margin-bottom:12px">📊</div>
-    <h2>AlaTab Meta Ads</h2>
+    <h2>Adsopify</h2>
     <p>Meta reklam hesabınızı bağlayın.</p>
 
     <!-- Facebook OAuth butonu -->
@@ -496,7 +496,7 @@
   <!-- HOOK ÜRETİCİ -->
   <div id="sec-hook" class="section">
     <div class="page-title">Hook Üretici</div>
-    <div class="page-sub">AlaTab için viral hook fikirleri üretin</div>
+    <div class="page-sub">Viral hook fikirleri üretin</div>
 
     <div class="card mb-16">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
@@ -535,7 +535,7 @@
 
     <div class="card mb-16">
       <label>Mevcut Reklam Metni (varsa)</label>
-      <textarea id="copy-input" placeholder="Mevcut reklamınızın metnini buraya yapıştırın... Yoksa boş bırakın, AlaTab için sıfırdan yazılır." rows="4"></textarea>
+      <textarea id="copy-input" placeholder="Mevcut reklamınızın metnini buraya yapıştırın... Yoksa boş bırakın, sıfırdan yazılır." rows="4"></textarea>
       <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <div style="flex:1;min-width:160px">
           <label>Hedef</label>
@@ -623,7 +623,7 @@
     <div class="page-sub">Kampanya verinizi bilen, kural bazlı tavsiye motoru</div>
     <div class="card">
       <div id="chat-messages">
-        <div class="msg bot">Merhaba! 👋 Ben AlaTab AI Hoca. Kampanya verilerinizi analiz ederek spesifik tavsiyeler verebilirim. Sormak istediğin bir şey var mı?<br><br><strong>Örnek sorular:</strong><br>• Hangi kampanyam en iyi performansı veriyor?<br>• CPC'mi nasıl düşürebilirim?<br>• Bütçemi nasıl dağıtmalıyım?<br>• Hook stratejim hakkında ne düşünüyorsun?</div>
+        <div class="msg bot">Merhaba! 👋 Ben Adsopify AI Hoca. Kampanya verilerinizi analiz ederek spesifik tavsiyeler verebilirim. Sormak istediğin bir şey var mı?<br><br><strong>Örnek sorular:</strong><br>• Hangi kampanyam en iyi performansı veriyor?<br>• CPC'mi nasıl düşürebilirim?<br>• Bütçemi nasıl dağıtmalıyım?<br>• Hook stratejim hakkında ne düşünüyorsun?</div>
       </div>
       <div class="chat-input-row">
         <input type="text" id="chat-in" placeholder="Soru sor..." onkeydown="if(event.key==='Enter')sendChat()" />
@@ -785,9 +785,9 @@ function pickRandom(arr, n) {
 // INIT
 // ═══════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  S.token = localStorage.getItem('alatab_token');
-  S.accountId = localStorage.getItem('alatab_account_id');
-  S.accountName = localStorage.getItem('alatab_account_name');
+  S.token = localStorage.getItem('adsopify_token');
+  S.accountId = localStorage.getItem('adsopify_account_id');
+  S.accountName = localStorage.getItem('adsopify_account_name');
 
   setDefaultDates();
   loadLogs();
@@ -857,9 +857,9 @@ function selectAccount(id, name, token) {
   S.token = token;
   S.accountId = id;
   S.accountName = name;
-  localStorage.setItem('alatab_token', token);
-  localStorage.setItem('alatab_account_id', id);
-  localStorage.setItem('alatab_account_name', name);
+  localStorage.setItem('adsopify_token', token);
+  localStorage.setItem('adsopify_account_id', id);
+  localStorage.setItem('adsopify_account_name', name);
   startApp();
 }
 
@@ -919,9 +919,9 @@ function fbLogin() {
 
 function logout() {
   if (!confirm('Çıkış yapmak istediğinizden emin misiniz?')) return;
-  localStorage.removeItem('alatab_token');
-  localStorage.removeItem('alatab_account_id');
-  localStorage.removeItem('alatab_account_name');
+  localStorage.removeItem('adsopify_token');
+  localStorage.removeItem('adsopify_account_id');
+  localStorage.removeItem('adsopify_account_name');
   location.reload();
 }
 
@@ -1113,24 +1113,24 @@ var ALL_CREATIVE_IDEAS = [
   { icon: '🌙', title: 'Gece Rutin', desc: '"Gece 02:00 tuvaleti" senaryosu — loş ışık, sakin müzik, konforlu an' },
   { icon: '📱', title: 'Telefon + Taburet Combo', desc: '"WC\'de telefon kullanıyorsan zaten bu lazım" — relatif içerik, yüksek etkileşim' },
   { icon: '🎁', title: 'Hediye Kutusu', desc: '"Annem 65 yaşında, en anlamlı doğum günü hediyesini buldım" — duygu kancası' },
-  { icon: '🤸', title: 'Yoga Pozisyonu Analoji', desc: '"Yogadaki çömelme pozisyonunu tuvalette yapmak = AlaTab" — fitness kitlesi için' },
+  { icon: '🤸', title: 'Yoga Pozisyonu Analoji', desc: '"Yogadaki çömelme pozisyonunu tuvalette yapmak = Ürününüz" — fitness kitlesi için' },
   { icon: '🏥', title: 'Ameliyattan Kaçınma', desc: '"Hemoroid ameliyatından önce bunu dene" — problem-çözüm, acıdan kaçınma güdüsü' },
   { icon: '👵', title: 'Büyükanne Reaksiyonu', desc: 'Büyükannenin ilk kullandığında tepkisi — authentik, duygusal, paylaşılabilir' },
   { icon: '🎤', title: 'Müşteri Yorumu Seslendirme', desc: 'Ekranda yorum metni + seslendirme: "3 aydır kullanıyorum, kabızlık tarihe karıştı"' },
   { icon: '🌿', title: 'Doğallık Vurgusu', desc: 'Ahşap dokuya close-up + "Plastik yok, kimyasal yok, sadece meşe" yazı overlay' },
   { icon: '📊', title: 'İstatistik Kreatiifi', desc: '"5.000+ Türk ailesi kullanıyor" — sayaç animasyonu, güven artırıcı sosyal kanıt' },
-  { icon: '🚀', title: 'Hız Testi', desc: '"Normal pozisyon vs AlaTab: Hangisi daha hızlı?" — stopwatch gösteren komik karşılaştırma' },
+  { icon: '🚀', title: 'Hız Testi', desc: '"Normal pozisyon vs Ürününüz: Hangisi daha hızlı?" — stopwatch gösteren komik karşılaştırma' },
   { icon: '💬', title: 'Yorum Bölümü Kolajı', desc: 'Gerçek müşteri yorumlarının screenshot\'larından kolaj — "Hepsi 5 yıldız veriyor"' },
   { icon: '🧘', title: 'Stres Azaltma', desc: '"WC zamanını meditasyon zamanına çevir" — huzurlu müzik, bambu estetiği' },
   { icon: '🎯', title: 'Hedef Kitle Hook', desc: '"Bu sadece 40+ yaş için DEĞİL — herkese lazım" — yaş stereotipini yıkan format' },
   { icon: '📐', title: 'Mühendis Yaklaşımı', desc: '"Patent aldık çünkü bu açı gerçekten farklı" — ürün patentini öne çıkar' },
-  { icon: '🏠', title: 'Ev Turu İçinde', desc: 'Ev turu videosu içinde mutfak/salon derken "banyo" kısmında AlaTab — organik yerleştirme' },
+  { icon: '🏠', title: 'Ev Turu İçinde', desc: 'Ev turu videosu içinde mutfak/salon derken "banyo" kısmında ürününüz — organik yerleştirme' },
   { icon: '🌏', title: 'Japonya / Doğu Bağlantısı', desc: '"Japonya\'da her tuvaletin yanında bu var, Türkiye\'ye getirdik" — kültürel merak' },
   { icon: '💪', title: 'Detoks / Sağlık Trend Bağlantısı', desc: '"Bağırsak sağlığı 2025\'in en büyük trendi — başlangıç noktası bu" — gündem bağlantısı' },
   { icon: '🎪', title: 'Çocuk Reaksiyonu', desc: 'Çocuğun tuvalette mutlu bir şekilde kitap okuması — "Artık tuvaletten çıkmak istemiyor"' },
   { icon: '🔑', title: 'Kilit Bilgi', desc: '"Doktorların size söylemediği şey: Klozet tasarımı yanlış" — otoriteye meydan okuma' },
   { icon: '✈️', title: 'Seyahat / Özlem', desc: '"Tatilde pisuar tuvaleti sonrası eve dönünce ilk yaptığım şey" — hicivli nostalji' },
-  { icon: '📸', title: 'Before/After Banyosu', desc: 'Banyo görüntüsü: AlaTab olmadan vs AlaTab ile — estetik + fonksiyon birlikte' },
+  { icon: '📸', title: 'Before/After Banyosu', desc: 'Banyo görüntüsü: Ürün olmadan vs Ürün ile — estetik + fonksiyon birlikte' },
   { icon: '🛒', title: 'İmpulse Buy Tetikleyici', desc: '"₺1.799\'a bu rahatlığı başka nerede bulursun?" — fiyat-değer karşılaştırması direkt' },
 ];
 
@@ -1818,15 +1818,15 @@ function buildCopies(goal, tone, existing) {
   const copies = [
     {
       tag: tone === 'urgent' ? 'FOMO + Acil' : 'Sosyal Kanıt',
-      text: 'WC\'de geçirdiğin her dakikayı düşün. 🪵\n\nAlaTab ahşap klozet taburesi, bacaklarını 35° kaldırarak bağırsaklarına doğal pozisyonu veriyor.\n\n✅ %100 meşe ahşap\n✅ Hemoroid & kabızlık için önerilen açı\n✅ 1.200+ mutlu müşteri\n\n' + (tone === 'urgent' ? '⚡ Bugün sipariş ver, yarın kapında!\n' : '') + 'Şimdi incele → alatab.com.tr\n\n#klozettaburesi #bağırsaksağlığı #alatab'
+      text: 'WC\'de geçirdiğin her dakikayı düşün. 🪵\n\nÜrününüz, bacaklarını 35° kaldırarak bağırsaklarına doğal pozisyonu veriyor.\n\n✅ %100 meşe ahşap\n✅ Hemoroid & kabızlık için önerilen açı\n✅ 1.200+ mutlu müşteri\n\n' + (tone === 'urgent' ? '⚡ Bugün sipariş ver, yarın kapında!\n' : '') + 'Şimdi incele → sizin-siteniz.com\n\n#metareklam #dijitalreklam'
     },
     {
       tag: 'Eğitici + Güven',
-      text: 'Klozette doğal çömelme pozisyonu almak neden bu kadar önemli?\n\n📐 Puborektal kas 35° açıda tam olarak gevşiyor\n🏥 Gastroenterologlar bu pozisyonu tavsiye ediyor\n🌿 AlaTab ile klozette çömelme pozisyonunu yakalayın\n\n₺1.799 — Ücretsiz kargo\nPatentli tasarım, Türkiye\'de üretim\n\nalatab.com.tr \'da inceleyin 👆'
+      text: 'Klozette doğal çömelme pozisyonu almak neden bu kadar önemli?\n\n📐 Puborektal kas 35° açıda tam olarak gevşiyor\n🏥 Gastroenterologlar bu pozisyonu tavsiye ediyor\n🌿 Ürününüzle klozette çömelme pozisyonunu yakalayın\n\n₺1.799 — Ücretsiz kargo\nPatentli tasarım, Türkiye\'de üretim\n\nsizin-siteniz.com \'da inceleyin 👆'
     },
     {
       tag: goal === 'engagement' ? 'Yorum Aldırıcı' : 'Soru Kancalı',
-      text: 'Bunu öğrenince "niye daha önce bilmiyordum" diyeceksin:\n\nTurklerin %90\'ı klozette yanlış oturuyor.\n\nBu yanlış pozisyon:\n❌ Kabızlığa yol açıyor\n❌ Hemoroid riskini artırıyor\n❌ Bağırsak sağlığını bozuyor\n\nAlaTab ahşap klozet taburesi = doğru pozisyon = sağlıklı bağırsak.\n\nYoruma "👋" yaz, sana bir numune kodu gönderelim!\n\n#alatab #sağlık #klozet'
+      text: 'Bunu öğrenince "niye daha önce bilmiyordum" diyeceksin:\n\nTurklerin %90\'ı klozette yanlış oturuyor.\n\nBu yanlış pozisyon:\n❌ Kabızlığa yol açıyor\n❌ Hemoroid riskini artırıyor\n❌ Bağırsak sağlığını bozuyor\n\nÜrününüz = doğru pozisyon = sağlıklı bağırsak.\n\nYoruma "👋" yaz, sana bir numune kodu gönderelim!\n\n#metareklam #dijitalreklam'
     }
   ];
   return copies;
@@ -1872,8 +1872,8 @@ const KB = {
   ctr: 'CTR artırmak için: 1) İlk kare/thumbnail sürpriz olmalı — "Bu ne?" dedirtmeli. 2) Merak açığı bırak — ürünü sona sakla. 3) Text overlay ekle — ses kapalı izleyenler için. 4) Hook testleri: Soru vs Hata formatı en yüksek CTR veriyor. Hedef: %1.5+',
   budget: 'Bütçe dağılımı için Andromeda metodunu uygula: 1 CBO kampanya → içinde 4-6 adset rekabet etsin. Kazanan adset 48 saatte belli olur. O adset\'e bütçeyi kaydır. Günde %20\'den fazla bütçe artırma yapma, algoritma sıfırlanır.',
   scale: 'Ölçekleme için: CPC < ₺8 ve CTR > %1.5 ise ölçeklemeye hazır. Günde %20 bütçe artış yap. Horizontal scale: Aynı creatifi farklı hedef kitlelere aç. Vertical scale: Bütçeyi artır ama %20 kuralını koru.',
-  creative: 'AlaTab için en iyi creative formatları: 1) POV keşif (handheld kamera) — en yüksek CTR. 2) Hata/yanlış yapıyorsun — merak yaratır. 3) Sosyal kanıt (5M görüntülenme reeli) — güven verir. 4) Bilimsel açıklama (35° açı) — conversion artırır. UGC tarzı çekim, doğal ışık.',
-  alatab: 'AlaTab: Ahşap klozet taburesi, ₺1.799, Türkiye pazarı. Ürün: bacakları 35° kaldırarak doğal çömelme pozisyonu. Faydalar: kabızlık, hemoroid, bağırsak sağlığı. Patentli tasarım. Instagram\'dan 1M TL+ organik satış yapıldı.',
+  creative: 'En iyi creative formatları: 1) POV keşif (handheld kamera) — en yüksek CTR. 2) Hata/yanlış yapıyorsun — merak yaratır. 3) Sosyal kanıt (5M görüntülenme reeli) — güven verir. 4) Bilimsel açıklama (35° açı) — conversion artırır. UGC tarzı çekim, doğal ışık.',
+  alatab: 'Ürününüz hakkında bilgi almak için AI Hoca ile konuşun.',
   frequency: 'Reklam frekansı 3\'ü geçince creative yorgunluğu başlar. Frekans > 3 ise: yeni creative ekle, farklı hook dene, hedef kitleyi değiştir. Frekans izleme formülü: Gösterim / Erişim = Frekans.',
 };
 
@@ -1922,14 +1922,14 @@ function generateAnswer(q) {
          r >= 1.5 ? '🟡 Kârlı ama optimize edilebilir. Hook ve creative testleri dene.' :
          r >= 1 ? '⚠️ Başa baş. Creative veya hedef kitleyi değiştir.' :
          '🔴 ROAS 1\'in altında — zararda. Kampanyayı durdur, yeniden yapılandır.') +
-        '\n\nGenel kural: AlaTab için hedef ROAS en az 2.5x olmalı (ürün maliyeti + kargo göz önüne alındığında).';
+        '\n\nGenel kural: Hedef ROAS en az 2.5x olmalı (ürün maliyeti + kargo göz önüne alındığında).';
     } else {
       answer = 'Bugün için ROAS verisi bulunamadı. Meta Pixel kurulu mu? "purchase" eventi aktif değilse ROAS görünmez.';
     }
   } else if (ql.includes('cpa') || ql.includes('satış başı')) {
     if (avgCPA) {
       answer = '🛒 **Bugünkü CPA (satış başı maliyet): ₺' + avgCPA + '**\n\n' + totalPurchases.toFixed(0) + ' satış, ₺' + totalSpend.toFixed(0) + ' harcama.\n\n' +
-        (parseFloat(avgCPA) < 300 ? '✅ İyi CPA. AlaTab ₺1.799 satış fiyatı için sürdürülebilir.' :
+        (parseFloat(avgCPA) < 300 ? '✅ İyi CPA. Ürün satış fiyatınız için sürdürülebilir.' :
          parseFloat(avgCPA) < 600 ? '🟡 Makul CPA. Kâr marjını kontrol et.' :
          '🔴 Yüksek CPA. ₺' + avgCPA + ' ile kâr etmek zor. Hook veya hedef kitleyi değiştir.');
     } else {
@@ -1958,7 +1958,7 @@ function generateAnswer(q) {
     answer = KB.frequency;
   } else if (ql.includes('creative') || ql.includes('video') || ql.includes('reel') || ql.includes('içerik')) {
     answer = KB.creative;
-  } else if (ql.includes('alatab') || ql.includes('ürün') || ql.includes('taburet')) {
+  } else if (ql.includes('ürün') || ql.includes('taburet')) {
     answer = KB.alatab;
   } else if (ql.includes('kampanya') || ql.includes('performans') || ql.includes('nasıl')) {
     if (ins.length > 0) {
@@ -1974,9 +1974,9 @@ function generateAnswer(q) {
       answer = 'Kampanya verisi henüz yüklenemedi. Ana sayfayı yenileyin.';
     }
   } else if (ql.includes('hook') || ql.includes('kanca') || ql.includes('metin')) {
-    answer = '🪝 **AlaTab için en güçlü hook formülleri:**\n\n1. **POV Keşif** — "POV: WC\'de bu kadar rahat oturmamıştım" (Yüksek CTR)\n2. **Yanlış yapıyorsun** — "Türkler\'in %90\'ı klozette yanlış oturuyor" (Merak)\n3. **Sosyal Kanıt** — "5 milyon kişi gördü, sen hâlâ bilmiyor musun?" (Güven)\n4. **Bilimsel** — "35° açı neden bu kadar önemli?" (Eğitici)\n\nHook Üretici sekmesinden 5\'li set üretebilirsin.';
+    answer = '🪝 **En güçlü hook formülleri:**\n\n1. **POV Keşif** — "POV: WC\'de bu kadar rahat oturmamıştım" (Yüksek CTR)\n2. **Yanlış yapıyorsun** — "Türkler\'in %90\'ı klozette yanlış oturuyor" (Merak)\n3. **Sosyal Kanıt** — "5 milyon kişi gördü, sen hâlâ bilmiyor musun?" (Güven)\n4. **Bilimsel** — "35° açı neden bu kadar önemli?" (Eğitici)\n\nHook Üretici sekmesinden 5\'li set üretebilirsin.';
   } else {
-    answer = 'AlaTab için şu konularda yardımcı olabilirim:\n\n• **ROAS / Satış** — "ROAS\'ım nerede?"\n• **CPA / Dönüşüm** — "Satış başı maliyetim ne?"\n• **CPC/CTR** — "CPC nasıl düşürürüm?"\n• **Bütçe** — "Bütçemi nasıl dağıtmalıyım?"\n• **Ölçekleme** — "Ne zaman ölçekleyeyim?"\n• **Kampanya özeti** — "Bugünkü performansım nasıl?"';
+    answer = 'Şu konularda yardımcı olabilirim:\n\n• **ROAS / Satış** — "ROAS\'ım nerede?"\n• **CPA / Dönüşüm** — "Satış başı maliyetim ne?"\n• **CPC/CTR** — "CPC nasıl düşürürüm?"\n• **Bütçe** — "Bütçemi nasıl dağıtmalıyım?"\n• **Ölçekleme** — "Ne zaman ölçekleyeyim?"\n• **Kampanya özeti** — "Bugünkü performansım nasıl?"';
   }
 
   return answer;
@@ -1989,16 +1989,16 @@ function saveLog() {
   const text = document.getElementById('log-input').value.trim();
   if (!text) return;
 
-  const logs = JSON.parse(localStorage.getItem('alatab_logs') || '[]');
+  const logs = JSON.parse(localStorage.getItem('adsopify_logs') || '[]');
   logs.unshift({ date: new Date().toISOString(), text });
-  localStorage.setItem('alatab_logs', JSON.stringify(logs.slice(0, 100)));
+  localStorage.setItem('adsopify_logs', JSON.stringify(logs.slice(0, 100)));
 
   document.getElementById('log-input').value = '';
   loadLogs();
 }
 
 function loadLogs() {
-  const logs = JSON.parse(localStorage.getItem('alatab_logs') || '[]');
+  const logs = JSON.parse(localStorage.getItem('adsopify_logs') || '[]');
   const el = document.getElementById('log-list');
   if (!logs.length) {
     el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">Henüz not yok. İlk notunu ekle!</div>';
@@ -2008,7 +2008,7 @@ function loadLogs() {
 }
 
 function analyzeLog() {
-  const logs = JSON.parse(localStorage.getItem('alatab_logs') || '[]');
+  const logs = JSON.parse(localStorage.getItem('adsopify_logs') || '[]');
   if (logs.length < 2) { alert('En az 2 not gerekli pattern analizi için!'); return; }
 
   const all = logs.map(l => l.text).join(' ').toLowerCase();
