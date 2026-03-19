@@ -2163,6 +2163,7 @@ async function loadScale() {
   }
   document.getElementById('scale-loading').style.display = 'none';
   document.getElementById('scale-content').style.display = 'block';
+  const recWrap = document.getElementById('scale-rec-wrap'); if(recWrap) recWrap.style.display = 'block';
 }
 
 async function generateScaleRecommendations(insights) {
@@ -2724,7 +2725,7 @@ const KB = {
   budget: 'Bütçe dağılımı için Andromeda metodunu uygula: 1 CBO kampanya → içinde 4-6 adset rekabet etsin. Kazanan adset 48 saatte belli olur. O adset\'e bütçeyi kaydır. Günde %20\'den fazla bütçe artırma yapma, algoritma sıfırlanır.',
   scale: 'Ölçekleme için: CPC < ₺8 ve CTR > %1.5 ise ölçeklemeye hazır. Günde %20 bütçe artış yap. Horizontal scale: Aynı creatifi farklı hedef kitlelere aç. Vertical scale: Bütçeyi artır ama %20 kuralını koru.',
   creative: 'En iyi creative formatları: 1) POV keşif (handheld kamera) — en yüksek CTR. 2) Hata/yanlış yapıyorsun — merak yaratır. 3) Sosyal kanıt (5M görüntülenme reeli) — güven verir. 4) Bilimsel açıklama (35° açı) — conversion artırır. UGC tarzı çekim, doğal ışık.',
-  alatab: 'Ürününüz hakkında bilgi almak için AI Hoca ile konuşun.',
+  product_info: 'Ürününüz hakkında bilgi almak için AI Hoca ile konuşun.',
   frequency: 'Reklam frekansı 3\'ü geçince creative yorgunluğu başlar. Frekans > 3 ise: yeni creative ekle, farklı hook dene, hedef kitleyi değiştir. Frekans izleme formülü: Gösterim / Erişim = Frekans.',
 };
 
@@ -3187,7 +3188,7 @@ function generateAnswer(q) {
   } else if (ql.includes('creative') || ql.includes('video') || ql.includes('reel') || ql.includes('içerik')) {
     answer = KB.creative;
   } else if (ql.includes('ürün') || ql.includes('taburet')) {
-    answer = KB.alatab;
+    answer = KB.product_info;
   } else if (ql.includes('kampanya') || ql.includes('performans') || ql.includes('nasıl')) {
     if (ins.length > 0) {
       const best = ins.reduce((a, b) => {
