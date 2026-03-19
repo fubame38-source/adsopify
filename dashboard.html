@@ -133,6 +133,7 @@
   .section.active { display: block; animation: fadeIn 0.2s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 
   /* ── TYPOGRAPHY ── */
   .page-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; color: var(--text); }
@@ -699,7 +700,7 @@
   <!-- HOOK ÜRETİCİ -->
   <div id="sec-hook" class="section">
     <div class="page-title">Hook Üretici</div>
-    <div class="page-sub">Viral hook fikirleri üretin</div>
+    <div class="page-sub">AI ile markana özel viral hooklar — her seferinde farklı</div>
 
     <div class="card mb-16">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
@@ -707,25 +708,26 @@
           <label>Hook Formatı</label>
           <select id="hook-format">
             <option value="pov">POV Keşif</option>
-            <option value="mistake">Hata / Yanlış yapıyorsun</option>
-            <option value="social">Sosyal Kanıt</option>
-            <option value="question">Soru Formatı</option>
-            <option value="secret">Sır / Az bilinen</option>
-            <option value="before-after">Önce-Sonra</option>
+            <option value="hata">Hata / Yanlış Yapıyorsun</option>
+            <option value="sosyal">Sosyal Kanıt</option>
+            <option value="soru">Soru Formatı</option>
+            <option value="bilim">Bilimsel / İstatistik</option>
+            <option value="ugc">UGC Samimi</option>
           </select>
         </div>
         <div>
           <label>Hedef Kitle</label>
           <select id="hook-audience">
-            <option value="general">Genel (Türkiye)</option>
-            <option value="mom">Anneler / Aileler</option>
-            <option value="elder">50+ yaş</option>
-            <option value="health">Sağlık odaklı</option>
-            <option value="men">Erkekler</option>
+            <option value="genel">Genel (Türkiye)</option>
+            <option value="kadin">Kadınlar 25-45</option>
+            <option value="erkek">Erkekler 25-45</option>
+            <option value="anne">Anneler</option>
+            <option value="genç">18-28 Gençler</option>
+            <option value="sağlık">Sağlık / Wellness</option>
           </select>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="generateHooks()">↺ Üret / Yenile</button>
+      <button class="btn btn-primary" id="hook-gen-btn" onclick="generateHooks()">✨ AI ile Üret</button>
     </div>
 
     <div id="hook-results"></div>
@@ -2370,39 +2372,126 @@ var HOOKS = {
 // Track last shown hooks to avoid repeats
 var _lastHooks = {};
 
-function generateHooks() {
+var _allGeneratedHooks = []; // Tüm üretilen hookları sakla, tekrar olmasın
+
+async function generateHooks() {
   if (!S.brand || !S.brand.brandName) {
-    document.getElementById('hook-results').innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🎯</div><div style="font-size:14px;font-weight:500;margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:13px">Ayarlar → Markayı Yeniden Gir</div><button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="resetBrand(&quot;hook&quot;)">Markanı Ekle →</button></div>';
+    document.getElementById('hook-results').innerHTML = '<div style="text-align:center;padding:48px 24px"><div style="font-size:40px;margin-bottom:16px">🎯</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:14px;color:var(--text2);margin-bottom:20px">AI, markana özel viral hooklar üretsin.</div><button class="btn btn-primary" onclick="resetBrand(&quot;hook&quot;)">Markanı Ekle →</button></div>';
     return;
   }
 
+  const btn = document.getElementById('hook-gen-btn');
+  btn.textContent = '⏳ Üretiliyor...';
+  btn.disabled = true;
+
+  // Loading skeleton
+  document.getElementById('hook-results').innerHTML = Array(5).fill(0).map((_, i) =>
+    '<div style="background:var(--surface2);border-radius:16px;padding:20px 24px;margin-bottom:10px;animation:pulse 1.5s ease ' + (i*0.1) + 's infinite"><div style="height:20px;background:var(--surface3);border-radius:8px;width:85%;margin-bottom:8px"></div><div style="height:14px;background:var(--surface3);border-radius:6px;width:40%"></div></div>'
+  ).join('');
+
   const format = document.getElementById('hook-format').value;
   const audience = document.getElementById('hook-audience').value;
-  const key = format + '_' + audience;
 
-  // Önce marka hookları, yoksa genel havuz
-  let pool = [];
-  if (S.brand.hooks && S.brand.hooks.length > 0) {
-    pool = [...S.brand.hooks];
+  try {
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev/hooks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brandName: S.brand.brandName,
+        product: S.brand.product || '',
+        audience: S.brand.audience || '',
+        format,
+        targetAudience: audience,
+        previousHooks: _allGeneratedHooks
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    const hooks = data.hooks || [];
+    // Üretilen hookları kaydet (tekrar etmesin)
+    hooks.forEach(h => { if (!_allGeneratedHooks.includes(h.text)) _allGeneratedHooks.push(h.text); });
+    if (_allGeneratedHooks.length > 100) _allGeneratedHooks = _allGeneratedHooks.slice(-100);
+
+    renderHookCards(hooks);
+
+  } catch(e) {
+    // Fallback: basit template
+    const fallback = [
+      { text: S.brand.brandName + ' ü gördüğümde "buna gerek yok" dedim. Yanılmışım.', category: 'POV', why: 'Şüphecileri hedefler' },
+      { text: '"' + S.brand.brandName + ' olmadan nasıl yaşadım?" diye soruyorum kendime artık.', category: 'POV', why: 'Duygusal bağ' },
+      { text: S.brand.brandName + ' hakkında kimsenin söylemediği şeyi ben söylüyorum 👇', category: 'Sır', why: 'Merak yaratır' },
+      { text: 'Arkadaşım ' + S.brand.brandName + ' önermeseydi bilmezdim — gerçekten işe yarıyor.', category: 'Kanıt', why: 'Sosyal güven' },
+      { text: S.brand.brandName + ' aldım, 3 gün sonra ailemdeki herkes sipariş verdi.', category: 'UGC', why: 'Organik yayılma' },
+    ];
+    renderHookCards(fallback);
   }
-  // Genel havuzdan da ekle (karıştırmak için)
-  const generalPool = (HOOKS[format] && HOOKS[format][audience])
-    || (HOOKS[format] && HOOKS[format]['general'])
-    || HOOKS['pov']['general'];
-  pool = [...pool, ...generalPool];
 
-  const last = _lastHooks[key] || [];
-  let available = pool.filter(h => !last.includes(h));
-  if (available.length < 5) available = pool;
+  btn.textContent = '✨ Yeniden Üret';
+  btn.disabled = false;
+}
 
-  const shuffled = [...available].sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 5);
-  _lastHooks[key] = selected;
+// Kategori renkleri
+const categoryColors = {
+  'POV':    { bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.25)', text: '#a78bfa' },
+  'Soru':   { bg: 'rgba(6,182,212,0.1)',   border: 'rgba(6,182,212,0.25)',  text: '#67e8f9' },
+  'Şok':    { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)',  text: '#f87171' },
+  'Kanıt':  { bg: 'rgba(16,185,129,0.1)',  border: 'rgba(16,185,129,0.25)', text: '#34d399' },
+  'Bilim':  { bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.25)', text: '#fbbf24' },
+  'UGC':    { bg: 'rgba(236,72,153,0.1)',  border: 'rgba(236,72,153,0.25)', text: '#f9a8d4' },
+  'Sır':    { bg: 'rgba(167,139,250,0.1)', border: 'rgba(167,139,250,0.25)','text': '#c4b5fd' },
+};
 
-  const html = selected.map((hook, i) =>
-    '<div class="hook-card" onclick="copyHook(this)" style="animation:fadeIn 0.2s ease ' + (i * 0.05) + 's both"><div>' + hook + '</div><div class="copy-hint">📋 Tıkla, kopyala</div></div>'
-  ).join('');
-  document.getElementById('hook-results').innerHTML = '<div style="display:flex;flex-direction:column;gap:8px">' + html + '</div>';
+function getCatColor(cat) {
+  for (const key of Object.keys(categoryColors)) {
+    if (cat && cat.includes(key)) return categoryColors[key];
+  }
+  return { bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.2)', text: '#a78bfa' };
+}
+
+function renderHookCards(hooks) {
+  document.getElementById('hook-results').innerHTML = hooks.map((h, i) => {
+    const c = getCatColor(h.category);
+    return `<div onclick="copyHookCard(this)" data-text="${(h.text||'').replace(/"/g,'&quot;')}" style="
+      background:${c.bg};
+      border:1px solid ${c.border};
+      border-radius:16px;
+      padding:20px 24px;
+      cursor:pointer;
+      transition:all 0.2s cubic-bezier(0.25,0.46,0.45,0.94);
+      margin-bottom:10px;
+      animation:fadeIn 0.3s ease ${i*0.07}s both;
+      position:relative;
+      overflow:hidden;
+    "
+    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.3)'"
+    onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div style="flex:1">
+          ${h.category ? `<div style="display:inline-flex;align-items:center;gap:5px;background:${c.border};border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700;color:${c.text};text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">${h.category}</div>` : ''}
+          <div style="font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:${h.why ? '10px' : '0'}">${h.text || h}</div>
+          ${h.why ? `<div style="font-size:12px;color:var(--text3);line-height:1.5">💡 ${h.why}</div>` : ''}
+        </div>
+        <div class="copy-indicator" style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s">📋</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function copyHookCard(el) {
+  const text = el.getAttribute('data-text');
+  navigator.clipboard.writeText(text).then(() => {
+    const icon = el.querySelector('.copy-indicator');
+    icon.textContent = '✅';
+    icon.style.background = 'var(--green-light)';
+    el.style.borderColor = 'rgba(16,185,129,0.4)';
+    setTimeout(() => {
+      icon.textContent = '📋';
+      icon.style.background = 'var(--surface2)';
+      el.style.borderColor = '';
+    }, 2000);
+  });
 }
 
 function copyHook(el) {
