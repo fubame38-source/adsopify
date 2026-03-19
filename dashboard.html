@@ -316,8 +316,34 @@
 </head>
 <body>
 
+<!-- LOGIN NAV BAR -->
+<div id="login-nav" style="position:fixed;top:0;left:0;right:0;height:56px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;z-index:1000;gap:24px">
+  <a href="index.html" style="font-weight:700;font-size:16px;letter-spacing:-0.3px;text-decoration:none;color:var(--text)">Ads<span style="color:var(--accent)">opify</span></a>
+  <div style="flex:1"></div>
+  <a href="index.html#features" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">Özellikler</a>
+  <a href="index.html#pricing" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">Fiyatlar</a>
+  <a href="mailto:furkan_yk456@hotmail.com" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">İletişim</a>
+</div>
+
+<!-- ONBOARDING POPUP -->
+<div id="onboarding-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:none;align-items:center;justify-content:center;padding:24px">
+  <div style="background:#fff;border-radius:16px;padding:32px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-size:24px;margin-bottom:8px">🎯</div>
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:6px">Markanızı tanıtalım</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">Site URL'nizi girin, yapay zeka markanızı analiz edip size özel hook, creative fikri ve reklam metni üretsin.</p>
+    <label>Web Siteniz</label>
+    <input type="url" id="brand-url" placeholder="https://orneksite.com" style="margin-bottom:8px" />
+    <label style="margin-top:8px">Ürün / Marka Açıklaması (opsiyonel)</label>
+    <textarea id="brand-desc" placeholder="Ürününüzü kısaca anlatın: ne satıyorsunuz, hedef kitleniz kim, fiyat aralığı nedir?" rows="3" style="margin-bottom:16px"></textarea>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="saveOnboarding()" style="flex:1;justify-content:center">🚀 Analiz Et ve Başla</button>
+      <button class="btn btn-ghost" onclick="skipOnboarding()">Atla</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOKEN SCREEN -->
-<div id="token-screen">
+<div id="token-screen" style="padding-top:56px">
   <div class="token-box">
     <div style="font-size:28px;margin-bottom:12px">📊</div>
     <h2>Adsopify</h2>
@@ -813,9 +839,18 @@ function setDefaultDates() {
 
 function startApp() {
   document.getElementById('token-screen').style.display = 'none';
+  document.getElementById('login-nav').style.display = 'none';
   document.getElementById('top-acct').style.display = 'flex';
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
   loadAllAccounts();
+
+  // Onboarding: ilk girişte popup göster
+  const brandData = localStorage.getItem('adsopify_brand');
+  if (!brandData) {
+    document.getElementById('onboarding-popup').style.display = 'flex';
+  } else {
+    S.brand = JSON.parse(brandData);
+  }
   loadPlan();
 }
 
@@ -860,6 +895,62 @@ function closeAccountMenu(e) {
     document.getElementById('acct-menu').style.display = 'none';
     document.removeEventListener('click', closeAccountMenu);
   }
+}
+
+// ═══════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════
+function skipOnboarding() {
+  document.getElementById('onboarding-popup').style.display = 'none';
+  localStorage.setItem('adsopify_brand', JSON.stringify({ url: '', rawDesc: '', hooks: [], ideas: [] }));
+}
+
+async function saveOnboarding() {
+  const url = document.getElementById('brand-url').value.trim();
+  const desc = document.getElementById('brand-desc').value.trim();
+  if (!url && !desc) { skipOnboarding(); return; }
+
+  const btn = document.querySelector('#onboarding-popup button.btn-primary');
+  btn.textContent = '⏳ Analiz ediliyor...';
+  btn.disabled = true;
+
+  const prompt = 'Sen bir Meta reklam uzmanısın. Aşağıdaki marka bilgilerini analiz et.\n\nMarka URL: ' + (url||'belirtilmedi') + '\nAçıklama: ' + (desc||'belirtilmedi') + '\n\nSadece JSON döndür:\n{"brandName":"marka adı","product":"ürün 1 cümle","audience":"hedef kitle 1 cümle","hooks":["hook 1 Türkçe viral dikkat çekici","hook 2","hook 3","hook 4","hook 5"],"ideas":[{"icon":"🎬","title":"başlık","desc":"açıklama"},{"icon":"💡","title":"başlık","desc":"açıklama"},{"icon":"🎯","title":"başlık","desc":"açıklama"},{"icon":"📱","title":"başlık","desc":"açıklama"},{"icon":"🔥","title":"başlık","desc":"açıklama"}],"adCopy":"kısa reklam metni 2-3 cümle Türkçe"}';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content && data.content[0] && data.content[0].text) || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const brand = JSON.parse(clean);
+    brand.url = url; brand.rawDesc = desc;
+    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+    S.brand = brand;
+    document.getElementById('onboarding-popup').style.display = 'none';
+    showBrandToast(brand.brandName || 'Markanız');
+  } catch (e) {
+    const brand = { url: url, rawDesc: desc, brandName: '', hooks: [], ideas: [] };
+    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+    S.brand = brand;
+    document.getElementById('onboarding-popup').style.display = 'none';
+  }
+  btn.textContent = '🚀 Analiz Et ve Başla';
+  btn.disabled = false;
+}
+
+function showBrandToast(name) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--green);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;animation:fadeIn 0.2s ease';
+  t.textContent = '✅ ' + name + ' analiz edildi! İçerikler kişiselleştirildi.';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
 }
 
 // ═══════════════════════════════════════════════
@@ -1147,7 +1238,15 @@ function renderPlan(campaigns, insights) {
 function refreshIdeas() {
   const btn = document.getElementById('ideas-refresh-btn');
   if (btn) { btn.textContent = '✓'; setTimeout(() => { btn.textContent = '↺ Yenile'; }, 600); }
-  const picked = shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 5);
+
+  // Marka analizi varsa önce onları göster
+  let pool = ALL_CREATIVE_IDEAS;
+  if (S.brand && S.brand.ideas && S.brand.ideas.length > 0) {
+    const brandIdeas = S.brand.ideas.map(i => ({ icon: i.icon, title: i.title, desc: i.desc }));
+    pool = [...brandIdeas, ...ALL_CREATIVE_IDEAS];
+  }
+
+  const picked = shuffleArray(pool).slice(0, 5);
   document.getElementById('plan-ideas').innerHTML = picked.map(function(i) {
     return '<div class="plan-item" style="animation:fadeIn 0.2s ease"><span class="pi-icon">' + i.icon + '</span><div class="pi-body"><div class="pi-title">' + i.title + '</div><div class="pi-desc">' + i.desc + '</div></div></div>';
   }).join('');
@@ -1820,10 +1919,14 @@ function generateHooks() {
     || (HOOKS[format] && HOOKS[format]['general'])
     || HOOKS['pov']['general'];
 
-  // Exclude last shown set
+  // Marka analizi varsa brand hook'larını başa ekle
+  if (S.brand && S.brand.hooks && S.brand.hooks.length > 0) {
+    pool = [...S.brand.hooks, ...pool];
+  }
+
   const last = _lastHooks[key] || [];
   let available = pool.filter(h => !last.includes(h));
-  if (available.length < 5) available = pool; // reset if exhausted
+  if (available.length < 5) available = pool;
 
   const shuffled = [...available].sort(() => Math.random() - 0.5);
   const selected = shuffled.slice(0, 5);
