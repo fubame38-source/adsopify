@@ -325,21 +325,55 @@
   <a href="#" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500">İletişim</a>
 </div>
 
-<!-- ONBOARDING POPUP -->
-<div id="onboarding-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:center;justify-content:center;padding:24px">
-  <div style="background:#fff;border-radius:16px;padding:32px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
-    <div style="font-size:24px;margin-bottom:8px">🎯</div>
-    <h3 style="font-size:18px;font-weight:700;margin-bottom:6px">Markanızı tanıtalım</h3>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">Site URL'nizi girin, yapay zeka markanızı analiz edip size özel hook, creative fikri ve reklam metni üretsin.</p>
-    <label>Web Siteniz</label>
-    <input type="url" id="brand-url" placeholder="https://orneksite.com" style="margin-bottom:8px" />
-    <label style="margin-top:8px">Ürün / Marka Açıklaması (opsiyonel)</label>
-    <textarea id="brand-desc" placeholder="Ürününüzü kısaca anlatın: ne satıyorsunuz, hedef kitleniz kim, fiyat aralığı nedir?" rows="3" style="margin-bottom:16px"></textarea>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-primary" onclick="saveOnboarding()" style="flex:1;justify-content:center">🚀 Analiz Et ve Başla</button>
-      <button class="btn btn-ghost" onclick="skipOnboarding()">Atla</button>
+<!-- ONBOARDING SCREEN -->
+<div id="onboarding-popup" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0f172a 100%);z-index:2000;align-items:center;justify-content:center;padding:24px">
+  
+  <!-- Step 1: URL Input -->
+  <div id="ob-step1" style="max-width:560px;width:100%;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🚀</div>
+    <h2 style="font-size:32px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:10px">Markanı tanıt</h2>
+    <p style="font-size:16px;color:rgba(255,255,255,0.65);margin-bottom:36px;line-height:1.6">Yapay zeka markanı analiz edip sana özel hook, creative fikir ve reklam metni üretsin.</p>
+    
+    <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:28px;margin-bottom:16px">
+      <div style="margin-bottom:16px">
+        <label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:8px;text-align:left">🔗 Web Sitesi URL'si</label>
+        <input type="url" id="brand-url" placeholder="https://markan.com" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:15px;padding:12px 16px;border-radius:10px" />
+      </div>
+      <div>
+        <label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:8px;text-align:left">📝 Ürün / Marka Açıklaması</label>
+        <textarea id="brand-desc" placeholder="Ne satıyorsunuz? Hedef kitleniz kim? Kısaca anlatın..." rows="3" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:13px;padding:12px 16px;border-radius:10px;resize:none"></textarea>
+      </div>
+    </div>
+
+    <button onclick="saveOnboarding()" id="ob-analyze-btn" style="width:100%;padding:16px;background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:10px;transition:opacity 0.15s">
+      ✨ Analiz Et ve Başla
+    </button>
+    <button onclick="skipOnboarding()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:13px;cursor:pointer;font-family:var(--font);padding:8px">
+      Şimdilik atla →
+    </button>
+  </div>
+
+  <!-- Step 2: Analyzing -->
+  <div id="ob-step2" style="display:none;max-width:480px;width:100%;text-align:center">
+    <div style="font-size:56px;margin-bottom:24px;animation:spin 2s linear infinite;display:inline-block">⚙️</div>
+    <h2 style="font-size:26px;font-weight:700;color:#fff;margin-bottom:12px">Analiz ediliyor...</h2>
+    <p id="ob-status" style="font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:32px">Markan inceleniyor</p>
+    <div style="background:rgba(255,255,255,0.1);border-radius:99px;height:6px;overflow:hidden;max-width:300px;margin:0 auto">
+      <div id="ob-progress" style="height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:99px;width:0%;transition:width 0.5s ease"></div>
     </div>
   </div>
+
+  <!-- Step 3: Done -->
+  <div id="ob-step3" style="display:none;max-width:480px;width:100%;text-align:center">
+    <div style="font-size:56px;margin-bottom:20px">🎉</div>
+    <h2 style="font-size:28px;font-weight:700;color:#fff;margin-bottom:8px" id="ob-brand-name">Marka analiz edildi!</h2>
+    <p style="font-size:15px;color:rgba(255,255,255,0.65);margin-bottom:24px" id="ob-brand-desc-result"></p>
+    <div id="ob-results" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:20px;margin-bottom:24px;text-align:left"></div>
+    <button onclick="finishOnboarding()" style="width:100%;padding:16px;background:linear-gradient(135deg,#16a34a,#059669);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font)">
+      🚀 Dashboarda Git →
+    </button>
+  </div>
+
 </div>
 
 <!-- TOKEN SCREEN -->
@@ -920,8 +954,11 @@ function closeAccountMenu(e) {
 // ONBOARDING
 // ═══════════════════════════════════════════════
 function skipOnboarding() {
-  document.getElementById('onboarding-popup').style.display = 'none';
-  localStorage.setItem('adsopify_brand', JSON.stringify({ url: '', rawDesc: '', hooks: [], ideas: [] }));
+  document.getElementById("onboarding-popup").style.display = "none";
+  document.getElementById("ob-step1").style.display = "block";
+  document.getElementById("ob-step2").style.display = "none";
+  document.getElementById("ob-step3").style.display = "none";
+  localStorage.setItem("adsopify_brand", JSON.stringify({ skipped: true }));
 }
 
 async function saveOnboarding() {
@@ -929,9 +966,26 @@ async function saveOnboarding() {
   const desc = document.getElementById('brand-desc').value.trim();
   if (!url && !desc) { skipOnboarding(); return; }
 
-  const btn = document.querySelector('#onboarding-popup button.btn-primary');
-  btn.textContent = '⏳ Analiz ediliyor...';
-  btn.disabled = true;
+  // Step 2: Show analyzing screen
+  document.getElementById('ob-step1').style.display = 'none';
+  document.getElementById('ob-step2').style.display = 'block';
+
+  const steps = [
+    { msg: 'Site analiz ediliyor...', pct: 20 },
+    { msg: 'Hedef kitle belirleniyor...', pct: 40 },
+    { msg: 'Hook fikirleri üretiliyor...', pct: 65 },
+    { msg: 'Reklam metinleri yazılıyor...', pct: 85 },
+    { msg: 'Tamamlanıyor...', pct: 95 },
+  ];
+
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx < steps.length) {
+      document.getElementById('ob-status').textContent = steps[stepIdx].msg;
+      document.getElementById('ob-progress').style.width = steps[stepIdx].pct + '%';
+      stepIdx++;
+    }
+  }, 800);
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev', {
@@ -942,16 +996,40 @@ async function saveOnboarding() {
 
     const brand = await res.json();
     if (brand.error) throw new Error(brand.error);
-
     brand.url = url;
     brand.rawDesc = desc;
+
+    clearInterval(stepInterval);
+    document.getElementById('ob-progress').style.width = '100%';
+    document.getElementById('ob-status').textContent = 'Analiz tamamlandı!';
+
     localStorage.setItem('adsopify_brand', JSON.stringify(brand));
     S.brand = brand;
-    document.getElementById('onboarding-popup').style.display = 'none';
-    showBrandToast(brand.brandName || 'Markanız');
-    refreshIdeas();
-  } catch (e) {
-    // Fallback: template bazlı
+
+    // Step 3: Show results
+    setTimeout(() => {
+      document.getElementById('ob-step2').style.display = 'none';
+      document.getElementById('ob-step3').style.display = 'block';
+      document.getElementById('ob-brand-name').textContent = '✅ ' + (brand.brandName || 'Marka') + ' analiz edildi!';
+      document.getElementById('ob-brand-desc-result').textContent = brand.product || '';
+
+      const hookList = (brand.hooks || []).slice(0, 3).map(h =>
+        '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);font-size:13px">🪝 ' + h + '</div>'
+      ).join('');
+      const ideaList = (brand.ideas || []).slice(0, 2).map(i =>
+        '<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.85);font-size:13px">' + i.icon + ' ' + i.title + '</div>'
+      ).join('');
+
+      document.getElementById('ob-results').innerHTML =
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.4);margin-bottom:8px">Üretilen Hooklar</div>' +
+        hookList +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.4);margin:12px 0 8px">Creative Fikirler</div>' +
+        ideaList;
+    }, 600);
+
+  } catch(e) {
+    clearInterval(stepInterval);
+    // Fallback
     let brandName = '';
     try {
       const u = new URL(url.startsWith('http') ? url : 'https://' + url);
@@ -959,20 +1037,26 @@ async function saveOnboarding() {
       brandName = brandName.charAt(0).toUpperCase() + brandName.slice(1);
     } catch(ex) { brandName = 'Markanız'; }
 
-    const brand = {
-      url, rawDesc: desc, brandName,
-      hooks: generateBrandHooks(brandName, desc),
-      ideas: generateBrandIdeas(brandName, desc)
-    };
+    const brand = { url, rawDesc: desc, brandName, hooks: generateBrandHooks(brandName, desc), ideas: generateBrandIdeas(brandName, desc) };
     localStorage.setItem('adsopify_brand', JSON.stringify(brand));
     S.brand = brand;
-    document.getElementById('onboarding-popup').style.display = 'none';
-    showBrandToast(brandName);
-    refreshIdeas();
-  }
 
-  btn.textContent = '🚀 Analiz Et ve Başla';
-  btn.disabled = false;
+    document.getElementById('ob-step2').style.display = 'none';
+    document.getElementById('ob-step3').style.display = 'block';
+    document.getElementById('ob-brand-name').textContent = '✅ ' + brandName + ' kaydedildi!';
+    document.getElementById('ob-brand-desc-result').textContent = 'Temel analiz tamamlandı.';
+    document.getElementById('ob-results').innerHTML = '<div style="color:rgba(255,255,255,0.6);font-size:13px">Hook ve creative fikirleri hazırlandı.</div>';
+  }
+}
+
+function finishOnboarding() {
+  document.getElementById('onboarding-popup').style.display = 'none';
+  // Reset steps for next time
+  document.getElementById('ob-step1').style.display = 'block';
+  document.getElementById('ob-step2').style.display = 'none';
+  document.getElementById('ob-step3').style.display = 'none';
+  document.getElementById('ob-progress').style.width = '0%';
+  refreshIdeas();
 }
 
 function generateBrandHooks(name, desc) {
@@ -1009,6 +1093,10 @@ function resetBrand() {
   S.brand = null;
   document.getElementById('brand-url').value = '';
   document.getElementById('brand-desc').value = '';
+  document.getElementById('ob-step1').style.display = 'block';
+  document.getElementById('ob-step2').style.display = 'none';
+  document.getElementById('ob-step3').style.display = 'none';
+  document.getElementById('ob-progress').style.width = '0%';
   document.getElementById('onboarding-popup').style.display = 'flex';
 }
 
@@ -1986,18 +2074,25 @@ var HOOKS = {
 var _lastHooks = {};
 
 function generateHooks() {
+  if (!S.brand || !S.brand.brandName) {
+    document.getElementById('hook-results').innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🎯</div><div style="font-size:14px;font-weight:500;margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:13px">Ayarlar → Markayı Yeniden Gir</div><button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="resetBrand()">Markanı Ekle →</button></div>';
+    return;
+  }
+
   const format = document.getElementById('hook-format').value;
   const audience = document.getElementById('hook-audience').value;
   const key = format + '_' + audience;
 
-  let pool = (HOOKS[format] && HOOKS[format][audience])
+  // Önce marka hookları, yoksa genel havuz
+  let pool = [];
+  if (S.brand.hooks && S.brand.hooks.length > 0) {
+    pool = [...S.brand.hooks];
+  }
+  // Genel havuzdan da ekle (karıştırmak için)
+  const generalPool = (HOOKS[format] && HOOKS[format][audience])
     || (HOOKS[format] && HOOKS[format]['general'])
     || HOOKS['pov']['general'];
-
-  // Marka analizi varsa brand hook'larını başa ekle
-  if (S.brand && S.brand.hooks && S.brand.hooks.length > 0) {
-    pool = [...S.brand.hooks, ...pool];
-  }
+  pool = [...pool, ...generalPool];
 
   const last = _lastHooks[key] || [];
   let available = pool.filter(h => !last.includes(h));
