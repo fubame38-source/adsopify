@@ -769,70 +769,113 @@
   <!-- GÖRSEL PROMPT -->
   <div id="sec-creative-prompt" class="section">
     <div class="page-title">🎨 Görsel Prompt Üretici</div>
-    <div class="page-sub">Ürün görselini yükle, AI 3 farklı reklam görseli promptu üretsin</div>
+    <div class="page-sub">Ürün görselini yükle — AI reklam görseli promptları üretsin</div>
 
-    <div class="card mb-16">
-      <div class="card-title">Ürün Görseli</div>
-      <div id="img-upload-area" onclick="document.getElementById('img-file').click()" style="border:2px dashed var(--border2);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:16px" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'">
-        <div id="img-preview-wrap" style="display:none;margin-bottom:12px">
-          <img id="img-preview" style="max-height:200px;border-radius:10px;object-fit:contain" />
+    <!-- Upload + Settings Row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+      
+      <!-- Sol: Görsel yükleme -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="img-upload-area" onclick="document.getElementById('img-file').click()" style="min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;transition:all 0.2s;border-bottom:1px solid var(--border);position:relative;overflow:hidden" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+          <div id="img-preview-wrap" style="display:none;position:absolute;inset:0">
+            <img id="img-preview" style="width:100%;height:100%;object-fit:contain;padding:16px" />
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,0.6));font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);text-align:center">Değiştirmek için tıkla</div>
+          </div>
+          <div id="img-placeholder" style="text-align:center;padding:32px">
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px">📸</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">Görsel yükle</div>
+            <div style="font-size:12px;color:var(--text3)">JPG, PNG, WEBP • max 5MB</div>
+          </div>
+          <input type="file" id="img-file" accept="image/*" style="display:none" onchange="handleImageUpload(this)" />
         </div>
-        <div id="img-placeholder">
-          <div style="font-size:40px;margin-bottom:8px">📸</div>
-          <div style="font-size:14px;font-weight:600;color:var(--text2)">Görsel yüklemek için tıkla</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:4px">JPG, PNG, WEBP — max 5MB</div>
+        <div style="padding:16px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px">İpuçları</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            ✓ Beyaz/nötr arka plan tercih et<br>
+            ✓ Ürün net ve iyi aydınlatılmış olsun<br>
+            ✓ Birden fazla açı varsa en iyisini seç
+          </div>
         </div>
-        <input type="file" id="img-file" accept="image/*" style="display:none" onchange="handleImageUpload(this)" />
       </div>
 
-      <div style="margin-bottom:12px">
-        <label>Reklam hedefi (opsiyonel)</label>
-        <select id="prompt-goal">
-          <option value="sales">Satış / Dönüşüm</option>
-          <option value="awareness">Marka Bilinirliği</option>
-          <option value="engagement">Etkileşim / Yorum</option>
-          <option value="traffic">Trafik / Tıklama</option>
-        </select>
-      </div>
+      <!-- Sağ: Ayarlar -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card" style="flex:1">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:16px">Reklam Ayarları</div>
+          
+          <label style="margin-bottom:6px">🎯 Hedef</label>
+          <select id="prompt-goal" style="margin-bottom:14px">
+            <option value="sales">Satış / Dönüşüm</option>
+            <option value="awareness">Marka Bilinirliği</option>
+            <option value="engagement">Etkileşim / Yorum</option>
+            <option value="traffic">Trafik / Tıklama</option>
+          </select>
 
-      <div style="margin-bottom:16px">
-        <label>Platform</label>
-        <select id="prompt-platform">
-          <option value="instagram">Instagram Reels / Story</option>
-          <option value="facebook">Facebook Feed</option>
-          <option value="both">Her İkisi</option>
-        </select>
-      </div>
+          <label style="margin-bottom:6px">📱 Platform</label>
+          <select id="prompt-platform" style="margin-bottom:14px">
+            <option value="both">Instagram + Facebook</option>
+            <option value="instagram">Sadece Instagram</option>
+            <option value="facebook">Sadece Facebook</option>
+          </select>
 
-      <button class="btn btn-primary" onclick="generateVisualPrompts()" id="prompt-gen-btn" style="width:100%;justify-content:center">✨ Promptları Üret</button>
+          <label style="margin-bottom:6px">🎨 Stil Tercihi</label>
+          <select id="prompt-style" style="margin-bottom:16px">
+            <option value="lifestyle">Lifestyle / Yaşam Tarzı</option>
+            <option value="studio">Stüdyo / Ürün Odaklı</option>
+            <option value="ugc">UGC / Kullanıcı Videosu</option>
+            <option value="cinematic">Sinematik</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="generateVisualPrompts()" id="prompt-gen-btn" style="width:100%;justify-content:center;padding:16px;font-size:15px;font-weight:700;border-radius:12px">
+          ✨ Promptları Üret
+        </button>
+      </div>
     </div>
 
-    <div id="prompt-results" style="display:none">
-      <div class="card mb-16">
-        <div class="card-title">🔍 AI Görsel Analizi</div>
-        <div id="prompt-analysis" style="font-size:13px;color:var(--text2);line-height:1.7"></div>
+    <!-- Loading state -->
+    <div id="prompt-loading" style="display:none;text-align:center;padding:60px">
+      <div style="display:inline-flex;flex-direction:column;align-items:center;gap:16px">
+        <div style="width:56px;height:56px;border-radius:50%;border:3px solid var(--border2);border-top-color:var(--accent);animation:spin 0.8s linear infinite"></div>
+        <div id="prompt-loading-msg" style="font-size:14px;color:var(--text2)">Görsel analiz ediliyor...</div>
       </div>
-      <div id="prompt-cards"></div>
+    </div>
+
+    <!-- Results -->
+    <div id="prompt-results" style="display:none">
+      <!-- Analiz kutusu -->
+      <div style="background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(124,58,237,0.08));border:1px solid rgba(99,102,241,0.2);border-radius:14px;padding:20px;margin-bottom:24px;display:flex;gap:16px;align-items:flex-start">
+        <div style="font-size:28px;flex-shrink:0">🔍</div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent2);margin-bottom:8px">AI Görsel Analizi</div>
+          <div id="prompt-analysis" style="font-size:14px;color:var(--text);line-height:1.7"></div>
+        </div>
+      </div>
+
+      <!-- Prompt kartları -->
+      <div id="prompt-cards" style="display:grid;grid-template-columns:1fr;gap:16px"></div>
     </div>
   </div>
 
   <!-- HOOK SWIPE -->
   <div id="sec-swipe" class="section">
     <div class="page-title">Hook Swipe</div>
-    <div class="page-sub">Beğendiğin hookları sağa, atlamak istediklerini sola kaydır</div>
+    <div class="page-sub">Beğendiğin hookları sağa, atlamak istediklerini sola kaydır — yıldızla kaydet</div>
 
-    <div id="swipe-area">
-      <div id="swipe-stack"></div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div id="swipe-area" style="width:100%;max-width:540px;position:relative;height:360px;display:flex;align-items:center;justify-content:center;margin-bottom:24px">
+        <div id="swipe-stack" style="width:100%;position:relative"></div>
+      </div>
+
+      <div class="swipe-btns" style="margin-top:0">
+        <button class="swipe-btn nope" onclick="swipeCard('left')" title="Atla">✕</button>
+        <button class="swipe-btn save" onclick="swipeCard('save')" title="Kaydet">⭐</button>
+        <button class="swipe-btn like" onclick="swipeCard('right')" title="Dene">♥</button>
+      </div>
+      <div class="swipe-counter" id="swipe-counter" style="margin-top:16px"></div>
     </div>
 
-    <div class="swipe-btns">
-      <button class="swipe-btn nope" onclick="swipeCard('left')" title="Atla">✕</button>
-      <button class="swipe-btn save" onclick="swipeCard('save')" title="Kaydet">⭐</button>
-      <button class="swipe-btn like" onclick="swipeCard('right')" title="Dene">♥</button>
-    </div>
-    <div class="swipe-counter" id="swipe-counter"></div>
-
-    <div style="margin-top:32px" id="swipe-saved-section" style="display:none">
+    <div style="margin-top:32px" id="swipe-saved-section">
       <div class="card">
         <div class="card-title">⭐ Kaydedilen Hooklar</div>
         <div id="swipe-saved-list"></div>
@@ -912,6 +955,12 @@
       <div class="card">
         <div class="card-title">Kampanya Bazlı Karşılaştırma</div>
         <div id="weekly-camps"></div>
+      </div>
+
+      <!-- Aksiyon Önerileri -->
+      <div class="card" style="margin-top:16px">
+        <div class="card-title">⚡ Bu Hafta Ne Yapmalısın?</div>
+        <div id="weekly-actions" style="display:flex;flex-direction:column;gap:10px"></div>
       </div>
     </div>
   </div>
@@ -1731,6 +1780,27 @@ async function loadWeekly() {
         '</div>';
     }).join('') || '<div style="color:var(--text3);font-size:13px;padding:16px">Veri yok</div>';
 
+    // Aksiyon önerileri
+    const actions = [];
+    if (tw.roas > 0 && tw.roas >= lw.roas * 1.15) actions.push({ type: 'green', icon: '🚀', title: 'ROAS artıyor — bütçeyi artır', desc: 'Bu hafta ROAS ' + tw.roas.toFixed(2) + 'x. Geçen haftaya göre ' + (((tw.roas-lw.roas)/lw.roas)*100).toFixed(1) + '% artış. En iyi kampanyaların bütçesini %20-30 artırabilirsin.' });
+    if (tw.roas > 0 && tw.roas < lw.roas * 0.85) actions.push({ type: 'red', icon: '⚠️', title: 'ROAS düştü — optimize et', desc: 'ROAS geçen haftaya göre ' + (((lw.roas-tw.roas)/lw.roas)*100).toFixed(1) + '% düştü. Kötü performanslı kampanyaları durdur, iyi ROAS li olanları ölçekle.' });
+    if (tw.ctr > 0 && tw.ctr < lw.ctr * 0.9) actions.push({ type: 'yellow', icon: '🎨', title: 'CTR düştü — creative yenile', desc: 'CTR %' + tw.ctr.toFixed(2) + ' seviyesine geriledi. Creative yorgunluğu başlamış olabilir. Yeni hook formatları ve görseller dene.' });
+    if (tw.ctr > 0 && tw.ctr > lw.ctr * 1.1) actions.push({ type: 'green', icon: '🎯', title: 'CTR yüksek — bu creative ölçekle', desc: 'CTR %' + tw.ctr.toFixed(2) + ' ile iyi performans gösteriyor. Bu hook formatını farklı kitlelere test et.' });
+    if (tw.purchases > 0 && tw.cpa > 0 && lw.cpa > 0 && tw.cpa < lw.cpa * 0.9) actions.push({ type: 'green', icon: '💰', title: 'CPA iyileşti — mükemmel', desc: 'Satış başı maliyet ' + tw.cpa.toFixed(0) + ' TL seviyesine düştü. Bütçeyi artırmak için ideal zaman.' });
+    if (tw.purchases === 0 && tw.spend > 100) actions.push({ type: 'red', icon: '🔴', title: 'Satış yok — acil müdahale', desc: 'Bu hafta ' + tw.spend.toFixed(0) + ' TL harcandı ama satış olmadı. Pixel kurulumunu, hedeflemeyi ve landing page\'i kontrol et.' });
+    if (actions.length === 0) actions.push({ type: 'blue', icon: '📊', title: 'Stabil performans', desc: 'Metrikler geçen haftayla benzer. Yeni creative ve A/B testleri dene.' });
+
+    const actionColors = { green: 'rgba(16,185,129,0.1)', red: 'rgba(239,68,68,0.1)', yellow: 'rgba(245,158,11,0.1)', blue: 'rgba(99,102,241,0.1)' };
+    const actionBorders = { green: 'rgba(16,185,129,0.3)', red: 'rgba(239,68,68,0.3)', yellow: 'rgba(245,158,11,0.3)', blue: 'rgba(99,102,241,0.3)' };
+    const actionTextColors = { green: 'var(--green)', red: 'var(--red)', yellow: 'var(--yellow)', blue: 'var(--accent2)' };
+
+    document.getElementById('weekly-actions').innerHTML = actions.map(a =>
+      '<div style="background:' + actionColors[a.type] + ';border:1px solid ' + actionBorders[a.type] + ';border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start">' +
+      '<span style="font-size:22px;flex-shrink:0">' + a.icon + '</span>' +
+      '<div><div style="font-weight:700;font-size:14px;color:' + actionTextColors[a.type] + ';margin-bottom:4px">' + a.title + '</div>' +
+      '<div style="font-size:13px;color:var(--text2);line-height:1.6">' + a.desc + '</div></div></div>'
+    ).join('');
+
   } catch (e) {
     document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px">Hata: ' + e.message + '</div>';
   }
@@ -2502,39 +2572,60 @@ async function generateVisualPrompts() {
   btn.textContent = '⏳ Analiz ediliyor...';
   btn.disabled = true;
 
+  document.getElementById('prompt-results').style.display = 'none';
+  document.getElementById('prompt-loading').style.display = 'block';
+
+  const loadingMsgs = ['Görsel analiz ediliyor...', 'Ürün özellikleri belirleniyor...', 'Stil konseptleri oluşturuluyor...', 'Profesyonel promptlar yazılıyor...'];
+  let msgIdx = 0;
+  const msgInterval = setInterval(() => {
+    const el = document.getElementById('prompt-loading-msg');
+    if (el && msgIdx < loadingMsgs.length) { el.textContent = loadingMsgs[msgIdx++]; }
+  }, 1200);
+
   const goal = document.getElementById('prompt-goal').value;
   const platform = document.getElementById('prompt-platform').value;
+  const style = document.getElementById('prompt-style')?.value || 'lifestyle';
   const brand = S.brand;
   const brandCtx = brand && brand.brandName ? `Marka: ${brand.brandName}. Ürün: ${brand.product || ''}. Hedef kitle: ${brand.audience || ''}.` : '';
 
-  const goalMap = { sales: 'satış ve dönüşüm', awareness: 'marka bilinirliği', engagement: 'etkileşim ve yorum', traffic: 'trafik ve tıklama' };
-  const platformMap = { instagram: 'Instagram Reels ve Story', facebook: 'Facebook Feed', both: 'Instagram ve Facebook' };
+  const goalMap = { sales:'satış dönüşümü', awareness:'marka bilinirliği', engagement:'etkileşim', traffic:'trafik' };
+  const platformMap = { instagram:'Instagram Reels/Story (9:16)', facebook:'Facebook Feed (1:1 veya 4:5)', both:'Instagram ve Facebook (9:16 ve 1:1)' };
+  const styleMap = { lifestyle:'lifestyle/yaşam tarzı', studio:'stüdyo/ürün odaklı', ugc:'UGC kullanıcı videosu tarzı', cinematic:'sinematik/film tarzı' };
 
-  const prompt = `Bu ürün görselini analiz et. ${brandCtx}
+  const prompt = `Bu ürün görselini profesyonel bir reklam direktörü ve AI görsel üretim uzmanı olarak analiz et. ${brandCtx}
 
-Hedef: ${goalMap[goal]} — Platform: ${platformMap[platform]}
+Hedef: ${goalMap[goal]} — Platform: ${platformMap[platform]} — Stil: ${styleMap[style]}
 
-Şunları üret (sadece JSON, başka hiçbir şey yazma):
+ÖNEMLİ: Promptlar çok detaylı ve teknik olmalı. Her prompt en az 4-5 cümle, spesifik ışıklandırma, kompozisyon, renk paleti, kamera açısı, atmosfer detayları içermeli. Genel değil, bu ürüne özgü olmalı.
+
+Sadece JSON döndür:
 {
-  "analysis": "Görseldeki ürünün kısa analizi — ne görülüyor, öne çıkan özellikler (2-3 cümle, Türkçe)",
+  "analysis": "Görselin detaylı analizi: ürün özellikleri, materyal, renk, form, hedef kitleye nasıl hitap ettiği (3-4 cümle)",
+  "productDesc": "Ürünün İngilizce kısa tanımı (prompt'larda kullanmak için)",
   "prompts": [
     {
-      "tool": "Midjourney / ChatGPT Image",
-      "style": "stil adı",
-      "prompt": "İngilizce prompt — çok detaylı, profesyonel reklam görseli için",
-      "tr": "Türkçe açıklama — bu prompt ne üretiyor"
+      "tool": "Midjourney v6 / ChatGPT Image",
+      "style": "Lifestyle Atmosfer",
+      "mood": "Sıcak, davetkar",
+      "prompt": "Çok detaylı İngilizce prompt — spesifik sahne kurgusu, ışıklandırma (örn: soft morning window light, golden hour), kompozisyon (örn: rule of thirds, negative space), arka plan, renk paleti, kamera (örn: 85mm lens, f/1.8), atmosfer, stil referansları, --ar 9:16 --style raw --v 6",
+      "tr": "Bu prompt ne üretiyor ve neden etkili — hedef kitleye nasıl hitap ediyor, hangi duyguyu tetikliyor",
+      "usage": "Instagram Reels thumbnail, Story"
     },
     {
-      "tool": "Gemini / Ideogram",
-      "style": "stil adı",
-      "prompt": "İngilizce prompt — farklı stil",
-      "tr": "Türkçe açıklama"
+      "tool": "Gemini / Ideogram / Adobe Firefly",
+      "style": "Stüdyo Premium",
+      "mood": "Profesyonel, güven verici",
+      "prompt": "Çok detaylı İngilizce prompt — stüdyo kurgusu, profesyonel ürün fotoğrafçılığı teknikleri, özel ışıklandırma setup (örn: three-point lighting, rim light), yüzey materyali, yansımalar, gölge kontrolü, renk gradyanı arka plan, post-processing tarzı",
+      "tr": "Bu prompt ne üretiyor ve neden etkili",
+      "usage": "Facebook Feed, e-ticaret"
     },
     {
-      "tool": "DALL-E / Adobe Firefly",
-      "style": "stil adı",
-      "prompt": "İngilizce prompt — üçüncü farklı stil",
-      "tr": "Türkçe açıklama"
+      "tool": "DALL-E 3 / Stable Diffusion XL",
+      "style": "UGC / Sosyal Kanıt",
+      "mood": "Samimi, güvenilir",
+      "prompt": "Çok detaylı İngilizce prompt — gerçekçi UGC tarzı, handheld kamera etkisi, doğal ortam, günlük yaşam sahnesi, gerçek kişi eli veya silüeti, doğal ışık, ham/unfiltered estetik, slight motion blur, authentic feel",
+      "tr": "Bu prompt ne üretiyor ve neden etkili",
+      "usage": "Instagram Reels, viral içerik"
     }
   ]
 }`;
@@ -2543,37 +2634,54 @@ Hedef: ${goalMap[goal]} — Platform: ${platformMap[platform]}
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/vision', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        image: _uploadedImageBase64,
-        imageType: _uploadedImageType,
-        prompt
-      })
+      body: JSON.stringify({ image: _uploadedImageBase64, imageType: _uploadedImageType, prompt })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
 
+    clearInterval(msgInterval);
+    document.getElementById('prompt-loading').style.display = 'none';
     document.getElementById('prompt-results').style.display = 'block';
     document.getElementById('prompt-analysis').textContent = data.analysis || '';
 
-    const toolColors = ['rgba(99,102,241,0.15)', 'rgba(16,185,129,0.15)', 'rgba(245,158,11,0.15)'];
-    const toolBorders = ['rgba(99,102,241,0.3)', 'rgba(16,185,129,0.3)', 'rgba(245,158,11,0.3)'];
+    const configs = [
+      { gradient: 'linear-gradient(135deg,rgba(99,102,241,0.1),rgba(124,58,237,0.05))', border: 'rgba(99,102,241,0.25)', accent: '#818cf8', icon: '🎨' },
+      { gradient: 'linear-gradient(135deg,rgba(16,185,129,0.1),rgba(5,150,105,0.05))', border: 'rgba(16,185,129,0.25)', accent: '#34d399', icon: '📸' },
+      { gradient: 'linear-gradient(135deg,rgba(245,158,11,0.1),rgba(217,119,6,0.05))', border: 'rgba(245,158,11,0.25)', accent: '#fbbf24', icon: '🎬' },
+    ];
 
-    document.getElementById('prompt-cards').innerHTML = (data.prompts || []).map((p, i) => `
-      <div class="card mb-16" style="background:${toolColors[i]};border-color:${toolBorders[i]}">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div>
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">${p.tool}</div>
-            <div style="font-size:14px;font-weight:700;color:var(--text)">${p.style}</div>
+    document.getElementById('prompt-cards').innerHTML = (data.prompts || []).map((p, i) => {
+      const c = configs[i] || configs[0];
+      return `
+      <div style="background:${c.gradient};border:1px solid ${c.border};border-radius:16px;padding:24px;transition:all 0.2s;cursor:default" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:44px;height:44px;border-radius:12px;background:${c.border};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${c.icon}</div>
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${c.accent};margin-bottom:3px">${p.tool}</div>
+              <div style="font-size:16px;font-weight:700;color:var(--text)">${p.style}</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">Mood: ${p.mood || ''} • ${p.usage || ''}</div>
+            </div>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="copyPrompt(this, ${i})">📋 Kopyala</button>
+          <button onclick="copyPrompt(this,${i})" style="background:${c.border};border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;color:${c.accent};cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">📋 Kopyala</button>
         </div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;line-height:1.7;color:var(--text2);font-family:var(--mono);margin-bottom:10px" id="prompt-text-${i}">${p.prompt}</div>
-        <div style="font-size:12px;color:var(--text3);line-height:1.6">💡 ${p.tr}</div>
-      </div>
-    `).join('');
+        
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:8px">PROMPT</div>
+          <div id="prompt-text-${i}" style="font-size:12px;line-height:1.8;color:var(--text2);font-family:var(--mono)">${p.prompt}</div>
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="font-size:16px;flex-shrink:0">💡</span>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6">${p.tr}</div>
+        </div>
+      </div>`;
+    }).join('');
 
     document.getElementById('prompt-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch(e) {
+    clearInterval(msgInterval);
+    document.getElementById('prompt-loading').style.display = 'none';
     alert('Hata: ' + e.message);
   }
 
