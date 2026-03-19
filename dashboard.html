@@ -322,7 +322,7 @@
   <div style="flex:1"></div>
   <a href="index.html#features" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">Özellikler</a>
   <a href="index.html#pricing" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">Fiyatlar</a>
-  <a href="mailto:furkan_yk456@hotmail.com" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">İletişim</a>
+  <a href="/cdn-cgi/l/email-protection#cbadbeb9a0aaa594b2a0fffefd8ba3a4bfa6aaa2a7e5a8a4a6" style="font-size:13px;color:var(--text2);text-decoration:none;font-weight:500" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text2)'">İletişim</a>
 </div>
 
 <!-- ONBOARDING POPUP -->
@@ -787,7 +787,7 @@
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
@@ -911,38 +911,53 @@ async function saveOnboarding() {
   if (!url && !desc) { skipOnboarding(); return; }
 
   const btn = document.querySelector('#onboarding-popup button.btn-primary');
-  btn.textContent = '⏳ Analiz ediliyor...';
+  btn.textContent = '⏳ Kaydediliyor...';
   btn.disabled = true;
 
-  const prompt = 'Sen bir Meta reklam uzmanısın. Aşağıdaki marka bilgilerini analiz et.\n\nMarka URL: ' + (url||'belirtilmedi') + '\nAçıklama: ' + (desc||'belirtilmedi') + '\n\nSadece JSON döndür:\n{"brandName":"marka adı","product":"ürün 1 cümle","audience":"hedef kitle 1 cümle","hooks":["hook 1 Türkçe viral dikkat çekici","hook 2","hook 3","hook 4","hook 5"],"ideas":[{"icon":"🎬","title":"başlık","desc":"açıklama"},{"icon":"💡","title":"başlık","desc":"açıklama"},{"icon":"🎯","title":"başlık","desc":"açıklama"},{"icon":"📱","title":"başlık","desc":"açıklama"},{"icon":"🔥","title":"başlık","desc":"açıklama"}],"adCopy":"kısa reklam metni 2-3 cümle Türkçe"}';
-
+  // URL'den marka adı çıkar
+  let brandName = '';
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content && data.content[0] && data.content[0].text) || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const brand = JSON.parse(clean);
-    brand.url = url; brand.rawDesc = desc;
-    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
-    S.brand = brand;
-    document.getElementById('onboarding-popup').style.display = 'none';
-    showBrandToast(brand.brandName || 'Markanız');
-  } catch (e) {
-    const brand = { url: url, rawDesc: desc, brandName: '', hooks: [], ideas: [] };
-    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
-    S.brand = brand;
-    document.getElementById('onboarding-popup').style.display = 'none';
-  }
+    const u = new URL(url.startsWith('http') ? url : 'https://' + url);
+    brandName = u.hostname.replace('www.', '').split('.')[0];
+    brandName = brandName.charAt(0).toUpperCase() + brandName.slice(1);
+  } catch(e) { brandName = 'Markanız'; }
+
+  // Açıklamadan anahtar kelimeler çıkar
+  const descLower = (desc + ' ' + url).toLowerCase();
+  const hooks = generateBrandHooks(brandName, desc);
+  const ideas = generateBrandIdeas(brandName, desc);
+
+  const brand = { url, rawDesc: desc, brandName, hooks, ideas };
+  localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+  S.brand = brand;
+
+  document.getElementById('onboarding-popup').style.display = 'none';
+  showBrandToast(brandName);
+  refreshIdeas();
+
   btn.textContent = '🚀 Analiz Et ve Başla';
   btn.disabled = false;
+}
+
+function generateBrandHooks(name, desc) {
+  const d = (desc || '').toLowerCase();
+  return [
+    'POV: ' + name + '\' ü keşfedince hayatım değişti 🤩',
+    '"' + name + ' olmadan nasıl yaşadım?" diye soruyorum kendime',
+    'Arkadaşım ' + name + '\' ü önermeseydi bilmezdim — gerçekten işe yarıyor',
+    name + ' hakkında kimsenin söylemediği şeyi ben söylüyorum 👇',
+    'Bu ürünü almadan önce şüpheliydim. Şimdi tüm aileye aldım.',
+  ];
+}
+
+function generateBrandIdeas(name, desc) {
+  return [
+    { icon: '🎬', title: 'POV Keşif', desc: '"POV: ' + name + '\' ü ilk kez kullandığımda..." — handheld kamera, doğal ışık, samimi reaksiyon' },
+    { icon: '👥', title: 'Sosyal Kanıt', desc: 'Müşteri yorumlarından kolaj + "Bu kadar kişi yanılıyor olamaz" mesajı' },
+    { icon: '🔬', title: 'Bilimsel Kanca', desc: 'Ürününüzün çözdüğü problemi istatistikle aç — "İnsanların %X\'i bu hatayı yapıyor"' },
+    { icon: '📦', title: 'Unboxing', desc: name + ' paket açılışı — ürün kalitesine odaklan, ürünü sona bırak merak uyandır' },
+    { icon: '⚡', title: 'Önce-Sonra', desc: 'ÖNCE: Problem. SONRA: ' + name + ' ile çözüm. Kısa, net, etkili.' },
+  ];
 }
 
 function showBrandToast(name) {
@@ -2184,10 +2199,4 @@ function analyzeLog() {
 // UTILS
 // ═══════════════════════════════════════════════
 function fmt(n) {
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-  return n.toString();
-}
-</script>
-</body>
-</html>
+  if (n
