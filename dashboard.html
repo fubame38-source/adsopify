@@ -415,12 +415,10 @@
   }
   .hook-card-main {
     width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 22px; padding: 28px 24px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 18px; padding: 24px 22px;
+    box-shadow: var(--shadow-md);
     transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
   }
   .hook-card-main.exit-left {
@@ -454,17 +452,17 @@
   }
   .hook-card-main .hook-text {
     font-size: 20px; font-weight: 700;
-    line-height: 1.5; color: #fff;
+    line-height: 1.5; color: var(--text);
     letter-spacing: -0.3px; margin-bottom: 0;
   }
   .hook-card-main .hook-why {
-    font-size: 13px; color: rgba(255,255,255,0.35);
+    font-size: 13px; color: var(--text2);
     line-height: 1.6; padding-top: 14px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid var(--border);
     margin-top: 14px;
   }
   .hook-card-main .hook-tag {
-    font-size: 11px; color: rgba(255,255,255,0.18);
+    font-size: 11px; color: var(--text3);
     margin-top: 14px; letter-spacing: 0.04em;
   }
   /* Action buttons — büyük, mobil dostu */
@@ -1045,9 +1043,7 @@
     <div class="page-title">Hook Swipe</div>
     <div class="page-sub">Markana özel viral hooklar — beğen, kaydet veya geç</div>
 
-    <div style="background:linear-gradient(160deg,#0a0e1a 0%,#111827 60%,#0d1117 100%);border-radius:24px;padding:32px 20px 28px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden">
-      <div style="position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(rgba(99,102,241,0.12),transparent 70%);pointer-events:none"></div>
-
+    <div style="background:var(--surface2);border-radius:20px;padding:24px 20px 20px;margin-bottom:16px;border:1px solid var(--border2);position:relative;overflow:hidden">
       <!-- Progress bar -->
       <div style="margin-bottom:20px">
         <div style="display:flex;justify-content:space-between;margin-bottom:6px">
@@ -3298,14 +3294,14 @@ function initSwipe() {
   ];
 
   _swipeCards = [...brandHooks, ...genericFormats].slice(0, 25).sort(() => Math.random() - 0.5);
-  renderSwipeStack();
+  renderHookCard();
   renderSaved();
 }
 
 async function loadMoreSwipeHooks() {
   if (!S.brand || !S.brand.brandName) { initSwipe(); return; }
-  const stack = document.getElementById('swipe-stack');
-  stack.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.4)"><div style="font-size:32px;margin-bottom:12px">⏳</div><div>AI yeni hooklar üretiyor...</div></div>';
+  const cardLoading = document.getElementById('hook-card-main');
+  if(cardLoading) cardLoading.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)"><div style="font-size:32px;margin-bottom:12px">⏳</div><div>AI yeni hooklar üretiyor...</div></div>';
 
   const formats = ['pov','hata','sosyal','soru','bilim','ugc'];
   const format = formats[Math.floor(Math.random() * formats.length)];
@@ -3328,120 +3324,61 @@ async function loadMoreSwipeHooks() {
     hooks.forEach(h => { if (!_allGeneratedHooks.includes(h.text)) _allGeneratedHooks.push(h.text); });
     _swipeCards = hooks;
     _swipeIdx = 0;
-    renderSwipeStack();
+    renderHookCard();
   } catch(e) {
     initSwipe();
   }
 }
 
-function renderSwipeStack() {
-  const stack = document.getElementById('swipe-stack');
-  const remaining = _swipeCards.length - _swipeIdx;
-
+function renderHookCard() {
+  var cardEl = document.getElementById('hook-card-main');
+  var counter = document.getElementById('swipe-counter');
+  var progressBar = document.getElementById('swipe-progress-bar');
+  if (!cardEl) return;
+  var remaining = _swipeCards.length - _swipeIdx;
+  var total = _swipeCards.length;
   if (remaining <= 0) {
-    stack.innerHTML = '<div class="swipe-empty"><div class="big">🎉</div><div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Hepsi bitti!</div><div style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:20px">Kaydettiklerini aşağıda görebilirsin.</div><button class="btn btn-primary btn-sm" onclick="loadMoreSwipeHooks()">✨ AI\'dan Yeni Hooklar Getir</button></div>';
-    document.getElementById('swipe-counter').textContent = '';
+    cardEl.innerHTML = '<div class="swipe-empty"><div class="big">🎉</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Hepsi bitti!</div><div style="font-size:14px;color:var(--text2);margin-bottom:16px">Kaydettiklerini aşağıda görebilirsin.</div><button class="btn btn-primary btn-sm" onclick="loadMoreSwipeHooks()">✨ Yeni Hooklar Getir</button></div>';
+    if (counter) counter.textContent = '';
+    if (progressBar) progressBar.style.width = '100%';
     return;
   }
-
-  stack.innerHTML = '';
-  for (let i = Math.min(_swipeIdx + 2, _swipeCards.length - 1); i >= _swipeIdx; i--) {
-    const offset = i - _swipeIdx;
-    const card = document.createElement('div');
-    card.className = 'swipe-card';
-    card.style.transform = `translateY(${offset * -10}px) scale(${1 - offset * 0.03})`;
-    card.style.zIndex = 10 - offset;
-    card.style.opacity = offset === 0 ? '1' : (offset === 1 ? '0.65' : '0.35');
-
-    // Hook string veya object olabilir
-    const hookData = _swipeCards[i];
-    const hookText = typeof hookData === 'object' ? (hookData.text || hookData) : hookData;
-    const hookCat = typeof hookData === 'object' ? hookData.category : null;
-    const hookWhy = typeof hookData === 'object' ? hookData.why : null;
-    const isBrand = i < (S.brand && S.brand.hooks ? S.brand.hooks.length : 0);
-
-    // Kategori rengi
-    const catColor = getCatColor ? getCatColor(hookCat) : { bg: 'var(--accent-light)', border: 'rgba(99,102,241,0.3)', text: 'var(--accent2)' };
-
-    card.innerHTML = `
-      <div class="swipe-overlay-like">✓ DENE</div>
-      <div class="swipe-overlay-nope">✕ ATLA</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-        ${hookCat ? `<span class="hook-cat" style="background:${catColor.bg};color:${catColor.text};border:1px solid ${catColor.border}">${hookCat}</span>` : ''}
-        ${isBrand ? '<span class="hook-cat" style="background:rgba(99,102,241,0.12);color:#a78bfa;border:1px solid rgba(99,102,241,0.25)">✨ Markana Özel</span>' : ''}
-      </div>
-      <div class="hook-text">${hookText}</div>
-      ${hookWhy ? `<div class="hook-why">💡 ${hookWhy}</div>` : ''}
-      <div class="hook-tag" style="margin-top:12px">#${i + 1} / ${_swipeCards.length}</div>
-    `;
-
-    if (offset === 0) {
-      card.addEventListener('mousedown', swipeDragStart);
-      card.addEventListener('touchstart', swipeDragStart, { passive: true });
-    }
-    stack.appendChild(card);
-  }
-
-  document.getElementById('swipe-counter').textContent = `${remaining} hook kaldı`;
+  var hookData = _swipeCards[_swipeIdx];
+  var hookText = typeof hookData === 'object' ? (hookData.text || String(hookData)) : String(hookData);
+  var hookCat = typeof hookData === 'object' ? hookData.category : null;
+  var hookWhy = typeof hookData === 'object' ? hookData.why : null;
+  var isBrand = _swipeIdx < (S.brand && S.brand.hooks ? S.brand.hooks.length : 0);
+  var catColor = (typeof getCatColor === 'function') ? getCatColor(hookCat) : { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)', text: '#a78bfa' };
+  cardEl.classList.remove('enter');
+  void cardEl.offsetWidth;
+  cardEl.classList.add('enter');
+  var catHtml = hookCat ? '<span class="hook-cat" style="background:' + catColor.bg + ';color:' + catColor.text + ';border:1px solid ' + catColor.border + '">' + hookCat + '</span>' : '';
+  var brandHtml = isBrand ? '<span class="hook-cat" style="background:rgba(99,102,241,0.12);color:#a78bfa;border:1px solid rgba(99,102,241,0.25)">✨ Markana Özel</span>' : '';
+  var whyHtml = hookWhy ? '<div class="hook-why">💡 ' + hookWhy + '</div>' : '';
+  cardEl.innerHTML = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + catHtml + brandHtml + '</div><div class="hook-text">' + hookText + '</div>' + whyHtml + '<div class="hook-tag">' + (_swipeIdx+1) + ' / ' + total + '</div>';
+  if (counter) counter.textContent = remaining + ' hook kaldı';
+  if (progressBar) progressBar.style.width = ((_swipeIdx / total) * 100) + '%';
 }
 
-function swipeDragStart(e) {
-  _swipeDragging = true;
-  _swipeStartX = e.touches ? e.touches[0].clientX : e.clientX;
-  _swipeCurrentX = _swipeStartX;
-  const card = e.currentTarget;
-  document.addEventListener('mousemove', swipeDragMove);
-  document.addEventListener('mouseup', swipeDragEnd);
-  document.addEventListener('touchmove', swipeDragMove, { passive: true });
-  document.addEventListener('touchend', swipeDragEnd);
-  card.style.transition = 'none';
-}
-
-function swipeDragMove(e) {
-  if (!_swipeDragging) return;
-  _swipeCurrentX = e.touches ? e.touches[0].clientX : e.clientX;
-  const diff = _swipeCurrentX - _swipeStartX;
-  const rotate = diff * 0.08;
-  const card = document.querySelector('.swipe-card[style*="z-index: 10"]') || document.querySelector('.swipe-card');
-  if (!card) return;
-  card.style.transform = `translateX(${diff}px) rotate(${rotate}deg)`;
-  const likeEl = card.querySelector('#overlay-like');
-  const nopeEl = card.querySelector('#overlay-nope');
-  if (diff > 30) { likeEl.style.opacity = Math.min((diff - 30) / 60, 1); nopeEl.style.opacity = 0; }
-  else if (diff < -30) { nopeEl.style.opacity = Math.min((-diff - 30) / 60, 1); likeEl.style.opacity = 0; }
-  else { likeEl.style.opacity = 0; nopeEl.style.opacity = 0; }
-}
-
-function swipeDragEnd(e) {
-  if (!_swipeDragging) return;
-  _swipeDragging = false;
-  document.removeEventListener('mousemove', swipeDragMove);
-  document.removeEventListener('mouseup', swipeDragEnd);
-  document.removeEventListener('touchmove', swipeDragMove);
-  document.removeEventListener('touchend', swipeDragEnd);
-  const diff = _swipeCurrentX - _swipeStartX;
-  if (diff > 80) swipeCard('right');
-  else if (diff < -80) swipeCard('left');
-  else renderSwipeStack();
-}
-
-function swipeCard(dir) {
+function hookAction(action) {
   if (_swipeIdx >= _swipeCards.length) return;
-  const hook = _swipeCards[_swipeIdx];
-  if (dir === 'right' || dir === 'save') {
-    if (!_swipeSaved.includes(hook)) {
-      _swipeSaved.push(hook);
-      localStorage.setItem('adsopify_saved_hooks', JSON.stringify(_swipeSaved));
-    }
-    if (dir === 'save') showSwipeToast('⭐ Kaydedildi!', 'var(--accent)');
-    else showSwipeToast('♥ Deneyeceksin!', 'var(--green)');
+  var hook = _swipeCards[_swipeIdx];
+  var hookText = typeof hook === 'object' ? hook.text : hook;
+  var cardEl = document.getElementById('hook-card-main');
+  if (action === 'save' || action === 'use') {
+    var exists = _swipeSaved.some(function(h){ return (typeof h==='object'?h.text:h) === hookText; });
+    if (!exists) { _swipeSaved.push(hook); localStorage.setItem('adsopify_saved_hooks', JSON.stringify(_swipeSaved)); }
+    if (cardEl) cardEl.classList.add(action === 'save' ? 'exit-save' : 'exit-right');
+    showSwipeToast(action === 'save' ? '⭐ Kaydedildi!' : '✓ Kullanılacak!', action === 'save' ? '#6366f1' : '#10b981');
   } else {
-    showSwipeToast('✕ Atlandı', 'var(--red)');
+    if (cardEl) cardEl.classList.add('exit-left');
+    showSwipeToast('✕ Geçildi', '#ef4444');
   }
   _swipeIdx++;
-  setTimeout(renderSwipeStack, 150);
-  renderSaved();
+  setTimeout(function(){ renderHookCard(); renderSaved(); }, 300);
 }
+
+function swipeCard(dir) { hookAction(dir === 'left' ? 'skip' : dir === 'right' ? 'use' : 'save'); }
 
 function showSwipeToast(msg, color) {
   const t = document.createElement('div');
