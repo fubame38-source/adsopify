@@ -406,116 +406,139 @@
   body.light-mode .token-box { background: #fff; }
   body.light-mode input, body.light-mode textarea, body.light-mode select { background: #f8faff; }
   body.light-mode #chat-messages { background: #f8faff; }
-  /* ── HOOK CARDS ── */
+  /* ── HOOK SWIPE — Tinder Style ── */
+  #hook-swipe-arena {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 24px 16px 20px;
+  }
   #hook-card-wrap {
-    position: relative; width: 100%;
-    min-height: 220px;
-    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    width: 300px; height: 300px;
     margin-bottom: 24px;
+    flex-shrink: 0;
+  }
+  .hook-card-bg1 {
+    position: absolute; inset: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transform: translateY(10px) scale(0.95);
+    z-index: 1;
+  }
+  .hook-card-bg2 {
+    position: absolute; inset: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transform: translateY(20px) scale(0.90);
+    opacity: 0.5;
+    z-index: 0;
   }
   .hook-card-main {
-    width: 100%;
+    position: absolute; inset: 0;
     background: var(--surface);
     border: 1px solid var(--border2);
-    border-radius: 18px; padding: 24px 22px;
-    box-shadow: var(--shadow-md);
-    transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    position: relative; overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     cursor: grab; user-select: none;
+    z-index: 2; overflow: hidden;
+    display: flex; flex-direction: column;
   }
   .hook-card-main:active { cursor: grabbing; }
   .hook-card-main.exit-left {
-    transform: translateX(-110%) rotate(-8deg);
+    transition: all 0.32s cubic-bezier(0.55,0,1,0.45);
+    transform: translateX(-120%) rotate(-20deg) !important;
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.55,0,1,0.45);
   }
   .hook-card-main.exit-right {
-    transform: translateX(110%) rotate(8deg);
+    transition: all 0.32s cubic-bezier(0.55,0,1,0.45);
+    transform: translateX(120%) rotate(20deg) !important;
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.55,0,1,0.45);
   }
   .hook-card-main.exit-save {
-    transform: translateY(-40px) scale(1.04);
-    opacity: 0;
     transition: all 0.3s ease;
+    transform: translateY(-60px) scale(1.05) !important;
+    opacity: 0;
   }
   .hook-card-main.enter {
-    animation: cardEnter 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+    animation: cardEnter 0.38s cubic-bezier(0.34,1.56,0.64,1) both;
   }
   @keyframes cardEnter {
-    from { opacity:0; transform: translateY(24px) scale(0.96); }
-    to   { opacity:1; transform: translateY(0) scale(1); }
+    from { opacity:0; transform:scale(0.85) translateY(20px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
+  }
+  /* Kart üst — metin alanı */
+  .hook-card-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 20px 12px; text-align: center; position: relative;
+  }
+  .hook-card-footer {
+    padding: 12px 20px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
   }
   .hook-card-main .hook-cat {
-    display: inline-flex; align-items: center;
-    padding: 4px 12px; border-radius: 99px;
+    display: inline-flex; padding: 3px 10px; border-radius: 99px;
     font-size: 10px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .hook-card-main .hook-text {
-    font-size: 20px; font-weight: 700;
-    line-height: 1.5; color: var(--text);
-    letter-spacing: -0.3px; margin-bottom: 0;
-  }
-  .hook-card-main .hook-why {
-    font-size: 13px; color: var(--text2);
-    line-height: 1.6; padding-top: 14px;
-    border-top: 1px solid var(--border);
-    margin-top: 14px;
+    font-size: 16px; font-weight: 700;
+    line-height: 1.55; color: var(--text);
+    letter-spacing: -0.2px;
   }
   .hook-card-main .hook-tag {
     font-size: 11px; color: var(--text3);
-    margin-top: 14px; letter-spacing: 0.04em;
   }
-  /* Action buttons — büyük, mobil dostu */
-  .hook-actions {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
-    margin-top: 0;
+  .hook-card-main .hook-why {
+    font-size: 12px; color: var(--text3);
+    line-height: 1.5; max-width: 200px;
+    text-align: right;
   }
-  .hook-action-btn {
-    padding: 14px 8px; border: none; border-radius: 14px;
-    font-size: 13px; font-weight: 700; cursor: pointer;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
-    font-family: var(--font);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .hook-action-btn:active { transform: scale(0.93); }
-  .hook-action-btn .btn-emoji { font-size: 22px; }
-  .hook-action-btn.btn-skip { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.18); }
-  .hook-action-btn.btn-skip:hover { background: rgba(239,68,68,0.25); }
-  .hook-action-btn.btn-save { background: rgba(99,102,241,0.12); color: #a78bfa; border: 1px solid rgba(99,102,241,0.18); }
-  .hook-action-btn.btn-save:hover { background: rgba(99,102,241,0.25); }
-  .hook-action-btn.btn-use { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.18); }
-  .hook-action-btn.btn-use:hover { background: rgba(16,185,129,0.25); }
-
+  /* Overlays */
   .swipe-hint-left {
-    position: absolute; top: 20px; left: 20px;
+    position: absolute; top: 16px; left: 14px;
     background: var(--red); color: #fff;
-    padding: 6px 14px; border-radius: 8px;
-    font-weight: 800; font-size: 14px;
-    opacity: 0; transform: rotate(-12deg);
-    pointer-events: none; letter-spacing: 0.06em;
-    transition: opacity 0.05s;
+    padding: 4px 12px; border-radius: 7px;
+    font-weight: 800; font-size: 13px;
+    opacity: 0; transform: rotate(-15deg);
+    pointer-events: none; z-index: 10; letter-spacing: 0.06em;
   }
   .swipe-hint-right {
-    position: absolute; top: 20px; right: 20px;
+    position: absolute; top: 16px; right: 14px;
     background: var(--green); color: #fff;
-    padding: 6px 14px; border-radius: 8px;
-    font-weight: 800; font-size: 14px;
-    opacity: 0; transform: rotate(12deg);
-    pointer-events: none; letter-spacing: 0.06em;
-    transition: opacity 0.05s;
+    padding: 4px 12px; border-radius: 7px;
+    font-weight: 800; font-size: 13px;
+    opacity: 0; transform: rotate(15deg);
+    pointer-events: none; z-index: 10; letter-spacing: 0.06em;
   }
-  .swipe-empty { text-align: center; padding: 40px 20px; }
+  /* Butonlar */
+  .hook-actions {
+    display: flex; justify-content: center; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .hook-action-btn {
+    width: 56px; height: 56px; border: none; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+    font-family: var(--font); box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hook-action-btn:active { transform: scale(0.87) !important; }
+  .hook-action-btn.btn-skip  { background: var(--red-light);   color: var(--red);    border: 2px solid rgba(239,68,68,0.2); }
+  .hook-action-btn.btn-save  { background: var(--accent-light); color: var(--accent2); border: 2px solid rgba(99,102,241,0.2); }
+  .hook-action-btn.btn-use   { background: var(--green-light);  color: var(--green);  border: 2px solid rgba(16,185,129,0.2); }
+  .hook-action-btn.btn-skip:hover { background: var(--red);    color: #fff; transform: scale(1.12); }
+  .hook-action-btn.btn-save:hover { background: var(--accent);  color: #fff; transform: scale(1.12); }
+  .hook-action-btn.btn-use:hover  { background: var(--green);   color: #fff; transform: scale(1.12); }
+
+  .swipe-counter { font-size: 12px; color: var(--text3); text-align: center; }
+  #swipe-progress-bar { height: 3px; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 99px; transition: width 0.3s; }
+  .swipe-empty { text-align: center; padding: 32px 16px; }
   .swipe-empty .big { font-size: 48px; margin-bottom: 12px; }
-  .swipe-saved {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 12px 16px; font-size: 13px;
-    color: var(--text2); margin-bottom: 8px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
+  .swipe-saved { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 
   /* ── GLOW CARDS ── */
   .glow-green { box-shadow: 0 0 20px rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3) !important; }
@@ -1061,44 +1084,43 @@
   <!-- HOOK SWIPE -->
   <div id="sec-swipe" class="section">
     <div class="page-title">Hook Swipe</div>
-    <div class="page-sub">Markana özel viral hooklar — beğen, kaydet veya geç</div>
+    <div class="page-sub">Markana özel viral hooklar</div>
 
-    <div style="background:var(--surface2);border-radius:20px;padding:24px 20px 20px;margin-bottom:16px;border:1px solid var(--border2);position:relative;overflow:hidden">
-      <!-- Progress bar -->
-      <div style="margin-bottom:20px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Hook</span>
-          <span id="swipe-counter" style="font-size:11px;color:rgba(255,255,255,0.3);font-weight:600"></span>
+    <div id="hook-swipe-arena">
+      <!-- Progress -->
+      <div style="width:300px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Hook</span>
+          <span id="swipe-counter" style="font-size:11px;color:var(--text3)"></span>
         </div>
-        <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden">
-          <div id="swipe-progress-bar" style="height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:99px;transition:width 0.3s ease;width:0%"></div>
+        <div style="height:3px;background:var(--border);border-radius:99px;overflow:hidden">
+          <div id="swipe-progress-bar" style="width:0%;height:100%"></div>
         </div>
       </div>
 
-      <!-- Kart -->
+      <!-- Kart stack -->
       <div id="hook-card-wrap">
+        <div class="hook-card-bg2"></div>
+        <div class="hook-card-bg1"></div>
         <div id="hook-card-main" class="hook-card-main"></div>
       </div>
 
       <!-- Butonlar -->
       <div class="hook-actions">
-        <button class="hook-action-btn btn-skip" onclick="hookAction('skip')">
-          <span class="btn-emoji">✕</span>
-          <span>Geç</span>
-        </button>
-        <button class="hook-action-btn btn-save" onclick="hookAction('save')">
-          <span class="btn-emoji">⭐</span>
-          <span>Kaydet</span>
-        </button>
-        <button class="hook-action-btn btn-use" onclick="hookAction('use')">
-          <span class="btn-emoji">✓</span>
-          <span>Kullan</span>
-        </button>
+        <button class="hook-action-btn btn-skip" onclick="hookAction('skip')" title="Geç">✕</button>
+        <button class="hook-action-btn btn-save" onclick="hookAction('save')" title="Kaydet">⭐</button>
+        <button class="hook-action-btn btn-use" onclick="hookAction('use')" title="Kullan">✓</button>
+      </div>
+
+      <div style="display:flex;gap:20px;font-size:11px;color:var(--text3)">
+        <span>✕ Geç</span>
+        <span>⭐ Kaydet</span>
+        <span>✓ Kullan</span>
       </div>
     </div>
 
     <!-- Kaydedilenler -->
-    <div id="swipe-saved-section">
+    <div id="swipe-saved-section" style="margin-top:8px">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
           <div class="card-title" style="margin-bottom:0">⭐ Kaydedilen Hooklar</div>
@@ -3378,9 +3400,14 @@ function renderHookCard() {
   cardEl.innerHTML =
     '<div class="swipe-hint-left">✕ GEÇ</div>' +
     '<div class="swipe-hint-right">✓ KULLAN</div>' +
-    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + catHtml + brandHtml + '</div>' +
-    '<div class="hook-text">' + hookText + '</div>' + whyHtml +
-    '<div class="hook-tag">' + (_swipeIdx+1) + ' / ' + total + '</div>';
+    '<div class="hook-card-body">' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">' + catHtml + brandHtml + '</div>' +
+      '<div class="hook-text">' + hookText + '</div>' +
+    '</div>' +
+    '<div class="hook-card-footer">' +
+      '<div class="hook-tag">' + (_swipeIdx+1) + ' / ' + total + '</div>' +
+      whyHtml +
+    '</div>';
   if (counter) counter.textContent = remaining + ' hook kaldı';
   if (progressBar) progressBar.style.width = ((_swipeIdx / total) * 100) + '%';
 
