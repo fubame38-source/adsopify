@@ -1259,6 +1259,13 @@ function startApp() {
   loadAllAccounts();
   initTheme();
 
+  // Supabase — mevcut oturumu da kaydet (sessizce)
+  if (S.token) {
+    FB.api('/me', { fields: 'id,name,email', access_token: S.token }, function(me) {
+      if (me && me.id) sbUpsertUser(me.id, me.name, me.email);
+    });
+  }
+
   const brandData = localStorage.getItem('adsopify_brand');
   if (!brandData) {
     document.getElementById('onboarding-popup').style.display = 'flex';
