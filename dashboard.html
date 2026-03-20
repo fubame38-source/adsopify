@@ -557,41 +557,51 @@
 </div>
 
 <!-- AUTH SCREEN — Adım 1: Kayıt / Giriş -->
-<div id="auth-screen" style="display:none;position:fixed;inset:0;z-index:1100;background:var(--bg);align-items:center;justify-content:center">
-  <div style="width:100%;max-width:400px;padding:24px">
-    
+<div id="auth-screen" style="display:none;position:fixed;inset:0;z-index:1100;background:linear-gradient(135deg,#0a0e1a 0%,#0f172a 50%,#0a0e1a 100%);align-items:center;justify-content:center;overflow:auto">
+
+  <!-- Ambient glow -->
+  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(rgba(99,102,241,0.12),transparent 70%);pointer-events:none"></div>
+
+  <div style="width:100%;max-width:420px;padding:24px;position:relative;z-index:1">
+
     <!-- Logo -->
-    <div style="text-align:center;margin-bottom:36px">
-      <div style="font-size:24px;font-weight:700;letter-spacing:-0.5px;color:var(--text)">Ads<span style="color:var(--accent)">opify</span></div>
-      <div style="font-size:13px;color:var(--text3);margin-top:6px">Meta Reklam AI Dashboard</div>
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#fff;margin-bottom:6px">Ads<span style="color:#818cf8">opify</span></div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.35);letter-spacing:0.02em">Meta Reklam AI Dashboard</div>
     </div>
 
-    <!-- Tab seçici -->
-    <div style="display:flex;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:24px">
-      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:9px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-family:var(--font);transition:all 0.15s">Giriş Yap</button>
-      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:9px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2);font-family:var(--font);transition:all 0.15s">Kayıt Ol</button>
+    <!-- Card -->
+    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;backdrop-filter:blur(20px)">
+
+      <!-- Tab seçici -->
+      <div style="display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;margin-bottom:28px;border:1px solid rgba(255,255,255,0.08)">
+        <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-family:var(--font);transition:all 0.2s;letter-spacing:0.01em">Giriş Yap</button>
+        <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:10px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);font-family:var(--font);transition:all 0.2s">Kayıt Ol</button>
+      </div>
+
+      <!-- Form -->
+      <div id="auth-name-wrap" style="display:none;margin-bottom:16px">
+        <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">Ad Soyad</label>
+        <input type="text" id="auth-name" placeholder="Ad Soyad" autocomplete="off" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px" />
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">E-posta</label>
+        <input type="email" id="auth-email" placeholder="ornek@email.com" autocomplete="off" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px" />
+      </div>
+
+      <div style="margin-bottom:24px">
+        <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">Şifre</label>
+        <input type="password" id="auth-password" placeholder="En az 6 karakter" autocomplete="new-password" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px" />
+      </div>
+
+      <div id="auth-err" style="color:#f87171;font-size:13px;margin-bottom:16px;display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 14px"></div>
+
+      <button id="auth-submit-btn" onclick="submitAuth()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all 0.18s;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(99,102,241,0.3)">Giriş Yap</button>
     </div>
 
-    <!-- Form -->
-    <div class="card" style="padding:24px">
-      <div id="auth-name-wrap" style="display:none;margin-bottom:14px">
-        <label>Ad Soyad</label>
-        <input type="text" id="auth-name" placeholder="Ad Soyad" autocomplete="off" />
-      </div>
-      <div style="margin-bottom:14px">
-        <label>E-posta</label>
-        <input type="email" id="auth-email" placeholder="ornek@email.com" autocomplete="off" />
-      </div>
-      <div style="margin-bottom:20px">
-        <label>Şifre</label>
-        <input type="password" id="auth-password" placeholder="En az 6 karakter" autocomplete="new-password" />
-      </div>
-      <div id="auth-err" style="color:var(--red);font-size:12px;margin-bottom:12px;display:none"></div>
-      <button id="auth-submit-btn" class="btn btn-primary" onclick="submitAuth()" style="width:100%;justify-content:center;padding:13px;font-size:14px">Giriş Yap</button>
-    </div>
-
-    <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text3)">
-      Giriş yaparak <a href="https://adsopify.com/privacy.html" target="_blank" style="color:var(--accent);text-decoration:none">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,0.2)">
+      Devam ederek <a href="https://adsopify.com/privacy.html" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.
     </div>
   </div>
 </div>
@@ -1292,10 +1302,12 @@ async function sbSignIn(email, password) {
 
 function switchAuthTab(tab) {
   const isLogin = tab === 'login';
-  document.getElementById('tab-login').style.background = isLogin ? 'var(--accent)' : 'transparent';
-  document.getElementById('tab-login').style.color = isLogin ? '#fff' : 'var(--text2)';
-  document.getElementById('tab-register').style.background = !isLogin ? 'var(--accent)' : 'transparent';
-  document.getElementById('tab-register').style.color = !isLogin ? '#fff' : 'var(--text2)';
+  const loginBtn = document.getElementById('tab-login');
+  const regBtn = document.getElementById('tab-register');
+  loginBtn.style.background = isLogin ? 'var(--accent)' : 'transparent';
+  loginBtn.style.color = isLogin ? '#fff' : 'rgba(255,255,255,0.4)';
+  regBtn.style.background = !isLogin ? 'var(--accent)' : 'transparent';
+  regBtn.style.color = !isLogin ? '#fff' : 'rgba(255,255,255,0.4)';
   document.getElementById('auth-name-wrap').style.display = isLogin ? 'none' : 'block';
   document.getElementById('auth-submit-btn').textContent = isLogin ? 'Giriş Yap' : 'Kayıt Ol';
   document.getElementById('auth-err').style.display = 'none';
@@ -3155,10 +3167,15 @@ async function generateVisualPrompts() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
 
+    // Robust parse — data zaten obje olmalı ama string gelirse de çöz
+    const parsed = (data.prompts || data.analysis) ? data : (() => {
+      try { return JSON.parse(JSON.stringify(data)); } catch(e) { return data; }
+    })();
+
     clearInterval(msgInterval);
     document.getElementById('prompt-loading').style.display = 'none';
     document.getElementById('prompt-results').style.display = 'block';
-    document.getElementById('prompt-analysis').textContent = data.analysis || '';
+    document.getElementById('prompt-analysis').textContent = parsed.analysis || data.analysis || '';
 
     const configs = [
       { gradient: 'linear-gradient(135deg,rgba(99,102,241,0.1),rgba(124,58,237,0.05))', border: 'rgba(99,102,241,0.25)', accent: '#818cf8', icon: '🎨' },
@@ -3166,7 +3183,7 @@ async function generateVisualPrompts() {
       { gradient: 'linear-gradient(135deg,rgba(245,158,11,0.1),rgba(217,119,6,0.05))', border: 'rgba(245,158,11,0.25)', accent: '#fbbf24', icon: '🎬' },
     ];
 
-    document.getElementById('prompt-cards').innerHTML = (data.prompts || []).map((p, i) => {
+    document.getElementById('prompt-cards').innerHTML = (parsed.prompts || data.prompts || []).map((p, i) => {
       const c = configs[i] || configs[0];
       return `
       <div style="background:${c.gradient};border:1px solid ${c.border};border-radius:16px;padding:24px;transition:all 0.2s;cursor:default" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
@@ -3268,12 +3285,44 @@ function initSwipe() {
   renderSaved();
 }
 
+async function loadMoreSwipeHooks() {
+  if (!S.brand || !S.brand.brandName) { initSwipe(); return; }
+  const stack = document.getElementById('swipe-stack');
+  stack.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.4)"><div style="font-size:32px;margin-bottom:12px">⏳</div><div>AI yeni hooklar üretiyor...</div></div>';
+
+  const formats = ['pov','hata','sosyal','soru','bilim','ugc'];
+  const format = formats[Math.floor(Math.random() * formats.length)];
+
+  try {
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev/hooks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brandName: S.brand.brandName,
+        product: S.brand.product || '',
+        audience: S.brand.audience || '',
+        format,
+        targetAudience: 'genel',
+        previousHooks: _allGeneratedHooks
+      })
+    });
+    const data = await res.json();
+    const hooks = data.hooks || [];
+    hooks.forEach(h => { if (!_allGeneratedHooks.includes(h.text)) _allGeneratedHooks.push(h.text); });
+    _swipeCards = hooks;
+    _swipeIdx = 0;
+    renderSwipeStack();
+  } catch(e) {
+    initSwipe();
+  }
+}
+
 function renderSwipeStack() {
   const stack = document.getElementById('swipe-stack');
   const remaining = _swipeCards.length - _swipeIdx;
 
   if (remaining <= 0) {
-    stack.innerHTML = '<div class="swipe-empty"><div class="big">🎉</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Hepsi bitti!</div><div>Kaydettiklerini aşağıda görebilirsin.</div><button class="btn btn-primary btn-sm" style="margin-top:16px" onclick="initSwipe()">🔄 Yeniden Başla</button></div>';
+    stack.innerHTML = '<div class="swipe-empty"><div class="big">🎉</div><div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Hepsi bitti!</div><div style="color:rgba(255,255,255,0.4);font-size:14px;margin-bottom:20px">Kaydettiklerini aşağıda görebilirsin.</div><button class="btn btn-primary btn-sm" onclick="loadMoreSwipeHooks()">✨ AI\'dan Yeni Hooklar Getir</button></div>';
     document.getElementById('swipe-counter').textContent = '';
     return;
   }
