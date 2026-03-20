@@ -420,7 +420,10 @@
     border-radius: 18px; padding: 24px 22px;
     box-shadow: var(--shadow-md);
     transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative; overflow: hidden;
+    cursor: grab; user-select: none;
   }
+  .hook-card-main:active { cursor: grabbing; }
   .hook-card-main.exit-left {
     transform: translateX(-110%) rotate(-8deg);
     opacity: 0;
@@ -487,7 +490,24 @@
   .hook-action-btn.btn-use { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.18); }
   .hook-action-btn.btn-use:hover { background: rgba(16,185,129,0.25); }
 
-  .swipe-counter { text-align: center; font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 12px; }
+  .swipe-hint-left {
+    position: absolute; top: 20px; left: 20px;
+    background: var(--red); color: #fff;
+    padding: 6px 14px; border-radius: 8px;
+    font-weight: 800; font-size: 14px;
+    opacity: 0; transform: rotate(-12deg);
+    pointer-events: none; letter-spacing: 0.06em;
+    transition: opacity 0.05s;
+  }
+  .swipe-hint-right {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--green); color: #fff;
+    padding: 6px 14px; border-radius: 8px;
+    font-weight: 800; font-size: 14px;
+    opacity: 0; transform: rotate(12deg);
+    pointer-events: none; letter-spacing: 0.06em;
+    transition: opacity 0.05s;
+  }
   .swipe-empty { text-align: center; padding: 40px 20px; }
   .swipe-empty .big { font-size: 48px; margin-bottom: 12px; }
   .swipe-saved {
@@ -3349,15 +3369,67 @@ function renderHookCard() {
   var hookWhy = typeof hookData === 'object' ? hookData.why : null;
   var isBrand = _swipeIdx < (S.brand && S.brand.hooks ? S.brand.hooks.length : 0);
   var catColor = (typeof getCatColor === 'function') ? getCatColor(hookCat) : { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)', text: '#a78bfa' };
-  cardEl.classList.remove('enter');
+  cardEl.classList.remove('enter','exit-left','exit-right','exit-save');
   void cardEl.offsetWidth;
   cardEl.classList.add('enter');
   var catHtml = hookCat ? '<span class="hook-cat" style="background:' + catColor.bg + ';color:' + catColor.text + ';border:1px solid ' + catColor.border + '">' + hookCat + '</span>' : '';
   var brandHtml = isBrand ? '<span class="hook-cat" style="background:rgba(99,102,241,0.12);color:#a78bfa;border:1px solid rgba(99,102,241,0.25)">✨ Markana Özel</span>' : '';
   var whyHtml = hookWhy ? '<div class="hook-why">💡 ' + hookWhy + '</div>' : '';
-  cardEl.innerHTML = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + catHtml + brandHtml + '</div><div class="hook-text">' + hookText + '</div>' + whyHtml + '<div class="hook-tag">' + (_swipeIdx+1) + ' / ' + total + '</div>';
+  cardEl.innerHTML =
+    '<div class="swipe-hint-left">✕ GEÇ</div>' +
+    '<div class="swipe-hint-right">✓ KULLAN</div>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">' + catHtml + brandHtml + '</div>' +
+    '<div class="hook-text">' + hookText + '</div>' + whyHtml +
+    '<div class="hook-tag">' + (_swipeIdx+1) + ' / ' + total + '</div>';
   if (counter) counter.textContent = remaining + ' hook kaldı';
   if (progressBar) progressBar.style.width = ((_swipeIdx / total) * 100) + '%';
+
+  // Touch & mouse drag
+  var startX = 0, startY = 0, isDragging = false, moved = false;
+
+  function onStart(e) {
+    var pt = e.touches ? e.touches[0] : e;
+    startX = pt.clientX; startY = pt.clientY;
+    isDragging = true; moved = false;
+    cardEl.style.transition = 'none';
+  }
+  function onMove(e) {
+    if (!isDragging) return;
+    var pt = e.touches ? e.touches[0] : e;
+    var dx = pt.clientX - startX;
+    var dy = pt.clientY - startY;
+    // Eğer dikey hareket baskınsa — sayfa scroll, dokunma
+    if (!moved && Math.abs(dy) > Math.abs(dx)) { isDragging = false; return; }
+    if (Math.abs(dx) > 8) { moved = true; if (e.cancelable) e.preventDefault(); }
+    if (!moved) return;
+    var rotate = dx * 0.06;
+    cardEl.style.transform = 'translateX(' + dx + 'px) rotate(' + rotate + 'deg)';
+    var leftHint = cardEl.querySelector('.swipe-hint-left');
+    var rightHint = cardEl.querySelector('.swipe-hint-right');
+    if (leftHint && rightHint) {
+      if (dx < -20) { leftHint.style.opacity = Math.min((-dx-20)/60,1); rightHint.style.opacity = 0; }
+      else if (dx > 20) { rightHint.style.opacity = Math.min((dx-20)/60,1); leftHint.style.opacity = 0; }
+      else { leftHint.style.opacity = 0; rightHint.style.opacity = 0; }
+    }
+  }
+  function onEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    cardEl.style.transition = '';
+    if (!moved) return;
+    var pt = e.changedTouches ? e.changedTouches[0] : e;
+    var dx = pt.clientX - startX;
+    if (dx > 80) hookAction('use');
+    else if (dx < -80) hookAction('skip');
+    else { cardEl.style.transform = ''; var l=cardEl.querySelector('.swipe-hint-left'); var r=cardEl.querySelector('.swipe-hint-right'); if(l)l.style.opacity=0; if(r)r.style.opacity=0; }
+  }
+
+  cardEl.addEventListener('mousedown', onStart);
+  cardEl.addEventListener('touchstart', onStart, { passive: true });
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+  cardEl.addEventListener('touchmove', onMove, { passive: false });
+  cardEl.addEventListener('touchend', onEnd);
 }
 
 function hookAction(action) {
