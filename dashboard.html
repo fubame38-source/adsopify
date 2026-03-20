@@ -1259,11 +1259,12 @@ function startApp() {
   loadAllAccounts();
   initTheme();
 
-  // Supabase — mevcut oturumu da kaydet (sessizce)
+  // Supabase — token varsa Graph API'den kullanıcı bilgisini çek ve kaydet
   if (S.token) {
-    FB.api('/me', { fields: 'id,name,email', access_token: S.token }, function(me) {
-      if (me && me.id) sbUpsertUser(me.id, me.name, me.email);
-    });
+    fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + S.token)
+      .then(r => r.json())
+      .then(me => { if (me && me.id) sbUpsertUser(me.id, me.name || '', me.email || ''); })
+      .catch(() => {});
   }
 
   const brandData = localStorage.getItem('adsopify_brand');
@@ -1572,9 +1573,10 @@ function fbLogin() {
       S.token = token;
 
       // FB kullanıcı bilgisini al → Supabase'e kaydet
-      FB.api('/me', { fields: 'id,name,email' }, function(me) {
-        if (me && me.id) sbUpsertUser(me.id, me.name, me.email);
-      });
+      fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + token)
+        .then(r => r.json())
+        .then(me => { if (me && me.id) sbUpsertUser(me.id, me.name || '', me.email || ''); })
+        .catch(() => {});
 
       // Token aldık, şimdi hesapları yükle
       gql('/me/adaccounts?fields=id,name,account_id&limit=20').then(r => {
