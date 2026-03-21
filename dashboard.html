@@ -755,7 +755,8 @@
   <div class="nav-item" onclick="nav('weekly')" data-sec="weekly"><span class="icon">📅</span>Haftalık Özet</div>
 
   <div class="nav-section">Optimizasyon</div>
-  <div class="nav-item" onclick="nav('scale')" data-sec="scale"><span class="icon">🚀</span>Ölçekleme</div>
+  <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><span class="icon">⚡</span>Reklam Hazırla</div>
+  <div class="nav-item" onclick="nav('scale')" data-sec="scale"><span class="icon">📈</span>Ölçekleme</div>
   <div class="nav-item" onclick="nav('creative')" data-sec="creative"><span class="icon">🎨</span>Creative Skor</div>
   <div class="nav-item" onclick="nav('budget')" data-sec="budget"><span class="icon">🗓️</span>Bütçe Planlayıcı</div>
 
@@ -763,8 +764,7 @@
   <div class="nav-item" onclick="nav('hook')" data-sec="hook"><span class="icon">🪝</span>Hook Üretici</div>
   <div class="nav-item" onclick="nav('swipe')" data-sec="swipe"><span class="icon">🃏</span>Hook Swipe</div>
   <div class="nav-item" onclick="nav('copy')" data-sec="copy"><span class="icon">✍️</span>Reklam Metni</div>
-  <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><span class="icon">🚀</span>Reklam Hazırla</div>
-  <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt"><span class="icon">🎨</span>Görsel Prompt</div>
+  <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt"><span class="icon">🖼️</span>Görsel Prompt</div>
 
   <div class="nav-section">Finans</div>
   <div class="nav-item" onclick="nav('profit')" data-sec="profit"><span class="icon">💰</span>Kâr Hesabı</div>
@@ -3396,13 +3396,10 @@ function renderCopyCards(copies) {
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${col.accent}">${c.tag}</div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-ghost btn-sm" onclick="copyCopy(this)">📋 Kopyala</button>
-          <button class="btn btn-primary btn-sm" onclick="openInMeta(this, '${metaUrl}')">⚡ Meta'da Aç</button>
         </div>
       </div>
       <div class="copy-text" style="font-size:14px;line-height:1.8;white-space:pre-line;color:var(--text)">${c.text}</div>
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid ${col.border};font-size:12px;color:var(--text3)">
-        💡 "Meta'da Aç" tıklayınca metni kopyala, Ads Manager'da reklam metnine yapıştır.
-      </div>
+
     </div>`;
   }).join('');
 }
@@ -3422,12 +3419,39 @@ function openInMeta(btn, url) {
   });
 }
 
+function copySwipeHook(btn) {
+  var text = btn.getAttribute('data-hook');
+  _copyToClipboard(text, btn, '📋', '✅');
+}
+
+function _copyToClipboard(text, btn, original, success) {
+  var orig = btn ? (btn.textContent || original) : original;
+  function done() {
+    if (btn) { btn.textContent = success || '✅'; setTimeout(function(){ btn.textContent = orig; }, 2000); }
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function() {
+      _fallbackCopy(text); done();
+    });
+  } else {
+    _fallbackCopy(text); done();
+  }
+}
+
+function _fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
 function copyCopy(btn) {
-  const text = btn.closest('[style]').querySelector('.copy-text').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✅ Kopyalandı!';
-    setTimeout(() => { btn.textContent = '📋 Kopyala'; }, 2000);
-  });
+  var card = btn.parentElement;
+  while (card && !card.querySelector('.copy-text')) { card = card.parentElement; }
+  var textEl = card ? card.querySelector('.copy-text') : null;
+  if (!textEl) return;
+  _copyToClipboard(textEl.textContent.trim(), btn, '📋 Kopyala', '✅ Kopyalandı!');
 }
 
 function buildCopies(goal, tone, existing) {
@@ -4236,17 +4260,13 @@ function renderSaved() {
     return;
   }
   if (section) section.style.display = 'block';
-  const accountId = S.accountId ? S.accountId.replace('act_','') : '';
-  const metaUrl = accountId
-    ? `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${accountId}`
-    : 'https://adsmanager.facebook.com/adsmanager/manage/campaigns';
-
   el.innerHTML = _swipeSaved.map((h, i) => {
     const text = typeof h === 'object' ? (h.text || h) : h;
+    const safeText = String(text).replace(/\\/g,'\\\\').replace(/`/g,'\\`');
     return `<div class="swipe-saved">
       <span style="flex:1;margin-right:8px">${text}</span>
       <div style="display:flex;gap:6px;flex-shrink:0">
-        <button onclick="copyHookToMeta(this,'${metaUrl}')" data-text="${String(text).replace(/'/g,'&#39;')}" style="background:var(--accent);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">⚡ Meta</button>
+        <button onclick="copySwipeHook(this)" data-hook="${String(text).replace(/"/g,'&quot;')}" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font)">📋</button>
         <button onclick="removeSaved(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 4px">×</button>
       </div>
     </div>`;
