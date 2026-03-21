@@ -772,6 +772,23 @@
         <span id="plan-budget-badge" class="badge gray"></span>
       </div>
 
+      <!-- AI ACTION PLAN -->
+      <div class="card mb-16" id="ai-action-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div class="card-title" style="margin-bottom:2px">🤖 AI Koç — Bugün Ne Yapmalısın?</div>
+            <div style="font-size:12px;color:var(--text3)">Kampanya verine göre kişiselleştirildi</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh">↺ Yenile</button>
+        </div>
+        <div id="ai-action-list">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px;color:var(--text3);font-size:13px">
+            <div class="spinner" style="width:16px;height:16px;border-width:2px"></div>
+            AI aksiyonlar hazırlanıyor...
+          </div>
+        </div>
+      </div>
+
       <div class="card mb-16">
         <div class="card-title">🔴 Acil Aksiyonlar</div>
         <div id="plan-urgent" class="plan-grid"></div>
@@ -2019,12 +2036,124 @@ async function loadPlan() {
 
     renderPlan(campaigns, insights);
     checkFatigueAlert(insights);
+
+    // AI Action Plan — arka planda yükle
+    loadAIActionPlan(false, insights);
   } catch (e) {
     document.getElementById('plan-loading').innerHTML = '<span style="color:var(--red)">Hata: ' + e.message + '</span>';
     return;
   }
   document.getElementById('plan-loading').style.display = 'none';
   document.getElementById('plan-content').style.display = 'block';
+}
+
+async function loadAIActionPlan(forceRefresh, insightsData) {
+  const el = document.getElementById('ai-action-list');
+  const btn = document.getElementById('ai-plan-refresh');
+  if (!el) return;
+
+  // Cache — aynı gün tekrar yükleme
+  const cacheKey = 'ai_action_plan_' + new Date().toISOString().split('T')[0];
+  if (!forceRefresh && localStorage.getItem(cacheKey)) {
+    renderAIActions(JSON.parse(localStorage.getItem(cacheKey)));
+    return;
+  }
+
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:12px;color:var(--text3);font-size:13px"><div class="spinner" style="width:16px;height:16px;border-width:2px"></div>AI aksiyonlar hazırlanıyor...</div>';
+  if (btn) btn.disabled = true;
+
+  const ins = insightsData || S.todayInsight || [];
+  const brand = S.brand;
+
+  const totalSpend    = ins.reduce((s,i) => s + parseFloat(i.spend||0), 0);
+  const totalSales    = ins.reduce((s,i) => s + (i._purchases||0), 0);
+  const totalRevenue  = ins.reduce((s,i) => s + (i._revenue||0), 0);
+  const avgFreq       = ins.length ? ins.reduce((s,i) => s + parseFloat(i.frequency||0), 0)/ins.length : 0;
+  const avgCTR        = ins.length ? ins.reduce((s,i) => s + parseFloat(i.ctr||0), 0)/ins.length : 0;
+  const roas          = totalSpend > 0 ? totalRevenue/totalSpend : 0;
+  const cpa           = totalSales > 0 ? totalSpend/totalSales : 0;
+
+  const campSummary = ins.slice(0,5).map(i =>
+    `"${i.campaign_name}": ₺${parseFloat(i.spend||0).toFixed(0)} harcama, ROAS ${i._roas ? i._roas.toFixed(1)+'x' : '—'}, CTR %${parseFloat(i.ctr||0).toFixed(2)}, Frekans ${parseFloat(i.frequency||0).toFixed(1)}`
+  ).join('\n');
+
+  const brandCtx = brand && brand.brandName
+    ? `Marka: ${brand.brandName}. Ürün: ${brand.product||''}. Hedef kitle: ${brand.audience||''}.`
+    : 'Marka bilgisi yok.';
+
+  try {
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'Sen bir Meta reklam uzmanı ve AI koçsun. Sadece JSON döndür, başka hiçbir şey yazma.',
+        message: `${brandCtx}
+
+Bugünkü kampanya verisi:
+- Toplam harcama: ₺${totalSpend.toFixed(0)}
+- Toplam satış: ${totalSales}
+- ROAS: ${roas.toFixed(2)}x
+- Ort. CTR: %${avgCTR.toFixed(2)}
+- Ort. Frekans: ${avgFreq.toFixed(1)}
+- CPA: ₺${cpa.toFixed(0)}
+
+Kampanyalar:
+${campSummary || 'Veri yok'}
+
+Bu verilere bakarak bugün yapılması gereken EN ÖNEMLİ 4-5 aksiyonu üret. Her aksiyon spesifik, uygulanabilir ve veriye dayalı olsun.
+
+Aksiyon tipleri: hook_uret, reklam_metni, video_creative, butce_artir, butce_azalt, aci_test, creative_yenile, kampanya_kapat, hedef_degistir, frekans_uyari
+
+Sadece JSON: {"actions":[{"priority":1,"type":"hook_uret","title":"Aksiyon başlığı","reason":"Neden bu aksiyon — veriye dayalı 1-2 cümle","detail":"Ne yapılacak tam olarak","cta":"İlgili araç adı","nav":"hook"},...]}
+
+nav değerleri: plan, dash, scale, creative, budget, hook, swipe, copy, profit, ai, log, settings, creative-prompt`
+      })
+    });
+
+    const data = await res.json();
+    const raw = (data.answer || '').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(raw);
+    const actions = parsed.actions || [];
+
+    localStorage.setItem(cacheKey, JSON.stringify(actions));
+    renderAIActions(actions);
+
+  } catch(e) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px">AI şu an yanıt veremiyor. Yenile butonuna bas.</div>';
+  }
+
+  if (btn) btn.disabled = false;
+}
+
+function renderAIActions(actions) {
+  const el = document.getElementById('ai-action-list');
+  if (!el || !actions.length) return;
+
+  const priorityConfig = {
+    1: { color: 'var(--red)',    bg: 'rgba(239,68,68,0.08)',    border: 'rgba(239,68,68,0.2)',    label: '🔴 Yüksek' },
+    2: { color: 'var(--yellow)', bg: 'rgba(245,158,11,0.08)',   border: 'rgba(245,158,11,0.2)',   label: '🟡 Orta' },
+    3: { color: 'var(--green)',  bg: 'rgba(16,185,129,0.08)',   border: 'rgba(16,185,129,0.2)',   label: '🟢 Normal' },
+    4: { color: 'var(--accent2)',bg: 'rgba(99,102,241,0.08)',   border: 'rgba(99,102,241,0.2)',   label: '🔵 Ek' },
+    5: { color: 'var(--text3)',  bg: 'var(--surface2)',         border: 'var(--border)',           label: '⚪ Bonus' },
+  };
+
+  el.innerHTML = actions.map((a, i) => {
+    const p = priorityConfig[a.priority] || priorityConfig[3];
+    return `<div style="background:${p.bg};border:1px solid ${p.border};border-radius:14px;padding:16px 18px;margin-bottom:10px;animation:fadeIn 0.3s ease ${i*0.08}s both">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:10px;font-weight:700;color:${p.color};text-transform:uppercase;letter-spacing:0.06em">${p.label}</span>
+            <span style="font-size:10px;color:var(--text3)">· #${a.priority}</span>
+          </div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">${a.title}</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:4px">${a.reason}</div>
+          ${a.detail ? `<div style="font-size:12px;color:var(--text3);line-height:1.5">→ ${a.detail}</div>` : ''}
+        </div>
+        ${a.nav ? `<button onclick="nav('${a.nav}')" style="flex-shrink:0;background:${p.bg};border:1px solid ${p.border};color:${p.color};padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all 0.15s" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">${a.cta || 'Uygula'} →</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderPlan(campaigns, insights) {
@@ -3085,26 +3214,28 @@ function switchProfitTab(tab) {
 function calcProfit() { calcBreakeven(); } // Eski referanslar için
 
 function calcBreakeven() {
-  const price      = parseFloat(document.getElementById('p-price').value) || 1799;
-  const cost       = parseFloat(document.getElementById('p-cost').value) || 450;
-  const ship       = parseFloat(document.getElementById('p-ship').value) || 80;
+  const price       = parseFloat(document.getElementById('p-price').value) || 1799;
+  const cost        = parseFloat(document.getElementById('p-cost').value) || 450;
+  const ship        = parseFloat(document.getElementById('p-ship').value) || 80;
   const dailyBudget = parseFloat(document.getElementById('p-daily-budget').value) || 500;
-  const cvr        = parseFloat(document.getElementById('p-cvr').value) / 100 || 0.025;
-  const ctr        = parseFloat(document.getElementById('p-ctr').value) / 100 || 0.015;
+
+  // CVR ve CTR — 0 girilebilir, NaN'den koru ama 0'a izin ver
+  const cvrRaw = document.getElementById('p-cvr').value;
+  const ctrRaw = document.getElementById('p-ctr').value;
+  const cvr = (cvrRaw === '' || isNaN(parseFloat(cvrRaw))) ? 0.025 : parseFloat(cvrRaw) / 100;
+  const ctr = (ctrRaw === '' || isNaN(parseFloat(ctrRaw))) ? 0.015 : parseFloat(ctrRaw) / 100;
 
   const totalCost   = cost + ship;
-  const grossProfit = price - totalCost;       // Reklam hariç kâr
-  const maxCPC      = grossProfit * cvr;        // Bu üstü zararlı CPC
-  const maxCPM      = maxCPC * ctr * 1000;
-
-  // Başa baş: dailyBudget / grossProfit = kaç satış lazım
-  const beDaily   = dailyBudget / grossProfit; // günlük başa baş satış
-  const beSales   = Math.ceil(beDaily);
+  const grossProfit = price - totalCost;
+  const maxCPC      = cvr > 0 ? grossProfit * cvr : 0;
+  const maxCPM      = (cvr > 0 && ctr > 0) ? maxCPC * ctr * 1000 : 0;
+  const beDaily     = grossProfit > 0 ? dailyBudget / grossProfit : 0;
+  const beSales     = Math.ceil(beDaily);
 
   document.getElementById('be-sales').textContent = beSales;
   document.getElementById('be-daily').textContent = beDaily.toFixed(1);
   document.getElementById('be-profit-per').textContent = '₺' + grossProfit.toFixed(0);
-  document.getElementById('be-max-cpc').textContent = '₺' + maxCPC.toFixed(2);
+  document.getElementById('be-max-cpc').textContent = maxCPC > 0 ? '₺' + maxCPC.toFixed(2) : '—';
 
   // Senaryo tablosu
   const scenarios = [
