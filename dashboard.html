@@ -2290,10 +2290,20 @@ async function loadPlan() {
   document.getElementById('plan-date-badge').textContent = today.toISOString().split('T')[0];
 
   document.getElementById('plan-loading').style.display = 'flex';
+  document.getElementById('plan-loading').innerHTML = '<div class="spinner"></div> Kampanya verisi çekiliyor...';
   document.getElementById('plan-content').style.display = 'none';
 
+  // Token yoksa direkt plan göster (boş veriyle)
+  if (!S.token || !S.accountId) {
+    document.getElementById('plan-loading').style.display = 'none';
+    document.getElementById('plan-content').style.display = 'block';
+    S.todayInsight = [];
+    renderPlan([], []);
+    loadAIActionPlan(false, []);
+    return;
+  }
+
   try {
-    const todayStr = today.toISOString().split('T')[0];
     const [campaigns, insights] = await Promise.all([getCampaigns(), getTodayInsights()]);
     S.campaigns = campaigns;
     S.todayInsight = insights;
@@ -2302,21 +2312,50 @@ async function loadPlan() {
     const totalPurchases = insights.reduce((s, i) => s + (i._purchases || 0), 0);
     const totalRevenue = insights.reduce((s, i) => s + (i._revenue || 0), 0);
     const todayROAS = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue / totalSpend).toFixed(2) : null;
+    const cur = getCurrency();
 
-    document.getElementById('top-spend-val').textContent = '₺' + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
-    document.getElementById('plan-budget-badge').textContent = 'Bugün ₺' + totalSpend.toFixed(2) + (totalPurchases > 0 ? ' • ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
+    document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
+    document.getElementById('plan-budget-badge').textContent = 'Bugün ' + cur + totalSpend.toFixed(2) + (totalPurchases > 0 ? ' • ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
+
+    document.getElementById('plan-loading').style.display = 'none';
+    document.getElementById('plan-content').style.display = 'block';
 
     renderPlan(campaigns, insights);
     checkFatigueAlert(insights);
-
-    // AI Action Plan — arka planda yükle
     loadAIActionPlan(false, insights);
+
   } catch (e) {
-    document.getElementById('plan-loading').innerHTML = '<span style="color:var(--red)">Hata: ' + e.message + '</span>';
-    return;
+    // Token süresi dolmuş veya API hatası
+    const isTokenErr = e.message && (e.message.includes('190') || e.message.includes('token') || e.message.includes('OAuth') || e.message.includes('Session'));
+    document.getElementById('plan-loading').innerHTML = `
+      <div style="text-align:center;padding:24px">
+        <div style="font-size:32px;margin-bottom:12px">${isTokenErr ? '🔑' : '⚠️'}</div>
+        <div style="font-weight:600;color:var(--text);margin-bottom:8px">${isTokenErr ? 'Meta token süresi dolmuş' : 'Veri çekilemedi'}</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px">${isTokenErr ? 'Facebook ile yeniden bağlanman gerekiyor.' : e.message}</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          ${isTokenErr ? '<button class="btn btn-primary btn-sm" onclick="reconnectMeta()">🔗 Yeniden Bağlan</button>' : ''}
+          <button class="btn btn-ghost btn-sm" onclick="loadPlanOffline()">📊 Verisiz Devam Et</button>
+        </div>
+      </div>`;
   }
+}
+
+function loadPlanOffline() {
+  // Veri olmadan plan ekranını göster
   document.getElementById('plan-loading').style.display = 'none';
   document.getElementById('plan-content').style.display = 'block';
+  S.todayInsight = [];
+  renderPlan([], []);
+  loadAIActionPlan(false, []);
+}
+
+function reconnectMeta() {
+  // Token'ı temizle, token screen'e dön
+  localStorage.removeItem('adsopify_token');
+  localStorage.removeItem('adsopify_account_id');
+  localStorage.removeItem('adsopify_account_name');
+  S.token = null; S.accountId = null;
+  location.reload();
 }
 
 async function loadAIActionPlan(forceRefresh, insightsData) {
