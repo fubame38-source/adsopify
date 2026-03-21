@@ -942,55 +942,86 @@
   <!-- KAR HESABI -->
   <div id="sec-profit" class="section">
     <div class="page-title">Kâr Hesabı</div>
-    <div class="page-sub">Maksimum CPC ve CPM hesapla</div>
+    <div class="page-sub">Başa baş noktası ve kampanya kâr/zarar analizi</div>
 
-    <div class="card mb-16">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">
-        <div>
-          <label>Satış Fiyatı (₺)</label>
-          <input type="number" id="p-price" value="1799" />
-        </div>
-        <div>
-          <label>Ürün Maliyeti (₺)</label>
-          <input type="number" id="p-cost" value="450" />
-        </div>
-        <div>
-          <label>Kargo / İşlem (₺)</label>
-          <input type="number" id="p-ship" value="80" />
-        </div>
-        <div>
-          <label>Hedef Kâr Marjı (%)</label>
-          <input type="number" id="p-margin" value="30" />
-        </div>
-        <div>
-          <label>Tahmini Dönüşüm Oranı (%)</label>
-          <input type="number" id="p-cvr" value="2.5" step="0.1" />
-        </div>
-        <div>
-          <label>Ortalama CTR (%)</label>
-          <input type="number" id="p-ctr" value="1.5" step="0.1" />
-        </div>
-      </div>
-      <button class="btn btn-primary" onclick="calcProfit()">💰 Hesapla</button>
+    <!-- Tab seçici -->
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button id="profit-tab-1" onclick="switchProfitTab(1)" class="btn btn-primary btn-sm">📊 Başa Baş Hesabı</button>
+      <button id="profit-tab-2" onclick="switchProfitTab(2)" class="btn btn-ghost btn-sm">📈 Kampanya Kâr/Zarar</button>
     </div>
 
-    <div id="profit-results" style="display:none">
-      <div class="profit-grid">
-        <div class="profit-result">
-          <div class="pr-label">Maks CPC</div>
-          <div class="pr-value" id="pr-cpc">—</div>
-          <div style="font-size:11px;color:var(--accent);margin-top:4px">Bu fiyatın üstünde CPC zarardır</div>
+    <!-- Tab 1: Başa Baş -->
+    <div id="profit-panel-1">
+      <div class="card mb-16">
+        <div class="card-title">Ürün Bilgileri</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px">
+          <div><label>Satış Fiyatı (₺)</label><input type="number" id="p-price" value="1799" /></div>
+          <div><label>Ürün Maliyeti (₺)</label><input type="number" id="p-cost" value="450" /></div>
+          <div><label>Kargo / İşlem (₺)</label><input type="number" id="p-ship" value="80" /></div>
+          <div><label>Günlük Reklam Bütçesi (₺)</label><input type="number" id="p-daily-budget" value="500" /></div>
+          <div><label>Tahmini Dönüşüm Oranı (%)</label><input type="number" id="p-cvr" value="2.5" step="0.1" /></div>
+          <div><label>Ortalama CTR (%)</label><input type="number" id="p-ctr" value="1.5" step="0.1" /></div>
         </div>
-        <div class="profit-result">
-          <div class="pr-label">Maks CPM</div>
-          <div class="pr-value" id="pr-cpm">—</div>
-          <div style="font-size:11px;color:var(--accent);margin-top:4px">Bu fiyatın üstünde CPM zarardır</div>
+        <button class="btn btn-primary" onclick="calcBreakeven()">📊 Hesapla</button>
+      </div>
+
+      <div id="breakeven-results" style="display:none">
+        <!-- Ana metrikler -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+          <div class="card" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05)">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Başa Baş Noktası</div>
+            <div style="font-size:28px;font-weight:800;color:var(--red)" id="be-sales">—</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">satış yapman gerekiyor</div>
+          </div>
+          <div class="card" style="border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.05)">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Günde Kaç Satış?</div>
+            <div style="font-size:28px;font-weight:800;color:var(--yellow)" id="be-daily">—</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">bütçeyle başa baş için</div>
+          </div>
+          <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Satış Başı Net Kâr</div>
+            <div style="font-size:28px;font-weight:800;color:var(--green)" id="be-profit-per">—</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">reklam dahil değil</div>
+          </div>
+          <div class="card">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Maks CPC</div>
+            <div style="font-size:28px;font-weight:800;color:var(--accent2)" id="be-max-cpc">—</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">bu üstü zarardır</div>
+          </div>
+        </div>
+
+        <!-- Senaryo tablosu -->
+        <div class="card">
+          <div class="card-title">📅 Günlük Senaryo Analizi</div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border)">
+                  <th style="padding:8px;text-align:left;color:var(--text3);font-weight:600">Senaryo</th>
+                  <th style="padding:8px;text-align:right;color:var(--text3);font-weight:600">Satış</th>
+                  <th style="padding:8px;text-align:right;color:var(--text3);font-weight:600">Gelir</th>
+                  <th style="padding:8px;text-align:right;color:var(--text3);font-weight:600">Net Kâr</th>
+                  <th style="padding:8px;text-align:right;color:var(--text3);font-weight:600">ROAS</th>
+                </tr>
+              </thead>
+              <tbody id="be-scenarios"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="card mt-16">
-        <div class="card-title">Hesap Detayı</div>
-        <div id="pr-breakdown" style="font-size:13px;color:var(--text2);line-height:2"></div>
+    </div>
+
+    <!-- Tab 2: Kampanya Kâr/Zarar -->
+    <div id="profit-panel-2" style="display:none">
+      <div class="card mb-16">
+        <div class="card-title">Ürün Bilgileri (Kampanya Analizi İçin)</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px">
+          <div><label>Satış Fiyatı (₺)</label><input type="number" id="p2-price" value="1799" /></div>
+          <div><label>Ürün + Kargo Maliyeti (₺)</label><input type="number" id="p2-cost" value="530" /></div>
+        </div>
+        <button class="btn btn-primary" onclick="calcCampaignProfit()">📈 Kampanyaları Analiz Et</button>
       </div>
+      <div id="campaign-profit-results"></div>
     </div>
   </div>
 
@@ -3044,33 +3075,146 @@ function buildCopies(goal, tone, existing) {
 // ═══════════════════════════════════════════════
 // KAR HESABI
 // ═══════════════════════════════════════════════
-function calcProfit() {
-  const price = parseFloat(document.getElementById('p-price').value) || 1799;
-  const cost = parseFloat(document.getElementById('p-cost').value) || 450;
-  const ship = parseFloat(document.getElementById('p-ship').value) || 80;
-  const margin = parseFloat(document.getElementById('p-margin').value) / 100 || 0.3;
-  const cvr = parseFloat(document.getElementById('p-cvr').value) / 100 || 0.025;
-  const ctr = parseFloat(document.getElementById('p-ctr').value) / 100 || 0.015;
+function switchProfitTab(tab) {
+  document.getElementById('profit-panel-1').style.display = tab === 1 ? 'block' : 'none';
+  document.getElementById('profit-panel-2').style.display = tab === 2 ? 'block' : 'none';
+  document.getElementById('profit-tab-1').className = tab === 1 ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+  document.getElementById('profit-tab-2').className = tab === 2 ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm';
+}
 
-  const totalCost = cost + ship;
-  const grossProfit = price - totalCost;
-  const targetProfit = price * margin;
-  const maxAdSpendPerSale = grossProfit - targetProfit;
-  const maxCPC = maxAdSpendPerSale * cvr;
-  const maxCPM = maxAdSpendPerSale * cvr * ctr * 1000;
+function calcProfit() { calcBreakeven(); } // Eski referanslar için
 
-  document.getElementById('pr-cpc').textContent = '₺' + maxCPC.toFixed(2);
-  document.getElementById('pr-cpm').textContent = '₺' + maxCPM.toFixed(2);
-  document.getElementById('pr-breakdown').innerHTML =
-    'Satış fiyatı: <strong>₺' + price.toFixed(2) + '</strong><br>' +
-    'Toplam maliyet (ürün + kargo): <strong>₺' + totalCost.toFixed(2) + '</strong><br>' +
-    'Brüt kâr: <strong>₺' + grossProfit.toFixed(2) + '</strong><br>' +
-    'Hedef kâr (%' + (margin * 100) + '): <strong>₺' + targetProfit.toFixed(2) + '</strong><br>' +
-    'Satış başına maks reklam bütçesi: <strong>₺' + maxAdSpendPerSale.toFixed(2) + '</strong><br>' +
-    'Dönüşüm oranı: <strong>%' + (cvr * 100) + '</strong><br>' +
-    'CTR varsayımı: <strong>%' + (ctr * 100) + '</strong>';
+function calcBreakeven() {
+  const price      = parseFloat(document.getElementById('p-price').value) || 1799;
+  const cost       = parseFloat(document.getElementById('p-cost').value) || 450;
+  const ship       = parseFloat(document.getElementById('p-ship').value) || 80;
+  const dailyBudget = parseFloat(document.getElementById('p-daily-budget').value) || 500;
+  const cvr        = parseFloat(document.getElementById('p-cvr').value) / 100 || 0.025;
+  const ctr        = parseFloat(document.getElementById('p-ctr').value) / 100 || 0.015;
 
-  document.getElementById('profit-results').style.display = 'block';
+  const totalCost   = cost + ship;
+  const grossProfit = price - totalCost;       // Reklam hariç kâr
+  const maxCPC      = grossProfit * cvr;        // Bu üstü zararlı CPC
+  const maxCPM      = maxCPC * ctr * 1000;
+
+  // Başa baş: dailyBudget / grossProfit = kaç satış lazım
+  const beDaily   = dailyBudget / grossProfit; // günlük başa baş satış
+  const beSales   = Math.ceil(beDaily);
+
+  document.getElementById('be-sales').textContent = beSales;
+  document.getElementById('be-daily').textContent = beDaily.toFixed(1);
+  document.getElementById('be-profit-per').textContent = '₺' + grossProfit.toFixed(0);
+  document.getElementById('be-max-cpc').textContent = '₺' + maxCPC.toFixed(2);
+
+  // Senaryo tablosu
+  const scenarios = [
+    { label: '😞 Kötü (%50 düşük)',  sales: Math.round(beDaily * 0.5) },
+    { label: '😐 Başa Baş',           sales: beSales },
+    { label: '😊 İyi (%50 fazla)',    sales: Math.round(beDaily * 1.5) },
+    { label: '🚀 Mükemmel (2x)',      sales: Math.round(beDaily * 2) },
+  ];
+
+  document.getElementById('be-scenarios').innerHTML = scenarios.map(s => {
+    const revenue = s.sales * price;
+    const productCosts = s.sales * totalCost;
+    const netProfit = revenue - productCosts - dailyBudget;
+    const roas = dailyBudget > 0 ? (revenue / dailyBudget).toFixed(2) : '—';
+    const profitColor = netProfit > 0 ? 'var(--green)' : netProfit < 0 ? 'var(--red)' : 'var(--yellow)';
+    return `<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:10px 8px;font-weight:500">${s.label}</td>
+      <td style="padding:10px 8px;text-align:right">${s.sales}</td>
+      <td style="padding:10px 8px;text-align:right">₺${fmt(Math.round(revenue))}</td>
+      <td style="padding:10px 8px;text-align:right;font-weight:700;color:${profitColor}">${netProfit >= 0 ? '+' : ''}₺${fmt(Math.round(netProfit))}</td>
+      <td style="padding:10px 8px;text-align:right">${roas}x</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('breakeven-results').style.display = 'block';
+}
+
+async function calcCampaignProfit() {
+  const price = parseFloat(document.getElementById('p2-price').value) || 1799;
+  const cost  = parseFloat(document.getElementById('p2-cost').value) || 530;
+  const el    = document.getElementById('campaign-profit-results');
+
+  if (!S.token || !S.accountId) {
+    el.innerHTML = '<div class="card" style="color:var(--text2);font-size:13px">Meta hesabı bağlı değil — önce giriş yapın.</div>';
+    return;
+  }
+
+  el.innerHTML = '<div class="loading-row"><div class="spinner"></div> Kampanya verileri çekiliyor...</div>';
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const from  = new Date(Date.now() - 29*86400000).toISOString().split('T')[0];
+    const insights = await getInsights(from, today);
+
+    if (!insights.length) {
+      el.innerHTML = '<div class="card" style="color:var(--text2);font-size:13px;padding:24px;text-align:center">Son 30 günde veri yok.</div>';
+      return;
+    }
+
+    const rows = insights.map(i => {
+      const spend    = parseFloat(i.spend || 0);
+      const sales    = i._purchases || 0;
+      const revenue  = i._revenue || (sales * price);
+      const adCost   = spend;
+      const prodCost = sales * cost;
+      const netProfit = revenue - adCost - prodCost;
+      const roas     = spend > 0 ? (revenue / spend) : 0;
+      const margin   = revenue > 0 ? (netProfit / revenue * 100) : 0;
+      const status   = netProfit > 0 ? { label: '✅ Kârlı', color: 'var(--green)', bg: 'var(--green-light)' }
+                     : netProfit < 0 ? { label: '❌ Zararlı', color: 'var(--red)', bg: 'var(--red-light)' }
+                     : { label: '⚖️ Başa Baş', color: 'var(--yellow)', bg: 'var(--yellow-light)' };
+      return { name: i.campaign_name, spend, sales, revenue, netProfit, roas, margin, status };
+    }).sort((a,b) => b.netProfit - a.netProfit);
+
+    const totalSpend   = rows.reduce((s,r) => s + r.spend, 0);
+    const totalRevenue = rows.reduce((s,r) => s + r.revenue, 0);
+    const totalProfit  = rows.reduce((s,r) => s + r.netProfit, 0);
+    const totalSales   = rows.reduce((s,r) => s + r.sales, 0);
+
+    el.innerHTML =
+      // Özet
+      `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px">
+        <div class="card"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Toplam Harcama</div><div style="font-size:22px;font-weight:700;color:var(--text)">₺${fmt(Math.round(totalSpend))}</div></div>
+        <div class="card"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Toplam Gelir</div><div style="font-size:22px;font-weight:700;color:var(--text)">₺${fmt(Math.round(totalRevenue))}</div></div>
+        <div class="card" style="border-color:${totalProfit>0?'rgba(16,185,129,0.3)':'rgba(239,68,68,0.3)'}"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Net Kâr</div><div style="font-size:22px;font-weight:700;color:${totalProfit>0?'var(--green)':'var(--red)'}">${totalProfit>=0?'+':''}₺${fmt(Math.round(totalProfit))}</div></div>
+        <div class="card"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Toplam Satış</div><div style="font-size:22px;font-weight:700;color:var(--text)">${totalSales}</div></div>
+      </div>` +
+      // Tablo
+      `<div class="card">
+        <div class="card-title">Son 30 Gün — Kampanya Bazlı Kâr/Zarar</div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr style="border-bottom:1px solid var(--border)">
+              <th style="padding:10px 8px;text-align:left;color:var(--text3);font-weight:600">Kampanya</th>
+              <th style="padding:10px 8px;text-align:right;color:var(--text3);font-weight:600">Harcama</th>
+              <th style="padding:10px 8px;text-align:right;color:var(--text3);font-weight:600">Satış</th>
+              <th style="padding:10px 8px;text-align:right;color:var(--text3);font-weight:600">Gelir</th>
+              <th style="padding:10px 8px;text-align:right;color:var(--text3);font-weight:600">Net Kâr</th>
+              <th style="padding:10px 8px;text-align:right;color:var(--text3);font-weight:600">Marj</th>
+              <th style="padding:10px 8px;text-align:center;color:var(--text3);font-weight:600">Durum</th>
+            </tr></thead>
+            <tbody>
+              ${rows.map(r => `<tr style="border-bottom:1px solid var(--border)">
+                <td style="padding:10px 8px;font-weight:500;max-width:200px">${r.name}</td>
+                <td style="padding:10px 8px;text-align:right;color:var(--text2)">₺${fmt(Math.round(r.spend))}</td>
+                <td style="padding:10px 8px;text-align:right">${r.sales}</td>
+                <td style="padding:10px 8px;text-align:right">₺${fmt(Math.round(r.revenue))}</td>
+                <td style="padding:10px 8px;text-align:right;font-weight:700;color:${r.netProfit>=0?'var(--green)':'var(--red)'}">${r.netProfit>=0?'+':''}₺${fmt(Math.round(r.netProfit))}</td>
+                <td style="padding:10px 8px;text-align:right;color:var(--text2)">${r.margin.toFixed(1)}%</td>
+                <td style="padding:10px 8px;text-align:center"><span style="background:${r.status.bg};color:${r.status.color};padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700">${r.status.label}</span></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:12px">* Net Kâr = Gelir − Reklam Harcaması − (Satış × Ürün+Kargo Maliyeti)</div>
+      </div>`;
+
+  } catch(e) {
+    el.innerHTML = '<div class="card" style="color:var(--red);font-size:13px">Hata: ' + e.message + '</div>';
+  }
 }
 
 // ═══════════════════════════════════════════════
