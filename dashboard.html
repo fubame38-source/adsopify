@@ -2116,7 +2116,7 @@ nav değerleri: hook, swipe, copy, scale, creative, budget, dash, ai, creative-p
     renderAIActions(actions);
 
   } catch(e) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px">AI şu an yanıt veremiyor. Yenile butonuna bas.</div>';
+    el.innerHTML = '<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-light);border-radius:10px;border:1px solid rgba(239,68,68,0.2)">Hata: ' + e.message + '<br><button onclick="loadAIActionPlan(true)" style="margin-top:8px;background:var(--accent);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:var(--font);font-size:12px">Tekrar Dene</button></div>';
   }
 
   if (btn) btn.disabled = false;
