@@ -543,6 +543,24 @@
   .swipe-empty .big { font-size: 48px; margin-bottom: 12px; }
   .swipe-saved { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 
+  /* ── REKLAM SİHİRBAZI ── */
+  .wizard-step {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .ws-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface2); border: 2px solid var(--border);
+    color: var(--text3); font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .ws-label { font-size: 11px; color: var(--text3); font-weight: 500; }
+  .wizard-step.active .ws-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .wizard-step.active .ws-label { color: var(--accent); font-weight: 700; }
+  .wizard-step.done .ws-num { background: var(--green); border-color: var(--green); color: #fff; }
+  .ws-line { flex: 1; height: 2px; background: var(--border); min-width: 24px; margin: 0 4px; margin-top: -18px; }
+
   /* ── GLOW CARDS ── */
   .glow-green { box-shadow: 0 0 20px rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3) !important; }
   .glow-red { box-shadow: 0 0 20px rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.3) !important; }
@@ -745,6 +763,7 @@
   <div class="nav-item" onclick="nav('hook')" data-sec="hook"><span class="icon">🪝</span>Hook Üretici</div>
   <div class="nav-item" onclick="nav('swipe')" data-sec="swipe"><span class="icon">🃏</span>Hook Swipe</div>
   <div class="nav-item" onclick="nav('copy')" data-sec="copy"><span class="icon">✍️</span>Reklam Metni</div>
+  <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><span class="icon">🚀</span>Reklam Hazırla</div>
   <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt"><span class="icon">🎨</span>Görsel Prompt</div>
 
   <div class="nav-section">Finans</div>
@@ -1039,6 +1058,155 @@
         <button class="btn btn-primary" onclick="calcCampaignProfit()">📈 Kampanyaları Analiz Et</button>
       </div>
       <div id="campaign-profit-results"></div>
+    </div>
+  </div>
+
+  <!-- REKLAM HAZIRLA -->
+  <div id="sec-ad-wizard" class="section">
+    <div class="page-title">🚀 Reklam Hazırla</div>
+    <div class="page-sub">Adım adım reklamını oluştur, Meta'da yayınla</div>
+
+    <!-- Adım göstergesi -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:28px;overflow-x:auto">
+      <div class="wizard-step active" id="ws-1" onclick="goWizardStep(1)">
+        <div class="ws-num">1</div><div class="ws-label">Hook</div>
+      </div>
+      <div class="ws-line"></div>
+      <div class="wizard-step" id="ws-2" onclick="goWizardStep(2)">
+        <div class="ws-num">2</div><div class="ws-label">Metin</div>
+      </div>
+      <div class="ws-line"></div>
+      <div class="wizard-step" id="ws-3" onclick="goWizardStep(3)">
+        <div class="ws-num">3</div><div class="ws-label">Hedef</div>
+      </div>
+      <div class="ws-line"></div>
+      <div class="wizard-step" id="ws-4" onclick="goWizardStep(4)">
+        <div class="ws-num">4</div><div class="ws-label">Yayınla</div>
+      </div>
+    </div>
+
+    <!-- ADIM 1: Hook -->
+    <div id="wizard-panel-1">
+      <div class="card mb-16">
+        <div class="card-title">🎯 Adım 1 — Hook (İlk Cümle)</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Reklamın ilk 3 saniyesi. Kişi scroll ederken durmasını sağlayacak cümle. Hook ne kadar güçlüyse, CTR o kadar yüksek.</p>
+        <label>Hook metnini yaz veya Hook Üretici'den getir</label>
+        <textarea id="wiz-hook" rows="3" placeholder="Örn: Banyo tabureniz için harcadığınız saatler bitti! ✨" style="margin-bottom:12px"></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="nav('hook')">🪝 Hook Üretici'ye Git</button>
+          <button class="btn btn-ghost btn-sm" onclick="nav('swipe')">🃏 Kaydedilenlerden Getir</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="wizardNext(1)">Devam Et →</button>
+    </div>
+
+    <!-- ADIM 2: Metin -->
+    <div id="wizard-panel-2" style="display:none">
+      <div class="card mb-16">
+        <div class="card-title">✍️ Adım 2 — Reklam Metni</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Hook'tan sonra gelen açıklama metni. Ürünün faydasını anlat, sosyal kanıt ekle, harekete geçir.</p>
+        <label>Reklam metni</label>
+        <textarea id="wiz-body" rows="6" placeholder="Ürünün faydalarını anlat, sosyal kanıt ekle..." style="margin-bottom:12px"></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn btn-ghost btn-sm" onclick="nav('copy')">✍️ AI ile Reklam Metni Yaz</button>
+          <button class="btn btn-ghost btn-sm" onclick="useGeneratedCopy()">📋 Üretilen Metni Getir</button>
+        </div>
+        <label>Harekete Geçirici (CTA)</label>
+        <select id="wiz-cta" style="margin-bottom:0">
+          <option value="Hemen Satın Al">Hemen Satın Al</option>
+          <option value="Şimdi Keşfet">Şimdi Keşfet</option>
+          <option value="Daha Fazla Bilgi">Daha Fazla Bilgi</option>
+          <option value="Alışverişe Başla">Alışverişe Başla</option>
+          <option value="Ücretsiz Dene">Ücretsiz Dene</option>
+          <option value="Fiyatı Gör">Fiyatı Gör</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="wizardBack(2)">← Geri</button>
+        <button class="btn btn-primary" onclick="wizardNext(2)">Devam Et →</button>
+      </div>
+    </div>
+
+    <!-- ADIM 3: Hedef -->
+    <div id="wizard-panel-3" style="display:none">
+      <div class="card mb-16">
+        <div class="card-title">🎯 Adım 3 — Kampanya Hedefi & Bütçe</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Meta'da hangi hedefle yayınlayacaksın? Satış mı, trafik mi?</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div>
+            <label>Kampanya Amacı</label>
+            <select id="wiz-objective">
+              <option value="OUTCOME_SALES">💰 Satış / Dönüşüm</option>
+              <option value="OUTCOME_TRAFFIC">🔗 Trafik</option>
+              <option value="OUTCOME_ENGAGEMENT">💬 Etkileşim</option>
+              <option value="OUTCOME_AWARENESS">📢 Farkındalık</option>
+            </select>
+          </div>
+          <div>
+            <label>Günlük Bütçe (₺)</label>
+            <input type="number" id="wiz-budget" value="200" />
+          </div>
+          <div>
+            <label>Hedef Kitle</label>
+            <select id="wiz-audience">
+              <option value="broad">Geniş (18-65, Türkiye)</option>
+              <option value="interest">İlgi Alanı Bazlı</option>
+              <option value="retarget">Yeniden Hedefleme</option>
+              <option value="lookalike">Benzer Kitle</option>
+            </select>
+          </div>
+          <div>
+            <label>Reklam Formatı</label>
+            <select id="wiz-format">
+              <option value="video">📹 Video</option>
+              <option value="image">🖼️ Görsel</option>
+              <option value="carousel">🎠 Carousel</option>
+            </select>
+          </div>
+        </div>
+        <label>Hedef URL (landing page)</label>
+        <input type="url" id="wiz-url" placeholder="https://siteniz.com/urun" />
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="wizardBack(3)">← Geri</button>
+        <button class="btn btn-primary" onclick="wizardNext(3)">Devam Et →</button>
+      </div>
+    </div>
+
+    <!-- ADIM 4: Özet + Meta'da Aç -->
+    <div id="wizard-panel-4" style="display:none">
+      <div class="card mb-16">
+        <div class="card-title">✅ Adım 4 — Özet & Meta'da Yayınla</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">Her şey hazır. Meta Ads Manager'da sadece <strong>görseli ekle</strong> ve <strong>Yayınla</strong>'ya bas.</p>
+        
+        <!-- Özet kutu -->
+        <div style="background:var(--surface2);border-radius:14px;padding:20px;margin-bottom:20px;border:1px solid var(--border)" id="wiz-summary"></div>
+
+        <!-- Meta'da yapılacaklar rehberi -->
+        <div class="card-title" style="margin-top:0;margin-bottom:12px">📋 Meta'da Yapacakların (3 adım)</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:12px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">1</div>
+            <div><div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px">Metni yapıştır</div><div style="font-size:13px;color:var(--text2)">Reklam metni panoya kopyalandı. "Primary Text" alanına yapıştır.</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:12px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">2</div>
+            <div><div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px">Görsel/video yükle</div><div style="font-size:13px;color:var(--text2)">Reklam görselini veya videonu yükle. En iyi boyut: 1080x1080 (kare) veya 1080x1920 (dikey).</div></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:12px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--yellow);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0">3</div>
+            <div><div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px">Yayınla</div><div style="font-size:13px;color:var(--text2)">Bütçeyi kontrol et ve "Publish" / "Yayınla" butonuna bas. Reklam 15-30 dakikada aktif olur.</div></div>
+          </div>
+        </div>
+
+        <!-- Meta'da Aç butonu -->
+        <button class="btn btn-primary" id="wiz-open-meta" onclick="openWizardInMeta()" style="width:100%;justify-content:center;padding:15px;font-size:16px;font-weight:700;border-radius:12px;background:linear-gradient(135deg,#1877f2,#0a5dc2)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right:8px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Meta Ads Manager'da Aç
+        </button>
+        <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text3)">Metin otomatik kopyalanır • Meta'da sadece görsel ekle ve yayınla</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="wizardBack(4)">← Geri</button>
     </div>
   </div>
 
@@ -3172,8 +3340,8 @@ function renderCopyCards(copies) {
     const accountId = S.accountId ? S.accountId.replace('act_','') : '';
     // Meta Ads Manager derin link — yeni kampanya oluşturma sayfası
     const metaUrl = accountId
-      ? `https://www.facebook.com/adsmanager/manage/campaigns/edit?act=${accountId}&selected_campaign_ids=&objective=OUTCOME_SALES`
-      : 'https://www.facebook.com/adsmanager/manage/campaigns';
+      ? `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${accountId}`
+      : 'https://adsmanager.facebook.com/adsmanager/manage/campaigns';
 
     return `<div style="background:${col.bg};border:1px solid ${col.border};border-radius:16px;padding:24px;margin-bottom:12px;animation:fadeIn 0.3s ease ${i*0.08}s both">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
@@ -3227,8 +3395,123 @@ function buildCopies(goal, tone, existing) {
 }
 
 // ═══════════════════════════════════════════════
-// KAR HESABI
+// REKLAM SİHİRBAZI
 // ═══════════════════════════════════════════════
+var _wizardData = {};
+
+function goWizardStep(step) {
+  for (var i = 1; i <= 4; i++) {
+    var panel = document.getElementById('wizard-panel-' + i);
+    var stepEl = document.getElementById('ws-' + i);
+    if (panel) panel.style.display = i === step ? 'block' : 'none';
+    if (stepEl) {
+      stepEl.classList.remove('active', 'done');
+      if (i < step) stepEl.classList.add('done');
+      if (i === step) stepEl.classList.add('active');
+    }
+  }
+}
+
+function wizardNext(currentStep) {
+  if (currentStep === 1) {
+    const hook = document.getElementById('wiz-hook').value.trim();
+    if (!hook) { alert('Lütfen bir hook girin.'); return; }
+    _wizardData.hook = hook;
+    goWizardStep(2);
+  } else if (currentStep === 2) {
+    const body = document.getElementById('wiz-body').value.trim();
+    if (!body) { alert('Lütfen reklam metni girin.'); return; }
+    _wizardData.body = body;
+    _wizardData.cta = document.getElementById('wiz-cta').value;
+    goWizardStep(3);
+  } else if (currentStep === 3) {
+    _wizardData.objective = document.getElementById('wiz-objective').value;
+    _wizardData.budget = document.getElementById('wiz-budget').value;
+    _wizardData.audience = document.getElementById('wiz-audience').value;
+    _wizardData.format = document.getElementById('wiz-format').value;
+    _wizardData.url = document.getElementById('wiz-url').value;
+    renderWizardSummary();
+    goWizardStep(4);
+  }
+}
+
+function wizardBack(currentStep) {
+  goWizardStep(currentStep - 1);
+}
+
+function renderWizardSummary() {
+  const objectiveLabels = {
+    'OUTCOME_SALES': '💰 Satış / Dönüşüm',
+    'OUTCOME_TRAFFIC': '🔗 Trafik',
+    'OUTCOME_ENGAGEMENT': '💬 Etkileşim',
+    'OUTCOME_AWARENESS': '📢 Farkındalık'
+  };
+  const audienceLabels = {
+    'broad': 'Geniş (18-65, Türkiye)',
+    'interest': 'İlgi Alanı Bazlı',
+    'retarget': 'Yeniden Hedefleme',
+    'lookalike': 'Benzer Kitle'
+  };
+  const formatLabels = {
+    'video': '📹 Video',
+    'image': '🖼️ Görsel',
+    'carousel': '🎠 Carousel'
+  };
+
+  const el = document.getElementById('wiz-summary');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="display:grid;gap:12px">
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:6px">Hook</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text)">${_wizardData.hook}</div>
+      </div>
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:6px">Reklam Metni</div>
+        <div style="font-size:13px;color:var(--text2);white-space:pre-line;line-height:1.6">${_wizardData.body}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">Hedef</div><div style="font-size:13px;color:var(--text)">${objectiveLabels[_wizardData.objective] || _wizardData.objective}</div></div>
+        <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">Günlük Bütçe</div><div style="font-size:13px;color:var(--text)">₺${_wizardData.budget}</div></div>
+        <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">Kitle</div><div style="font-size:13px;color:var(--text)">${audienceLabels[_wizardData.audience] || _wizardData.audience}</div></div>
+        <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">Format</div><div style="font-size:13px;color:var(--text)">${formatLabels[_wizardData.format] || _wizardData.format}</div></div>
+      </div>
+      ${_wizardData.url ? `<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">Hedef URL</div><div style="font-size:13px;color:var(--accent)">${_wizardData.url}</div></div>` : ''}
+      <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px">CTA Butonu</div><div style="font-size:13px;color:var(--text)">${_wizardData.cta}</div></div>
+    </div>`;
+}
+
+function openWizardInMeta() {
+  const btn = document.getElementById('wiz-open-meta');
+  // Tüm metni kopyala
+  const fullText = _wizardData.hook + '\n\n' + _wizardData.body;
+  const accountId = S.accountId ? S.accountId.replace('act_', '') : '';
+  const metaUrl = accountId
+    ? 'https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=' + accountId
+    : 'https://adsmanager.facebook.com/adsmanager/manage/campaigns';
+
+  navigator.clipboard.writeText(fullText).then(() => {
+    if (btn) { btn.textContent = '✅ Metin Kopyalandı! Meta açılıyor...'; btn.disabled = true; }
+    setTimeout(() => {
+      window.open(metaUrl, '_blank');
+      if (btn) { btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right:8px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Meta Ads Manager\'da Aç'; btn.disabled = false; }
+    }, 1000);
+  }).catch(() => {
+    window.open(metaUrl, '_blank');
+  });
+}
+
+function useGeneratedCopy() {
+  // copy-results'dan ilk metni al
+  const copyText = document.querySelector('#copy-results .copy-text');
+  if (copyText) {
+    document.getElementById('wiz-body').value = copyText.textContent.trim();
+    showSwipeToast('✅ Metin getirildi!', 'var(--green)');
+  } else {
+    alert('Önce Reklam Metni bölümünden metin üretin.');
+    nav('copy');
+  }
+}
 function switchProfitTab(tab) {
   document.getElementById('profit-panel-1').style.display = tab === 1 ? 'block' : 'none';
   document.getElementById('profit-panel-2').style.display = tab === 2 ? 'block' : 'none';
@@ -3877,8 +4160,8 @@ function renderSaved() {
   if (section) section.style.display = 'block';
   const accountId = S.accountId ? S.accountId.replace('act_','') : '';
   const metaUrl = accountId
-    ? `https://www.facebook.com/adsmanager/manage/campaigns/edit?act=${accountId}&objective=OUTCOME_SALES`
-    : 'https://www.facebook.com/adsmanager/manage/campaigns';
+    ? `https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=${accountId}`
+    : 'https://adsmanager.facebook.com/adsmanager/manage/campaigns';
 
   el.innerHTML = _swipeSaved.map((h, i) => {
     const text = typeof h === 'object' ? (h.text || h) : h;
