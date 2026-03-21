@@ -2086,34 +2086,31 @@ async function loadAIActionPlan(forceRefresh, insightsData) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanı ve AI koçsun. Sadece JSON döndür, başka hiçbir şey yazma.',
+        system: 'Sen bir Meta reklam uzmanı ve AI koçsun. Sadece geçerli JSON döndür, başka hiçbir şey yazma. JSON dışında tek karakter bile olmasın.',
         message: `${brandCtx}
 
-Bugünkü kampanya verisi:
-- Toplam harcama: ₺${totalSpend.toFixed(0)}
-- Toplam satış: ${totalSales}
-- ROAS: ${roas.toFixed(2)}x
-- Ort. CTR: %${avgCTR.toFixed(2)}
-- Ort. Frekans: ${avgFreq.toFixed(1)}
-- CPA: ₺${cpa.toFixed(0)}
+Bugünkü veri: Harcama ₺${totalSpend.toFixed(0)}, Satış ${totalSales}, ROAS ${roas.toFixed(2)}x, CTR %${avgCTR.toFixed(2)}, Frekans ${avgFreq.toFixed(1)}, CPA ₺${cpa.toFixed(0)}.
+${campSummary ? 'Kampanyalar: ' + campSummary : 'Kampanya verisi yok.'}
 
-Kampanyalar:
-${campSummary || 'Veri yok'}
+Bugün yapılması gereken 4 aksiyonu üret. Her biri spesifik ve veriye dayalı olsun.
 
-Bu verilere bakarak bugün yapılması gereken EN ÖNEMLİ 4-5 aksiyonu üret. Her aksiyon spesifik, uygulanabilir ve veriye dayalı olsun.
+{"actions":[{"priority":1,"type":"hook_uret","title":"kısa başlık","reason":"neden 1 cümle","detail":"ne yapılacak 1 cümle","cta":"araç adı","nav":"hook"},{"priority":2,"type":"creative_yenile","title":"...","reason":"...","detail":"...","cta":"...","nav":"creative"},{"priority":3,"type":"butce_artir","title":"...","reason":"...","detail":"...","cta":"...","nav":"scale"},{"priority":4,"type":"aci_test","title":"...","reason":"...","detail":"...","cta":"...","nav":"copy"}]}
 
-Aksiyon tipleri: hook_uret, reklam_metni, video_creative, butce_artir, butce_azalt, aci_test, creative_yenile, kampanya_kapat, hedef_degistir, frekans_uyari
-
-Sadece JSON: {"actions":[{"priority":1,"type":"hook_uret","title":"Aksiyon başlığı","reason":"Neden bu aksiyon — veriye dayalı 1-2 cümle","detail":"Ne yapılacak tam olarak","cta":"İlgili araç adı","nav":"hook"},...]}
-
-nav değerleri: plan, dash, scale, creative, budget, hook, swipe, copy, profit, ai, log, settings, creative-prompt`
+nav değerleri: hook, swipe, copy, scale, creative, budget, dash, ai, creative-prompt`
       })
     });
 
     const data = await res.json();
-    const raw = (data.answer || '').replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(raw);
+    let raw = (data.answer || '').trim();
+
+    // JSON bloğunu bul
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('JSON bulunamadı');
+
+    const parsed = JSON.parse(jsonMatch[0]);
     const actions = parsed.actions || [];
+
+    if (!actions.length) throw new Error('Aksiyon listesi boş');
 
     localStorage.setItem(cacheKey, JSON.stringify(actions));
     renderAIActions(actions);
