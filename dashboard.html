@@ -1609,6 +1609,19 @@
 
 <script>
 // ═══════════════════════════════════════════════
+// MARKET / DİL AYARLARI — EN BAŞTA TANIMLA
+// ═══════════════════════════════════════════════
+const MARKETS = {
+  us: { flag:'🇺🇸', name:'Amerika',   lang:'English', currency:'$', langPrompt:'Write in English. Use American English, natural US ad copy style.' },
+  tr: { flag:'🇹🇷', name:'Türkiye',   lang:'Türkçe',  currency:'₺', langPrompt:'Türkçe yaz. Türk kültürüne uygun, samimi ve akıcı reklam dili kullan.' },
+  uk: { flag:'🇬🇧', name:'İngiltere', lang:'English', currency:'£', langPrompt:'Write in English. Use British English and UK cultural references.' },
+  de: { flag:'🇩🇪', name:'Almanya',   lang:'Deutsch', currency:'€', langPrompt:'Schreibe auf Deutsch. Verwende natürliches Deutsch für den deutschen Markt.' },
+};
+var _selectedMarket = localStorage.getItem('adsopify_market') || 'us';
+function getMarket() { return MARKETS[_selectedMarket] || MARKETS['us']; }
+function getCurrency() { return getMarket().currency; }
+
+// ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
 const S = {
@@ -2312,7 +2325,7 @@ async function loadPlan() {
     const totalPurchases = insights.reduce((s, i) => s + (i._purchases || 0), 0);
     const totalRevenue = insights.reduce((s, i) => s + (i._revenue || 0), 0);
     const todayROAS = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue / totalSpend).toFixed(2) : null;
-    const cur = getCurrency();
+    const cur = (typeof getCurrency === 'function') ? getCurrency() : '₺';
 
     document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
     document.getElementById('plan-budget-badge').textContent = 'Bugün ' + cur + totalSpend.toFixed(2) + (totalPurchases > 0 ? ' • ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
@@ -2325,18 +2338,17 @@ async function loadPlan() {
     loadAIActionPlan(false, insights);
 
   } catch (e) {
-    // Token süresi dolmuş veya API hatası
-    const isTokenErr = e.message && (e.message.includes('190') || e.message.includes('token') || e.message.includes('OAuth') || e.message.includes('Session'));
-    document.getElementById('plan-loading').innerHTML = `
-      <div style="text-align:center;padding:24px">
-        <div style="font-size:32px;margin-bottom:12px">${isTokenErr ? '🔑' : '⚠️'}</div>
-        <div style="font-weight:600;color:var(--text);margin-bottom:8px">${isTokenErr ? 'Meta token süresi dolmuş' : 'Veri çekilemedi'}</div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:16px">${isTokenErr ? 'Facebook ile yeniden bağlanman gerekiyor.' : e.message}</div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          ${isTokenErr ? '<button class="btn btn-primary btn-sm" onclick="reconnectMeta()">🔗 Yeniden Bağlan</button>' : ''}
-          <button class="btn btn-ghost btn-sm" onclick="loadPlanOffline()">📊 Verisiz Devam Et</button>
-        </div>
-      </div>`;
+    var msg = e ? (e.message || '') : '';
+    var isTokenErr = msg.includes('190') || msg.toLowerCase().includes('token') || msg.toLowerCase().includes('oauth') || msg.toLowerCase().includes('session') || msg.toLowerCase().includes('expired');
+    var errHtml = '<div style="text-align:center;padding:24px">' +
+      '<div style="font-size:32px;margin-bottom:12px">' + (isTokenErr ? '🔑' : '⚠️') + '</div>' +
+      '<div style="font-weight:600;color:var(--text);margin-bottom:8px">' + (isTokenErr ? 'Meta bağlantısı kesildi' : 'Veri çekilemedi') + '</div>' +
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:16px">' + (isTokenErr ? 'Facebook ile yeniden bağlan.' : msg) + '</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
+        (isTokenErr ? '<button class="btn btn-primary btn-sm" onclick="reconnectMeta()">🔗 Yeniden Bağlan</button>' : '') +
+        '<button class="btn btn-ghost btn-sm" onclick="loadPlanOffline()">📊 Verisiz Devam Et</button>' +
+      '</div></div>';
+    document.getElementById('plan-loading').innerHTML = errHtml;
   }
 }
 
@@ -4521,17 +4533,6 @@ function analyzeLog() {
 // ═══════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════
-// ═══════════════════════════════════════════════
-// MARKET / DİL AYARLARI
-// ═══════════════════════════════════════════════
-const MARKETS = {
-  us: { flag:'🇺🇸', name:'Amerika',   lang:'English', currency:'$', langPrompt:'Write in English. Use American English, natural US ad copy style.' },
-  tr: { flag:'🇹🇷', name:'Türkiye',   lang:'Türkçe',  currency:'₺', langPrompt:'Türkçe yaz. Türk kültürüne uygun, samimi ve akıcı reklam dili kullan.' },
-  uk: { flag:'🇬🇧', name:'İngiltere', lang:'English', currency:'£', langPrompt:'Write in English. Use British English and UK cultural references.' },
-  de: { flag:'🇩🇪', name:'Almanya',   lang:'Deutsch', currency:'€', langPrompt:'Schreibe auf Deutsch. Verwende natürliches Deutsch für den deutschen Markt.' },
-};
-
-var _selectedMarket = localStorage.getItem('adsopify_market') || 'us';
 
 function selectMarket(code) {
   _selectedMarket = code;
@@ -4545,15 +4546,12 @@ function selectMarket(code) {
 function changeMarket(code) {
   _selectedMarket = code;
   localStorage.setItem('adsopify_market', code);
-  // Ayarlar market selector güncelle
   document.querySelectorAll('.settings-market-opt').forEach(function(el) {
     var isSelected = el.getAttribute('data-market') === code;
     el.style.borderColor = isSelected ? 'var(--accent)' : 'var(--border)';
     el.style.background = isSelected ? 'var(--accent-light)' : 'var(--surface2)';
   });
-  // Topbar badge güncelle
   updateMarketBadge();
-  // AI cache temizle — yeni pazara göre üretilecek
   var cacheKey = 'ai_action_plan_' + new Date().toISOString().split('T')[0];
   localStorage.removeItem(cacheKey);
   showSwipeToast(getMarket().flag + ' ' + getMarket().name + ' seçildi', 'var(--accent)');
@@ -4561,11 +4559,7 @@ function changeMarket(code) {
 
 function updateMarketBadge() {
   var badge = document.getElementById('market-badge');
-  if (badge) {
-    var m = getMarket();
-    badge.textContent = m.flag + ' ' + m.currency;
-  }
-  // Settings seçimini de güncelle
+  if (badge) { var m = getMarket(); badge.textContent = m.flag + ' ' + m.currency; }
   document.querySelectorAll('.settings-market-opt').forEach(function(el) {
     var isSelected = el.getAttribute('data-market') === _selectedMarket;
     el.style.borderColor = isSelected ? 'var(--accent)' : 'var(--border)';
