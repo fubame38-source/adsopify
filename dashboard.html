@@ -3168,14 +3168,42 @@ function renderCopyCards(copies) {
   ];
   document.getElementById('copy-results').innerHTML = copies.map((c, i) => {
     const col = colors[i % colors.length];
+    const encodedText = encodeURIComponent(c.text || '');
+    const accountId = S.accountId ? S.accountId.replace('act_','') : '';
+    // Meta Ads Manager derin link — yeni kampanya oluşturma sayfası
+    const metaUrl = accountId
+      ? `https://www.facebook.com/adsmanager/manage/campaigns/edit?act=${accountId}&selected_campaign_ids=&objective=OUTCOME_SALES`
+      : 'https://www.facebook.com/adsmanager/manage/campaigns';
+
     return `<div style="background:${col.bg};border:1px solid ${col.border};border-radius:16px;padding:24px;margin-bottom:12px;animation:fadeIn 0.3s ease ${i*0.08}s both">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${col.accent}">${c.tag}</div>
-        <button class="btn btn-ghost btn-sm" onclick="copyCopy(this)">📋 Kopyala</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="copyCopy(this)">📋 Kopyala</button>
+          <button class="btn btn-primary btn-sm" onclick="openInMeta(this, '${metaUrl}')">⚡ Meta'da Aç</button>
+        </div>
       </div>
       <div class="copy-text" style="font-size:14px;line-height:1.8;white-space:pre-line;color:var(--text)">${c.text}</div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid ${col.border};font-size:12px;color:var(--text3)">
+        💡 "Meta'da Aç" tıklayınca metni kopyala, Ads Manager'da reklam metnine yapıştır.
+      </div>
     </div>`;
   }).join('');
+}
+
+function openInMeta(btn, url) {
+  // Önce metni kopyala
+  const card = btn.closest('[style]');
+  const text = card.querySelector('.copy-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ Kopyalandı!';
+    setTimeout(() => {
+      btn.textContent = '⚡ Meta\'da Aç';
+      window.open(url, '_blank');
+    }, 800);
+  }).catch(() => {
+    window.open(url, '_blank');
+  });
 }
 
 function copyCopy(btn) {
@@ -3847,9 +3875,32 @@ function renderSaved() {
     return;
   }
   if (section) section.style.display = 'block';
-  el.innerHTML = _swipeSaved.map((h, i) =>
-    `<div class="swipe-saved"><span>${h}</span><button onclick="removeSaved(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px">×</button></div>`
-  ).join('');
+  const accountId = S.accountId ? S.accountId.replace('act_','') : '';
+  const metaUrl = accountId
+    ? `https://www.facebook.com/adsmanager/manage/campaigns/edit?act=${accountId}&objective=OUTCOME_SALES`
+    : 'https://www.facebook.com/adsmanager/manage/campaigns';
+
+  el.innerHTML = _swipeSaved.map((h, i) => {
+    const text = typeof h === 'object' ? (h.text || h) : h;
+    return `<div class="swipe-saved">
+      <span style="flex:1;margin-right:8px">${text}</span>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button onclick="copyHookToMeta(this,'${metaUrl}')" data-text="${String(text).replace(/'/g,'&#39;')}" style="background:var(--accent);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">⚡ Meta</button>
+        <button onclick="removeSaved(${i})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 4px">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function copyHookToMeta(btn, url) {
+  const text = btn.getAttribute('data-text');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅';
+    setTimeout(() => {
+      btn.textContent = '⚡ Meta';
+      window.open(url, '_blank');
+    }, 700);
+  }).catch(() => { window.open(url, '_blank'); });
 }
 
 function removeSaved(i) {
