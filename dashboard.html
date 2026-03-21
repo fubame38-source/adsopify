@@ -589,6 +589,30 @@
     <p style="font-size:16px;color:rgba(255,255,255,0.65);margin-bottom:36px;line-height:1.6">Web siteni gir — AI siteyi ziyaret edip markanı tanısın, sana özel hook ve reklam fikirleri üretsin.</p>
     
     <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:28px;margin-bottom:16px">
+      
+      <!-- Pazar seçimi -->
+      <div style="margin-bottom:20px">
+        <label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:10px;text-align:left">🌍 Hangi pazarda satış yapıyorsun?</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="market-selector">
+          <div class="market-opt selected" onclick="selectMarket('us')" data-market="us" style="background:rgba(255,255,255,0.15);border:2px solid #6366f1;border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+            <span style="font-size:20px">🇺🇸</span>
+            <div style="text-align:left"><div style="font-size:13px;font-weight:700;color:#fff">Amerika</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">İngilizce · $</div></div>
+          </div>
+          <div class="market-opt" onclick="selectMarket('tr')" data-market="tr" style="background:rgba(255,255,255,0.06);border:2px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+            <span style="font-size:20px">🇹🇷</span>
+            <div style="text-align:left"><div style="font-size:13px;font-weight:700;color:#fff">Türkiye</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">Türkçe · ₺</div></div>
+          </div>
+          <div class="market-opt" onclick="selectMarket('uk')" data-market="uk" style="background:rgba(255,255,255,0.06);border:2px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+            <span style="font-size:20px">🇬🇧</span>
+            <div style="text-align:left"><div style="font-size:13px;font-weight:700;color:#fff">İngiltere</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">İngilizce · £</div></div>
+          </div>
+          <div class="market-opt" onclick="selectMarket('de')" data-market="de" style="background:rgba(255,255,255,0.06);border:2px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+            <span style="font-size:20px">🇩🇪</span>
+            <div style="text-align:left"><div style="font-size:13px;font-weight:700;color:#fff">Almanya</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">Almanca · €</div></div>
+          </div>
+        </div>
+      </div>
+
       <div style="margin-bottom:16px">
         <label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:8px;text-align:left">🌐 Web Sitesi URL'si</label>
         <input type="url" id="brand-url" placeholder="https://markan.com" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:15px;padding:12px 16px;border-radius:10px" />
@@ -733,6 +757,7 @@
   <div class="spacer"></div>
   <div id="fatigue-alert" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer" onclick="nav('creative')" title="Creative yorgunluğu olan kampanyalar var">⚠️ <span id="fatigue-count"></span> yorgun kampanya</div>
   <div class="stat-badge" id="top-spend"><span>Bugün:</span> <strong id="top-spend-val">—</strong></div>
+  <div class="stat-badge" id="market-badge-wrap" style="cursor:pointer" onclick="nav('settings')" title="Pazar değiştir"><strong id="market-badge">🇺🇸 $</strong></div>
   <div class="stat-badge live" id="top-acct" style="display:none;cursor:pointer;position:relative" onclick="toggleAccountMenu()" title="Hesap değiştir">
     <strong id="top-acct-name">—</strong> <span style="font-size:10px;opacity:0.7">▼</span>
     <div id="acct-menu" style="display:none;position:absolute;top:36px;right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-md);min-width:200px;z-index:200;padding:8px 0">
@@ -1550,6 +1575,29 @@
       <button class="btn btn-primary btn-sm" onclick="resetBrand()">🔄 Markayı Yeniden Gir</button>
     </div>
 
+    <div class="card mb-16">
+      <div class="card-title">🌍 Hedef Pazar</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">AI tüm içerikleri seçtiğin pazarın diline göre üretir.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="settings-market-selector">
+        <div class="settings-market-opt" onclick="changeMarket('us')" data-market="us" style="background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+          <span style="font-size:18px">🇺🇸</span>
+          <div><div style="font-size:13px;font-weight:600;color:var(--text)">Amerika</div><div style="font-size:11px;color:var(--text3)">İngilizce · $</div></div>
+        </div>
+        <div class="settings-market-opt" onclick="changeMarket('tr')" data-market="tr" style="background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+          <span style="font-size:18px">🇹🇷</span>
+          <div><div style="font-size:13px;font-weight:600;color:var(--text)">Türkiye</div><div style="font-size:11px;color:var(--text3)">Türkçe · ₺</div></div>
+        </div>
+        <div class="settings-market-opt" onclick="changeMarket('uk')" data-market="uk" style="background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+          <span style="font-size:18px">🇬🇧</span>
+          <div><div style="font-size:13px;font-weight:600;color:var(--text)">İngiltere</div><div style="font-size:11px;color:var(--text3)">İngilizce · £</div></div>
+        </div>
+        <div class="settings-market-opt" onclick="changeMarket('de')" data-market="de" style="background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s">
+          <span style="font-size:18px">🇩🇪</span>
+          <div><div style="font-size:13px;font-weight:600;color:var(--text)">Almanya</div><div style="font-size:11px;color:var(--text3)">Almanca · €</div></div>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">🔗 Hesap</div>
       <div id="settings-acct" style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:2"></div>
@@ -1772,7 +1820,11 @@ function startApp() {
   loadAllAccounts();
   initTheme();
 
-  // Supabase — token varsa Graph API'den kullanıcı bilgisini çek ve kaydet
+  // Market'i yükle
+  _selectedMarket = localStorage.getItem('adsopify_market') || 'us';
+  updateMarketBadge();
+
+  // Supabase
   if (S.token) {
     fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + S.token)
       .then(r => r.json())
@@ -1786,6 +1838,8 @@ function startApp() {
   } else {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
+    // Marka market'i varsa onu kullan
+    if (parsed.market) { _selectedMarket = parsed.market; updateMarketBadge(); }
   }
   loadPlan();
 }
@@ -1874,13 +1928,15 @@ async function saveOnboarding() {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, desc })
+      body: JSON.stringify({ url, desc, market: _selectedMarket, langPrompt: getMarket().langPrompt })
     });
 
     const brand = await res.json();
     if (brand.error) throw new Error(brand.error);
     brand.url = url;
     brand.rawDesc = desc;
+    brand.market = _selectedMarket;
+    localStorage.setItem('adsopify_market', _selectedMarket);
 
     clearInterval(stepInterval);
     document.getElementById('ob-progress').style.width = '100%';
@@ -2302,7 +2358,7 @@ async function loadAIActionPlan(forceRefresh, insightsData) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanı ve AI koçsun. Sadece geçerli JSON döndür, başka hiçbir şey yazma. JSON dışında tek karakter bile olmasın.',
+        system: 'You are a Meta ads expert and AI coach. Return ONLY valid JSON, nothing else. ' + getMarket().langPrompt,
         message: `${brandCtx}
 
 Bugünkü veri: Harcama ₺${totalSpend.toFixed(0)}, Satış ${totalSales}, ROAS ${roas.toFixed(2)}x, CTR %${avgCTR.toFixed(2)}, Frekans ${avgFreq.toFixed(1)}, CPA ₺${cpa.toFixed(0)}.
@@ -4047,7 +4103,9 @@ async function loadMoreSwipeHooks() {
         audience: S.brand.audience || '',
         format,
         targetAudience: 'genel',
-        previousHooks: _allGeneratedHooks
+        previousHooks: _allGeneratedHooks,
+        langPrompt: getMarket().langPrompt,
+        market: _selectedMarket
       })
     });
     const data = await res.json();
@@ -4424,6 +4482,58 @@ function analyzeLog() {
 // ═══════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// MARKET / DİL AYARLARI
+// ═══════════════════════════════════════════════
+const MARKETS = {
+  us: { flag:'🇺🇸', name:'Amerika',   lang:'English', currency:'$', langPrompt:'Write in English. Use American English, natural US ad copy style.' },
+  tr: { flag:'🇹🇷', name:'Türkiye',   lang:'Türkçe',  currency:'₺', langPrompt:'Türkçe yaz. Türk kültürüne uygun, samimi ve akıcı reklam dili kullan.' },
+  uk: { flag:'🇬🇧', name:'İngiltere', lang:'English', currency:'£', langPrompt:'Write in English. Use British English and UK cultural references.' },
+  de: { flag:'🇩🇪', name:'Almanya',   lang:'Deutsch', currency:'€', langPrompt:'Schreibe auf Deutsch. Verwende natürliches Deutsch für den deutschen Markt.' },
+};
+
+var _selectedMarket = localStorage.getItem('adsopify_market') || 'us';
+
+function selectMarket(code) {
+  _selectedMarket = code;
+  document.querySelectorAll('.market-opt').forEach(function(el) {
+    var isSelected = el.getAttribute('data-market') === code;
+    el.style.background = isSelected ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)';
+    el.style.borderColor = isSelected ? '#6366f1' : 'transparent';
+  });
+}
+
+function changeMarket(code) {
+  _selectedMarket = code;
+  localStorage.setItem('adsopify_market', code);
+  // Ayarlar market selector güncelle
+  document.querySelectorAll('.settings-market-opt').forEach(function(el) {
+    var isSelected = el.getAttribute('data-market') === code;
+    el.style.borderColor = isSelected ? 'var(--accent)' : 'var(--border)';
+    el.style.background = isSelected ? 'var(--accent-light)' : 'var(--surface2)';
+  });
+  // Topbar badge güncelle
+  updateMarketBadge();
+  // AI cache temizle — yeni pazara göre üretilecek
+  var cacheKey = 'ai_action_plan_' + new Date().toISOString().split('T')[0];
+  localStorage.removeItem(cacheKey);
+  showSwipeToast(getMarket().flag + ' ' + getMarket().name + ' seçildi', 'var(--accent)');
+}
+
+function updateMarketBadge() {
+  var badge = document.getElementById('market-badge');
+  if (badge) {
+    var m = getMarket();
+    badge.textContent = m.flag + ' ' + m.currency;
+  }
+  // Settings seçimini de güncelle
+  document.querySelectorAll('.settings-market-opt').forEach(function(el) {
+    var isSelected = el.getAttribute('data-market') === _selectedMarket;
+    el.style.borderColor = isSelected ? 'var(--accent)' : 'var(--border)';
+    el.style.background = isSelected ? 'var(--accent-light)' : 'var(--surface2)';
+  });
+}
+
 function fmt(n) {
   if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
   if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
