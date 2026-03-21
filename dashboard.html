@@ -472,11 +472,13 @@
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     padding: 20px 20px 12px; text-align: center; position: relative;
+    background: linear-gradient(160deg, var(--surface) 0%, var(--surface2) 100%);
   }
   .hook-card-footer {
-    padding: 12px 20px 16px;
+    padding: 12px 16px 14px;
     border-top: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface);
   }
   .hook-card-main .hook-cat {
     display: inline-flex; padding: 3px 10px; border-radius: 99px;
@@ -485,17 +487,18 @@
     margin-bottom: 12px;
   }
   .hook-card-main .hook-text {
-    font-size: 16px; font-weight: 700;
+    font-size: 17px; font-weight: 700;
     line-height: 1.55; color: var(--text);
-    letter-spacing: -0.2px;
+    letter-spacing: -0.3px;
   }
   .hook-card-main .hook-tag {
     font-size: 11px; color: var(--text3);
+    font-weight: 500;
   }
   .hook-card-main .hook-why {
-    font-size: 12px; color: var(--text3);
-    line-height: 1.5; max-width: 200px;
-    text-align: right;
+    font-size: 11px; color: var(--text3);
+    line-height: 1.5; text-align: right;
+    max-width: 160px;
   }
   /* Overlays */
   .swipe-hint-left {
@@ -3372,109 +3375,183 @@ async function loadMoreSwipeHooks() {
   }
 }
 
+// ── SWIPE STATE ──
+var _swipeTouchId = null;
+var _swipeSX = 0, _swipeSY = 0, _swipeCX = 0;
+var _swipeActive = false, _swipeLocked = false, _swipeRafId = null;
+
+function _swipeClear() {
+  _swipeActive = false; _swipeLocked = false; _swipeTouchId = null;
+  if (_swipeRafId) { cancelAnimationFrame(_swipeRafId); _swipeRafId = null; }
+}
+
+function _swipeApply(card, dx) {
+  var r = dx * 0.07;
+  card.style.transform = 'translateX(' + dx + 'px) rotate(' + r + 'deg)';
+  var l = card.querySelector('.swipe-hint-left');
+  var ri = card.querySelector('.swipe-hint-right');
+  if (!l || !ri) return;
+  if (dx < -15) { l.style.opacity = Math.min((-dx-15)/50,1); ri.style.opacity = 0; }
+  else if (dx > 15) { ri.style.opacity = Math.min((dx-15)/50,1); l.style.opacity = 0; }
+  else { l.style.opacity = 0; ri.style.opacity = 0; }
+}
+
 function renderHookCard() {
+  // Temizle — eski listener artıkları kalmıyor çünkü kart yeniden oluşturuluyor
+  _swipeClear();
+
   var cardEl = document.getElementById('hook-card-main');
   var counter = document.getElementById('swipe-counter');
   var progressBar = document.getElementById('swipe-progress-bar');
   if (!cardEl) return;
+
   var remaining = _swipeCards.length - _swipeIdx;
   var total = _swipeCards.length;
+
   if (remaining <= 0) {
+    cardEl.style.transform = '';
     cardEl.innerHTML = '<div class="swipe-empty"><div class="big">🎉</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Hepsi bitti!</div><div style="font-size:14px;color:var(--text2);margin-bottom:16px">Kaydettiklerini aşağıda görebilirsin.</div><button class="btn btn-primary btn-sm" onclick="loadMoreSwipeHooks()">✨ Yeni Hooklar Getir</button></div>';
     if (counter) counter.textContent = '';
     if (progressBar) progressBar.style.width = '100%';
     return;
   }
+
   var hookData = _swipeCards[_swipeIdx];
   var hookText = typeof hookData === 'object' ? (hookData.text || String(hookData)) : String(hookData);
-  var hookCat = typeof hookData === 'object' ? hookData.category : null;
-  var hookWhy = typeof hookData === 'object' ? hookData.why : null;
-  var isBrand = _swipeIdx < (S.brand && S.brand.hooks ? S.brand.hooks.length : 0);
-  var catColor = (typeof getCatColor === 'function') ? getCatColor(hookCat) : { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)', text: '#a78bfa' };
-  cardEl.classList.remove('enter','exit-left','exit-right','exit-save');
-  void cardEl.offsetWidth;
-  cardEl.classList.add('enter');
-  var catHtml = hookCat ? '<span class="hook-cat" style="background:' + catColor.bg + ';color:' + catColor.text + ';border:1px solid ' + catColor.border + '">' + hookCat + '</span>' : '';
+  var hookCat  = typeof hookData === 'object' ? hookData.category : null;
+  var hookWhy  = typeof hookData === 'object' ? hookData.why : null;
+  var isBrand  = _swipeIdx < (S.brand && S.brand.hooks ? S.brand.hooks.length : 0);
+  var cc = (typeof getCatColor === 'function') ? getCatColor(hookCat) : {bg:'rgba(99,102,241,0.12)',border:'rgba(99,102,241,0.25)',text:'#a78bfa'};
+
+  // HTML
+  var catHtml   = hookCat ? '<span class="hook-cat" style="background:'+cc.bg+';color:'+cc.text+';border:1px solid '+cc.border+'">'+hookCat+'</span>' : '';
   var brandHtml = isBrand ? '<span class="hook-cat" style="background:rgba(99,102,241,0.12);color:#a78bfa;border:1px solid rgba(99,102,241,0.25)">✨ Markana Özel</span>' : '';
-  var whyHtml = hookWhy ? '<div class="hook-why">💡 ' + hookWhy + '</div>' : '';
+  var whyHtml   = hookWhy ? '<div class="hook-why">💡 '+hookWhy+'</div>' : '';
+
+  // Reset transform önce, sonra içerik
+  cardEl.style.cssText = 'position:absolute;inset:0;background:var(--surface);border:1px solid var(--border2);border-radius:24px;box-shadow:0 12px 40px rgba(0,0,0,0.15);cursor:grab;user-select:none;z-index:2;overflow:hidden;display:flex;flex-direction:column;will-change:transform;';
   cardEl.innerHTML =
     '<div class="swipe-hint-left">✕ GEÇ</div>' +
     '<div class="swipe-hint-right">✓ KULLAN</div>' +
     '<div class="hook-card-body">' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">' + catHtml + brandHtml + '</div>' +
-      '<div class="hook-text">' + hookText + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">'+catHtml+brandHtml+'</div>' +
+      '<div class="hook-text">'+hookText+'</div>' +
     '</div>' +
     '<div class="hook-card-footer">' +
-      '<div class="hook-tag">' + (_swipeIdx+1) + ' / ' + total + '</div>' +
+      '<div class="hook-tag">'+(_swipeIdx+1)+' / '+total+'</div>' +
       whyHtml +
     '</div>';
+
+  // Giriş animasyonu
+  cardEl.animate([
+    {opacity:0, transform:'scale(0.88) translateY(16px)'},
+    {opacity:1, transform:'scale(1) translateY(0)'}
+  ], {duration:320, easing:'cubic-bezier(0.34,1.56,0.64,1)', fill:'forwards'});
+
   if (counter) counter.textContent = remaining + ' hook kaldı';
-  if (progressBar) progressBar.style.width = ((_swipeIdx / total) * 100) + '%';
+  if (progressBar) progressBar.style.width = ((_swipeIdx/total)*100)+'%';
 
-  // Touch & mouse drag
-  var startX = 0, startY = 0, isDragging = false, moved = false;
-
-  function onStart(e) {
-    var pt = e.touches ? e.touches[0] : e;
-    startX = pt.clientX; startY = pt.clientY;
-    isDragging = true; moved = false;
+  // ── SWIPE LISTENERS — sadece bu karta, RAF ile smooth ──
+  function onTouchStart(e) {
+    if (_swipeActive) return;
+    var t = e.touches[0];
+    _swipeSX = t.clientX; _swipeSY = t.clientY; _swipeCX = t.clientX;
+    _swipeActive = true; _swipeLocked = false; _swipeTouchId = t.identifier;
     cardEl.style.transition = 'none';
   }
-  function onMove(e) {
-    if (!isDragging) return;
-    var pt = e.touches ? e.touches[0] : e;
-    var dx = pt.clientX - startX;
-    var dy = pt.clientY - startY;
-    // Eğer dikey hareket baskınsa — sayfa scroll, dokunma
-    if (!moved && Math.abs(dy) > Math.abs(dx)) { isDragging = false; return; }
-    if (Math.abs(dx) > 8) { moved = true; if (e.cancelable) e.preventDefault(); }
-    if (!moved) return;
-    var rotate = dx * 0.06;
-    cardEl.style.transform = 'translateX(' + dx + 'px) rotate(' + rotate + 'deg)';
-    var leftHint = cardEl.querySelector('.swipe-hint-left');
-    var rightHint = cardEl.querySelector('.swipe-hint-right');
-    if (leftHint && rightHint) {
-      if (dx < -20) { leftHint.style.opacity = Math.min((-dx-20)/60,1); rightHint.style.opacity = 0; }
-      else if (dx > 20) { rightHint.style.opacity = Math.min((dx-20)/60,1); leftHint.style.opacity = 0; }
-      else { leftHint.style.opacity = 0; rightHint.style.opacity = 0; }
+  function onTouchMove(e) {
+    if (!_swipeActive) return;
+    var t = null;
+    for (var i=0;i<e.touches.length;i++) { if(e.touches[i].identifier===_swipeTouchId){t=e.touches[i];break;} }
+    if (!t) return;
+    var dx = t.clientX - _swipeSX;
+    var dy = t.clientY - _swipeSY;
+    if (!_swipeLocked) {
+      if (Math.abs(dy) > Math.abs(dx) + 5) { _swipeClear(); return; }
+      if (Math.abs(dx) > 8) _swipeLocked = true;
+    }
+    if (!_swipeLocked) return;
+    e.preventDefault();
+    _swipeCX = t.clientX;
+    if (_swipeRafId) cancelAnimationFrame(_swipeRafId);
+    _swipeRafId = requestAnimationFrame(function() { _swipeApply(cardEl, _swipeCX - _swipeSX); });
+  }
+  function onTouchEnd(e) {
+    if (!_swipeActive || !_swipeLocked) { _swipeClear(); return; }
+    var dx = _swipeCX - _swipeSX;
+    _swipeClear();
+    if (dx > 80) hookAction('use', cardEl);
+    else if (dx < -80) hookAction('skip', cardEl);
+    else {
+      cardEl.animate([{transform:cardEl.style.transform},{transform:'translateX(0) rotate(0deg)'}],
+        {duration:300,easing:'cubic-bezier(0.34,1.56,0.64,1)',fill:'forwards'});
+      var l=cardEl.querySelector('.swipe-hint-left'); var r=cardEl.querySelector('.swipe-hint-right');
+      if(l) l.style.opacity=0; if(r) r.style.opacity=0;
     }
   }
-  function onEnd(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    cardEl.style.transition = '';
-    if (!moved) return;
-    var pt = e.changedTouches ? e.changedTouches[0] : e;
-    var dx = pt.clientX - startX;
-    if (dx > 80) hookAction('use');
-    else if (dx < -80) hookAction('skip');
-    else { cardEl.style.transform = ''; var l=cardEl.querySelector('.swipe-hint-left'); var r=cardEl.querySelector('.swipe-hint-right'); if(l)l.style.opacity=0; if(r)r.style.opacity=0; }
+
+  // Mouse için de
+  function onMouseDown(e) {
+    if (_swipeActive) return;
+    _swipeSX = e.clientX; _swipeSY = e.clientY; _swipeCX = e.clientX;
+    _swipeActive = true; _swipeLocked = true;
+    cardEl.style.transition = 'none';
+    function onMouseMove(ev) {
+      if (!_swipeActive) return;
+      _swipeCX = ev.clientX;
+      if (_swipeRafId) cancelAnimationFrame(_swipeRafId);
+      _swipeRafId = requestAnimationFrame(function() { _swipeApply(cardEl, _swipeCX - _swipeSX); });
+    }
+    function onMouseUp(ev) {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      if (!_swipeActive) return;
+      var dx = _swipeCX - _swipeSX;
+      _swipeClear();
+      if (dx > 80) hookAction('use', cardEl);
+      else if (dx < -80) hookAction('skip', cardEl);
+      else {
+        cardEl.animate([{transform:cardEl.style.transform},{transform:'translateX(0) rotate(0deg)'}],
+          {duration:300,easing:'cubic-bezier(0.34,1.56,0.64,1)',fill:'forwards'});
+        var l=cardEl.querySelector('.swipe-hint-left'); var r=cardEl.querySelector('.swipe-hint-right');
+        if(l) l.style.opacity=0; if(r) r.style.opacity=0;
+      }
+    }
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 
-  cardEl.addEventListener('mousedown', onStart);
-  cardEl.addEventListener('touchstart', onStart, { passive: true });
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup', onEnd);
-  cardEl.addEventListener('touchmove', onMove, { passive: false });
-  cardEl.addEventListener('touchend', onEnd);
+  cardEl.addEventListener('touchstart', onTouchStart, {passive:true});
+  cardEl.addEventListener('touchmove', onTouchMove, {passive:false});
+  cardEl.addEventListener('touchend', onTouchEnd);
+  cardEl.addEventListener('mousedown', onMouseDown);
 }
 
-function hookAction(action) {
+function hookAction(action, cardEl) {
   if (_swipeIdx >= _swipeCards.length) return;
   var hook = _swipeCards[_swipeIdx];
   var hookText = typeof hook === 'object' ? hook.text : hook;
-  var cardEl = document.getElementById('hook-card-main');
+  if (!cardEl) cardEl = document.getElementById('hook-card-main');
+
   if (action === 'save' || action === 'use') {
     var exists = _swipeSaved.some(function(h){ return (typeof h==='object'?h.text:h) === hookText; });
     if (!exists) { _swipeSaved.push(hook); localStorage.setItem('adsopify_saved_hooks', JSON.stringify(_swipeSaved)); }
-    if (cardEl) cardEl.classList.add(action === 'save' ? 'exit-save' : 'exit-right');
     showSwipeToast(action === 'save' ? '⭐ Kaydedildi!' : '✓ Kullanılacak!', action === 'save' ? '#6366f1' : '#10b981');
+    if (cardEl) {
+      var tx = action === 'save' ? '0' : '120%';
+      var rot = action === 'save' ? '0deg' : '20deg';
+      var ty = action === 'save' ? '-60px' : '0';
+      cardEl.animate([{},{transform:'translate('+tx+','+ty+') rotate('+rot+')',opacity:0}],
+        {duration:300, easing:'ease-in', fill:'forwards'});
+    }
   } else {
-    if (cardEl) cardEl.classList.add('exit-left');
     showSwipeToast('✕ Geçildi', '#ef4444');
+    if (cardEl) cardEl.animate([{},{transform:'translateX(-120%) rotate(-20deg)',opacity:0}],
+      {duration:300, easing:'ease-in', fill:'forwards'});
   }
+
   _swipeIdx++;
-  setTimeout(function(){ renderHookCard(); renderSaved(); }, 300);
+  setTimeout(function(){ renderHookCard(); renderSaved(); }, 320);
 }
 
 function swipeCard(dir) { hookAction(dir === 'left' ? 'skip' : dir === 'right' ? 'use' : 'save'); }
