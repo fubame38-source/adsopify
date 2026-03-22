@@ -1,1710 +1,585 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adsopify — Meta Ads için AI Destekli Analiz Platformu</title>
-  <meta
-    name="description"
-    content="Adsopify ile Meta reklam performansını tek panelde analiz et, hangi kampanyayı ölçekleyeceğini gör ve AI destekli araçlarla daha iyi kreatifler üret."
-  />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
-
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #f8fafc;
-      --bg-soft: #eef4ff;
-      --surface: rgba(255, 255, 255, 0.82);
-      --surface-solid: #ffffff;
-      --surface-2: #f8fbff;
-
-      --text: #0f172a;
-      --text-2: #475569;
-      --text-3: #94a3b8;
-
-      --border: #e2e8f0;
-      --border-soft: #edf2f7;
-
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --accent-2: #7c3aed;
-      --accent-soft: #dbeafe;
-
-      --success-bg: #eafaf0;
-      --success-text: #15803d;
-      --warn-bg: #fff7e6;
-      --warn-text: #b45309;
-      --danger-bg: #feecec;
-      --danger-text: #b91c1c;
-
-      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
-
-      --radius: 18px;
-      --radius-lg: 28px;
-      --container: 1180px;
-      --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--font);
-      color: var(--text);
-      background:
-        radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.08), transparent 28%),
-        radial-gradient(circle at 90% 0%, rgba(124, 58, 237, 0.06), transparent 26%),
-        linear-gradient(180deg, #f8fbff 0%, #f8fafc 100%);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
-      overflow-x: hidden;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .container {
-      width: min(100% - 32px, var(--container));
-      margin: 0 auto;
-    }
-
-    .section {
-      padding: 96px 0;
-    }
-
-    .section-sm {
-      padding: 72px 0;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-      background: rgba(37, 99, 235, 0.08);
-      border: 1px solid rgba(37, 99, 235, 0.12);
-      border-radius: 999px;
-      padding: 8px 12px;
-      margin-bottom: 18px;
-    }
-
-    .section-head {
-      max-width: 760px;
-      margin-bottom: 48px;
-    }
-
-    .section-title {
-      font-size: clamp(34px, 4.4vw, 56px);
-      line-height: 1.04;
-      letter-spacing: -0.04em;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
-
-    .section-sub {
-      font-size: 18px;
-      line-height: 1.75;
-      color: var(--text-2);
-      max-width: 680px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      border: none;
-      cursor: pointer;
-      border-radius: 999px;
-      font-weight: 600;
-      transition: 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, #3b82f6 100%);
-      color: #fff;
-      padding: 15px 24px;
-      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      background: linear-gradient(135deg, var(--accent-hover) 0%, #2563eb 100%);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.7);
-      color: var(--text);
-      padding: 15px 24px;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-    }
-
-    .btn-secondary:hover {
-      background: #fff;
-      transform: translateY(-1px);
-    }
-
-    .btn-block {
-      width: 100%;
-    }
-
-    /* NAV */
-    .nav-wrap {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding-top: 14px;
-    }
-
-    .nav {
-      width: min(100% - 24px, 1180px);
-      margin: 0 auto;
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 12px 18px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(18px) saturate(140%);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
-
-    .nav-logo-badge {
-      width: 30px;
-      height: 30px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .nav-logo span {
-      color: var(--accent);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .nav-links a {
-      font-size: 14px;
-      color: var(--text-2);
-      transition: 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .nav-price {
-      font-size: 13px;
-      color: var(--text-2);
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid var(--border);
-      padding: 9px 12px;
-      border-radius: 999px;
-    }
-
-    .nav-cta {
-      padding: 11px 16px;
-      font-size: 14px;
-    }
-
-    /* HERO */
-    .hero {
-      padding: 70px 0 36px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .hero-copy {
-      max-width: 620px;
-    }
-
-    .hero-title {
-      font-size: clamp(46px, 7vw, 78px);
-      line-height: 0.98;
-      letter-spacing: -0.055em;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .hero-title .highlight {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-sub {
-      font-size: 20px;
-      line-height: 1.7;
-      color: var(--text-2);
-      max-width: 600px;
-      margin-bottom: 28px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .hero-note {
-      font-size: 14px;
-      color: var(--text-3);
-    }
-
-    .hero-points {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .point-pill {
-      font-size: 13px;
-      color: var(--text-2);
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid var(--border);
-      padding: 10px 12px;
-      border-radius: 999px;
-      backdrop-filter: blur(10px);
-    }
-
-    /* PRODUCT PANEL */
-    .hero-card {
-      position: relative;
-    }
-
-    .glow {
-      position: absolute;
-      inset: auto;
-      top: 10%;
-      right: 10%;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.18), transparent 65%);
-      filter: blur(12px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .product-shell {
-      position: relative;
-      z-index: 1;
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(18px);
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-    }
-
-    .product-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 18px;
-      background: rgba(248, 250, 252, 0.9);
-      border-bottom: 1px solid var(--border-soft);
-    }
-
-    .dots {
-      display: flex;
-      gap: 7px;
-      align-items: center;
-    }
-
-    .dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-    }
-
-    .product-url {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-    }
-
-    .product-url span {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 220px;
-      padding: 7px 14px;
-      font-size: 12px;
-      color: var(--text-3);
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-    }
-
-    .product-body {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      min-height: 520px;
-    }
-
-    .sidebar {
-      background: linear-gradient(180deg, #fbfdff 0%, #f7faff 100%);
-      border-right: 1px solid var(--border-soft);
-      padding: 18px 14px;
-    }
-
-    .sidebar-logo {
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 20px;
-    }
-
-    .sidebar-logo span {
-      color: var(--accent);
-    }
-
-    .side-sec {
-      font-size: 11px;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-      margin: 16px 0 8px;
-      padding: 0 8px;
-    }
-
-    .side-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--text-2);
-      padding: 10px 12px;
-      border-radius: 12px;
-      margin-bottom: 6px;
-    }
-
-    .side-item.active {
-      background: #fff;
-      color: var(--accent);
-      box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(37, 99, 235, 0.08);
-      font-weight: 600;
-    }
-
-    .content {
-      padding: 22px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(248,250,252,0.94) 100%);
-    }
-
-    .content-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .content-head h3 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 4px;
-    }
-
-    .content-head p {
-      font-size: 13px;
-      color: var(--text-3);
-    }
-
-    .status-badge {
-      font-size: 12px;
-      color: var(--accent);
-      background: rgba(37, 99, 235, 0.08);
-      border: 1px solid rgba(37, 99, 235, 0.12);
-      border-radius: 999px;
-      padding: 9px 12px;
-      white-space: nowrap;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .kpi {
-      background: rgba(255, 255, 255, 0.84);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .kpi.primary {
-      background: linear-gradient(135deg, var(--accent) 0%, #3b82f6 100%);
-      color: #fff;
-    }
-
-    .kpi-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-3);
-      margin-bottom: 10px;
-    }
-
-    .kpi.primary .kpi-label {
-      color: rgba(255, 255, 255, 0.72);
-    }
-
-    .kpi-value {
-      font-size: 28px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
-
-    .kpi-sub {
-      font-size: 12px;
-      margin-top: 8px;
-      color: var(--text-3);
-    }
-
-    .kpi.primary .kpi-sub {
-      color: rgba(255, 255, 255, 0.78);
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 14px;
-    }
-
-    .panel {
-      background: rgba(255, 255, 255, 0.88);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-    }
-
-    .panel-head {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-soft);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .panel-head h4 {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .panel-head span {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    .campaign-table {
-      padding: 6px 12px 12px;
-    }
-
-    .campaign-row {
-      display: grid;
-      grid-template-columns: 1.5fr 0.8fr 0.9fr;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 8px;
-      border-bottom: 1px solid var(--border-soft);
-    }
-
-    .campaign-row:last-child {
-      border-bottom: none;
-    }
-
-    .campaign-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .campaign-metric {
-      font-size: 13px;
-      color: var(--text-2);
-    }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 6px 10px;
-      min-width: 72px;
-    }
-
-    .tag.success {
-      background: var(--success-bg);
-      color: var(--success-text);
-    }
-
-    .tag.warn {
-      background: var(--warn-bg);
-      color: var(--warn-text);
-    }
-
-    .tag.danger {
-      background: var(--danger-bg);
-      color: var(--danger-text);
-    }
-
-    .insight-list {
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .insight-item {
-      background: var(--surface-2);
-      border: 1px solid var(--border-soft);
-      border-radius: 14px;
-      padding: 12px 13px;
-    }
-
-    .insight-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .insight-desc {
-      font-size: 12px;
-      line-height: 1.6;
-      color: var(--text-2);
-    }
-
-    /* TRUST STRIP */
-    .trust-strip {
-      padding-top: 28px;
-    }
-
-    .trust-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-
-    .trust-card {
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.75);
-      border-radius: 20px;
-      padding: 22px 20px;
-      box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(10px);
-    }
-
-    .trust-num {
-      font-size: 28px;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .trust-label {
-      font-size: 14px;
-      color: var(--text-2);
-    }
-
-    /* FEATURES */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .feature-card {
-      background: rgba(255,255,255,0.76);
-      border: 1px solid rgba(255,255,255,0.82);
-      box-shadow: var(--shadow);
-      border-radius: 24px;
-      padding: 28px;
-      backdrop-filter: blur(12px);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .feature-card.wide {
-      grid-column: span 2;
-    }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      margin-bottom: 18px;
-      background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(124,58,237,0.10) 100%);
-      color: var(--accent);
-      font-size: 22px;
-    }
-
-    .feature-title {
-      font-size: 21px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 8px;
-    }
-
-    .feature-desc {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-2);
-    }
-
-    .feature-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      align-items: start;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .mini-item {
-      border: 1px solid var(--border);
-      background: rgba(248, 250, 252, 0.88);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 14px;
-      color: var(--text-2);
-    }
-
-    .mini-item strong {
-      color: var(--text);
-    }
-
-    /* FOR WHO */
-    .for-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .for-card {
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid rgba(255,255,255,0.82);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-    }
-
-    .for-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      letter-spacing: -0.03em;
-    }
-
-    .for-desc {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-2);
-    }
-
-    /* HOW */
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .step-card {
-      background: rgba(255,255,255,0.78);
-      border: 1px solid rgba(255,255,255,0.82);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      position: relative;
-    }
-
-    .step-no {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: rgba(37, 99, 235, 0.10);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 800;
-      margin-bottom: 18px;
-    }
-
-    .step-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      letter-spacing: -0.03em;
-    }
-
-    .step-desc {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-2);
-    }
-
-    /* PRICING */
-    .pricing-wrap {
-      background:
-        radial-gradient(circle at 50% 0%, rgba(37,99,235,0.08), transparent 30%),
-        linear-gradient(180deg, #f2f7ff 0%, #eef4ff 100%);
-      border-top: 1px solid var(--border-soft);
-      border-bottom: 1px solid var(--border-soft);
-    }
-
-    .pricing-card {
-      max-width: 560px;
-      margin: 0 auto;
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(255,255,255,0.9);
-      backdrop-filter: blur(14px);
-      box-shadow: var(--shadow-lg);
-      border-radius: 30px;
-      padding: 34px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .pricing-card::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 4px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-    }
-
-    .price-badge {
-      display: inline-flex;
-      align-items: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--accent);
-      background: rgba(37,99,235,0.08);
-      border: 1px solid rgba(37,99,235,0.12);
-      border-radius: 999px;
-      padding: 8px 12px;
-      margin-bottom: 18px;
-    }
-
-    .price-title {
-      font-size: 30px;
-      line-height: 1.1;
-      letter-spacing: -0.04em;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .price-sub {
-      font-size: 16px;
-      color: var(--text-2);
-      line-height: 1.7;
-      margin-bottom: 22px;
-    }
-
-    .price-row {
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .price-sign {
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .price-main {
-      font-size: 78px;
-      line-height: 0.9;
-      letter-spacing: -0.06em;
-      font-weight: 800;
-    }
-
-    .price-cents {
-      font-size: 30px;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .price-period {
-      font-size: 15px;
-      color: var(--text-2);
-      margin-bottom: 20px;
-    }
-
-    .price-note {
-      font-size: 14px;
-      color: var(--success-text);
-      background: var(--success-bg);
-      border: 1px solid rgba(21,128,61,0.08);
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-bottom: 24px;
-    }
-
-    .price-list {
-      list-style: none;
-      display: grid;
-      gap: 12px;
-      margin-bottom: 26px;
-    }
-
-    .price-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 15px;
-      line-height: 1.65;
-      color: var(--text-2);
-    }
-
-    .check {
-      width: 22px;
-      height: 22px;
-      flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      background: rgba(37,99,235,0.08);
-      border-radius: 999px;
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      margin-top: 1px;
-    }
-
-    /* FINAL CTA */
-    .final-cta {
-      padding: 96px 0;
-    }
-
-    .final-card {
-      background:
-        radial-gradient(circle at 20% 0%, rgba(59,130,246,0.20), transparent 28%),
-        radial-gradient(circle at 80% 0%, rgba(124,58,237,0.16), transparent 26%),
-        linear-gradient(135deg, #0f172a 0%, #111827 100%);
-      color: #fff;
-      border-radius: 34px;
-      padding: 54px 32px;
-      text-align: center;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .final-card h2 {
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1.02;
-      letter-spacing: -0.05em;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
-
-    .final-card p {
-      max-width: 720px;
-      margin: 0 auto 28px;
-      font-size: 18px;
-      line-height: 1.75;
-      color: rgba(255,255,255,0.72);
-    }
-
-    .final-actions {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .btn-light {
-      background: #fff;
-      color: var(--text);
-      padding: 15px 24px;
-    }
-
-    .btn-light:hover {
-      background: #f4f7fb;
-      transform: translateY(-1px);
-    }
-
-    .btn-dark-ghost {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.14);
-      padding: 15px 24px;
-    }
-
-    .btn-dark-ghost:hover {
-      background: rgba(255,255,255,0.12);
-      transform: translateY(-1px);
-    }
-
-    /* FOOTER */
-    .footer {
-      padding: 30px 0 44px;
-    }
-
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 18px 0 0;
-      border-top: 1px solid var(--border);
-      color: var(--text-2);
-      flex-wrap: wrap;
-    }
-
-    .footer-brand {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .footer-brand span {
-      color: var(--accent);
-    }
-
-    .footer-copy,
-    .footer-links a {
-      font-size: 14px;
-      color: var(--text-2);
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a:hover {
-      color: var(--text);
-    }
-
-    /* REVEAL */
-    .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .delay-1 { transition-delay: 0.08s; }
-    .delay-2 { transition-delay: 0.16s; }
-    .delay-3 { transition-delay: 0.24s; }
-
-    /* RESPONSIVE */
-    @media (max-width: 1080px) {
-      .hero-grid,
-      .dashboard-grid,
-      .feature-split {
-        grid-template-columns: 1fr;
-      }
-
-      .product-body {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        display: none;
-      }
-
-      .feature-card.wide {
-        grid-column: span 1;
-      }
-
-      .feature-grid,
-      .for-grid,
-      .steps,
-      .trust-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 820px) {
-      .nav-links,
-      .nav-price {
-        display: none;
-      }
-
-      .hero {
-        padding-top: 42px;
-      }
-
-      .hero-title {
-        font-size: 48px;
-      }
-
-      .hero-sub {
-        font-size: 18px;
-      }
-
-      .section,
-      .final-cta {
-        padding: 78px 0;
-      }
-
-      .section-sm {
-        padding: 58px 0;
-      }
-
-      .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .feature-grid,
-      .for-grid,
-      .steps,
-      .trust-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .campaign-row {
-        grid-template-columns: 1.2fr 0.8fr 0.9fr;
-      }
-
-      .pricing-card {
-        padding: 28px 22px;
-      }
-
-      .price-main {
-        font-size: 62px;
-      }
-
-      .final-card {
-        padding: 42px 22px;
-        border-radius: 26px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .container {
-        width: min(100% - 20px, var(--container));
-      }
-
-      .nav {
-        width: min(100% - 14px, 1180px);
-        min-height: 62px;
-        padding: 10px 12px;
-      }
-
-      .nav-logo {
-        font-size: 16px;
-      }
-
-      .nav-logo-badge {
-        width: 28px;
-        height: 28px;
-      }
-
-      .hero-title {
-        font-size: 42px;
-      }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn,
-      .btn-primary,
-      .btn-secondary,
-      .btn-light,
-      .btn-dark-ghost {
-        width: 100%;
-      }
-
-      .product-topbar {
-        padding: 12px;
-      }
-
-      .product-url span {
-        min-width: 0;
-        width: 100%;
-        font-size: 11px;
-      }
-
-      .content {
-        padding: 14px;
-      }
-
-      .content-head {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .kpi-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .campaign-row {
-        gap: 8px;
-      }
-
-      .campaign-name,
-      .campaign-metric {
-        font-size: 12px;
-      }
-
-      .section-title,
-      .price-title {
-        word-break: break-word;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adsopify — Meta Reklam AI Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white: #ffffff;
+  --bg: #fbfbfd;
+  --bg2: #f5f5f7;
+  --text: #1d1d1f;
+  --text2: #6e6e73;
+  --text3: #a1a1a6;
+  --border: #d2d2d7;
+  --border-light: #e8e8ed;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --card: #ffffff;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  --radius: 18px;
+  --font: -apple-system, 'Inter', BlinkMacSystemFont, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 52px;
+  background: rgba(251,251,253,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-logo { font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.nav-logo span { color: var(--accent); }
+.nav-center { display: flex; gap: 28px; position: absolute; left: 50%; transform: translateX(-50%); }
+.nav-center a { font-size: 13px; color: var(--text2); text-decoration: none; transition: color 0.15s; font-weight: 400; }
+.nav-center a:hover { color: var(--text); }
+.nav-right { display: flex; gap: 12px; align-items: center; }
+.nav-link { font-size: 13px; color: var(--accent); text-decoration: none; font-weight: 400; }
+.nav-btn { background: var(--accent); color: #fff; padding: 7px 16px; border-radius: 999px; font-size: 13px; font-weight: 500; text-decoration: none; transition: background 0.15s; }
+.nav-btn:hover { background: var(--accent-hover); }
+
+/* ── HERO ── */
+.hero {
+  padding: 120px 24px 80px;
+  text-align: center;
+  max-width: 980px; margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-size: 13px; font-weight: 500; color: var(--accent);
+  letter-spacing: 0.01em; margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(48px, 6.5vw, 80px);
+  font-weight: 700; letter-spacing: -2px;
+  line-height: 1.05; color: var(--text);
+  margin-bottom: 20px;
+}
+
+.hero h1 .highlight { color: var(--accent); }
+
+.hero-sub {
+  font-size: 21px; color: var(--text2);
+  line-height: 1.6; max-width: 600px;
+  margin: 0 auto 36px; font-weight: 300;
+}
+
+.hero-btns {
+  display: flex; gap: 14px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.btn-hero {
+  background: var(--accent); color: #fff;
+  padding: 14px 28px; border-radius: 999px;
+  font-size: 17px; font-weight: 500;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.15s;
+}
+.btn-hero:hover { background: var(--accent-hover); }
+.btn-hero-ghost {
+  background: var(--bg2); color: var(--text);
+  padding: 14px 28px; border-radius: 999px;
+  font-size: 17px; font-weight: 500;
+  text-decoration: none; transition: background 0.15s;
+}
+.btn-hero-ghost:hover { background: #ebebf0; }
+.hero-note { font-size: 13px; color: var(--text3); }
+
+/* ── MOCKUP ── */
+.hero-mockup {
+  max-width: 900px; margin: 64px auto 0;
+  padding: 0 24px;
+}
+.mockup-wrap {
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--border-light);
+  overflow: hidden;
+}
+.mockup-titlebar {
+  background: #f0f0f5; padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.mockup-dots { display: flex; gap: 6px; }
+.mockup-dot { width: 12px; height: 12px; border-radius: 50%; }
+.mockup-url { margin: 0 auto; background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 3px 12px; font-size: 11px; color: var(--text3); }
+.mockup-inner { display: grid; grid-template-columns: 180px 1fr; min-height: 320px; }
+.mockup-sidebar { background: #f9f9fb; border-right: 1px solid var(--border-light); padding: 16px 0; }
+.ms-logo { font-size: 14px; font-weight: 700; color: var(--text); padding: 0 14px 16px; letter-spacing: -0.3px; }
+.ms-logo span { color: var(--accent); }
+.ms-sec { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); padding: 8px 14px 4px; }
+.ms-item { padding: 7px 14px; font-size: 12px; color: var(--text2); display: flex; gap: 8px; border-radius: 8px; margin: 0 6px; }
+.ms-item.active { background: var(--white); color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,0.08); font-weight: 500; }
+.mockup-content { padding: 20px; background: var(--bg); }
+.mc-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; }
+.mc-kpi { background: var(--white); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); }
+.mc-kpi.accent-kpi { background: var(--accent); }
+.mc-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 4px; }
+.mc-kpi.accent-kpi .mc-label { color: rgba(255,255,255,0.7); }
+.mc-val { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.mc-kpi.accent-kpi .mc-val { color: #fff; }
+.mc-table { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.mc-th { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border-light); }
+.mc-th span { font-size: 9px; font-weight: 600; text-transform: uppercase; color: var(--text3); }
+.mc-tr { display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 9px 12px; border-bottom: 1px solid var(--border-light); align-items: center; }
+.mc-tr:last-child { border-bottom: none; }
+.mc-tr span { font-size: 11px; color: var(--text2); }
+.mc-tr .mc-name { font-weight: 600; color: var(--text); }
+.tag { display: inline-flex; padding: 2px 8px; border-radius: 5px; font-size: 9px; font-weight: 700; }
+.tag.g { background: #e8faf0; color: #1a7f4b; }
+.tag.y { background: #fff8e1; color: #9a6700; }
+.tag.r { background: #ffeef0; color: #c62828; }
+
+/* ── DIVIDER ── */
+.section-divider { height: 1px; background: var(--border-light); max-width: 980px; margin: 0 auto; }
+
+/* ── STATS ── */
+.stats-section { padding: 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); background: var(--white); }
+.stats-inner { max-width: 980px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); }
+.stat-item { padding: 40px 24px; text-align: center; border-right: 1px solid var(--border-light); }
+.stat-item:last-child { border-right: none; }
+.stat-num { font-size: 48px; font-weight: 700; letter-spacing: -2px; color: var(--text); margin-bottom: 4px; }
+.stat-label { font-size: 14px; color: var(--text2); }
+
+/* ── BENTO FEATURES ── */
+.features-section { padding: 100px 24px; max-width: 980px; margin: 0 auto; }
+.feat-eyebrow { font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 12px; }
+.feat-heading { font-size: 48px; font-weight: 700; letter-spacing: -1.5px; color: var(--text); margin-bottom: 12px; line-height: 1.1; }
+.feat-sub { font-size: 19px; color: var(--text2); max-width: 500px; line-height: 1.6; margin-bottom: 56px; font-weight: 300; }
+
+.bento { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: auto auto; gap: 16px; }
+
+.bento-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 32px 28px; box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.25s cubic-bezier(0.25,0.46,0.45,0.94);
+  position: relative; overflow: hidden;
+}
+.bento-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--border); }
+.bento-card.span2 { grid-column: span 2; }
+
+.bento-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+.bento-title { font-size: 19px; font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.3px; }
+.bento-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* Inline widget in wide card */
+.bento-card.span2 .bento-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: flex-start; }
+.roas-widget { background: var(--bg); border-radius: 12px; padding: 14px; border: 1px solid var(--border-light); }
+.rw-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-light); font-size: 12px; }
+.rw-row:last-child { border-bottom: none; }
+.rw-name { color: var(--text2); }
+.rw-val { font-weight: 600; }
+
+/* ── HOW ── */
+.how-section { padding: 80px 24px; max-width: 980px; margin: 0 auto; }
+.how-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.how-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 32px 28px; box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+.how-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.how-step { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 14px; }
+.how-title { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; }
+.how-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* ── PRICING ── */
+.pricing-section { padding: 80px 24px; background: var(--bg2); }
+.pricing-inner { max-width: 520px; margin: 0 auto; text-align: center; }
+.pricing-eyebrow { font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 12px; }
+.pricing-heading { font-size: 48px; font-weight: 700; letter-spacing: -1.5px; color: var(--text); margin-bottom: 8px; line-height: 1.1; }
+.pricing-sub { font-size: 17px; color: var(--text2); margin-bottom: 40px; font-weight: 300; }
+
+.price-card {
+  background: var(--white); border-radius: 24px;
+  padding: 48px 40px; box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-light); text-align: left;
+  position: relative;
+}
+.price-card::before {
+  content: ''; position: absolute; top: 0; left: 40px; right: 40px; height: 2px;
+  background: var(--accent); border-radius: 0 0 2px 2px;
+}
+.price-plan { font-size: 13px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 20px; }
+.price-row { display: flex; align-items: baseline; gap: 2px; margin-bottom: 4px; }
+.price-sign { font-size: 28px; font-weight: 500; color: var(--text); }
+.price-main { font-size: 72px; font-weight: 700; letter-spacing: -3px; color: var(--text); line-height: 1; }
+.price-cents { font-size: 28px; font-weight: 500; color: var(--text); }
+.price-per { font-size: 14px; color: var(--text2); margin-bottom: 6px; }
+.price-trial { font-size: 14px; color: #1a7f4b; font-weight: 500; margin-bottom: 36px; }
+.price-list { list-style: none; margin-bottom: 36px; display: flex; flex-direction: column; gap: 12px; }
+.price-list li { font-size: 15px; color: var(--text2); display: flex; gap: 10px; align-items: flex-start; }
+.price-check { color: var(--accent); font-size: 16px; flex-shrink: 0; }
+.btn-price {
+  display: block; width: 100%;
+  background: var(--accent); color: #fff;
+  padding: 16px; border-radius: 999px;
+  font-size: 17px; font-weight: 500;
+  text-decoration: none; text-align: center;
+  transition: background 0.15s;
+}
+.btn-price:hover { background: var(--accent-hover); }
+
+/* ── TESTIMONIALS ── */
+.testi-section { padding: 80px 24px; max-width: 980px; margin: 0 auto; }
+.testi-heading { font-size: 48px; font-weight: 700; letter-spacing: -1.5px; color: var(--text); margin-bottom: 48px; line-height: 1.1; }
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.testi-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 28px; box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+.testi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.testi-stars { color: #f59e0b; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+.testi-text { font-size: 15px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; font-weight: 300; }
+.testi-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.testi-role { font-size: 13px; color: var(--text3); margin-top: 2px; }
+
+/* ── CTA ── */
+.cta-section {
+  padding: 80px 24px;
+  background: var(--text);
+  text-align: center;
+}
+.cta-inner { max-width: 700px; margin: 0 auto; }
+.cta-title { font-size: 52px; font-weight: 700; letter-spacing: -1.5px; color: var(--white); margin-bottom: 16px; line-height: 1.1; }
+.cta-sub { font-size: 19px; color: rgba(255,255,255,0.6); margin-bottom: 36px; font-weight: 300; }
+.btn-cta-white {
+  background: var(--white); color: var(--text);
+  padding: 16px 32px; border-radius: 999px;
+  font-size: 17px; font-weight: 500;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.15s;
+}
+.btn-cta-white:hover { background: #f0f0f5; }
+
+/* ── FOOTER ── */
+footer {
+  background: #1d1d1f; padding: 40px 24px;
+  border-top: 1px solid #333;
+}
+.footer-inner {
+  max-width: 980px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo { font-size: 15px; font-weight: 600; color: #fff; }
+.footer-logo span { color: var(--accent); }
+.footer-copy { font-size: 13px; color: #6e6e73; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 13px; color: #6e6e73; text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: #a1a1a6; }
+
+/* ── ANIMATIONS ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: all 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.d1 { transition-delay: 0.1s; }
+.d2 { transition-delay: 0.2s; }
+.d3 { transition-delay: 0.3s; }
+
+@media(max-width: 900px) {
+  .nav-center { display: none; }
+  .hero h1 { font-size: 40px; }
+  .hero-sub { font-size: 18px; }
+  .mockup-sidebar { display: none; }
+  .mockup-inner { grid-template-columns: 1fr; }
+  .mc-kpis { grid-template-columns: repeat(2,1fr); }
+  .stats-inner { grid-template-columns: repeat(2,1fr); }
+  .bento { grid-template-columns: 1fr; }
+  .bento-card.span2 { grid-column: span 1; }
+  .bento-card.span2 .bento-inner { grid-template-columns: 1fr; }
+  .how-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .price-card { padding: 36px 24px; }
+  .cta-title { font-size: 36px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; }
+}
+</style>
 </head>
 <body>
-  <div class="nav-wrap">
-    <nav class="nav">
-      <a href="#" class="nav-logo" aria-label="Adsopify ana sayfa">
-        <span class="nav-logo-badge">A</span>
-        <span>Ads<span>opify</span></span>
-      </a>
 
-      <div class="nav-links">
-        <a href="#features">Özellikler</a>
-        <a href="#for-who">Kimler için</a>
-        <a href="#how">Nasıl çalışır</a>
-        <a href="#pricing">Fiyat</a>
-      </div>
-
-      <div class="nav-right">
-        <div class="nav-price">$29.99 / ay</div>
-        <a href="https://adsopify.com/dashboard.html" class="btn btn-primary nav-cta">Ücretsiz Başla</a>
-      </div>
-    </nav>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Ads<span>opify</span></div>
+  <div class="nav-center">
+    <a href="#features">Özellikler</a>
+    <a href="#how">Nasıl Çalışır</a>
+    <a href="#pricing">Fiyat</a>
   </div>
+  <div class="nav-right">
+    <a href="#pricing" class="nav-link">$29.99/ay</a>
+    <a href="https://adsopify.com/dashboard.html" class="nav-btn">Ücretsiz Dene</a>
+  </div>
+</nav>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy reveal visible">
-          <div class="eyebrow">Meta Ads için AI destekli analiz platformu</div>
-          <h1 class="hero-title">
-            Meta reklamlarını<br />
-            <span class="highlight">veriyle optimize et.</span>
-          </h1>
-          <p class="hero-sub">
-            ROAS, CPA, satış ve frekansı tek panelde gör. Hangi kampanyayı ölçeklemen,
-            hangisini kapatman gerektiğini anla ve AI araçlarıyla daha iyi kreatifler üret.
-          </p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Meta Reklam AI Dashboard</div>
+  <h1>Reklamlarını<br><span class="highlight">akıllıca</span> yönet.</h1>
+  <p class="hero-sub">ROAS, CPA, satış, frekans — gerçek verilerle anlık kararlar. AI ile hook üretimi, görsel prompt, marka analizi.</p>
+  <div class="hero-btns">
+    <a href="https://adsopify.com/dashboard.html" class="btn-hero">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook ile Başla
+    </a>
+    <a href="#features" class="btn-hero-ghost">Özelliklere Bak</a>
+  </div>
+  <p class="hero-note">Hemen başla • Kredi kartı gerekmez • Anında kurulum</p>
+</div>
 
-          <div class="hero-actions">
-            <a href="https://adsopify.com/dashboard.html" class="btn btn-primary">Ücretsiz Başla</a>
-            <a href="#features" class="btn btn-secondary">Nasıl çalıştığını gör</a>
-          </div>
-
-          <p class="hero-note">Meta hesabını bağla • Kredi kartı gerekmez • 30 saniyede kurulum</p>
-
-          <div class="hero-points">
-            <div class="point-pill">Gerçek performans görünümü</div>
-            <div class="point-pill">AI hook & prompt araçları</div>
-            <div class="point-pill">Tek panelde aksiyon önerileri</div>
-          </div>
-        </div>
-
-        <div class="hero-card reveal delay-1 visible">
-          <div class="glow"></div>
-
-          <div class="product-shell">
-            <div class="product-topbar">
-              <div class="dots">
-                <span class="dot" style="background:#ff5f57"></span>
-                <span class="dot" style="background:#febc2e"></span>
-                <span class="dot" style="background:#28c840"></span>
-              </div>
-              <div class="product-url">
-                <span>adsopify.com/dashboard</span>
-              </div>
-            </div>
-
-            <div class="product-body">
-              <aside class="sidebar">
-                <div class="sidebar-logo">Ads<span>opify</span></div>
-
-                <div class="side-sec">Genel</div>
-                <div class="side-item active">📊 Dashboard</div>
-                <div class="side-item">📈 Kampanyalar</div>
-
-                <div class="side-sec">Optimizasyon</div>
-                <div class="side-item">🚀 Ölçekleme Önerileri</div>
-                <div class="side-item">⚡ Creative Uyarıları</div>
-
-                <div class="side-sec">AI Araçlar</div>
-                <div class="side-item">🪝 Hook Üretici</div>
-                <div class="side-item">🎨 Görsel Prompt</div>
-                <div class="side-item">🤖 AI Reklam Asistanı</div>
-              </aside>
-
-              <div class="content">
-                <div class="content-head">
-                  <div>
-                    <h3>Meta Ads Dashboard</h3>
-                    <p>Son 7 gün • Gerçek reklam verisi üzerinden analiz</p>
-                  </div>
-                  <div class="status-badge">3 kampanya aktif</div>
-                </div>
-
-                <div class="kpi-grid">
-                  <div class="kpi primary">
-                    <div class="kpi-label">ROAS</div>
-                    <div class="kpi-value">4.82x</div>
-                    <div class="kpi-sub">önceki haftaya göre +18%</div>
-                  </div>
-
-                  <div class="kpi">
-                    <div class="kpi-label">Harcama</div>
-                    <div class="kpi-value">₺18.4K</div>
-                    <div class="kpi-sub">7 günlük toplam</div>
-                  </div>
-
-                  <div class="kpi">
-                    <div class="kpi-label">CPA</div>
-                    <div class="kpi-value">₺146</div>
-                    <div class="kpi-sub">kontrol altında</div>
-                  </div>
-
-                  <div class="kpi">
-                    <div class="kpi-label">Satış</div>
-                    <div class="kpi-value">126</div>
-                    <div class="kpi-sub">en iyi kampanya video kreatifi</div>
-                  </div>
-                </div>
-
-                <div class="dashboard-grid">
-                  <div class="panel">
-                    <div class="panel-head">
-                      <h4>Kampanya kararları</h4>
-                      <span>ROAS + CPA + frekans</span>
-                    </div>
-
-                    <div class="campaign-table">
-                      <div class="campaign-row">
-                        <div class="campaign-name">UGC Video — Problem / Solution</div>
-                        <div class="campaign-metric">ROAS 5.9x</div>
-                        <div><span class="tag success">Ölçekle</span></div>
-                      </div>
-
-                      <div class="campaign-row">
-                        <div class="campaign-name">Static Creative — Offer Test</div>
-                        <div class="campaign-metric">ROAS 2.2x</div>
-                        <div><span class="tag warn">İzle</span></div>
-                      </div>
-
-                      <div class="campaign-row">
-                        <div class="campaign-name">Founder Angle — Cold Traffic</div>
-                        <div class="campaign-metric">ROAS 0.8x</div>
-                        <div><span class="tag danger">Kapat</span></div>
-                      </div>
-
-                      <div class="campaign-row">
-                        <div class="campaign-name">UGC Reel — Social Proof</div>
-                        <div class="campaign-metric">ROAS 4.7x</div>
-                        <div><span class="tag success">Ölçekle</span></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="panel">
-                    <div class="panel-head">
-                      <h4>AI içgörüleri</h4>
-                      <span>anlık öneriler</span>
-                    </div>
-
-                    <div class="insight-list">
-                      <div class="insight-item">
-                        <div class="insight-title">Creative yorgunluğu yükseliyor</div>
-                        <div class="insight-desc">Frekans 3.1 seviyesine geldi. Yeni kreatif testi açmak mantıklı.</div>
-                      </div>
-
-                      <div class="insight-item">
-                        <div class="insight-title">En iyi açı: problem → çözüm</div>
-                        <div class="insight-desc">Video kreatiflerinde bu açı diğer varyasyonlardan daha iyi ROAS üretiyor.</div>
-                      </div>
-
-                      <div class="insight-item">
-                        <div class="insight-title">Bütçe kaydırma önerisi</div>
-                        <div class="insight-desc">%20 bütçeyi düşük performanslı statik kampanyadan video kampanyasına aktar.</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+<!-- MOCKUP -->
+<div class="hero-mockup reveal">
+  <div class="mockup-wrap">
+    <div class="mockup-titlebar">
+      <div class="mockup-dots">
+        <div class="mockup-dot" style="background:#ff5f57"></div>
+        <div class="mockup-dot" style="background:#febc2e"></div>
+        <div class="mockup-dot" style="background:#28c840"></div>
       </div>
-    </section>
-
-    <!-- TRUST -->
-    <section class="section-sm trust-strip">
-      <div class="container">
-        <div class="trust-grid">
-          <div class="trust-card reveal">
-            <div class="trust-num">30 sn</div>
-            <div class="trust-label">bağlantı kurulumu</div>
-          </div>
-          <div class="trust-card reveal delay-1">
-            <div class="trust-num">Tek panel</div>
-            <div class="trust-label">ROAS, CPA, satış ve frekans görünümü</div>
-          </div>
-          <div class="trust-card reveal delay-2">
-            <div class="trust-num">AI araçlar</div>
-            <div class="trust-label">hook, prompt ve reklam içgörüleri</div>
-          </div>
-          <div class="trust-card reveal delay-3">
-            <div class="trust-num">Anlık</div>
-            <div class="trust-label">ölçekle / izle / kapat kararları</div>
-          </div>
-        </div>
+      <div class="mockup-url">adsopify — Meta Ads Dashboard</div>
+    </div>
+    <div class="mockup-inner">
+      <div class="mockup-sidebar">
+        <div class="ms-logo">Ads<span>opify</span></div>
+        <div class="ms-sec">Ana</div>
+        <div class="ms-item active">📋 Günlük Plan</div>
+        <div class="ms-item">📊 Dashboard</div>
+        <div class="ms-sec">Optimizasyon</div>
+        <div class="ms-item">🚀 Ölçekleme</div>
+        <div class="ms-item">🎨 Creative Skor</div>
+        <div class="ms-sec">İçerik</div>
+        <div class="ms-item">🪝 Hook Üretici</div>
+        <div class="ms-item">🃏 Hook Swipe</div>
+        <div class="ms-item">🎨 Görsel Prompt</div>
       </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="section" id="features">
-      <div class="container">
-        <div class="section-head reveal">
-          <div class="eyebrow">Özellikler</div>
-          <h2 class="section-title">Meta Ads için ihtiyacın olan ana araçlar tek yerde.</h2>
-          <p class="section-sub">
-            Reklam performansını görmek, kreatifleri geliştirmek ve daha hızlı karar vermek için
-            farklı araçlar arasında dağılmana gerek yok.
-          </p>
+      <div class="mockup-content">
+        <div class="mc-kpis">
+          <div class="mc-kpi accent-kpi"><div class="mc-label">ROAS</div><div class="mc-val">6.31x</div></div>
+          <div class="mc-kpi"><div class="mc-label">Harcama</div><div class="mc-val">₺1.095</div></div>
+          <div class="mc-kpi"><div class="mc-label">Satış</div><div class="mc-val">12</div></div>
+          <div class="mc-kpi"><div class="mc-label">CPA</div><div class="mc-val">₺91</div></div>
         </div>
-
-        <div class="feature-grid">
-          <div class="feature-card wide reveal">
-            <div class="feature-split">
-              <div>
-                <div class="feature-icon">📊</div>
-                <h3 class="feature-title">Gerçek performans görünümü</h3>
-                <p class="feature-desc">
-                  ROAS, CPA, satış, harcama ve frekans gibi en kritik metrikleri tek
-                  ekranda gör. Hangi kampanyanın kâr ettiğini, hangisinin bütçe yaktığını
-                  saniyeler içinde anla.
-                </p>
-              </div>
-
-              <div class="mini-list">
-                <div class="mini-item"><strong>ROAS takibi:</strong> kampanya bazlı net görünüm</div>
-                <div class="mini-item"><strong>Frekans takibi:</strong> creative yorgunluğunu erken fark et</div>
-                <div class="mini-item"><strong>Karar desteği:</strong> ölçekle, izle veya kapat</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="feature-card reveal delay-1">
-            <div class="feature-icon">🤖</div>
-            <h3 class="feature-title">AI Reklam Asistanı</h3>
-            <p class="feature-desc">
-              Reklam verini dikkate alan, pratik öneriler veren AI asistan.
-              Bütçe dağılımı, zayıf kampanyalar ve iyileştirme yönleri konusunda daha net aksiyon al.
-            </p>
-          </div>
-
-          <div class="feature-card reveal delay-1">
-            <div class="feature-icon">🪝</div>
-            <h3 class="feature-title">Hook üretimi</h3>
-            <p class="feature-desc">
-              Markana ve ürününe göre yeni reklam açıları üret.
-              Test havuzunu büyüt, aynı kreatif fikirlere sıkışıp kalma.
-            </p>
-          </div>
-
-          <div class="feature-card reveal delay-2">
-            <div class="feature-icon">🎨</div>
-            <h3 class="feature-title">Görsel prompt aracı</h3>
-            <p class="feature-desc">
-              Ürün görselinden yola çıkarak reklam odaklı promptlar üret.
-              Midjourney, Gemini veya benzeri üretim akışlarında daha hızlı ilerle.
-            </p>
-          </div>
-
-          <div class="feature-card reveal delay-2">
-            <div class="feature-icon">🚀</div>
-            <h3 class="feature-title">Akıllı ölçekleme önerileri</h3>
-            <p class="feature-desc">
-              Performans verisini yorumlayıp hangi kampanyaya bütçe eklenebileceğini gör.
-              Tahminle değil, sinyalle hareket et.
-            </p>
-          </div>
-
-          <div class="feature-card reveal delay-3">
-            <div class="feature-icon">⚡</div>
-            <h3 class="feature-title">Creative yorgunluğu uyarısı</h3>
-            <p class="feature-desc">
-              Frekans yükselmeye başladığında erkenden uyarı al.
-              Aynı creative’i gereğinden uzun süre döndürüp CPA bozma.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOR WHO -->
-    <section class="section-sm" id="for-who">
-      <div class="container">
-        <div class="section-head reveal">
-          <div class="eyebrow">Kimler için</div>
-          <h2 class="section-title">Dropshipper’dan performans ekibine kadar net kullanım alanları.</h2>
-          <p class="section-sub">
-            Adsopify herkese her şeyi satmaya çalışan bir araç değil. Özellikle reklam hesabını
-            daha net görmek ve daha hızlı aksiyon almak isteyen kullanıcılar için tasarlandı.
-          </p>
-        </div>
-
-        <div class="for-grid">
-          <div class="for-card reveal">
-            <h3 class="for-title">Dropshipper’lar</h3>
-            <p class="for-desc">
-              Hangi kreatifin kazandığını daha hızlı görmek, zayıf kampanyayı erken kapatmak ve
-              test sürecini sistematik hale getirmek isteyenler için.
-            </p>
-          </div>
-
-          <div class="for-card reveal delay-1">
-            <h3 class="for-title">E-ticaret markaları</h3>
-            <p class="for-desc">
-              Meta Ads performansını dağınık raporlar yerine tek panelde görmek ve creative üretim
-              akışını hızlandırmak isteyen markalar için.
-            </p>
-          </div>
-
-          <div class="for-card reveal delay-2">
-            <h3 class="for-title">Performance marketer’lar</h3>
-            <p class="for-desc">
-              ROAS, CPA, frekans ve kreatif performansını tek yerde toplayıp ekip içinde daha hızlı
-              karar almak isteyen medya alıcıları ve küçük ekipler için.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- HOW -->
-    <section class="section" id="how">
-      <div class="container">
-        <div class="section-head reveal">
-          <div class="eyebrow">Nasıl çalışır</div>
-          <h2 class="section-title">Kurulum kısa, kullanım basit.</h2>
-          <p class="section-sub">
-            Teknik karmaşa olmadan Meta hesabını bağla, veriyi gör ve aksiyon almaya başla.
-          </p>
-        </div>
-
-        <div class="steps">
-          <div class="step-card reveal">
-            <div class="step-no">01</div>
-            <h3 class="step-title">Meta hesabını bağla</h3>
-            <p class="step-desc">
-              Reklam hesabını birkaç adımda bağla. Şifre veya karmaşık manuel kurulum süreçleriyle uğraşma.
-            </p>
-          </div>
-
-          <div class="step-card reveal delay-1">
-            <div class="step-no">02</div>
-            <h3 class="step-title">Veriyi tek panelde gör</h3>
-            <p class="step-desc">
-              ROAS, CPA, satış ve frekans gibi temel metrikleri tek bir görünümde topla ve kampanya sağlığını daha net oku.
-            </p>
-          </div>
-
-          <div class="step-card reveal delay-2">
-            <div class="step-no">03</div>
-            <h3 class="step-title">Optimize et ve büyüt</h3>
-            <p class="step-desc">
-              AI destekli araçlarla yeni hook üret, yaratıcı yönünü besle ve daha iyi çalışan kampanyalara daha hızlı geç.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRICING -->
-    <section class="section pricing-wrap" id="pricing">
-      <div class="container">
-        <div class="section-head reveal" style="text-align:center; margin-left:auto; margin-right:auto;">
-          <div class="eyebrow">Fiyatlandırma</div>
-          <h2 class="section-title">Tek plan. Net erişim.</h2>
-          <p class="section-sub" style="margin-left:auto; margin-right:auto;">
-            Karmaşık paketler yok. Ürünü dene, hesabını bağla ve kullanmaya başla.
-          </p>
-        </div>
-
-        <div class="pricing-card reveal delay-1">
-          <div class="price-badge">Pro Plan</div>
-          <h3 class="price-title">Meta Ads performansını tek panelde yönet.</h3>
-          <p class="price-sub">
-            Temel analiz görünümü, AI araçlar ve aksiyon odaklı kullanım akışı tek pakette.
-          </p>
-
-          <div class="price-row">
-            <span class="price-sign">$</span>
-            <span class="price-main">29</span>
-            <span class="price-cents">.99</span>
-          </div>
-
-          <div class="price-period">/ ay</div>
-
-          <div class="price-note">Kredi kartı gerekmez • Hemen erişim • Hızlı kurulum</div>
-
-          <ul class="price-list">
-            <li><span class="check">✓</span><span>Dashboard üzerinden ROAS, CPA, satış, frekans ve harcama görünümü</span></li>
-            <li><span class="check">✓</span><span>AI destekli hook üretimi ve reklam açısı fikirleri</span></li>
-            <li><span class="check">✓</span><span>Görselden reklam odaklı prompt üretimi</span></li>
-            <li><span class="check">✓</span><span>Creative yorgunluğu ve düşük performans sinyalleri</span></li>
-            <li><span class="check">✓</span><span>Ölçekle / izle / kapat mantığında aksiyon desteği</span></li>
-            <li><span class="check">✓</span><span>Tek akışta daha hızlı analiz ve daha hızlı karar alma</span></li>
-          </ul>
-
-          <a href="https://adsopify.com/dashboard.html" class="btn btn-primary btn-block">Ücretsiz Başla</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section class="final-cta">
-      <div class="container">
-        <div class="final-card reveal">
-          <h2>Reklam hesabını daha net gör.<br />Daha iyi karar ver.</h2>
-          <p>
-            Adsopify ile performans görünümünü sadeleştir, zayıf kampanyaları erken fark et
-            ve AI destekli araçlarla kreatif üretim akışını hızlandır.
-          </p>
-
-          <div class="final-actions">
-            <a href="https://adsopify.com/dashboard.html" class="btn btn-light">Ücretsiz Başla</a>
-            <a href="#features" class="btn btn-dark-ghost">Özelliklere Bak</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-inner">
-        <div class="footer-brand">Ads<span>opify</span></div>
-        <div class="footer-copy">© 2026 Adsopify. Tüm hakları saklıdır.</div>
-        <div class="footer-links">
-          <a href="https://adsopify.com/privacy.html">Gizlilik</a>
-          <a href="mailto:hello@adsopify.com">İletişim</a>
+        <div class="mc-table">
+          <div class="mc-th"><span>Kampanya</span><span>ROAS</span><span>Karar</span></div>
+          <div class="mc-tr"><span class="mc-name">Viral Reel</span><span><div class="tag g">7.8x</div></span><span><div class="tag g">Ölçekle</div></span></div>
+          <div class="mc-tr"><span class="mc-name">2 Görsel</span><span><div class="tag y">2.1x</div></span><span><div class="tag y">İzle</div></span></div>
+          <div class="mc-tr"><span class="mc-name">Doğru Açı</span><span><div class="tag r">0.6x</div></span><span><div class="tag r">Kapat</div></span></div>
         </div>
       </div>
     </div>
-  </footer>
+  </div>
+</div>
 
-  <script>
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
+<!-- STATS -->
+<div class="stats-section reveal" style="margin-top:80px">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-num">9.3x</div><div class="stat-label">Ortalama ROAS</div></div>
+    <div class="stat-item"><div class="stat-num">30s</div><div class="stat-label">Kurulum süresi</div></div>
+    <div class="stat-item"><div class="stat-num">%47</div><div class="stat-label">CPA düşüşü</div></div>
+    <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Aktif kullanıcı</div></div>
+  </div>
+</div>
 
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-  </script>
+<!-- FEATURES -->
+<div class="features-section" id="features">
+  <div class="reveal">
+    <div class="feat-eyebrow">Özellikler</div>
+    <h2 class="feat-heading">Her şey tek yerde.</h2>
+    <p class="feat-sub">Manuel analiz bitti. Gerçek veriye dayalı, anlık kararlar.</p>
+  </div>
+
+  <div class="bento">
+    <!-- Wide: ROAS -->
+    <div class="bento-card span2 reveal">
+      <div class="bento-inner">
+        <div>
+          <span class="bento-icon">📊</span>
+          <div class="bento-title">Gerçek ROAS & Satış Analizi</div>
+          <div class="bento-desc">Meta Pixel'den satış verisi çeker. Hangi kampanya kâr ediyor, hangisi zararda — saniyeler içinde görürsünüz. ROAS, CPA, satış, gelir, frekans hepsi tek ekranda.</div>
+        </div>
+        <div class="roas-widget">
+          <div class="rw-row"><span class="rw-name">Viral Reel</span><span class="rw-val" style="color:#1a7f4b">ROAS 7.8x ↑</span></div>
+          <div class="rw-row"><span class="rw-name">2 Görsel</span><span class="rw-val" style="color:#9a6700">ROAS 2.1x →</span></div>
+          <div class="rw-row"><span class="rw-name">Doğru Açı</span><span class="rw-val" style="color:#c62828">ROAS 0.6x ↓</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Hoca -->
+    <div class="bento-card reveal d1">
+      <span class="bento-icon">🤖</span>
+      <div class="bento-title">AI Hoca</div>
+      <div class="bento-desc">Kampanya verini bilen gerçek yapay zeka. "Bütçemi nasıl dağıtayım?" sorusuna data bazlı spesifik cevap.</div>
+    </div>
+
+    <!-- Görsel Prompt -->
+    <div class="bento-card reveal d1">
+      <span class="bento-icon">🎨</span>
+      <div class="bento-title">Görsel Prompt Üretici</div>
+      <div class="bento-desc">Ürün görselini yükle — AI analiz eder, Midjourney, Gemini ve DALL-E için profesyonel reklam promptları üretir.</div>
+    </div>
+
+    <!-- Hook Swipe -->
+    <div class="bento-card reveal d2">
+      <span class="bento-icon">🃏</span>
+      <div class="bento-title">Hook Swipe</div>
+      <div class="bento-desc">Tinder tarzı hook testi. Markana özel AI hookları — sağa kaydır dene, sola kaydır atla. 25 hook, sonsuz fikir.</div>
+    </div>
+
+    <!-- Ölçekleme -->
+    <div class="bento-card reveal d2">
+      <span class="bento-icon">🚀</span>
+      <div class="bento-title">Akıllı Ölçekleme</div>
+      <div class="bento-desc">🟢 Ölçekle / 🟡 İzle / 🔴 Kapat kararı ROAS + frekans + CPA ile otomatik. Tahmin değil, veri.</div>
+    </div>
+
+    <!-- Creative Alarm -->
+    <div class="bento-card reveal d3">
+      <span class="bento-icon">⚡</span>
+      <div class="bento-title">Creative Yorgunluk Alarmı</div>
+      <div class="bento-desc">Frekans 3'ü geçince topbar'da otomatik uyarı. Creative değişim zamanını asla kaçırmazsın.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW -->
+<div class="how-section" id="how">
+  <div class="reveal" style="margin-bottom:48px">
+    <div class="feat-eyebrow">Nasıl Çalışır</div>
+    <h2 class="feat-heading" style="margin-bottom:0">3 adımda başla.</h2>
+  </div>
+  <div class="how-grid reveal">
+    <div class="how-card">
+      <div class="how-step">Adım 01</div>
+      <div class="how-title">Facebook ile bağlan</div>
+      <div class="how-desc">Meta reklam hesabını OAuth ile bağla. Tek tıkla, 30 saniye. Token veya şifre gerekmez.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step">Adım 02</div>
+      <div class="how-title">Markanı tanıt</div>
+      <div class="how-desc">Site URL'ni gir — AI markanı analiz eder, sana özel hook, creative fikri ve reklam metni üretir.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step">Adım 03</div>
+      <div class="how-title">Karar ver, büyü</div>
+      <div class="how-desc">Gerçek verilerle anlık aksiyon önerileri. Hangisi ölçeklenir, hangisi kapatılır — net görürsün.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="reveal">
+      <div class="pricing-eyebrow">Fiyatlandırma</div>
+      <h2 class="pricing-heading">Basit. Şeffaf.</h2>
+      <p class="pricing-sub">Hemen başla, farkı gör.</p>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-plan">Pro Plan</div>
+      <div class="price-row">
+        <span class="price-sign">$</span>
+        <span class="price-main">29</span>
+        <span class="price-cents">.99</span>
+      </div>
+      <div class="price-per">/ ay</div>
+      <div class="price-trial">✓ Hemen erişim — kredi kartı gerekmez</div>
+      <ul class="price-list">
+        <li><span class="price-check">✓</span>Dashboard & Gerçek ROAS / CPA Analizi</li>
+        <li><span class="price-check">✓</span>AI Marka Analizi & Hook Üretici</li>
+        <li><span class="price-check">✓</span>Tinder Tarzı Hook Swipe — 25 Hook</li>
+        <li><span class="price-check">✓</span>Görsel → AI Prompt Üretici</li>
+        <li><span class="price-check">✓</span>Haftalık Karşılaştırma & Aksiyon Önerileri</li>
+        <li><span class="price-check">✓</span>Creative Yorgunluk Alarmı</li>
+        <li><span class="price-check">✓</span>AI Hoca — Veriye Dayalı Chat</li>
+      </ul>
+      <a href="https://adsopify.com/dashboard.html" class="btn-price">Hemen Başla →</a>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="testi-section">
+  <div class="reveal">
+    <h2 class="testi-heading">Kullanıcılar<br>ne diyor.</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Hangi kampanyamın zararda olduğunu ilk kez bu kadar net gördüm. ROAS bazlı karar sistemi inanılmaz işe yarıyor. Haftada 3 saatimi kurtarıyor."</div>
+      <div class="testi-name">Mehmet A.</div>
+      <div class="testi-role">E-ticaret girişimcisi, İstanbul</div>
+    </div>
+    <div class="testi-card reveal d1">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Görsel prompt özelliği beni çarptı. Ürün fotoğrafını yükledim, Midjourney için hazır prompt geldi. Reklam görsellerim çok daha iyi performans gösteriyor."</div>
+      <div class="testi-name">Ayşe K.</div>
+      <div class="testi-role">Dropshipping girişimcisi, Ankara</div>
+    </div>
+    <div class="testi-card reveal d2">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Creative yorgunluk alarmı hayat kurtardı. Frekansı takip etmeden aylarca para yakıyormuşum. Şimdi CPA'm %35 düştü."</div>
+      <div class="testi-name">Can D.</div>
+      <div class="testi-role">Dijital pazarlama uzmanı, İzmir</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner reveal">
+    <h2 class="cta-title">Bugün başla,<br>hemen fark gör.</h2>
+    <p class="cta-sub">Hemen başla. Kredi kartı gerekmez.</p>
+    <a href="https://adsopify.com/dashboard.html" class="btn-cta-white">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook ile Ücretsiz Başla
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Ads<span>opify</span></div>
+    <div class="footer-copy">© 2026 Adsopify. Tüm hakları saklıdır.</div>
+    <div class="footer-links">
+      <a href="https://adsopify.com/privacy.html">Gizlilik</a>
+      <a href="#">İletişim</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
