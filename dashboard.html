@@ -288,49 +288,62 @@ select option{background:var(--surface)}
 <!-- AUTH SCREEN — Adım 1: Kayıt / Giriş -->
 <div id="auth-screen" style="display:none;position:fixed;inset:0;z-index:1100;background:var(--bg);align-items:center;justify-content:center;overflow:auto">
 
-  <!-- Ambient glow -->
-  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(rgba(99,102,241,0.12),transparent 70%);pointer-events:none"></div>
+  <!-- Split layout: left brand panel + right form -->
+  <div style="display:flex;width:100%;max-width:900px;min-height:520px;margin:24px;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.12);border:1px solid var(--border)">
 
-  <div style="width:100%;max-width:420px;padding:24px;position:relative;z-index:1">
-
-    <!-- Logo -->
-    <div style="text-align:center;margin-bottom:40px">
-      <div style="font-size:28px;font-weight:800;letter-spacing:-0.5px;color:#fff;margin-bottom:6px">Ads<span style="color:#818cf8">opify</span></div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.35);letter-spacing:0.02em">Meta Reklam AI Dashboard</div>
+    <!-- Left: Brand panel -->
+    <div style="flex:1;background:var(--accent);padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between;min-width:0">
+      <div>
+        <div style="font-family:var(--head);font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:6px">Ads<span style="color:rgba(255,255,255,0.6)">opify</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5)">Meta Reklam AI Dashboard</div>
+      </div>
+      <div>
+        <div style="font-family:var(--head);font-size:32px;font-weight:800;color:#fff;line-height:1.2;letter-spacing:-1px;margin-bottom:16px">Reklamlarını<br>akıllıca yönet.</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7">ROAS, CPA, satış analizi ve AI destekli aksiyon önerileri — hepsi tek ekranda.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px">📊</div><span style="font-size:13px;color:rgba(255,255,255,0.75)">Gerçek zamanlı ROAS & satış takibi</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px">🤖</div><span style="font-size:13px;color:rgba(255,255,255,0.75)">AI destekli günlük aksiyon planı</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px">🪝</div><span style="font-size:13px;color:rgba(255,255,255,0.75)">Viral hook & reklam metni üreticisi</span></div>
+      </div>
     </div>
 
-    <!-- Card -->
-    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;backdrop-filter:blur(20px)">
-
-      <!-- Tab seçici -->
-      <div style="display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;margin-bottom:28px;border:1px solid rgba(255,255,255,0.08)">
-        <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-family:var(--font);transition:all 0.2s;letter-spacing:0.01em">Giriş Yap</button>
-        <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:10px;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,0.4);font-family:var(--font);transition:all 0.2s">Kayıt Ol</button>
+    <!-- Right: Form panel -->
+    <div style="width:380px;flex-shrink:0;background:var(--surface);padding:48px 40px;display:flex;flex-direction:column;justify-content:center">
+      <div style="margin-bottom:32px">
+        <div style="font-family:var(--head);font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px">Hoş geldin 👋</div>
+        <div style="font-size:13px;color:var(--text3)">Hesabınla giriş yap veya yeni hesap oluştur.</div>
       </div>
 
-      <!-- Form -->
+      <!-- Tabs -->
+      <div style="display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:28px;border:1px solid var(--border)">
+        <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;font-family:var(--font);transition:all 0.2s">Giriş Yap</button>
+        <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);font-family:var(--font);transition:all 0.2s">Kayıt Ol</button>
+      </div>
+
+      <!-- Name field (register only) -->
       <div id="auth-name-wrap" style="display:none;margin-bottom:16px">
-        <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">Ad Soyad</label>
-        <input type="text" id="auth-name" placeholder="Ad Soyad" autocomplete="off" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px" />
+        <label>Ad Soyad</label>
+        <input type="text" id="auth-name" placeholder="Adınız Soyadınız" autocomplete="off"/>
       </div>
 
       <div style="margin-bottom:16px">
-        <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">E-posta</label>
-        <input type="email" id="auth-email" placeholder="ornek@email.com" autocomplete="off" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px" />
+        <label>E-posta</label>
+        <input type="email" id="auth-email" placeholder="ornek@email.com" autocomplete="off"/>
       </div>
 
       <div style="margin-bottom:24px">
-        <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">Şifre</label>
-        <input type="password" id="auth-password" placeholder="En az 6 karakter" autocomplete="new-password" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:12px;padding:13px 16px;font-size:14px" />
+        <label>Şifre</label>
+        <input type="password" id="auth-password" placeholder="En az 6 karakter" autocomplete="new-password"/>
       </div>
 
-      <div id="auth-err" style="color:#f87171;font-size:13px;margin-bottom:16px;display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 14px"></div>
+      <div id="auth-err" style="display:none;color:var(--red);font-size:13px;margin-bottom:16px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:9px;padding:10px 14px"></div>
 
-      <button id="auth-submit-btn" onclick="submitAuth()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all 0.18s;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(99,102,241,0.3)">Giriş Yap</button>
-    </div>
+      <button id="auth-submit-btn" onclick="submitAuth()" style="width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all 0.15s;box-shadow:0 4px 12px rgba(37,99,235,0.3)">Giriş Yap</button>
 
-    <div style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,0.2)">
-      Devam ederek <a href="https://adsopify.com/privacy.html" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.
+      <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--text3)">
+        <a href="https://adsopify.com/privacy.html" target="_blank" style="color:var(--text2);text-decoration:none">Gizlilik Politikası</a>
+      </div>
     </div>
   </div>
 </div>
@@ -434,23 +447,31 @@ select option{background:var(--surface)}
 
   <!-- GÜNLÜK PLAN -->
   <div id="sec-plan" class="section active">
-    <div class="page-title">Günlük Plan</div>
-    <div class="page-sub" id="plan-date">Yükleniyor...</div>
+
+    <!-- Page header — Healthora style -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
+      <div>
+        <div style="font-size:13px;color:var(--text3);font-weight:500;margin-bottom:4px" id="plan-date">Yükleniyor...</div>
+        <div style="font-family:var(--head);font-size:28px;font-weight:800;letter-spacing:-0.8px;color:var(--text)">Hoş geldin, bugün ne yapmalısın?</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge blue" style="font-size:12px;padding:5px 12px">📅 <span id="plan-date-badge"></span></span>
+        <span id="plan-budget-badge" class="badge gray" style="font-size:12px;padding:5px 12px"></span>
+      </div>
+    </div>
 
     <div id="plan-loading" class="loading-row"><div class="spinner"></div> Kampanya verisi çekiliyor...</div>
     <div id="plan-content" style="display:none">
 
-      <div style="margin-bottom:14px;display:flex;gap:8px;align-items:center">
-        <span class="badge blue">📅 <span id="plan-date-badge"></span></span>
-        <span id="plan-budget-badge" class="badge gray"></span>
-      </div>
-
-      <!-- AI ACTION PLAN -->
-      <div class="card mb-16" id="ai-action-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <div>
-            <div class="card-title" style="margin-bottom:2px">🤖 AI Koç — Bugün Ne Yapmalısın?</div>
-            <div style="font-size:12px;color:var(--text3)">Kampanya verine göre kişiselleştirildi</div>
+      <!-- AI ACTION PLAN — full width prominent card -->
+      <div id="ai-action-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:var(--shadow)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:16px">🤖</div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--text)">AI Koç — Bugün Ne Yapmalısın?</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:1px">Kampanya verine göre kişiselleştirildi</div>
+            </div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh">↺ Yenile</button>
         </div>
@@ -462,23 +483,39 @@ select option{background:var(--surface)}
         </div>
       </div>
 
-      <div class="card mb-16">
-        <div class="card-title">🔴 Acil Aksiyonlar</div>
-        <div id="plan-urgent" class="plan-grid"></div>
+      <!-- Two column layout: Acil + Büyüme -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2)">Acil Aksiyonlar</div>
+          </div>
+          <div id="plan-urgent" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2)">Büyüme Adımları</div>
+          </div>
+          <div id="plan-growth" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+
       </div>
 
-      <div class="card mb-16">
-        <div class="card-title">🟢 Büyüme Adımları</div>
-        <div id="plan-growth" class="plan-grid"></div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div class="card-title" style="margin-bottom:0">💡 Bugünün Creative Fikirleri</div>
-          <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" title="Farklı fikirler getir">↺ Yenile</button>
+      <!-- Creative ideas — full width -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--yellow);flex-shrink:0"></div>
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2)">Bugünün Creative Fikirleri</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn">↺ Yenile</button>
         </div>
         <div id="plan-ideas" class="plan-grid"></div>
       </div>
+
     </div>
   </div>
 
