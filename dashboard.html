@@ -126,8 +126,12 @@ select option{background:var(--surface)}
 .plan-item .pi-body{flex:1;min-width:0}
 .plan-item .pi-title{font-weight:600;font-size:13px;margin-bottom:3px;color:var(--text)}
 .plan-item .pi-desc{font-size:12px;color:var(--text2);line-height:1.5}
-.plan-item.urgent{border-color:var(--red-border);background:var(--red-bg);border-left:3px solid var(--red)}
-.plan-item.growth{border-color:var(--green-border);background:var(--green-bg);border-left:3px solid var(--green)}
+.plan-item.urgent{background:rgba(255,255,255,.06);border:1px solid rgba(239,68,68,.25);border-left:3px solid #ef4444}
+.plan-item.urgent .pi-title{color:#fff}
+.plan-item.urgent .pi-desc{color:rgba(255,255,255,.55)}
+.plan-item.growth{background:rgba(255,255,255,.7);border:1px solid var(--green-border);border-left:3px solid var(--green)}
+.plan-item.growth .pi-title{color:var(--text)}
+.plan-item.growth .pi-desc{color:var(--text2)}
 .hook-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;font-size:13px;line-height:1.6;color:var(--text)}
 .hook-card:hover{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--accent-glow)}
 .hook-card .copy-hint{font-size:11px;color:var(--text3);margin-top:6px}
@@ -508,33 +512,38 @@ select option{background:var(--surface)}
         </div>
       </div>
 
-      <!-- Two column layout: Acil + Büyüme -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <!-- Two column layout: Acil (dark) + Büyüme (light) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
 
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
-            <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
-            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2)">Acil Aksiyonlar</div>
+        <!-- ACIL — koyu kart -->
+        <div style="background:var(--text);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow-md)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+            <div style="width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;box-shadow:0 0 6px rgba(239,68,68,.6)"></div>
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.5)">Acil Aksiyonlar</div>
           </div>
           <div id="plan-urgent" style="display:flex;flex-direction:column;gap:8px"></div>
         </div>
 
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
-            <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
-            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2)">Büyüme Adımları</div>
+        <!-- BÜYÜME — açık yeşil tint kart -->
+        <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 6px rgba(5,150,105,.4)"></div>
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--green)">Büyüme Adımları</div>
           </div>
           <div id="plan-growth" style="display:flex;flex-direction:column;gap:8px"></div>
         </div>
 
       </div>
 
-      <!-- Creative ideas — full width -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div style="width:8px;height:8px;border-radius:50%;background:var(--yellow);flex-shrink:0"></div>
-            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text2)">Bugünün Creative Fikirleri</div>
+      <!-- Creative ideas — full width, accent tint -->
+      <div style="background:var(--accent-bg);border:1px solid rgba(37,99,235,.15);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:32px;height:32px;border-radius:9px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px">💡</div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--text)">Bugünün Creative Fikirleri</div>
+              <div style="font-size:12px;color:var(--text3)">Markana özel içerik fikirleri</div>
+            </div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn">↺ Yenile</button>
         </div>
@@ -1257,23 +1266,55 @@ select option{background:var(--surface)}
 
   <!-- AYARLAR -->
   <div id="sec-settings" class="section">
-    <div class="page-title">Ayarlar</div>
-    <div class="page-sub">Marka bilgileri ve hesap ayarları</div>
+    <div class="page-header">
+      <div class="page-title">Ayarlar</div>
+      <div class="page-sub">Marka ve hesap yönetimi</div>
+    </div>
 
     <div class="card mb-16">
-      <div class="card-title">🎯 Marka Bilgileri</div>
-      <div id="brand-current" style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:2"></div>
-      <button class="btn btn-primary btn-sm" onclick="resetBrand()">🔄 Markayı Yeniden Gir</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px">Markalarım</div>
+          <div style="font-size:12px;color:var(--text3)">Birden fazla marka ekleyip aralarında geçiş yapabilirsin</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="showAddBrandModal()">+ Yeni Marka Ekle</button>
+      </div>
+      <div id="brand-list-settings"></div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🔗 Hesap</div>
+    <div class="card mb-16">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px">Meta Reklam Hesabı</div>
       <div id="settings-acct" style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:2"></div>
-      <button class="btn btn-ghost btn-sm" onclick="logout()">⏏ Çıkış Yap</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('token-screen').style.display='flex'">Hesap Degistir</button>
+        <button class="btn btn-danger btn-sm" onclick="logout()">Cikis Yap</button>
+      </div>
     </div>
-  </div>
 
-</div>
+    <div class="card" style="border-color:var(--red-border);background:var(--red-bg)">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Marka Analizini Sifirla</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Aktif markayı sifirla ve yeniden analiz et.</div>
+      <button class="btn btn-danger btn-sm" onclick="resetBrand()">Aktif Markayi Sifirla</button>
+    </div>
+
+    <div id="add-brand-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;align-items:center;justify-content:center;padding:24px">
+      <div style="background:var(--surface);border-radius:16px;padding:32px;max-width:480px;width:100%;box-shadow:var(--shadow-lg)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+          <div style="font-size:17px;font-weight:700;color:var(--text)">Yeni Marka Ekle</div>
+          <button onclick="document.getElementById('add-brand-modal').style.display='none'" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3)">x</button>
+        </div>
+        <div style="margin-bottom:16px"><label>Marka Adi</label><input type="text" id="new-brand-name" placeholder="Ornek: AlaTab"/></div>
+        <div style="margin-bottom:16px"><label>Web Sitesi URL</label><input type="url" id="new-brand-url" placeholder="https://markan.com"/></div>
+        <div style="margin-bottom:24px"><label>Ek Bilgi (opsiyonel)</label><textarea id="new-brand-desc" rows="2" placeholder="Urun, hedef kitle..."></textarea></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="document.getElementById('add-brand-modal').style.display='none'">Iptal</button>
+          <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveNewBrand()">Analiz Et ve Kaydet</button>
+        </div>
+        <div id="new-brand-status" style="display:none;margin-top:12px;font-size:13px;color:var(--text2);text-align:center"></div>
+      </div>
+    </div>
+
+  </div>
 
 <script>
 
@@ -1500,11 +1541,20 @@ function startApp() {
 
   const brandData = localStorage.getItem('adsopify_brand');
   const onboarded = localStorage.getItem('adsopify_onboarded');
-  if (!brandData && !onboarded) {
+  // Also check sessionStorage as fallback for mobile
+  const onboardedSession = sessionStorage.getItem('adsopify_onboarded');
+  if (!brandData && !onboarded && !onboardedSession) {
     document.getElementById('onboarding-popup').style.display = 'flex';
   } else if (brandData) {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
+    // Sync onboarded flag to both storages
+    localStorage.setItem('adsopify_onboarded', '1');
+    sessionStorage.setItem('adsopify_onboarded', '1');
+  } else if (onboarded || onboardedSession) {
+    // Has onboarded flag but no brand — skipped before, don't ask again
+    localStorage.setItem('adsopify_onboarded', '1');
+    sessionStorage.setItem('adsopify_onboarded', '1');
   }
   loadPlan();
 }
@@ -1562,6 +1612,7 @@ function skipOnboarding() {
   document.getElementById("ob-step3").style.display = "none";
   localStorage.setItem("adsopify_brand", JSON.stringify({ skipped: true }));
   localStorage.setItem("adsopify_onboarded", "1");
+  sessionStorage.setItem("adsopify_onboarded", "1");
 }
 
 async function saveOnboarding() {
@@ -1725,15 +1776,126 @@ function resetBrand(returnTo) {
 }
 
 function loadSettingsPage() {
-  const brand = S.brand;
-  const brandEl = document.getElementById('brand-current');
-  if (brand && brand.brandName) {
-    brandEl.innerHTML = '🏷️ <strong>Marka:</strong> ' + brand.brandName + '<br>🔗 <strong>URL:</strong> ' + (brand.url || '—') + '<br>📝 <strong>Açıklama:</strong> ' + (brand.rawDesc || '—');
-  } else {
-    brandEl.innerHTML = '<span style="color:var(--text3)">Henüz marka bilgisi girilmedi.</span>';
+  // Multi-brand list
+  const brands = JSON.parse(localStorage.getItem('adsopify_brands') || '[]');
+  const activeBrandId = localStorage.getItem('adsopify_active_brand');
+  const listEl = document.getElementById('brand-list-settings');
+  if (listEl) {
+    if (brands.length === 0) {
+      const current = S.brand;
+      if (current && current.brandName) {
+        listEl.innerHTML = \`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--accent-bg);border:1px solid rgba(37,99,235,.2);border-radius:10px;padding:14px 16px">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">\${current.brandName}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">\${current.url || '—'}</div>
+          </div>
+          <span class="badge blue">Aktif</span>
+        </div>\`;
+      } else {
+        listEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px 0">Henüz marka eklenmedi.</div>';
+      }
+    } else {
+      listEl.innerHTML = brands.map((b, i) => {
+        const isActive = b.id === activeBrandId || i === 0;
+        return \`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid \${isActive ? 'rgba(37,99,235,.25)' : 'var(--border)'};border-radius:10px;padding:14px 16px;margin-bottom:8px">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">\${b.brandName || b.name || 'Marka'}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">\${b.url || '—'}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            \${isActive ? '<span class="badge blue">Aktif</span>' : \`<button class="btn btn-ghost btn-sm" onclick="switchBrand('\${b.id}')">Geç</button>\`}
+            <button class="btn btn-sm" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);padding:4px 10px;font-size:11px" onclick="deleteBrand('\${b.id}')">✕</button>
+          </div>
+        </div>\`;
+      }).join('');
+    }
   }
   const acctEl = document.getElementById('settings-acct');
-  acctEl.innerHTML = '👤 <strong>Hesap:</strong> ' + (S.accountName || '—') + '<br>🆔 <strong>ID:</strong> ' + (S.accountId || '—');
+  if (acctEl) acctEl.innerHTML = '👤 <strong>Hesap:</strong> ' + (S.accountName || '—') + '<br>🆔 <strong>ID:</strong> ' + (S.accountId || '—');
+}
+
+function showAddBrandModal() {
+  document.getElementById('add-brand-modal').style.display = 'flex';
+  document.getElementById('new-brand-name').value = '';
+  document.getElementById('new-brand-url').value = '';
+  document.getElementById('new-brand-desc').value = '';
+  document.getElementById('new-brand-status').style.display = 'none';
+}
+
+async function saveNewBrand() {
+  const name = document.getElementById('new-brand-name').value.trim();
+  const url = document.getElementById('new-brand-url').value.trim();
+  const desc = document.getElementById('new-brand-desc').value.trim();
+  if (!name && !url) { alert('Marka adı veya URL giriniz.'); return; }
+
+  const statusEl = document.getElementById('new-brand-status');
+  statusEl.style.display = 'block';
+  statusEl.textContent = '⏳ Analiz ediliyor...';
+
+  let brand = { id: Date.now().toString(), brandName: name || 'Marka', url, rawDesc: desc };
+
+  if (url) {
+    try {
+      const res = await fetch('https://adsopify-api.fubame38.workers.dev', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, desc })
+      });
+      const data = await res.json();
+      if (!data.error) { brand = { ...brand, ...data, id: brand.id, url, rawDesc: desc }; }
+    } catch(e) {}
+  }
+
+  // Save to brands list
+  const brands = JSON.parse(localStorage.getItem('adsopify_brands') || '[]');
+  brands.push(brand);
+  localStorage.setItem('adsopify_brands', JSON.stringify(brands));
+
+  // Set as active brand
+  localStorage.setItem('adsopify_active_brand', brand.id);
+  localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+  localStorage.setItem('adsopify_onboarded', '1');
+  sessionStorage.setItem('adsopify_onboarded', '1');
+  S.brand = brand;
+
+  statusEl.textContent = '✅ ' + brand.brandName + ' kaydedildi!';
+  setTimeout(() => {
+    document.getElementById('add-brand-modal').style.display = 'none';
+    loadSettingsPage();
+    loadPlan();
+  }, 1200);
+}
+
+function switchBrand(brandId) {
+  const brands = JSON.parse(localStorage.getItem('adsopify_brands') || '[]');
+  const brand = brands.find(b => b.id === brandId);
+  if (!brand) return;
+  localStorage.setItem('adsopify_active_brand', brandId);
+  localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+  S.brand = brand;
+  loadSettingsPage();
+  loadPlan();
+  nav('plan');
+  showToast('✅ ' + brand.brandName + ' aktif edildi');
+}
+
+function deleteBrand(brandId) {
+  if (!confirm('Bu markayı silmek istediğine emin misin?')) return;
+  let brands = JSON.parse(localStorage.getItem('adsopify_brands') || '[]');
+  brands = brands.filter(b => b.id !== brandId);
+  localStorage.setItem('adsopify_brands', JSON.stringify(brands));
+  const activeBrandId = localStorage.getItem('adsopify_active_brand');
+  if (activeBrandId === brandId) {
+    if (brands.length > 0) { switchBrand(brands[0].id); }
+    else { localStorage.removeItem('adsopify_brand'); localStorage.removeItem('adsopify_active_brand'); S.brand = null; }
+  }
+  loadSettingsPage();
+}
+
+function showToast(msg) {
+  let t = document.getElementById('global-toast');
+  if (!t) { t = document.createElement('div'); t.id = 'global-toast'; t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transition:opacity .3s'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 2500);
 }
 
 // ═══════════════════════════════════════════════
