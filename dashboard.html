@@ -464,6 +464,30 @@ select option{background:var(--surface)}
     <div id="plan-loading" class="loading-row"><div class="spinner"></div> Kampanya verisi çekiliyor...</div>
     <div id="plan-content" style="display:none">
 
+      <!-- KPI CARDS ROW — Donezo style -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px" id="plan-kpi-row">
+        <div style="background:var(--accent);border-radius:14px;padding:20px 22px;box-shadow:0 4px 16px rgba(37,99,235,.25)">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.65);margin-bottom:10px">Bugün Harcama</div>
+          <div id="plan-kpi-spend" style="font-family:var(--mono);font-size:28px;font-weight:700;color:#fff;letter-spacing:-1px">—</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">Toplam reklam harcaması</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Satış</div>
+          <div id="plan-kpi-sales" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text);letter-spacing:-1px">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Bugünkü dönüşüm</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">ROAS</div>
+          <div id="plan-kpi-roas" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text);letter-spacing:-1px">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Harcama getirisi</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">CPA</div>
+          <div id="plan-kpi-cpa" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--text);letter-spacing:-1px">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Satış başı maliyet</div>
+        </div>
+      </div>
+
       <!-- AI ACTION PLAN — full width prominent card -->
       <div id="ai-action-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:var(--shadow)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
@@ -1956,6 +1980,23 @@ async function loadPlan() {
 
     document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
     document.getElementById('plan-budget-badge').textContent = 'Bugün ' + cur + totalSpend.toFixed(2) + (totalPurchases > 0 ? ' • ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
+
+    // Populate plan KPI cards
+    const planKpiSpend = document.getElementById('plan-kpi-spend');
+    const planKpiSales = document.getElementById('plan-kpi-sales');
+    const planKpiRoas = document.getElementById('plan-kpi-roas');
+    const planKpiCpa = document.getElementById('plan-kpi-cpa');
+    if (planKpiSpend) planKpiSpend.textContent = cur + totalSpend.toFixed(0);
+    if (planKpiSales) planKpiSales.textContent = totalPurchases > 0 ? totalPurchases.toFixed(0) : '—';
+    if (planKpiRoas) {
+      planKpiRoas.textContent = todayROAS ? todayROAS + 'x' : '—';
+      if (todayROAS && parseFloat(todayROAS) >= 2) planKpiRoas.style.color = 'var(--green)';
+      else if (todayROAS) planKpiRoas.style.color = 'var(--red)';
+    }
+    if (planKpiCpa) {
+      const cpa = totalPurchases > 0 ? (totalSpend / totalPurchases) : 0;
+      planKpiCpa.textContent = cpa > 0 ? cur + cpa.toFixed(0) : '—';
+    }
 
     document.getElementById('plan-loading').style.display = 'none';
     document.getElementById('plan-content').style.display = 'block';
