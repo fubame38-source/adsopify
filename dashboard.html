@@ -123,6 +123,7 @@ select option{background:var(--surface)}
 .plan-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;transition:all .15s}
 .plan-item:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:var(--shadow-md)}
 .plan-item .pi-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.plan-item .pi-body{flex:1;min-width:0}
 .plan-item .pi-title{font-weight:600;font-size:13px;margin-bottom:3px;color:var(--text)}
 .plan-item .pi-desc{font-size:12px;color:var(--text2);line-height:1.5}
 .plan-item.urgent{border-color:var(--red-border);background:var(--red-bg);border-left:3px solid var(--red)}
@@ -2076,28 +2077,28 @@ function renderAIActions(actions) {
   if (!el || !actions.length) return;
 
   const priorityConfig = {
-    1: { color: 'var(--red)',    bg: 'rgba(239,68,68,0.08)',    border: 'rgba(239,68,68,0.2)',    label: '🔴 Yüksek' },
-    2: { color: 'var(--yellow)', bg: 'rgba(245,158,11,0.08)',   border: 'rgba(245,158,11,0.2)',   label: '🟡 Orta' },
-    3: { color: 'var(--green)',  bg: 'rgba(16,185,129,0.08)',   border: 'rgba(16,185,129,0.2)',   label: '🟢 Normal' },
-    4: { color: 'var(--accent2)',bg: 'rgba(99,102,241,0.08)',   border: 'rgba(99,102,241,0.2)',   label: '🔵 Ek' },
-    5: { color: 'var(--text3)',  bg: 'var(--surface2)',         border: 'var(--border)',           label: '⚪ Bonus' },
+    1: { dot: 'var(--red)',    bg: 'var(--red-bg)',     border: 'var(--red-border)',   label: 'YÜKSEK',  btnBg: 'var(--red-bg)',    btnColor: 'var(--red)' },
+    2: { dot: 'var(--yellow)', bg: 'var(--yellow-bg)',  border: 'rgba(217,119,6,.2)',  label: 'ORTA',    btnBg: 'var(--yellow-bg)', btnColor: 'var(--yellow)' },
+    3: { dot: 'var(--green)',  bg: 'var(--green-bg)',   border: 'var(--green-border)', label: 'NORMAL',  btnBg: 'var(--green-bg)',  btnColor: 'var(--green)' },
+    4: { dot: 'var(--accent)', bg: 'var(--accent-bg)',  border: 'rgba(37,99,235,.2)',  label: 'EK',      btnBg: 'var(--accent-bg)', btnColor: 'var(--accent)' },
+    5: { dot: 'var(--text3)', bg: 'var(--surface2)',    border: 'var(--border)',       label: 'BONUS',   btnBg: 'var(--surface2)',  btnColor: 'var(--text2)' },
   };
 
   el.innerHTML = actions.map((a, i) => {
     const p = priorityConfig[a.priority] || priorityConfig[3];
-    return `<div style="background:${p.bg};border:1px solid ${p.border};border-radius:14px;padding:16px 18px;margin-bottom:10px;animation:fadeIn 0.3s ease ${i*0.08}s both">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
-        <div style="flex:1">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-            <span style="font-size:10px;font-weight:700;color:${p.color};text-transform:uppercase;letter-spacing:0.06em">${p.label}</span>
-            <span style="font-size:10px;color:var(--text3)">· #${a.priority}</span>
-          </div>
-          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">${a.title}</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:4px">${a.reason}</div>
-          ${a.detail ? `<div style="font-size:12px;color:var(--text3);line-height:1.5">→ ${a.detail}</div>` : ''}
+    return `
+    <div style="background:${p.bg};border:1px solid ${p.border};border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;animation:fadeIn 0.3s ease ${i*0.07}s both">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+          <div style="width:7px;height:7px;border-radius:50%;background:${p.dot};flex-shrink:0"></div>
+          <span style="font-size:10px;font-weight:800;color:${p.dot};text-transform:uppercase;letter-spacing:.08em">${p.label}</span>
+          <span style="font-size:10px;color:var(--text3);font-weight:500">· #${a.priority}</span>
         </div>
-        ${a.nav ? `<button onclick="nav('${a.nav}')" style="flex-shrink:0;background:${p.bg};border:1px solid ${p.border};color:${p.color};padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all 0.15s" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">${a.cta || 'Uygula'} →</button>` : ''}
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px;letter-spacing:-.2px">${a.title}</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:${a.detail?'4px':'0'}">${a.reason}</div>
+        ${a.detail ? `<div style="font-size:12px;color:var(--text3);line-height:1.5">→ ${a.detail}</div>` : ''}
       </div>
+      ${a.nav ? `<button onclick="nav('${a.nav}')" style="flex-shrink:0;background:${p.btnBg};border:1px solid ${p.border};color:${p.btnColor};padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all .15s;margin-top:2px" onmouseover="this.style.filter='brightness(.92)'" onmouseout="this.style.filter=''">${a.cta||'Uygula'} →</button>` : ''}
     </div>`;
   }).join('');
 }
@@ -3580,10 +3581,14 @@ function toggleTheme() {
 
 function initTheme() {
   const saved = localStorage.getItem('adsopify_theme');
+  // Default: light. Only go dark if user explicitly saved 'dark'
+  document.body.classList.remove('dark');
+  const btn = document.getElementById('theme-toggle');
   if (saved === 'dark') {
     document.body.classList.add('dark');
-    const btn = document.getElementById('theme-toggle');
     if (btn) btn.textContent = '☀️';
+  } else {
+    if (btn) btn.textContent = '🌙';
   }
 }
 
