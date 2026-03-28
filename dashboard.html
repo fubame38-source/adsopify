@@ -294,6 +294,51 @@ input[type="date"]{cursor:pointer}
 @media(max-width:1100px){.plan-kpi-row{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){.plan-kpi-row{grid-template-columns:repeat(2,1fr)}}
 
+
+/* ── SCALE REDESIGN ── */
+.scale-kcard{background:var(--surface);border:0.5px solid var(--border);border-radius:18px;padding:22px 26px;display:grid;grid-template-columns:100px 1fr auto;gap:22px;align-items:center;transition:border-color .18s,box-shadow .18s;margin-bottom:10px;position:relative;overflow:hidden}
+.scale-kcard:hover{border-color:var(--border2);box-shadow:var(--shadow-md)}
+.scale-kcard-accent{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0}
+.scale-kcard-accent.green{background:var(--green)}
+.scale-kcard-accent.amber{background:var(--yellow)}
+.scale-kcard-accent.gray{background:var(--border2)}
+.scale-roas-big{font-size:42px;font-weight:700;letter-spacing:-0.05em;line-height:1;font-family:var(--mono)}
+.scale-roas-big.green{color:var(--green)}
+.scale-roas-big.amber{color:var(--yellow)}
+.scale-roas-big.gray{color:var(--text3)}
+.scale-roas-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-top:4px}
+.scale-kcard-mid{display:flex;flex-direction:column;gap:10px;min-width:0}
+.scale-kcard-name{font-size:16px;font-weight:600;color:var(--text);letter-spacing:-0.02em}
+.scale-kcard-stats{display:flex;gap:16px;flex-wrap:wrap}
+.scale-kstat-lbl{font-size:10px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
+.scale-kstat-val{font-size:13px;font-weight:600;color:var(--text)}
+.scale-kstat-val.muted{color:var(--text3)}
+.scale-kcard-verdict{font-size:12px;color:var(--text2);line-height:1.55;padding-top:10px;border-top:0.5px solid var(--border)}
+.scale-karar{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:980px;font-size:12px;font-weight:600;white-space:nowrap;align-self:center;border:0.5px solid transparent;flex-shrink:0}
+.scale-karar.green{background:var(--green-light);color:var(--green);border-color:rgba(29,185,84,.25)}
+.scale-karar.amber{background:var(--yellow-light);color:var(--yellow);border-color:rgba(255,149,0,.25)}
+.scale-karar.red{background:var(--red-light);color:var(--red);border-color:rgba(255,59,48,.2)}
+.scale-karar.gray{background:var(--surface2);color:var(--text3);border-color:var(--border)}
+.scale-kdot{width:5px;height:5px;border-radius:50%}
+.scale-karar.green .scale-kdot{background:var(--green)}
+.scale-karar.amber .scale-kdot{background:var(--yellow)}
+.scale-karar.red .scale-kdot{background:var(--red)}
+.scale-karar.gray .scale-kdot{background:var(--text3)}
+.scale-strat-wrap{background:var(--surface);border:0.5px solid var(--border);border-radius:18px;overflow:hidden}
+.scale-strat-head{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:14px 22px;border-bottom:0.5px solid var(--border)}
+.scale-strat-row{display:flex;align-items:flex-start;gap:18px;padding:18px 22px;border-bottom:0.5px solid var(--border);transition:background .15s;cursor:pointer}
+.scale-strat-row:last-child{border-bottom:none}
+.scale-strat-row:hover{background:var(--surface2)}
+.scale-strat-num{font-size:26px;font-weight:700;letter-spacing:-0.04em;color:var(--border2);line-height:1;min-width:28px;padding-top:2px;font-family:var(--mono)}
+.scale-strat-body{flex:1;min-width:0}
+.scale-strat-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em}
+.scale-strat-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.scale-strat-outcome{font-size:11px;color:var(--text3);margin-top:5px;font-style:italic}
+.scale-strat-tag{display:inline-flex;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;margin-top:7px;letter-spacing:.04em;text-transform:uppercase}
+.scale-strat-tag.high{background:var(--red-light);color:var(--red)}
+.scale-strat-tag.mid{background:var(--yellow-light);color:var(--yellow)}
+@media(max-width:720px){.scale-kcard{grid-template-columns:80px 1fr;}.scale-karar{grid-column:span 2;justify-self:start;}.scale-roas-big{font-size:32px}}
+
 </style>
 </head>
 <body>
@@ -777,13 +822,12 @@ input[type="date"]{cursor:pointer}
     <div class="page-title">Ölçekleme Analizi</div>
     <div class="page-sub">Hangi kampanya ölçeklenmeli, hangisi kapatılmalı?</div>
     <div id="scale-loading" class="loading-row"><div class="spinner"></div> Analiz yapılıyor...</div>
-    <div class="card" id="scale-content" style="display:none">
-      <div class="card-title">Kampanya Kararları</div>
+    <div id="scale-content" style="display:none">
       <div id="scale-list"></div>
     </div>
-    <div style="margin-top:16px" id="scale-rec-wrap" style="display:none">
-      <div class="card">
-        <div class="card-title">🚀 AI Büyüme Stratejileri</div>
+    <div style="margin-top:12px;display:none" id="scale-rec-wrap">
+      <div class="scale-strat-wrap">
+        <div class="scale-strat-head">AI Büyüme Stratejileri</div>
         <div id="scale-recommendations"></div>
       </div>
     </div>
@@ -2960,13 +3004,17 @@ async function loadScale() {
     });
 
     const hasPix = hasPurchaseData;
-    const infoNote = !hasPix ? '<div style="background:var(--yellow-light);border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--yellow)">⚠️ <strong>Pixel satış verisi bulunamadı.</strong> Meta Pixel\'i kurarak "purchase" eventi aktif et — kararlar daha kesin olacak. Şu an CTR+CPC bazlı analiz yapılıyor.</div>' : '<div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--green)">✅ <strong>Pixel satış verisi aktif.</strong> ROAS + CPA bazlı gerçek analiz yapılıyor.</div>';
+    const infoNote = !hasPix ? '<div style="background:var(--yellow-light);border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--yellow)">⚠️ <strong>Pixel satış verisi bulunamadı.</strong> Meta Pixel\'i kurarak "purchase" eventi aktif et — kararlar daha kesin olacak. Şu an CTR+CPC bazlı analiz yapılıyor.</div>' : '<div style="display:flex;align-items:center;gap:8px;background:var(--green-light);border:0.5px solid rgba(29,185,84,.2);border-radius:10px;padding:10px 16px;margin-bottom:12px;font-size:12px;font-weight:600;color:var(--green)"><div style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0"></div>Pixel satış verisi aktif — ROAS + CPA bazlı gerçek analiz yapılıyor</div>';
 
     const html = infoNote + items.map(i => {
-      const badge = i.decision === 'scale' ? '<span class="badge green">🟢 Ölçekle</span>' :
-                    i.decision === 'kill'  ? '<span class="badge red">🔴 Kapat</span>' :
-                    i.decision === 'pause' ? '<span class="badge gray">⏸ Durdurulmuş</span>' :
-                    '<span class="badge yellow">🟡 İzle</span>';
+      const isScale = i.decision === 'scale';
+      const isKill  = i.decision === 'kill';
+      const isPause = i.decision === 'pause';
+      const accentCls = isScale ? 'green' : isKill ? 'red' : isPause ? 'gray' : 'amber';
+      const roasCls   = isScale ? 'green' : isKill || isPause ? 'gray' : 'amber';
+      const karar     = isScale ? 'green' : isKill ? 'red' : isPause ? 'gray' : 'amber';
+      const kararTxt  = isScale ? 'Ölçekle' : isKill ? 'Kapat' : isPause ? 'Pasif' : 'İzle';
+      const badge = '';
 
       const sigHtml = i.signals.length
         ? '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">' + i.signals.map(s => '<span style="font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;color:var(--text2)">' + s.icon + ' ' + s.txt + '</span>').join('') + '</div>'
@@ -2974,12 +3022,25 @@ async function loadScale() {
 
       const reasonHtml = i.reasons.length ? '<div style="font-size:11px;color:var(--text3);margin-top:6px">' + i.reasons.join(' ') + '</div>' : '';
 
-      return '<div class="scale-row" style="flex-direction:column;align-items:flex-start;gap:8px">' +
-        '<div style="display:flex;align-items:center;gap:12px;width:100%;flex-wrap:wrap">' +
-        '<div style="flex:2"><div class="sc-name">' + escapeHtml(i.name) + '</div><div class="sc-meta">₺' + i.spend.toFixed(0) + ' harcama' + (i.purchases > 0 ? ' • ' + i.purchases.toFixed(0) + ' satış • ROAS ' + i.roas.toFixed(2) + 'x • CPA ₺' + i.cpa.toFixed(0) : '') + ' • Frekans ' + i.freq.toFixed(1) + '</div></div>' +
-        badge +
+      const roasDisplay = i.roas > 0 ? i.roas.toFixed(1) + 'x' : '—';
+      const verdictTxt = isScale ? 'Güçlü performans. Bütçeyi %20-40 artır, büyüme devam ediyor.' :
+                         isKill  ? 'Düşük performans. Bütçeyi durdur, creative yenile.' :
+                         isPause ? 'Durdurulmuş. Yeniden aktive etmeden önce analiz yap.' :
+                         'Henüz yeterli veri yok. 2-3 gün daha izle, sonra karar ver.';
+      return '<div class="scale-kcard">' +
+        '<div class="scale-kcard-accent ' + accentCls + '"></div>' +
+        '<div><div class="scale-roas-big ' + roasCls + '">' + roasDisplay + '</div><div class="scale-roas-lbl">ROAS</div></div>' +
+        '<div class="scale-kcard-mid">' +
+          '<div class="scale-kcard-name">' + escapeHtml(i.name) + '</div>' +
+          '<div class="scale-kcard-stats">' +
+            '<div><div class="scale-kstat-lbl">Harcama</div><div class="scale-kstat-val' + (isPause?' muted':'') + '">₺' + i.spend.toFixed(0) + '</div></div>' +
+            (i.purchases > 0 ? '<div><div class="scale-kstat-lbl">Satış</div><div class="scale-kstat-val">' + i.purchases.toFixed(0) + ' adet</div></div>' : '') +
+            (i.cpa > 0 ? '<div><div class="scale-kstat-lbl">CPA</div><div class="scale-kstat-val">₺' + i.cpa.toFixed(0) + '</div></div>' : '') +
+            '<div><div class="scale-kstat-lbl">Frekans</div><div class="scale-kstat-val' + (isPause?' muted':'') + '">' + i.freq.toFixed(1) + '</div></div>' +
+          '</div>' +
+          '<div class="scale-kcard-verdict">' + verdictTxt + '</div>' +
         '</div>' +
-        sigHtml.replace(/>([^<]*)</g, (m, inner) => '>' + escapeHtml(inner) + '<') + reasonHtml.replace(/>([^<]*)</g, (m, inner) => '>' + escapeHtml(inner) + '<') +
+        '<div class="scale-karar ' + karar + '"><div class="scale-kdot"></div>' + kararTxt + '</div>' +
         '</div>';
     }).join('');
 
@@ -2997,66 +3058,32 @@ async function loadScale() {
 }
 
 async function generateScaleRecommendations(insights) {
-  const recEl = document.getElementById('scale-recommendations');
-  if (!recEl) return;
+  const el = document.getElementById('scale-recommendations');
+  if (!el) return;
+  const wrap = document.getElementById('scale-rec-wrap');
 
-  const totalSpend = insights.reduce((s,i) => s + parseFloat(i.spend||0), 0);
-  const totalSales = insights.reduce((s,i) => s + (i._purchases||0), 0);
-  const totalRevenue = insights.reduce((s,i) => s + (i._revenue||0), 0);
-  const avgRoas = totalSpend > 0 && totalRevenue > 0 ? totalRevenue/totalSpend : 0;
-  const avgFreq = insights.length > 0 ? insights.reduce((s,i) => s + parseFloat(i.frequency||0), 0) / insights.length : 0;
+  const recs = [];
+  const totalSpend = insights.reduce((s,i)=>s+parseFloat(i.spend||0),0);
+  const avgRoas = insights.filter(i=>i._roas>0).reduce((s,i)=>s+i._roas,0) / (insights.filter(i=>i._roas>0).length||1);
+  const topCamp = insights.filter(i=>i._roas>2).sort((a,b)=>b._roas-a._roas)[0];
+  const highFreq = insights.filter(i=>parseFloat(i.frequency||0)>=2.5);
 
-  const brand = S.brand;
-  const brandCtx = brand && brand.brandName ? `Marka: ${brand.brandName}. Ürün: ${brand.product||''}. Hedef kitle: ${brand.audience||''}.` : '';
+  if (topCamp) recs.push({ num:'01', title: escapeHtml(topCamp.campaign_name||'') + ' bütçesini artır', desc: 'En iyi ROAS'a sahip kampanyanın bütçesini %30-40 artır, düşük performanslıları %20 azalt.', outcome: 'Toplam ROAS ' + (avgRoas*1.2).toFixed(1) + 'x'e çıkarabilir, satış %20-35 artabilir', tag: 'high' });
+  if (highFreq.length) recs.push({ num:'02', title: 'Frekans yüksek — creative yenile', desc: highFreq.length + ' kampanyada frekans kritik seviyede. Look-alike kitle veya yeni creative ile devam et.', outcome: 'CPM %15-25 düşer, CTR tekrar yükselir', tag: 'high' });
+  recs.push({ num: String(recs.length+1).padStart(2,'0'), title: 'A/B test döngüsü kur', desc: 'Her kampanyada haftada 2-3 yeni creative test et. En iyi performanslıları 7 gün sonra ölçekle.', outcome: 'Bütçe verimliliği %20-30 artar', tag: 'mid' });
 
-  recEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px">⏳ AI büyüme stratejisi hazırlanıyor...</div>';
+  el.innerHTML = recs.map(r =>
+    '<div class="scale-strat-row">' +
+    '<div class="scale-strat-num">' + r.num + '</div>' +
+    '<div class="scale-strat-body">' +
+      '<div class="scale-strat-title">' + r.title + '</div>' +
+      '<div class="scale-strat-desc">' + r.desc + '</div>' +
+      '<div class="scale-strat-outcome">' + r.outcome + '</div>' +
+      '<div class="scale-strat-tag ' + r.tag + '">' + (r.tag==='high'?'Yüksek öncelik':'Orta öncelik') + '</div>' +
+    '</div></div>'
+  ).join('');
 
-  try {
-    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: 'Sen Meta reklam ölçekleme uzmanısın. Sadece JSON döndür.',
-        message: `${brandCtx}
-
-Bugünkü veriler:
-- Toplam harcama: ${totalSpend.toFixed(0)} TL
-- Toplam satış: ${totalSales}
-- ROAS: ${avgRoas.toFixed(2)}x
-- Ortalama frekans: ${avgFreq.toFixed(1)}
-- Kampanya sayısı: ${insights.length}
-
-Bu markayı ileri seviyeye taşıyacak 3 somut strateji öner. Her strateji uygulanabilir ve spesifik olsun.
-
-Sadece JSON: {"strategies":[{"title":"strateji başlığı","action":"ne yapılacak 1-2 cümle","impact":"beklenen etki","priority":"yüksek/orta/düşük"},...]}`
-      })
-    });
-    const data = await res.json();
-    const raw = (data.answer||'').replace(/```json|```/g,'').trim();
-    const parsed = extractJsonObject(raw, { strategies: [] });
-    const strategies = parsed.strategies || [];
-
-    const priorityColors = {
-      'yüksek': { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', text: 'var(--red)', label: '🔴 Yüksek' },
-      'orta':   { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', text: 'var(--yellow)', label: '🟡 Orta' },
-      'düşük':  { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', text: 'var(--green)', label: '🟢 Düşük Risk' },
-    };
-
-    recEl.innerHTML = strategies.map((s, i) => {
-      const p = priorityColors[s.priority?.toLowerCase()] || priorityColors['orta'];
-      return `<div style="background:${p.bg};border:1px solid ${p.border};border-radius:14px;padding:18px 20px;margin-bottom:10px;animation:fadeIn 0.3s ease ${i*0.1}s both">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-          <div style="font-size:14px;font-weight:700;color:var(--text)">${escapeHtml(s.title)}</div>
-          <span style="font-size:10px;font-weight:700;color:${p.text};white-space:nowrap;margin-left:8px">${p.label}</span>
-        </div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:8px;line-height:1.6">${escapeHtml(s.action)}</div>
-        <div style="font-size:12px;color:var(--text3)">📈 ${escapeHtml(s.impact)}</div>
-      </div>`;
-    }).join('');
-
-  } catch(e) {
-    recEl.innerHTML = '';
-  }
+  if (wrap) wrap.style.display = 'block';
 }
 
 // ═══════════════════════════════════════════════
