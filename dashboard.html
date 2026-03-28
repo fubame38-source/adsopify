@@ -4490,7 +4490,10 @@ async function sendPasswordReset() {
     const r = await fetch(SB_URL + '/auth/v1/recover', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ 
+        email,
+        redirectTo: 'https://adsopify.com/dashboard.html'
+      })
     });
     
     msgEl.style.display = 'block';
