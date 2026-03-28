@@ -2138,6 +2138,99 @@ async function getTodayInsights() {
   return getInsights(today, today);
 }
 
+
+async function loadWeekly() {
+  const loadEl = document.getElementById('weekly-loading');
+  const contEl = document.getElementById('weekly-content');
+  if (loadEl) { loadEl.style.display='flex'; loadEl.innerHTML='<div class="spinner"></div>&nbsp;Veriler yükleniyor...'; }
+  if (contEl) contEl.style.display='none';
+
+  if (!S.token || !S.accountId) {
+    if (loadEl) loadEl.innerHTML='<div style="padding:16px;color:var(--text2)">Meta hesabı bağlı değil.</div>';
+    return;
+  }
+  try {
+    const today  = new Date().toISOString().split('T')[0];
+    const d = n  => new Date(Date.now()-n*86400000).toISOString().split('T')[0];
+    const [thisWeek, lastWeek] = await Promise.all([
+      getInsights(d(6), today),
+      getInsights(d(13), d(7))
+    ]);
+    const sum  = (arr,k) => arr.reduce((s,i)=>s+parseFloat(i[k]||0),0);
+    const sumP = (arr,k) => arr.reduce((s,i)=>s+(i[k]||0),0);
+    const tw={spend:sum(thisWeek,'spend'),imp:sum(thisWeek,'impressions'),clicks:sum(thisWeek,'clicks'),purchases:sumP(thisWeek,'_purchases'),revenue:sumP(thisWeek,'_revenue')};
+    const lw={spend:sum(lastWeek,'spend'),imp:sum(lastWeek,'impressions'),clicks:sum(lastWeek,'clicks'),purchases:sumP(lastWeek,'_purchases'),revenue:sumP(lastWeek,'_revenue')};
+    tw.ctr=tw.imp>0?tw.clicks/tw.imp*100:0; tw.cpc=tw.clicks>0?tw.spend/tw.clicks:0; tw.roas=tw.spend>0&&tw.revenue>0?tw.revenue/tw.spend:0; tw.cpa=tw.purchases>0?tw.spend/tw.purchases:0;
+    lw.ctr=lw.imp>0?lw.clicks/lw.imp*100:0; lw.cpc=lw.clicks>0?lw.spend/lw.clicks:0; lw.roas=lw.spend>0&&lw.revenue>0?lw.revenue/lw.spend:0; lw.cpa=lw.purchases>0?lw.spend/lw.purchases:0;
+
+    const tc=(label,cv,pv,fmtFn,hi)=>{
+      const d2=pv>0?(cv-pv)/pv*100:0; const good=hi?d2>=0:d2<=0;
+      const col=Math.abs(d2)<1?'var(--text3)':good?'var(--green)':'var(--red)';
+      const arr=d2>1?'▲':d2<-1?'▼':'→';
+      return '<div class="kpi-card"><div class="label">'+label+'</div><div class="value">'+fmtFn(cv)+'</div><div class="sub" style="color:'+col+'">'+arr+' '+Math.abs(d2).toFixed(1)+'% geçen haftaya göre</div></div>';
+    };
+    const kEl=document.getElementById('weekly-kpis');
+    if(kEl) kEl.innerHTML=
+      tc('Harcama',tw.spend,lw.spend,v=>'₺'+v.toFixed(0),false)+
+      tc('Satış',tw.purchases,lw.purchases,v=>v>0?v.toFixed(0):'—',true)+
+      tc('Gelir',tw.revenue,lw.revenue,v=>v>0?'₺'+fmt(Math.round(v)):'—',true)+
+      tc('ROAS',tw.roas,lw.roas,v=>v>0?v.toFixed(2)+'x':'—',true)+
+      tc('CTR',tw.ctr,lw.ctr,v=>'%'+v.toFixed(2),true)+
+      tc('CPC',tw.cpc,lw.cpc,v=>'₺'+v.toFixed(2),false);
+
+    const rows=[
+      ['Harcama','₺'+lw.spend.toFixed(0),'₺'+tw.spend.toFixed(0),tw.spend-lw.spend,lw.spend,false],
+      ['Gösterim',fmt(lw.imp),fmt(tw.imp),tw.imp-lw.imp,lw.imp,true],
+      ['Tıklama',fmt(lw.clicks),fmt(tw.clicks),tw.clicks-lw.clicks,lw.clicks,true],
+      ['CTR','%'+lw.ctr.toFixed(2),'%'+tw.ctr.toFixed(2),tw.ctr-lw.ctr,lw.ctr,true],
+      ['CPC','₺'+lw.cpc.toFixed(2),'₺'+tw.cpc.toFixed(2),tw.cpc-lw.cpc,lw.cpc,false],
+      ['Satış',lw.purchases>0?lw.purchases.toFixed(0):'—',tw.purchases>0?tw.purchases.toFixed(0):'—',tw.purchases-lw.purchases,lw.purchases,true],
+      ['ROAS',lw.roas>0?lw.roas.toFixed(2)+'x':'—',tw.roas>0?tw.roas.toFixed(2)+'x':'—',tw.roas-lw.roas,lw.roas,true],
+    ];
+    const tEl=document.getElementById('weekly-tbody');
+    if(tEl) tEl.innerHTML=rows.map(([l,lv,tv,diff,base,hi])=>{
+      const pct=base>0?Math.abs(diff/base*100).toFixed(1):null;
+      const good=hi?diff>=0:diff<=0;
+      const col=!pct||parseFloat(pct)<1?'var(--text3)':good?'var(--green)':'var(--red)';
+      const arr=diff>0?'▲':diff<0?'▼':'→';
+      return '<tr><td style="font-weight:500">'+l+'</td><td style="color:var(--text2)">'+lv+'</td><td><strong>'+tv+'</strong></td><td><span style="color:'+col+';font-weight:600">'+arr+' '+(pct?pct+'%':'—')+'</span></td></tr>';
+    }).join('');
+
+    const campMap={};
+    [...thisWeek,...lastWeek].forEach(i=>{if(!campMap[i.campaign_name])campMap[i.campaign_name]={tw:null,lw:null};});
+    thisWeek.forEach(i=>{campMap[i.campaign_name].tw=i;});
+    lastWeek.forEach(i=>{campMap[i.campaign_name].lw=i;});
+    const cEl=document.getElementById('weekly-camps');
+    if(cEl) cEl.innerHTML=Object.entries(campMap).map(([name,d2])=>{
+      const twS=d2.tw?parseFloat(d2.tw.spend||0):0,lwS=d2.lw?parseFloat(d2.lw.spend||0):0;
+      const twR=d2.tw?(d2.tw._roas||0):0,twC=d2.tw?parseFloat(d2.tw.ctr||0):0,lwC=d2.lw?parseFloat(d2.lw.ctr||0):0;
+      const sd=lwS>0?((twS-lwS)/lwS*100).toFixed(1):null;
+      return '<div style="padding:12px 0;border-bottom:0.5px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center">'+
+        '<div style="font-weight:500;font-size:13px;flex:2;min-width:150px">'+escapeHtml(name)+'</div>'+
+        '<span class="badge gray">₺'+twS.toFixed(0)+(sd?' ('+(twS>=lwS?'▲':'▼')+Math.abs(parseFloat(sd)).toFixed(1)+'%)':'')+'</span>'+
+        (twR>0?'<span class="badge '+(twR>=2?'green':twR>=1?'yellow':'red')+'">ROAS '+twR.toFixed(2)+'x</span>':'')+
+        '<span class="badge gray" style="color:'+(twC>=lwC?'var(--green)':'var(--red)')+'">CTR %'+twC.toFixed(2)+'</span></div>';
+    }).join('')||'<div style="color:var(--text3);padding:16px">Veri yok</div>';
+
+    const acts=[];
+    if(tw.roas>0&&lw.roas>0&&tw.roas>=lw.roas*1.15) acts.push({t:'green',i:'🚀',title:'ROAS artıyor',desc:'ROAS '+tw.roas.toFixed(2)+'x. Bütçeyi %20-30 artırabilirsin.'});
+    if(tw.roas>0&&lw.roas>0&&tw.roas<lw.roas*0.85) acts.push({t:'red',i:'⚠️',title:'ROAS düştü',desc:'Kötü kampanyaları durdur, iyi olanları ölçekle.'});
+    if(tw.purchases===0&&tw.spend>100) acts.push({t:'red',i:'🔴',title:'Satış yok',desc:'₺'+tw.spend.toFixed(0)+' harcandı. Pixel ve landing page kontrol et.'});
+    if(acts.length===0) acts.push({t:'blue',i:'📊',title:'Stabil performans',desc:'Metrikler geçen haftayla benzer.'});
+    const ac={green:'rgba(29,185,84,0.1)',red:'rgba(255,59,48,0.1)',yellow:'rgba(255,149,0,0.1)',blue:'var(--accent-light)'};
+    const tc2={green:'var(--green)',red:'var(--red)',yellow:'var(--yellow)',blue:'var(--accent)'};
+    const aEl=document.getElementById('weekly-actions');
+    if(aEl) aEl.innerHTML=acts.map(a=>'<div style="background:'+ac[a.t]+';border-radius:12px;padding:16px;display:flex;gap:12px"><span style="font-size:22px">'+a.i+'</span><div><div style="font-weight:700;color:'+tc2[a.t]+';margin-bottom:4px">'+a.title+'</div><div style="font-size:13px;color:var(--text2)">'+a.desc+'</div></div></div>').join('');
+
+    if(loadEl) loadEl.style.display='none';
+    if(contEl) contEl.style.display='block';
+  } catch(e) {
+    console.error('Weekly error:',e);
+    if(loadEl) loadEl.innerHTML='<div style="padding:20px;color:var(--red)">Hata: '+String(e.message||e)+'<br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="loadWeekly()">Tekrar Dene</button></div>';
+  }
+}
+
+
 function refreshData() {
   loadPlan();
   const sec = document.querySelector('.section.active').id.replace('sec-', '');
@@ -2488,125 +2581,7 @@ function checkFatigueAlert(insights) {
 // ═══════════════════════════════════════════════
 // HAFTALIK ÖZET
 // ═══════════════════════════════════════════════
-async async function loadWeekly() {
-  document.getElementById('weekly-loading').style.display = 'flex';
-  document.getElementById('weekly-content').style.display = 'none';
-
-  try {
-    const today = new Date().toISOString().split('T')[0];
-    const weekStart = new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0];
-    const lastWeekEnd = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
-    const lastWeekStart = new Date(Date.now() - 13 * 86400000).toISOString().split('T')[0];
-
-    const [thisWeek, lastWeek] = await Promise.all([
-      getInsights(weekStart, today),
-      getInsights(lastWeekStart, lastWeekEnd)
-    ]);
-
-    const sumF = (arr, f) => arr.reduce((s, i) => s + parseFloat(i[f] || 0), 0);
-    const sumI = (arr, f) => arr.reduce((s, i) => s + parseInt(i[f] || 0), 0);
-    const sumP = (arr, p) => arr.reduce((s, i) => s + (i[p] || 0), 0);
-
-    const tw = {
-      spend: sumF(thisWeek, 'spend'), imp: sumI(thisWeek, 'impressions'),
-      clicks: sumI(thisWeek, 'clicks'), purchases: sumP(thisWeek, '_purchases'), revenue: sumP(thisWeek, '_revenue')
-    };
-    const lw = {
-      spend: sumF(lastWeek, 'spend'), imp: sumI(lastWeek, 'impressions'),
-      clicks: sumI(lastWeek, 'clicks'), purchases: sumP(lastWeek, '_purchases'), revenue: sumP(lastWeek, '_revenue')
-    };
-
-    tw.ctr = tw.imp > 0 ? tw.clicks / tw.imp * 100 : 0;
-    tw.cpc = tw.clicks > 0 ? tw.spend / tw.clicks : 0;
-    tw.roas = tw.spend > 0 && tw.revenue > 0 ? tw.revenue / tw.spend : 0;
-    tw.cpa = tw.purchases > 0 ? tw.spend / tw.purchases : 0;
-    lw.ctr = lw.imp > 0 ? lw.clicks / lw.imp * 100 : 0;
-    lw.cpc = lw.clicks > 0 ? lw.spend / lw.clicks : 0;
-    lw.roas = lw.spend > 0 && lw.revenue > 0 ? lw.revenue / lw.spend : 0;
-    lw.cpa = lw.purchases > 0 ? lw.spend / lw.purchases : 0;
-
-    const trendCard = (label, twVal, lwVal, fmtFn, higherIsBetter) => {
-      const diff = lwVal > 0 ? ((twVal - lwVal) / lwVal * 100) : 0;
-      const good = higherIsBetter ? diff >= 0 : diff <= 0;
-      const arrow = diff > 1 ? '▲' : diff < -1 ? '▼' : '→';
-      const color = Math.abs(diff) < 1 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
-      return '<div class="kpi-card"><div class="label">' + label + '</div><div class="value">' + fmtFn(twVal) + '</div><div class="sub" style="color:' + color + '">' + arrow + ' ' + Math.abs(diff).toFixed(1) + '% geçen haftaya göre</div></div>';
-    };
-
-    document.getElementById('weekly-kpis').innerHTML =
-      trendCard('Harcama', tw.spend, lw.spend, v => '₺' + v.toFixed(0), false) +
-      trendCard('Satış', tw.purchases, lw.purchases, v => v > 0 ? v.toFixed(0) : '—', true) +
-      trendCard('Gelir', tw.revenue, lw.revenue, v => v > 0 ? '₺' + fmt(Math.round(v)) : '—', true) +
-      trendCard('ROAS', tw.roas, lw.roas, v => v > 0 ? v.toFixed(2) + 'x' : '—', true) +
-      trendCard('CTR', tw.ctr, lw.ctr, v => '%' + v.toFixed(2), true) +
-      trendCard('CPC', tw.cpc, lw.cpc, v => '₺' + v.toFixed(2), false);
-
-    const metrics = [
-      { label: 'Harcama', lw: '₺' + lw.spend.toFixed(0), tw: '₺' + tw.spend.toFixed(0), diff: tw.spend - lw.spend, base: lw.spend, higher: false },
-      { label: 'Gösterim', lw: fmt(lw.imp), tw: fmt(tw.imp), diff: tw.imp - lw.imp, base: lw.imp, higher: true },
-      { label: 'Tıklama', lw: fmt(lw.clicks), tw: fmt(tw.clicks), diff: tw.clicks - lw.clicks, base: lw.clicks, higher: true },
-      { label: 'CTR', lw: '%' + lw.ctr.toFixed(2), tw: '%' + tw.ctr.toFixed(2), diff: tw.ctr - lw.ctr, base: lw.ctr, higher: true },
-      { label: 'CPC', lw: '₺' + lw.cpc.toFixed(2), tw: '₺' + tw.cpc.toFixed(2), diff: tw.cpc - lw.cpc, base: lw.cpc, higher: false },
-      { label: 'Satış', lw: lw.purchases > 0 ? lw.purchases.toFixed(0) : '—', tw: tw.purchases > 0 ? tw.purchases.toFixed(0) : '—', diff: tw.purchases - lw.purchases, base: lw.purchases, higher: true },
-      { label: 'ROAS', lw: lw.roas > 0 ? lw.roas.toFixed(2) + 'x' : '—', tw: tw.roas > 0 ? tw.roas.toFixed(2) + 'x' : '—', diff: tw.roas - lw.roas, base: lw.roas, higher: true },
-      { label: 'CPA', lw: lw.cpa > 0 ? '₺' + lw.cpa.toFixed(0) : '—', tw: tw.cpa > 0 ? '₺' + tw.cpa.toFixed(0) : '—', diff: tw.cpa - lw.cpa, base: lw.cpa, higher: false },
-    ];
-
-    document.getElementById('weekly-tbody').innerHTML = metrics.map(m => {
-      const pct = m.base > 0 ? Math.abs(m.diff / m.base * 100).toFixed(1) : null;
-      const good = m.higher ? m.diff >= 0 : m.diff <= 0;
-      const arrow = m.diff > 0 ? '▲' : m.diff < 0 ? '▼' : '→';
-      const color = !pct || parseFloat(pct) < 1 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
-      return '<tr><td style="font-weight:500">' + m.label + '</td><td style="color:var(--text2)">' + m.lw + '</td><td><strong>' + m.tw + '</strong></td><td><span style="color:' + color + ';font-weight:600">' + arrow + ' ' + (pct ? pct + '%' : '—') + '</span></td></tr>';
-    }).join('');
-
-    const campMap = {};
-    [...thisWeek, ...lastWeek].forEach(i => { if (!campMap[i.campaign_name]) campMap[i.campaign_name] = { tw: null, lw: null }; });
-    thisWeek.forEach(i => { campMap[i.campaign_name].tw = i; });
-    lastWeek.forEach(i => { campMap[i.campaign_name].lw = i; });
-
-    document.getElementById('weekly-camps').innerHTML = Object.entries(campMap).map(([name, d]) => {
-      const twS = d.tw ? parseFloat(d.tw.spend || 0) : 0;
-      const lwS = d.lw ? parseFloat(d.lw.spend || 0) : 0;
-      const twR = d.tw ? (d.tw._roas || 0) : 0;
-      const twC = d.tw ? parseFloat(d.tw.ctr || 0) : 0;
-      const lwC = d.lw ? parseFloat(d.lw.ctr || 0) : 0;
-      const spendDiff = lwS > 0 ? ((twS - lwS) / lwS * 100).toFixed(1) : null;
-      return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
-        '<div style="font-weight:500;font-size:13px;flex:2;min-width:160px">' + name + '</div>' +
-        '<span class="badge gray">₺' + twS.toFixed(0) + (spendDiff ? ' (' + (twS >= lwS ? '▲' : '▼') + Math.abs(parseFloat(spendDiff)).toFixed(1) + '%)' : '') + '</span>' +
-        (twR > 0 ? '<span class="badge ' + (twR >= 2 ? 'green' : twR >= 1 ? 'yellow' : 'red') + '">ROAS ' + twR.toFixed(2) + 'x</span>' : '') +
-        '<span class="badge gray" style="color:' + (twC >= lwC ? 'var(--green)' : 'var(--red)') + '">CTR %' + twC.toFixed(2) + '</span>' +
-        '</div>';
-    }).join('') || '<div style="color:var(--text3);font-size:13px;padding:16px">Veri yok</div>';
-
-    // Aksiyon önerileri
-    const actions = [];
-    if (tw.roas > 0 && tw.roas >= lw.roas * 1.15) actions.push({ type: 'green', icon: '🚀', title: 'ROAS artıyor — bütçeyi artır', desc: 'Bu hafta ROAS ' + tw.roas.toFixed(2) + 'x. Geçen haftaya göre ' + (((tw.roas-lw.roas)/lw.roas)*100).toFixed(1) + '% artış. En iyi kampanyaların bütçesini %20-30 artırabilirsin.' });
-    if (tw.roas > 0 && tw.roas < lw.roas * 0.85) actions.push({ type: 'red', icon: '⚠️', title: 'ROAS düştü — optimize et', desc: 'ROAS geçen haftaya göre ' + (((lw.roas-tw.roas)/lw.roas)*100).toFixed(1) + '% düştü. Kötü performanslı kampanyaları durdur, iyi ROAS li olanları ölçekle.' });
-    if (tw.ctr > 0 && tw.ctr < lw.ctr * 0.9) actions.push({ type: 'yellow', icon: '🎨', title: 'CTR düştü — creative yenile', desc: 'CTR %' + tw.ctr.toFixed(2) + ' seviyesine geriledi. Creative yorgunluğu başlamış olabilir. Yeni hook formatları ve görseller dene.' });
-    if (tw.ctr > 0 && tw.ctr > lw.ctr * 1.1) actions.push({ type: 'green', icon: '🎯', title: 'CTR yüksek — bu creative ölçekle', desc: 'CTR %' + tw.ctr.toFixed(2) + ' ile iyi performans gösteriyor. Bu hook formatını farklı kitlelere test et.' });
-    if (tw.purchases > 0 && tw.cpa > 0 && lw.cpa > 0 && tw.cpa < lw.cpa * 0.9) actions.push({ type: 'green', icon: '💰', title: 'CPA iyileşti — mükemmel', desc: 'Satış başı maliyet ' + tw.cpa.toFixed(0) + ' TL seviyesine düştü. Bütçeyi artırmak için ideal zaman.' });
-    if (tw.purchases === 0 && tw.spend > 100) actions.push({ type: 'red', icon: '🔴', title: 'Satış yok — acil müdahale', desc: 'Bu hafta ' + tw.spend.toFixed(0) + ' TL harcandı ama satış olmadı. Pixel kurulumunu, hedeflemeyi ve landing page\'i kontrol et.' });
-    if (actions.length === 0) actions.push({ type: 'blue', icon: '📊', title: 'Stabil performans', desc: 'Metrikler geçen haftayla benzer. Yeni creative ve A/B testleri dene.' });
-
-    const actionColors = { green: 'rgba(16,185,129,0.1)', red: 'rgba(239,68,68,0.1)', yellow: 'rgba(245,158,11,0.1)', blue: 'rgba(99,102,241,0.1)' };
-    const actionBorders = { green: 'rgba(16,185,129,0.3)', red: 'rgba(239,68,68,0.3)', yellow: 'rgba(245,158,11,0.3)', blue: 'rgba(99,102,241,0.3)' };
-    const actionTextColors = { green: 'var(--green)', red: 'var(--red)', yellow: 'var(--yellow)', blue: 'var(--accent2)' };
-
-    document.getElementById('weekly-actions').innerHTML = actions.map(a =>
-      '<div style="background:' + actionColors[a.type] + ';border:1px solid ' + actionBorders[a.type] + ';border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start">' +
-      '<span style="font-size:22px;flex-shrink:0">' + a.icon + '</span>' +
-      '<div><div style="font-weight:700;font-size:14px;color:' + actionTextColors[a.type] + ';margin-bottom:4px">' + a.title + '</div>' +
-      '<div style="font-size:13px;color:var(--text2);line-height:1.6">' + a.desc + '</div></div></div>'
-    ).join('');
-
-  } catch (e) {
-    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px">Hata: ' + e.message + '</div>';
-  }
-  document.getElementById('weekly-loading').style.display = 'none';
-  document.getElementById('weekly-content').style.display = 'block';
-}
+async async 
 
 // ═══════════════════════════════════════════════
 // BÜTÇE PLANLAYICI
