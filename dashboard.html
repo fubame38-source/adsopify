@@ -3023,10 +3023,10 @@ async function loadScale() {
       const reasonHtml = i.reasons.length ? '<div style="font-size:11px;color:var(--text3);margin-top:6px">' + i.reasons.join(' ') + '</div>' : '';
 
       const roasDisplay = i.roas > 0 ? i.roas.toFixed(1) + 'x' : '—';
-      const verdictTxt = isScale ? 'Güçlü performans. Bütçeyi %20-40 artır, büyüme devam ediyor.' :
-                         isKill  ? 'Düşük performans. Bütçeyi durdur, creative yenile.' :
-                         isPause ? 'Durdurulmuş. Yeniden aktive etmeden önce analiz yap.' :
-                         'Henüz yeterli veri yok. 2-3 gün daha izle, sonra karar ver.';
+      const verdictTxt = isScale ? 'Guclu performans. Butceyi %20-40 artir, buyume devam ediyor.' :
+                         isKill  ? 'Dusuk performans. Butceyi durdur, creative yenile.' :
+                         isPause ? 'Durdurulmus. Yeniden aktive etmeden once analiz yap.' :
+                         'Henuz yeterli veri yok. 2-3 gun daha izle, sonra karar ver.';
       return '<div class="scale-kcard">' +
         '<div class="scale-kcard-accent ' + accentCls + '"></div>' +
         '<div><div class="scale-roas-big ' + roasCls + '">' + roasDisplay + '</div><div class="scale-roas-lbl">ROAS</div></div>' +
@@ -3068,9 +3068,9 @@ async function generateScaleRecommendations(insights) {
   const topCamp = insights.filter(i=>i._roas>2).sort((a,b)=>b._roas-a._roas)[0];
   const highFreq = insights.filter(i=>parseFloat(i.frequency||0)>=2.5);
 
-  if (topCamp) recs.push({ num:'01', title: escapeHtml(topCamp.campaign_name||'') + ' bütçesini artır', desc: 'En iyi ROAS'a sahip kampanyanın bütçesini %30-40 artır, düşük performanslıları %20 azalt.', outcome: 'Toplam ROAS ' + (avgRoas*1.2).toFixed(1) + 'x'e çıkarabilir, satış %20-35 artabilir', tag: 'high' });
-  if (highFreq.length) recs.push({ num:'02', title: 'Frekans yüksek — creative yenile', desc: highFreq.length + ' kampanyada frekans kritik seviyede. Look-alike kitle veya yeni creative ile devam et.', outcome: 'CPM %15-25 düşer, CTR tekrar yükselir', tag: 'high' });
-  recs.push({ num: String(recs.length+1).padStart(2,'0'), title: 'A/B test döngüsü kur', desc: 'Her kampanyada haftada 2-3 yeni creative test et. En iyi performanslıları 7 gün sonra ölçekle.', outcome: 'Bütçe verimliliği %20-30 artar', tag: 'mid' });
+  if (topCamp) recs.push({ num:'01', title: escapeHtml(topCamp.campaign_name||'') + ' butcesini artir', desc: 'En iyi ROAS sahip kampanyanin butcesini %30-40 artir, dusuk performansliları %20 azalt.', outcome: 'Toplam ROAS ' + (avgRoas*1.2).toFixed(1) + 'x'e çıkarabilir, satış %20-35 artabilir', tag: 'high' });
+  if (highFreq.length) recs.push({ num:'02', title: 'Frekans yuksek - creative yenile', desc: highFreq.length + ' kampanyada frekans kritik. Look-alike kitle veya yeni creative ile devam et.', outcome: 'CPM %15-25 duser, CTR tekrar yukselir', tag: 'high' });
+  recs.push({ num: String(recs.length+1).padStart(2,'0'), title: 'A/B test dongüsü kur', desc: 'Her kampanyada haftada 2-3 yeni creative test et. En iyi performansliları 7 gun sonra olcekle.', outcome: 'Butce verimliligi %20-30 artar', tag: 'mid' });
 
   el.innerHTML = recs.map(r =>
     '<div class="scale-strat-row">' +
@@ -3079,7 +3079,7 @@ async function generateScaleRecommendations(insights) {
       '<div class="scale-strat-title">' + r.title + '</div>' +
       '<div class="scale-strat-desc">' + r.desc + '</div>' +
       '<div class="scale-strat-outcome">' + r.outcome + '</div>' +
-      '<div class="scale-strat-tag ' + r.tag + '">' + (r.tag==='high'?'Yüksek öncelik':'Orta öncelik') + '</div>' +
+      '<div class="scale-strat-tag ' + r.tag + '">' + (r.tag==='high'?'Yuksek oncelik':'Orta oncelik') + '</div>' +
     '</div></div>'
   ).join('');
 
