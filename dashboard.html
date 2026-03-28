@@ -368,6 +368,25 @@ input[type="date"]{cursor:pointer}
       <div id="auth-err" style="color:#f87171;font-size:13px;margin-bottom:16px;display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 14px"></div>
 
       <button id="auth-submit-btn" onclick="submitAuth()" style="width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all 0.18s;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(99,102,241,0.3)">Giriş Yap</button>
+
+      <!-- Şifremi Unuttum -->
+      <div id="forgot-wrap" style="text-align:center;margin-top:14px">
+        <button onclick="showForgotPassword()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:12px;cursor:pointer;font-family:var(--font);transition:color 0.2s" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Şifremi unuttum</button>
+      </div>
+
+      <!-- Şifre Sıfırlama Formu -->
+      <div id="forgot-form" style="display:none;margin-top:16px">
+        <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:16px">
+          <div style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Şifre Sıfırlama</div>
+          <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:12px">E-posta adresinize şifre sıfırlama bağlantısı göndereceğiz.</p>
+          <input type="email" id="reset-email" placeholder="E-posta adresiniz" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:10px;padding:11px 14px;font-size:13px;width:100%;margin-bottom:10px;font-family:var(--font);outline:none" />
+          <div style="display:flex;gap:8px">
+            <button onclick="sendPasswordReset()" style="flex:1;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">Bağlantı Gönder</button>
+            <button onclick="hideForgotPassword()" style="padding:11px 16px;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:13px;cursor:pointer;font-family:var(--font)">İptal</button>
+          </div>
+          <div id="reset-msg" style="display:none;margin-top:10px;font-size:12px;border-radius:8px;padding:10px 12px"></div>
+        </div>
+      </div>
     </div>
 
     <div style="text-align:center;margin-top:20px;font-size:12px;color:rgba(255,255,255,0.2)">
@@ -1508,6 +1527,11 @@ async function sbSignIn(email, password) {
 }
 
 function switchAuthTab(tab) {
+  // Hide forgot form when switching tabs
+  const ff = document.getElementById('forgot-form');
+  const fw = document.getElementById('forgot-wrap');
+  if (ff) ff.style.display = 'none';
+  if (fw) fw.style.display = 'block';
   const isLogin = tab === 'login';
   const loginBtn = document.getElementById('tab-login');
   const regBtn = document.getElementById('tab-register');
@@ -4427,6 +4451,74 @@ function fmt(n) {
   if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
   return n.toString();
 }
+
+// ════════════════════════════════════════
+// ŞİFREMİ UNUTTUM
+// ════════════════════════════════════════
+function showForgotPassword() {
+  document.getElementById('forgot-form').style.display = 'block';
+  document.getElementById('forgot-wrap').style.display = 'none';
+  // Pre-fill email if typed
+  const emailEl = document.getElementById('auth-email');
+  const resetEl = document.getElementById('reset-email');
+  if (emailEl && resetEl && emailEl.value) resetEl.value = emailEl.value;
+}
+
+function hideForgotPassword() {
+  document.getElementById('forgot-form').style.display = 'none';
+  document.getElementById('forgot-wrap').style.display = 'block';
+  document.getElementById('reset-msg').style.display = 'none';
+}
+
+async function sendPasswordReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  const msgEl = document.getElementById('reset-msg');
+  
+  if (!email) {
+    msgEl.style.display = 'block';
+    msgEl.style.background = 'rgba(255,59,48,0.15)';
+    msgEl.style.color = '#ff6b6b';
+    msgEl.textContent = 'Lütfen e-posta adresinizi girin.';
+    return;
+  }
+
+  const btn = event.target;
+  btn.textContent = 'Gönderiliyor...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(SB_URL + '/auth/v1/recover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email })
+    });
+    
+    msgEl.style.display = 'block';
+    if (r.ok || r.status === 200) {
+      msgEl.style.background = 'rgba(29,185,84,0.15)';
+      msgEl.style.color = '#25d366';
+      msgEl.textContent = '✓ Şifre sıfırlama bağlantısı gönderildi. E-postanızı kontrol edin.';
+      document.getElementById('reset-email').value = '';
+    } else {
+      const d = await r.json();
+      msgEl.style.background = 'rgba(255,59,48,0.15)';
+      msgEl.style.color = '#ff6b6b';
+      msgEl.textContent = 'Hata: ' + (d.msg || d.error_description || 'E-posta gönderilemedi.');
+    }
+  } catch(e) {
+    msgEl.style.display = 'block';
+    msgEl.style.background = 'rgba(255,59,48,0.15)';
+    msgEl.style.color = '#ff6b6b';
+    msgEl.textContent = 'Bağlantı hatası. Tekrar deneyin.';
+  }
+  
+  btn.textContent = 'Bağlantı Gönder';
+  btn.disabled = false;
+}
+
+// Hide forgot form when switching tabs
+const origSwitchAuthTab = typeof switchAuthTab === 'function' ? switchAuthTab : null;
+
 </script>
 </body>
 </html>
