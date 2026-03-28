@@ -124,7 +124,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); font-si
 @keyframes cardEnter { from{opacity:0;transform:scale(0.85) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
 
 /* ═══ TYPOGRAPHY ═══ */
-.page-title { font-size:22px; font-weight:700; letter-spacing:-0.04em; margin-bottom:4px; background:linear-gradient(135deg,var(--text) 0%,var(--text2) 50%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.page-title { font-size:22px; font-weight:700; letter-spacing:-0.04em; margin-bottom:4px; display:inline-block; background:linear-gradient(135deg,var(--text) 0%,var(--text2) 50%,var(--accent) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .page-sub { color:var(--text2); font-size:13px; margin-bottom:20px; }
 h3 { font-size:13px; font-weight:600; letter-spacing:-0.02em; }
 
@@ -220,7 +220,7 @@ h3 { font-size:13px; font-weight:600; letter-spacing:-0.02em; }
   background:linear-gradient(135deg,var(--text) 0%,var(--text2) 50%,var(--accent) 100%);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
-.plan-hero-card h2 span { -webkit-text-fill-color:var(--accent); color:var(--accent); }
+.plan-hero-card h2 span { -webkit-text-fill-color:inherit; color:inherit; }
 .plan-hero-card p { font-size:13px; color:var(--text2); max-width:54ch; line-height:1.65; }
 .plan-mini-grid { display:grid; gap:9px; }
 .plan-mini-card { background:var(--surface); border:0.5px solid var(--border); border-radius:10px; padding:12px; box-shadow:var(--shadow); transition:transform .18s,border-color .18s; }
@@ -366,7 +366,7 @@ input[type="date"] { cursor:pointer; }
 .wizard-step.active .ws-num { background:var(--accent); border-color:var(--accent); color:#fff; }
 .wizard-step.active .ws-label { color:var(--accent); font-weight:700; }
 .wizard-step.done .ws-num { background:var(--green); border-color:var(--green); color:#fff; }
-.ws-line { flex:1; height:2px; background:var(--border); min-width:24px; margin:0 4px; margin-top:-18px; }
+.ws-line { width:40px; flex-shrink:0; height:2px; background:var(--border); margin:0 8px; margin-top:-18px; }
 
 /* ═══ SCALE / SCORE ═══ */
 .scale-row { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:0.5px solid var(--border); }
@@ -410,6 +410,58 @@ input[type="date"] { cursor:pointer; }
   .overview-grid { grid-template-columns:1fr; }
   .plan-hero { grid-template-columns:1fr; }
 }
+
+/* ═══ PLAN KPI ROW ═══ */
+.plan-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.plan-kpi-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: flex-start; gap: 10px;
+  transition: transform .18s, border-color .18s, box-shadow .18s;
+  position: relative; overflow: hidden;
+}
+.plan-kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  opacity: 0; transition: opacity .2s;
+}
+.plan-kpi-card:hover { transform: translateY(-2px); border-color: var(--border2); box-shadow: var(--shadow-md); }
+.plan-kpi-card:hover::before { opacity: 1; }
+.plan-kpi-card.plan-kpi-accent {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 20px rgba(0,113,227,0.3);
+}
+.plan-kpi-card.plan-kpi-accent::before { display: none; }
+.plan-kpi-icon {
+  font-size: 20px; flex-shrink: 0;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.04);
+}
+.plan-kpi-accent .plan-kpi-icon { background: rgba(255,255,255,0.15); }
+.plan-kpi-body { flex: 1; min-width: 0; }
+.plan-kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-bottom: 4px; }
+.plan-kpi-accent .plan-kpi-label { color: rgba(255,255,255,0.65); }
+.plan-kpi-value { font-size: 20px; font-weight: 700; letter-spacing: -0.04em; color: var(--text); font-family: var(--mono); line-height: 1.1; }
+.plan-kpi-accent .plan-kpi-value { color: #fff; }
+.plan-kpi-sub { font-size: 11px; color: var(--text3); margin-top: 3px; font-weight: 500; }
+.plan-kpi-accent .plan-kpi-sub { color: rgba(255,255,255,0.6); }
+.plan-kpi-spark { margin-top: 8px; height: 3px; background: rgba(255,255,255,0.25); border-radius: 99px; overflow: hidden; }
+.plan-kpi-spark-fill { height: 100%; background: rgba(255,255,255,0.8); border-radius: 99px; width: 0%; transition: width 1s var(--ease); }
+
+@media(max-width:1100px){ .plan-kpi-row { grid-template-columns: repeat(3, 1fr); } }
+@media(max-width:700px){ .plan-kpi-row { grid-template-columns: repeat(2, 1fr); } }
+
 </style>
 </head>
 <body>
@@ -572,7 +624,7 @@ input[type="date"] { cursor:pointer; }
 <!-- TOPBAR -->
 <div id="topbar">
   <span id="mob-menu" onclick="toggleSidebar()">☰</span>
-  <a href="https://adsopify.com" class="brand" style="text-decoration:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect width="24" height="24" rx="6" fill="#0071E3"/><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="8.5" r="1.8" fill="white" opacity="0.9"/><path d="M17 11V17.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg>Ads<span>opify</span></a>
+  <a href="https://adsopify.com" class="brand" style="text-decoration:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect width="24" height="24" rx="6" fill="#0071E3"/><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="8.5" r="1.8" fill="white" opacity="0.9"/><path d="M17 11V17.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg>Adsopify</a>
   <div class="spacer"></div>
   <div id="fatigue-alert" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer" onclick="nav('creative')" title="Creative yorgunluğu olan kampanyalar var">⚠️ <span id="fatigue-count"></span> yorgun kampanya</div>
   <div class="stat-badge" id="top-spend"><span>Bugün:</span> <strong id="top-spend-val">—</strong></div>
@@ -594,7 +646,7 @@ input[type="date"] { cursor:pointer; }
 <div id="sidebar">
   <div style="padding:13px 13px 11px;border-bottom:0.5px solid var(--border);margin-bottom:6px;display:flex;align-items:center;gap:9px">
     <div style="width:27px;height:27px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="2.2" stroke-linecap="round"/><circle cx="17" cy="8.5" r="2" fill="white"/><path d="M17 11.5V17.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-    <span style="font-size:15px;font-weight:700;letter-spacing:-0.03em;color:var(--text)">Ads<span style="color:var(--accent)">opify</span></span>
+    <span style="font-size:15px;font-weight:700;letter-spacing:-0.03em;color:var(--text)">Adsopify</span>
   </div>
   <div class="nav-section">Ana</div>
   <div class="nav-item active" onclick="nav('plan')" data-sec="plan"><span class="icon">📋</span>Günlük Plan</div>
@@ -638,25 +690,61 @@ input[type="date"] { cursor:pointer; }
 
     <div id="plan-loading" class="loading-row"><div class="spinner"></div> Kampanya verisi çekiliyor...</div>
     <div id="plan-content" style="display:none">
-      <div class="plan-hero">
-        <div class="plan-hero-card">
-          <div class="overview-kicker"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 2s infinite;flex-shrink:0"></span>Bugünün komuta merkezi</div>
-          <h2>Bugün <span>neyi yapman</span> gerektiğini hemen gör.</h2>
-          <p>Uzun rapor yerine kısa karar kartları. Önce hangi kampanyaya bakacağını, bugün hangi içeriği üreteceğini ve neyi test etmen gerektiğini sade şekilde gör.</p>
-        </div>
-        <div class="plan-mini-grid">
-          <div class="plan-mini-card">
-            <div class="plan-mini-label">Tarih</div>
-            <div class="plan-mini-title" id="plan-date-badge">—</div>
-            <div class="plan-mini-text">Günlük karar ekranı her açılışta yenilenir.</div>
+      <!-- KPI ROW -->
+      <div class="plan-kpi-row" id="plan-kpi-row">
+        <div class="plan-kpi-card plan-kpi-accent">
+          <div class="plan-kpi-icon">💸</div>
+          <div class="plan-kpi-body">
+            <div class="plan-kpi-label">Bugün Harcama</div>
+            <div class="plan-kpi-value" id="kpi-spend">—</div>
+            <div class="plan-kpi-spark" id="kpi-spend-bar"></div>
           </div>
-          <div class="plan-mini-card">
-            <div class="plan-mini-label">Bugün</div>
-            <div class="plan-mini-title" id="plan-budget-badge">—</div>
-            <div class="plan-mini-text">Harcama, satış ve temel sinyaller tek satırda.</div>
+        </div>
+        <div class="plan-kpi-card">
+          <div class="plan-kpi-icon">🛍️</div>
+          <div class="plan-kpi-body">
+            <div class="plan-kpi-label">Satış</div>
+            <div class="plan-kpi-value" id="kpi-sales">—</div>
+            <div class="plan-kpi-sub" id="kpi-sales-sub"></div>
+          </div>
+        </div>
+        <div class="plan-kpi-card">
+          <div class="plan-kpi-icon">📈</div>
+          <div class="plan-kpi-body">
+            <div class="plan-kpi-label">ROAS</div>
+            <div class="plan-kpi-value" id="kpi-roas">—</div>
+            <div class="plan-kpi-sub" id="kpi-roas-sub"></div>
+          </div>
+        </div>
+        <div class="plan-kpi-card">
+          <div class="plan-kpi-icon">🎯</div>
+          <div class="plan-kpi-body">
+            <div class="plan-kpi-label">CTR Ort.</div>
+            <div class="plan-kpi-value" id="kpi-ctr">—</div>
+            <div class="plan-kpi-sub" id="kpi-ctr-sub"></div>
+          </div>
+        </div>
+        <div class="plan-kpi-card">
+          <div class="plan-kpi-icon">🔁</div>
+          <div class="plan-kpi-body">
+            <div class="plan-kpi-label">Frekans</div>
+            <div class="plan-kpi-value" id="kpi-freq">—</div>
+            <div class="plan-kpi-sub" id="kpi-freq-sub"></div>
+          </div>
+        </div>
+        <div class="plan-kpi-card">
+          <div class="plan-kpi-icon">⚡</div>
+          <div class="plan-kpi-body">
+            <div class="plan-kpi-label">Aktif Kampanya</div>
+            <div class="plan-kpi-value" id="kpi-active">—</div>
+            <div class="plan-kpi-sub" id="kpi-active-sub"></div>
           </div>
         </div>
       </div>
+
+      <!-- hidden for JS compat -->
+      <div style="display:none" id="plan-date-badge"></div>
+      <div style="display:none" id="plan-budget-badge"></div>
 
       <div class="plan-block" id="ai-action-card">
         <div class="plan-block-head">
@@ -1035,7 +1123,7 @@ input[type="date"] { cursor:pointer; }
     <div class="page-sub">Adım adım reklamını oluştur, Meta'da yayınla</div>
 
     <!-- Adım göstergesi -->
-    <div style="display:flex;align-items:center;gap:0;margin-bottom:28px;overflow-x:auto">
+    <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;padding:0 8px">
       <div class="wizard-step active" id="ws-1" onclick="goWizardStep(1)">
         <div class="ws-num">1</div><div class="ws-label">Hook</div>
       </div>
@@ -2305,6 +2393,17 @@ async function loadPlan() {
 
     document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
     document.getElementById('plan-budget-badge').textContent = cur + totalSpend.toFixed(0) + (totalPurchases > 0 ? ' · ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' · ' + todayROAS + 'x' : '');
+    // KPI Cards
+    const avgCTR = insights.length ? (insights.reduce((s,i) => s + parseFloat(i.ctr||0), 0)/insights.length) : 0;
+    const avgFreq = insights.length ? (insights.reduce((s,i) => s + parseFloat(i.frequency||0), 0)/insights.length) : 0;
+    const activeCamps = insights.filter(i => parseFloat(i.spend||0) > 0).length;
+    const el = (id) => document.getElementById(id);
+    if(el('kpi-spend')) { el('kpi-spend').textContent = cur + totalSpend.toFixed(0); if(el('kpi-spend-bar')) { const f=el('kpi-spend-bar'); f.innerHTML='<div class="plan-kpi-spark-fill"></div>'; setTimeout(()=>{ const d=f.querySelector('.plan-kpi-spark-fill'); if(d) d.style.width=Math.min(100,totalSpend/20)+'%'; },100); } }
+    if(el('kpi-sales')) { el('kpi-sales').textContent = totalPurchases > 0 ? totalPurchases + ' adet' : '—'; el('kpi-sales-sub').textContent = totalRevenue > 0 ? cur + totalRevenue.toFixed(0) + ' ciro' : 'Pixel takibi yok'; }
+    if(el('kpi-roas')) { el('kpi-roas').textContent = todayROAS ? todayROAS + 'x' : '—'; el('kpi-roas-sub').textContent = todayROAS ? (parseFloat(todayROAS) >= 3 ? '✓ Hedef üstü' : parseFloat(todayROAS) >= 2 ? '⚠ Kabul edilebilir' : '✗ Düşük') : 'Veri yok'; }
+    if(el('kpi-ctr')) { el('kpi-ctr').textContent = avgCTR > 0 ? '%' + avgCTR.toFixed(2) : '—'; el('kpi-ctr-sub').textContent = avgCTR >= 2 ? '✓ İyi' : avgCTR >= 1 ? '⚠ Orta' : avgCTR > 0 ? '✗ Düşük' : ''; }
+    if(el('kpi-freq')) { el('kpi-freq').textContent = avgFreq > 0 ? avgFreq.toFixed(1) : '—'; el('kpi-freq-sub').textContent = avgFreq >= 3.5 ? '⚠ Yorgunluk var' : avgFreq >= 2 ? 'Normal' : 'Düşük'; }
+    if(el('kpi-active')) { el('kpi-active').textContent = activeCamps; el('kpi-active-sub').textContent = activeCamps === 0 ? '⚠ Aktif kampanya yok' : activeCamps + ' kampanya yayında'; }
 
     document.getElementById('plan-loading').style.display = 'none';
     document.getElementById('plan-content').style.display = 'block';
