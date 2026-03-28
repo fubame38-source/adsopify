@@ -34,7 +34,7 @@
   --glass-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 1.5px 0 rgba(255,255,255,0.9) inset;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background: var(--bg);
@@ -678,22 +678,87 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
 
 /* ── RESPONSIVE ── */
+/* ── MOBILE FIXES ── */
 @media(max-width:900px){
-  .nav-links li:not(:last-child){display:none}
-  .bento{grid-template-columns:1fr}
-  .bento-card.wide{grid-column:span 1}
-  .how-inner{grid-template-columns:1fr;gap:56px}
-  .reviews-grid{grid-template-columns:1fr}
-  .stats-row{grid-template-columns:1fr}
-  .stat{border-right:none;border-bottom:0.5px solid var(--line)}
-  .stat:last-child{border-bottom:none}
-  .price-features{grid-template-columns:1fr}
-  .price-cta-row{flex-direction:column;align-items:flex-start}
-  .dash-body{grid-template-columns:1fr}
-  .dash-nav{display:none}
-  .kpi-row{grid-template-columns:repeat(2,1fr)}
-  .spotlight{grid-template-columns:1fr;gap:40px}
-  .spotlight.reverse{direction:ltr}
+  /* prevent horizontal overflow */
+  body { overflow-x: hidden; }
+  * { max-width: 100%; }
+
+  /* nav */
+  .nav-links li:not(:last-child){ display:none }
+
+  /* hero */
+  .hero { padding-left: 20px; padding-right: 20px; padding-bottom: 60px; }
+  .hero h1 { font-size: clamp(36px, 10vw, 56px); letter-spacing: -0.03em; }
+  .hero-sub { font-size: 17px; }
+  .hero-actions { flex-direction: column; align-items: center; gap: 12px; }
+  .hero-visual { padding: 0 16px; margin-top: 48px; }
+  .hero-bg-word { display: none; }
+
+  /* dashboard preview */
+  .dash-body { grid-template-columns: 1fr; }
+  .dash-nav { display: none; }
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  .t-head, .t-row { grid-template-columns: 1.5fr 60px 80px; }
+  .t-head span:last-child, .t-row span:last-child { display: none; }
+
+  /* stats */
+  .stats-wrap { padding: 48px 16px 0; }
+  .stats-row { grid-template-columns: 1fr; }
+  .stat { border-right: none; border-bottom: 0.5px solid var(--line); padding: 32px 24px; }
+  .stat:last-child { border-bottom: none; }
+
+  /* features */
+  .features-intro { padding: 80px 20px 48px; }
+  .bento { padding: 0 16px 80px; gap: 10px; grid-template-columns: 1fr; }
+  .bento-card { padding: 28px 24px; }
+  .bento-card.wide { grid-column: span 1; }
+
+  /* spotlight */
+  .spotlight { grid-template-columns: 1fr; gap: 32px; padding: 0 16px 60px; }
+  .spotlight.reverse { direction: ltr; }
+
+  /* how */
+  .how-inner { grid-template-columns: 1fr; gap: 48px; padding: 80px 20px; }
+  .how-l .section-title { font-size: clamp(32px, 8vw, 48px); }
+
+  /* comparison */
+  .comparison-section { padding: 80px 16px; overflow-x: auto; }
+  .comp-table { font-size: 12px; min-width: 560px; }
+  .comp-table th, .comp-table td { padding: 12px 14px; }
+
+  /* reviews */
+  .reviews-section { padding: 80px 16px; }
+  .reviews-grid { grid-template-columns: 1fr; gap: 10px; }
+
+  /* faq */
+  .faq-section { padding: 80px 20px; }
+
+  /* pricing */
+  .pricing-inner { padding: 80px 16px; }
+  .price-head { padding: 28px 24px 24px; }
+  .price-features { grid-template-columns: 1fr; padding: 24px; }
+  .price-cta-row { flex-direction: column; align-items: flex-start; padding: 20px 24px 28px; gap: 14px; }
+  .price-number { font-size: 60px; }
+
+  /* cta */
+  .cta-section { padding: 100px 20px 120px; }
+
+  /* float notif - smaller on mobile */
+  #float-notif { left: 16px; right: 16px; max-width: calc(100% - 32px); bottom: 20px; }
+
+  /* disable 3D tilt on mobile - performance */
+  .bento-card, .review-card { transform: none !important; }
+}
+
+@media(max-width:480px){
+  .hero h1 { font-size: clamp(32px, 9vw, 44px); }
+  .hero-actions { width: 100%; }
+  .btn-primary, .btn-buy { width: 100%; justify-content: center; }
+  .btn-text-link { text-align: center; }
+  .section-title { font-size: clamp(28px, 7vw, 40px); }
+  .kpi-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .kpi-v { font-size: 20px; }
 }
 
 /* ── MAGNETIC BUTTONS ── */
@@ -987,6 +1052,15 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
   padding-bottom: 22px;
 }
 .faq-item.open .faq-a { max-height: 300px; }
+
+
+/* disable heavy animations on mobile for performance */
+@media(max-width:900px){
+  .bento-card::after, .review-card::after { display: none; }
+  .price-card::before { display: none; }
+  .btn-primary::before { display: none; }
+  @keyframes blobFloat { from{transform:none} to{transform:none} }
+}
 
 </style>
 </head>
@@ -1458,39 +1532,40 @@ document.addEventListener('DOMContentLoaded', function() {
     heroTitle.innerHTML = result;
   }
 
-  // ── 3D CARD TILT ──
-  document.querySelectorAll('.bento-card, .review-card').forEach(function(card) {
-    card.addEventListener('mousemove', function(e) {
-      var rect = card.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      var cx2 = rect.width / 2;
-      var cy2 = rect.height / 2;
-      var rotX = (y - cy2) / cy2 * -6;
-      var rotY = (x - cx2) / cx2 * 6;
-      card.style.transform = 'translateY(-4px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
-      card.style.transition = 'transform 0.1s ease, box-shadow 0.25s ease';
+  // ── 3D CARD TILT + MAGNETIC (desktop only) ──
+  if (window.innerWidth > 900) {
+    document.querySelectorAll('.bento-card, .review-card').forEach(function(card) {
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        var cx2 = rect.width / 2;
+        var cy2 = rect.height / 2;
+        var rotX = (y - cy2) / cy2 * -6;
+        var rotY = (x - cx2) / cx2 * 6;
+        card.style.transform = 'translateY(-4px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+        card.style.transition = 'transform 0.1s ease, box-shadow 0.25s ease';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.transform = '';
+        card.style.transition = 'transform 0.5s var(--spring), box-shadow 0.3s ease';
+      });
     });
-    card.addEventListener('mouseleave', function() {
-      card.style.transform = '';
-      card.style.transition = 'transform 0.5s var(--spring), box-shadow 0.3s ease';
-    });
-  });
 
-  // ── MAGNETIC BUTTONS ──
-  document.querySelectorAll('.btn-primary, .btn-buy').forEach(function(btn) {
-    btn.addEventListener('mousemove', function(e) {
-      var rect = btn.getBoundingClientRect();
-      var x = e.clientX - rect.left - rect.width / 2;
-      var y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = 'translate(' + (x * 0.18) + 'px, ' + (y * 0.18) + 'px) scale(1.04)';
-      btn.style.transition = 'transform 0.15s ease, background 0.25s, box-shadow 0.25s';
+    document.querySelectorAll('.btn-primary, .btn-buy').forEach(function(btn) {
+      btn.addEventListener('mousemove', function(e) {
+        var rect = btn.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = 'translate(' + (x * 0.18) + 'px, ' + (y * 0.18) + 'px) scale(1.04)';
+        btn.style.transition = 'transform 0.15s ease, background 0.25s, box-shadow 0.25s';
+      });
+      btn.addEventListener('mouseleave', function() {
+        btn.style.transform = '';
+        btn.style.transition = 'transform 0.4s var(--spring), background 0.25s, box-shadow 0.25s';
+      });
     });
-    btn.addEventListener('mouseleave', function() {
-      btn.style.transform = '';
-      btn.style.transition = 'transform 0.4s var(--spring), background 0.25s, box-shadow 0.25s';
-    });
-  });
+  }
 
   // ── STEP CARDS STAGGER ──
   var stepObs = new IntersectionObserver(function(entries) {
@@ -1519,7 +1594,8 @@ document.addEventListener('DOMContentLoaded', function() {
     ticker.addEventListener('mouseleave', function() { ticker.style.animationPlayState = 'running'; });
   }
 
-  // ── MOUSE SPOTLIGHT ──
+  // ── MOUSE SPOTLIGHT (desktop only) ──
+  if (window.innerWidth <= 900) { return; }
   var spot = document.createElement('div');
   spot.style.position = 'fixed';
   spot.style.pointerEvents = 'none';
