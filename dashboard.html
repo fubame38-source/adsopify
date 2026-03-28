@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
-<script>
-(function(){
-  var t = localStorage.getItem('adsopify_theme');
-  if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-})();
-</script>
+<script>(function(){var t=localStorage.getItem('adsopify_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -171,10 +166,10 @@ body {
 .sidebar-name span { color: var(--accent); }
 
 .nav-section {
-  padding: 14px 13px 5px;
-  font-size: 9.5px; font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--text3);
+  padding: 16px 14px 5px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text3); opacity: 0.7;
 }
 
 /* ── NAV ITEMS — clean, no overlay blocking ── */
@@ -537,6 +532,456 @@ input[type="date"] { cursor: pointer; }
   .overview-stats { grid-template-columns: 1fr 1fr; }
   .plan-hero { grid-template-columns: 1fr; }
 }
+
+/* ── HOOK SWIPE ── */
+.hook-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 11px; padding: 14px 16px;
+    cursor: pointer; transition: all 0.15s;
+    font-size: 13px; line-height: 1.6; color: var(--text);
+  }
+  .hook-card:hover { border-color: var(--accent); background: var(--accent-light); box-shadow: var(--accent-glow); }
+  .hook-card .copy-hint { font-size: 11px; color: var(--text3); margin-top: 6px; }
+  .hook-card.copied { border-color: var(--green); background: var(--green-light); }
+
+  /* ── SCALE TABLE ── */
+  .scale-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .scale-row:last-child { border-bottom: none; }
+  .scale-row .sc-name { flex: 1; font-weight: 600; font-size: 13px; color: var(--text); }
+  .scale-row .sc-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .scale-row .sc-reason { font-size: 11px; color: var(--text3); flex: 1.5; }
+
+  /* ── SCORE ── */
+  .score-bar { display: flex; align-items: center; gap: 8px; }
+  .score-track { flex: 1; height: 5px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+  .score-fill.high { background: linear-gradient(90deg, #10b981, #34d399); }
+  .score-fill.mid { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .score-fill.low { background: linear-gradient(90deg, #ef4444, #f87171); }
+  .score-num { font-family: var(--mono); font-size: 13px; font-weight: 600; width: 24px; text-align: right; }
+
+  /* ── LOG ── */
+  .log-entry { background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 14px 16px; margin-bottom: 10px; }
+  .log-entry .le-date { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 4px; }
+  .log-entry .le-text { font-size: 13px; line-height: 1.6; color: var(--text2); }
+
+  /* ── TOKEN SETUP ── */
+  #token-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #0a0e1a 0%, #111827 50%, #0a0e1a 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1001; padding: 24px;
+  }
+  .token-box {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 20px; padding: 40px; max-width: 440px; width: 100%;
+    box-shadow: var(--shadow-md);
+  }
+  .token-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .token-box p { color: var(--text2); font-size: 13px; margin-bottom: 24px; line-height: 1.6; }
+  .token-help { font-size: 11px; color: var(--text3); margin-top: 8px; }
+  .token-help a { color: var(--accent2); text-decoration: none; }
+
+  /* ── LOADER ── */
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+  .loading-row { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 13px; padding: 20px 0; }
+
+  /* ── PROFIT ── */
+  .profit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width: 600px) { .profit-grid { grid-template-columns: 1fr; } }
+  .profit-result { background: var(--accent-light); border: 1px solid rgba(99,102,241,0.2); border-radius: 11px; padding: 16px; }
+  .profit-result .pr-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent2); margin-bottom: 6px; }
+  .profit-result .pr-value { font-size: 28px; font-weight: 700; font-family: var(--mono); color: var(--accent2); }
+
+  /* ── DATE RANGE ── */
+  .date-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px; }
+  .date-row .df { flex: 1; min-width: 140px; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 768px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar { transform: translateX(-230px); width: 230px; transition: transform 0.2s; z-index: 200; }
+    #sidebar.open { transform: translateX(0); }
+    #topbar { padding-left: 16px; }
+    #main { padding: 16px; }
+    #mob-menu { display: flex !important; }
+  }
+  #mob-menu { display: none; cursor: pointer; font-size: 20px; padding: 4px; color: var(--text2); }
+
+  /* ── ACCOUNT SELECT ── */
+  .acct-item {
+    padding: 12px 14px; border: 1px solid var(--border); border-radius: 11px;
+    cursor: pointer; transition: all 0.15s; margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--surface2);
+  }
+  .acct-item:hover { border-color: var(--accent); background: var(--accent-light); }
+  .acct-item .ai-name { font-weight: 600; font-size: 13px; color: var(--text); }
+  .acct-item .ai-id { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+  .flex-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .flex-row.mb { margin-bottom: 16px; }
+  .gap-12 { gap: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-16 { margin-bottom: 16px; }
+  .text-sm { font-size: 12px; }
+  .text-muted { color: var(--text2); }
+  .w100 { width: 100%; }
+
+  body.light-mode {
+    --bg: #0d1324;
+    --surface: rgba(18,26,45,0.92);
+    --surface2: #162035;
+    --surface3: #1c2941;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(99,179,255,0.20);
+    --text: #f3f6fb;
+    --text2: #9aa9c2;
+    --text3: #607089;
+    --accent: #5da8ff;
+    --accent2: #9bc7ff;
+    --accent-light: rgba(93,168,255,0.14);
+    --accent-glow: 0 18px 40px rgba(93,168,255,0.18);
+    --green: #34d399;
+    --green-light: rgba(52,211,153,0.12);
+    --yellow: #fbbf24;
+    --yellow-light: rgba(251,191,36,0.12);
+    --red: #f87171;
+    --red-light: rgba(248,113,113,0.12);
+    --shadow: 0 14px 36px rgba(0,0,0,0.34);
+    --shadow-md: 0 24px 70px rgba(0,0,0,0.42);
+  }
+  body.light-mode {
+    background:
+      radial-gradient(circle at top left, rgba(93,168,255,0.12), transparent 24%),
+      linear-gradient(180deg, #0f1629 0%, var(--bg) 48%, #0a1020 100%);
+  }
+  body.light-mode #topbar { background: rgba(11,17,31,0.76); }
+  body.light-mode #sidebar { background: rgba(12,18,32,0.92); }
+  body.light-mode #token-screen { background: linear-gradient(135deg, #0f1628 0%, #121b31 50%, #0d1324 100%); }
+  body.light-mode .token-box { background: rgba(18,26,45,0.95); }
+  body.light-mode input, body.light-mode textarea, body.light-mode select { background: rgba(255,255,255,0.03); }
+  body.light-mode #chat-messages { background: rgba(7,12,24,0.72); }
+  body.light-mode .overview-hero,
+  body.light-mode .plan-hero-card {
+    background:
+      radial-gradient(circle at top left, rgba(93,168,255,0.14), transparent 28%),
+      linear-gradient(180deg, rgba(18,26,45,0.96), rgba(15,22,40,0.96));
+  }
+  body.light-mode .compact-action,
+  body.light-mode .soft-chip,
+  body.light-mode .overview-period,
+  body.light-mode .overview-kicker {
+    background: rgba(255,255,255,0.04);
+  }
+  /* ── HOOK SWIPE — Tinder Style ── */
+  
+/* ── SCALE/SCORE ── */
+
+/* ── HOOK SWIPE TINDER ── */
+#hook-swipe-arena {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 24px 16px 20px;
+  }
+  #hook-card-wrap {
+    position: relative;
+    width: 300px; height: 300px;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+  }
+  .hook-card-bg1 {
+    position: absolute; inset: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transform: translateY(10px) scale(0.95);
+    z-index: 1;
+  }
+  .hook-card-bg2 {
+    position: absolute; inset: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    transform: translateY(20px) scale(0.90);
+    opacity: 0.5;
+    z-index: 0;
+  }
+  .hook-card-main {
+    position: absolute; inset: 0;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    cursor: grab; user-select: none;
+    z-index: 2; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .hook-card-main:active { cursor: grabbing; }
+  .hook-card-main.exit-left {
+    transition: all 0.32s cubic-bezier(0.55,0,1,0.45);
+    transform: translateX(-120%) rotate(-20deg) !important;
+    opacity: 0;
+  }
+  .hook-card-main.exit-right {
+    transition: all 0.32s cubic-bezier(0.55,0,1,0.45);
+    transform: translateX(120%) rotate(20deg) !important;
+    opacity: 0;
+  }
+  .hook-card-main.exit-save {
+    transition: all 0.3s ease;
+    transform: translateY(-60px) scale(1.05) !important;
+    opacity: 0;
+  }
+  .hook-card-main.enter {
+    animation: cardEnter 0.38s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes cardEnter {
+    from { opacity:0; transform:scale(0.85) translateY(20px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
+  }
+  /* Kart üst — metin alanı */
+  .hook-card-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 20px 12px; text-align: center; position: relative;
+    background: linear-gradient(160deg, var(--surface) 0%, var(--surface2) 100%);
+  }
+  .hook-card-footer {
+    padding: 12px 16px 14px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface);
+  }
+  .hook-card-main .hook-cat {
+    display: inline-flex; padding: 3px 10px; border-radius: 99px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .hook-card-main .hook-text {
+    font-size: 17px; font-weight: 700;
+    line-height: 1.55; color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .hook-card-main .hook-tag {
+    font-size: 11px; color: var(--text3);
+    font-weight: 500;
+  }
+  .hook-card-main .hook-why {
+    font-size: 11px; color: var(--text3);
+    line-height: 1.5; text-align: right;
+    max-width: 160px;
+  }
+  /* Overlays */
+  .swipe-hint-left {
+    position: absolute; top: 16px; left: 14px;
+    background: var(--red); color: #fff;
+    padding: 4px 12px; border-radius: 7px;
+    font-weight: 800; font-size: 13px;
+    opacity: 0; transform: rotate(-15deg);
+    pointer-events: none; z-index: 10; letter-spacing: 0.06em;
+  }
+  .swipe-hint-right {
+    position: absolute; top: 16px; right: 14px;
+    background: var(--green); color: #fff;
+    padding: 4px 12px; border-radius: 7px;
+    font-weight: 800; font-size: 13px;
+    opacity: 0; transform: rotate(15deg);
+    pointer-events: none; z-index: 10; letter-spacing: 0.06em;
+  }
+  /* Butonlar */
+  .hook-actions {
+    display: flex; justify-content: center; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .hook-action-btn {
+    width: 56px; height: 56px; border: none; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; transition: all 0.18s cubic-bezier(0.25,0.46,0.45,0.94);
+    font-family: var(--font); box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .hook-action-btn:active { transform: scale(0.87) !important; }
+  .hook-action-btn.btn-skip  { background: var(--red-light);   color: var(--red);    border: 2px solid rgba(239,68,68,0.2); }
+  .hook-action-btn.btn-save  { background: var(--accent-light); color: var(--accent2); border: 2px solid rgba(99,102,241,0.2); }
+  .hook-action-btn.btn-use   { background: var(--green-light);  color: var(--green);  border: 2px solid rgba(16,185,129,0.2); }
+  .hook-action-btn.btn-skip:hover { background: var(--red);    color: #fff; transform: scale(1.12); }
+  .hook-action-btn.btn-save:hover { background: var(--accent);  color: #fff; transform: scale(1.12); }
+  .hook-action-btn.btn-use:hover  { background: var(--green);   color: #fff; transform: scale(1.12); }
+
+  .swipe-counter { font-size: 12px; color: var(--text3); text-align: center; }
+  #swipe-progress-bar { height: 3px; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 99px; transition: width 0.3s; }
+  .swipe-empty { text-align: center; padding: 32px 16px; }
+  .swipe-empty .big { font-size: 48px; margin-bottom: 12px; }
+  .swipe-saved { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+  /* ── REKLAM SİHİRBAZI ── */
+  .wizard-step {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .ws-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface2); border: 2px solid var(--border);
+    color: var(--text3); font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .ws-label { font-size: 11px; color: var(--text3); font-weight: 500; }
+  .wizard-step.active .ws-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .wizard-step.active .ws-label { color: var(--accent); font-weight: 700; }
+  .wizard-step.done .ws-num { background: var(--green); border-color: var(--green); color: #fff; }
+  .ws-line { flex: 1; height: 2px; background: var(--border); min-width: 24px; margin: 0 4px; margin-top: -18px; }
+
+  /* ── GLOW CARDS ── */
+  .glow-green { box-shadow: 0 0 20px rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3) !important; }
+  .glow-red { box-shadow: 0 0 20px rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.3) !important; }
+  .glow-yellow { box-shadow: 0 0 20px rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.3) !important; }
+  .glow-purple { box-shadow: 0 0 20px rgba(99,102,241,0.3); border-color: rgba(99,102,241,0.3) !important; }
+
+#login-nav{display:none!important}
+
+/* NAV STAGGER */
+@keyframes navSlideIn { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:none} }
+#sidebar .nav-item:nth-child(1){animation:navSlideIn .3s .02s both}
+#sidebar .nav-item:nth-child(2){animation:navSlideIn .3s .05s both}
+#sidebar .nav-item:nth-child(3){animation:navSlideIn .3s .08s both}
+#sidebar .nav-item:nth-child(4){animation:navSlideIn .3s .11s both}
+#sidebar .nav-item:nth-child(5){animation:navSlideIn .3s .14s both}
+#sidebar .nav-item:nth-child(6){animation:navSlideIn .3s .17s both}
+#sidebar .nav-item:nth-child(7){animation:navSlideIn .3s .20s both}
+#sidebar .nav-item:nth-child(8){animation:navSlideIn .3s .23s both}
+#sidebar .nav-item:nth-child(9){animation:navSlideIn .3s .26s both}
+#sidebar .nav-item:nth-child(10){animation:navSlideIn .3s .29s both}
+#sidebar .nav-item:nth-child(11){animation:navSlideIn .3s .32s both}
+#sidebar .nav-item:nth-child(12){animation:navSlideIn .3s .35s both}
+#sidebar .nav-item:nth-child(13){animation:navSlideIn .3s .38s both}
+#sidebar .nav-item:nth-child(14){animation:navSlideIn .3s .41s both}
+
+/* PLAN HERO */
+.plan-hero-card {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(0,113,227,0.03) 100%) !important;
+  position: relative; overflow: hidden;
+}
+.plan-hero-card::after {
+  content: ''; position: absolute;
+  top: -60px; right: -60px; width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(0,113,227,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.plan-hero-card h2 {
+  background: linear-gradient(135deg, var(--text) 0%, var(--text2) 40%, var(--accent) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* AI HOCA premium */
+.ai-premium-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-bottom: 0.5px solid var(--border);
+  background: var(--surface2);
+}
+.ai-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,113,227,0.25);
+}
+.ai-status {
+  font-size: 11px; color: var(--green);
+  display: flex; align-items: center; gap: 5px; margin-top: 2px;
+}
+.ai-status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); animation: pulse 2s infinite;
+}
+
+/* CHAT MSG */
+.msg.bot {
+  background: var(--surface2); border: 0.5px solid var(--border);
+  border-radius: 0 14px 14px 14px;
+  padding: 14px 16px; font-size: 14px; line-height: 1.65;
+  color: var(--text); max-width: 85%;
+}
+.msg.user {
+  background: var(--accent); color: #fff;
+  border-radius: 14px 0 14px 14px;
+  padding: 12px 16px; font-size: 14px;
+  margin-left: auto; max-width: 80%;
+}
+
+/* TOKEN SCREEN premium */
+.token-box {
+  background: var(--surface) !important;
+  border: 0.5px solid var(--border2) !important;
+  border-radius: 20px !important; padding: 36px !important;
+  max-width: 420px !important; width: 100% !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+.token-box h2 {
+  font-size: 20px !important; font-weight: 700 !important;
+  letter-spacing: -0.04em !important; text-align: center !important;
+  margin-bottom: 6px !important; color: var(--text) !important;
+}
+.token-box p {
+  font-size: 13px !important; color: var(--text2) !important;
+  text-align: center !important; margin-bottom: 24px !important;
+  line-height: 1.6 !important;
+}
+#fb-login-btn {
+  background: #1877F2 !important; border: none !important;
+  border-radius: 11px !important; padding: 13px 20px !important;
+  font-size: 15px !important; font-weight: 600 !important;
+  box-shadow: 0 4px 18px rgba(24,119,242,0.3) !important;
+  transition: all 0.2s !important;
+}
+#fb-login-btn:hover {
+  background: #0a5dc2 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 24px rgba(24,119,242,0.35) !important;
+}
+.token-trust {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin: 12px 0; font-size: 11px; color: var(--text3);
+}
+.token-trust span { display: flex; align-items: center; gap: 4px; }
+.acct-item {
+  padding: 12px 14px; border: 0.5px solid var(--border);
+  border-radius: 10px; cursor: pointer;
+  transition: all 0.18s; display: flex;
+  justify-content: space-between; align-items: center;
+  background: var(--surface); margin-bottom: 6px;
+}
+.acct-item:hover {
+  border-color: var(--border-accent);
+  background: var(--accent-light);
+  transform: translateX(2px);
+}
+.acct-item .ai-name { font-weight: 600; font-size: 14px; color: var(--text); }
+.acct-item .ai-id { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.acct-item .ai-select { font-size: 13px; font-weight: 600; color: var(--accent); }
+
+/* COMPACT CARD top accent */
+.compact-card[data-tone="high"]::before { content:''; position:absolute; top:0; left:0; right:0; height:2.5px; background:var(--red); border-radius:14px 14px 0 0; }
+.compact-card[data-tone="mid"]::before  { content:''; position:absolute; top:0; left:0; right:0; height:2.5px; background:var(--yellow); border-radius:14px 14px 0 0; }
+.compact-card[data-tone="low"]::before  { content:''; position:absolute; top:0; left:0; right:0; height:2.5px; background:var(--green); border-radius:14px 14px 0 0; }
+.compact-card[data-tone="blue"]::before { content:''; position:absolute; top:0; left:0; right:0; height:2.5px; background:var(--accent); border-radius:14px 14px 0 0; }
+
+/* TOKEN SCREEN BG */
+#token-screen::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 44px 44px; opacity: 0.4; pointer-events: none;
+}
+#token-screen::after {
+  content: ''; position: absolute;
+  top: -100px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,113,227,0.06) 0%, transparent 60%);
+  pointer-events: none; animation: blobFloat 8s ease-in-out infinite alternate;
+}
+
 </style>
 </head>
 <body>
@@ -655,9 +1100,6 @@ input[type="date"] { cursor: pointer; }
 
 <!-- TOKEN SCREEN — Adım 2: Meta Bağla -->
 <div id="token-screen" style="position:fixed;inset:0;z-index:1050;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg)">
-  <div class="token-bg-grid"></div>
-  <div class="token-bg-blob1"></div>
-  <div class="token-bg-blob2"></div>
   <div class="token-box">
     
     <!-- Adım göstergesi -->
@@ -669,7 +1111,7 @@ input[type="date"] { cursor: pointer; }
       <div style="width:24px;height:24px;border-radius:50%;background:var(--surface2);color:var(--text3);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">3</div>
     </div>
 
-    <div style="font-size:28px;margin-bottom:12px">🔗</div>
+    <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1877F2,#0a5dc2);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 4px 16px rgba(24,119,242,.3)"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>
     <h2>Meta Hesabını Bağla</h2>
     <p>Reklam verilerini çekmek için Meta reklam hesabını bağla.</p>
 
@@ -678,9 +1120,7 @@ input[type="date"] { cursor: pointer; }
       Facebook ile Bağlan
     </button>
 
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <div style="flex:1;height:1px;background:var(--border)"></div>
-      <span style="font-size:11px;color:var(--text3)">veya manuel token</span>
+    <div class="token-trust"><span>🔒 Güvenli OAuth</span><span>👁 Sadece okuma</span><span>⚡ 30 saniye</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="flex:1;height:0.5px;background:var(--border)"></div><span style="font-size:11px;color:var(--text3)">veya manuel token</span>
       <div style="flex:1;height:1px;background:var(--border)"></div>
     </div>
 
@@ -704,7 +1144,7 @@ input[type="date"] { cursor: pointer; }
 <!-- TOPBAR -->
 <div id="topbar">
   <span id="mob-menu" onclick="toggleSidebar()">☰</span>
-  <a href="https://adsopify.com" class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#0071E3"/><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="8.5" r="1.8" fill="white" opacity="0.9"/><path d="M17 11V17.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg>Ads<span>opify</span></a>
+  <a href="https://adsopify.com" class="brand" style="text-decoration:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect width="24" height="24" rx="6" fill="#0071E3"/><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="8.5" r="1.8" fill="white" opacity="0.9"/><path d="M17 11V17.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg>Ads<span>opify</span></a>
   <div class="spacer"></div>
   <div id="fatigue-alert" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer" onclick="nav('creative')" title="Creative yorgunluğu olan kampanyalar var">⚠️ <span id="fatigue-count"></span> yorgun kampanya</div>
   <div class="stat-badge" id="top-spend"><span>Bugün:</span> <strong id="top-spend-val">—</strong></div>
@@ -724,16 +1164,9 @@ input[type="date"] { cursor: pointer; }
 
 <!-- SIDEBAR -->
 <div id="sidebar">
-  <div class="sidebar-top">
-    <div class="sidebar-logo">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M6.8 14H11" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="17" cy="8.5" r="2" fill="white"/>
-        <path d="M17 11.5V17.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <span class="sidebar-name">Ads<span>opify</span></span>
+  <div style="padding:13px 13px 11px;border-bottom:0.5px solid var(--border);margin-bottom:6px;display:flex;align-items:center;gap:9px">
+    <div style="width:27px;height:27px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="2.2" stroke-linecap="round"/><circle cx="17" cy="8.5" r="2" fill="white"/><path d="M17 11.5V17.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+    <span style="font-size:15px;font-weight:700;letter-spacing:-0.03em;color:var(--text)">Ads<span style="color:var(--accent)">opify</span></span>
   </div>
   <div class="nav-section">Ana</div>
   <div class="nav-item active" onclick="nav('plan')" data-sec="plan"><span class="icon">📋</span>Günlük Plan</div>
@@ -743,7 +1176,6 @@ input[type="date"] { cursor: pointer; }
   <div class="nav-section">Optimizasyon</div>
   <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><span class="icon">⚡</span>Reklam Hazırla</div>
   <div class="nav-item" onclick="nav('scale')" data-sec="scale"><span class="icon">📈</span>Ölçekleme</div>
-  <div class="nav-item" onclick="nav('creative')" data-sec="creative"><span class="icon">🎨</span>Creative Skor</div>
   <div class="nav-item" onclick="nav('budget')" data-sec="budget"><span class="icon">🗓️</span>Bütçe Planlayıcı</div>
 
   <div class="nav-section">İçerik</div>
@@ -780,7 +1212,7 @@ input[type="date"] { cursor: pointer; }
     <div id="plan-content" style="display:none">
       <div class="plan-hero">
         <div class="plan-hero-card">
-          <div class="overview-kicker">Bugünün komuta merkezi</div>
+          <div class="overview-kicker"><span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 2s infinite;flex-shrink:0"></span>Bugünün komuta merkezi</div>
           <h2>Bugün <span>neyi yapman</span> gerektiğini hemen gör.</h2>
           <p>Uzun rapor yerine kısa karar kartları. Önce hangi kampanyaya bakacağını, bugün hangi içeriği üreteceğini ve neyi test etmen gerektiğini sade şekilde gör.</p>
         </div>
@@ -1511,7 +1943,15 @@ input[type="date"] { cursor: pointer; }
   <div id="sec-ai" class="section">
     <div class="page-title">AI Hoca</div>
     <div class="page-sub">Kampanya verinizi bilen, kural bazlı tavsiye motoru</div>
-    <div class="card">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="ai-premium-header">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Adsopify AI Hoca</div>
+          <div class="ai-status"><span class="ai-status-dot"></span>Çevrimiçi &middot; Kampanya verisi yüklendi</div>
+        </div>
+      </div>
+      <div style="padding:18px">
       <div id="chat-messages">
         <div class="msg bot">Merhaba! 👋 Ben Adsopify AI Hoca. Kampanya verilerinizi analiz ederek spesifik tavsiyeler verebilirim. Sormak istediğin bir şey var mı?<br><br><strong>Örnek sorular:</strong><br>• Hangi kampanyam en iyi performansı veriyor?<br>• CPC'mi nasıl düşürebilirim?<br>• Bütçemi nasıl dağıtmalıyım?<br>• Hook stratejim hakkında ne düşünüyorsun?</div>
       </div>
@@ -1699,7 +2139,6 @@ function getStored(key) {
 
 function setStored(key, value) {
   sessionStorage.setItem(key, value);
-  // Keep auth tokens across page reloads
   if (key && (key.indexOf('token') >= 0 || key.indexOf('account') >= 0 || key.indexOf('sb_') === 0)) {
     try { localStorage.setItem(key, value); } catch(e) {}
   }
