@@ -616,7 +616,7 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
 .footer-bottom p { font-size: 12px; color: var(--t3); }
 
 /* ── SCROLL REVEAL ── */
-.sr { opacity: 1; transform: none; transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.sr { opacity: 0; transform: translateY(24px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
 .sr.on { opacity: 1; transform: none; }
 .sr-delay-1 { transition-delay: 0.1s; }
 .sr-delay-2 { transition-delay: 0.2s; }
@@ -1006,12 +1006,12 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
 </div>
 
 <nav id="nav">
-  <a href="index.html" class="nav-logo">Adsopify</a>
+  <a href="#" class="nav-logo">Adsopify</a>
   <ul class="nav-links">
     <li><a href="#features">Özellikler</a></li>
     <li><a href="#how">Nasıl Çalışır</a></li>
     <li><a href="#pricing">Fiyat</a></li>
-    <li><a href="dashboard.html" class="nav-cta">Ücretsiz Dene</a></li>
+    <li><a href="https://adsopify.com/dashboard.html" class="nav-cta">Ücretsiz Dene</a></li>
   </ul>
 </nav>
 
@@ -1025,7 +1025,7 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
   <h1 id="heroTitle">Meta reklamlarını<br>kontrol et.</h1>
   <p class="hero-sub">Hangi kampanya para yakıyor, hangisi büyümeye hazır. Adsopify gerçek verini alır, ne yapman gerektiğini söyler.</p>
   <div class="hero-actions">
-    <a href="dashboard.html" class="btn-primary">Ücretsiz Başla</a>
+    <a href="https://adsopify.com/dashboard.html" class="btn-primary">Ücretsiz Başla</a>
     <a href="#features" class="btn-text-link">Daha fazla bilgi</a>
   </div>
   <p class="hero-note">14 gün ücretsiz · Kredi kartı gerekmez</p>
@@ -1342,7 +1342,7 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
         <li>AI Hoca — Veriye Dayalı Chat</li>
       </ul>
       <div class="price-cta-row">
-        <a href="dashboard.html" class="btn-buy">Facebook ile Ücretsiz Başla</a>
+        <a href="https://adsopify.com/dashboard.html" class="btn-buy">Facebook ile Ücretsiz Başla</a>
         <p class="price-note">Kredi kartı gerekmez · İstediğin zaman iptal et</p>
       </div>
     </div>
@@ -1353,17 +1353,17 @@ footer { border-top: 0.5px solid var(--line); background: var(--bg2); padding: 0
 <section class="cta-section">
   <h2 class="section-title sr">Bugün başla.<br>Hemen fark gör.</h2>
   <p class="section-desc sr">Meta hesabını bağla, dashboardu aç, ilk kararı dakikalar içinde ver.</p>
-  <a href="dashboard.html" class="btn-primary sr">Ücretsiz Başla</a>
+  <a href="https://adsopify.com/dashboard.html" class="btn-primary sr">Ücretsiz Başla</a>
   <p class="cta-note sr">14 gün ücretsiz · Kredi kartı gerekmez · 30 saniyede kur</p>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
-    <a href="index.html" class="footer-logo">Adsopify</a>
+    <a href="#" class="footer-logo">Adsopify</a>
     <ul class="footer-links">
-      <li><a href="privacy.html">Gizlilik</a></li>
-      <li><a href="mailto:hi@adsopify.com">İletişim</a></li>
+      <li><a href="https://adsopify.com/privacy.html">Gizlilik</a></li>
+      <li><a href="#">İletişim</a></li>
     </ul>
   </div>
   <div class="footer-bottom"><p>Copyright © 2026 Adsopify. Tüm hakları saklıdır.</p></div>
@@ -1560,8 +1560,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── FLOATING NOTIFICATIONS ──
   var notifs = [
     { av: 'MA', name: 'Mehmet A.', action: 'az önce kaydoldu 🎉', time: '2 dakika önce' },
-    { av: 'AK', name: 'Ayşe K.',   action: 'ilk dashboard'ını kurdu ✅', time: '5 dakika önce' },
-    { av: 'CD', name: 'Can D.',    action: 'Pro Plan'a geçti 🚀', time: '8 dakika önce' },
+    { av: 'AK', name: 'Ayse K.',   action: 'ilk dashboardini kurdu', time: '5 dakika once' },
+    { av: 'CD', name: 'Can D.',    action: 'Pro Plana gecti', time: '8 dakika once' },
     { av: 'EY', name: 'Emre Y.',   action: 'kampanyasını ölçekledi 📈', time: '12 dakika önce' },
     { av: 'SB', name: 'Selin B.', action: 'CPA'sını %35 düşürdü 💪', time: '15 dakika önce' }
   ];
