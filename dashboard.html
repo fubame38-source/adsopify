@@ -1902,6 +1902,11 @@ function startApp() {
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
   loadAllAccounts();
   initTheme();
+  // Restore last section
+  const lastSec = localStorage.getItem('adsopify_last_section');
+  if (lastSec && lastSec !== 'plan' && lastSec !== 'weekly') {
+    try { setTimeout(function(){ nav(lastSec); }, 200); } catch(e) {}
+  }
 
 
   // Supabase
@@ -2343,6 +2348,7 @@ function nav(name) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
   document.querySelector('[data-sec="' + name + '"]').classList.add('active');
+  try { localStorage.setItem('adsopify_last_section', name); } catch(e) {}
 
   if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
 
@@ -2529,17 +2535,20 @@ nav değerleri: hook, swipe, copy, scale, creative, budget, dash, ai, creative-p
 
 function renderCompactCard(opts) {
   const toneClass = opts.tone || 'blue';
-  const nav = opts.nav ? `onclick="nav('${escapeAttr(opts.nav)}')"` : '';
-  return `<div class="compact-card" style="animation:fadeIn 0.28s ease both">
+  const navAttr = opts.nav ? `onclick="nav('${escapeAttr(opts.nav)}')"` : '';
+  const icons = { high: '🔴', mid: '🟡', low: '🟢', blue: '🔵' };
+  const icon = icons[toneClass] || '⚡';
+  const borderColor = toneClass === 'high' ? 'var(--red)' : toneClass === 'mid' ? 'var(--yellow)' : toneClass === 'low' ? 'var(--green)' : 'var(--accent)';
+  return `<div class="compact-card" style="animation:fadeIn 0.28s ease both;border-top:2.5px solid ${borderColor}">
     <div class="compact-top">
       <span class="compact-badge ${toneClass}">${escapeHtml(opts.badge || 'Plan')}</span>
-      <span style="font-size:11px;color:var(--text3);font-weight:700">${escapeHtml(opts.kicker || '')}</span>
+      <span style="font-size:10px;color:var(--text3);font-weight:600;background:var(--surface2);padding:2px 8px;border-radius:980px;border:0.5px solid var(--border)">${escapeHtml(opts.kicker || '')}</span>
     </div>
     <div class="compact-title">${escapeHtml(opts.title || '—')}</div>
-    <div class="compact-text">${escapeHtml(opts.text || '')}</div>
+    <div class="compact-text" style="font-size:12px">${escapeHtml(opts.text || '')}</div>
     <div class="compact-meta">
       <span class="compact-tool">${escapeHtml(opts.tool || '')}</span>
-      ${opts.cta ? `<button class="compact-action" ${nav}>${escapeHtml(opts.cta)} →</button>` : ''}
+      ${opts.cta ? `<button class="compact-action" ${navAttr}>${escapeHtml(opts.cta)} →</button>` : ''}
     </div>
   </div>`;
 }
@@ -2689,6 +2698,29 @@ function checkFatigueAlert(insights) {
 // ═══════════════════════════════════════════════
 // HAFTALIK ÖZET
 // ═══════════════════════════════════════════════
+
+function trendCard(label, cur, prev, fmt, higherBetter) {
+  const pct = prev > 0 ? ((cur - prev) / prev * 100) : 0;
+  const isUp = pct > 0;
+  const good = higherBetter ? isUp : !isUp;
+  const color = pct === 0 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
+  const arrow = pct === 0 ? '' : isUp ? '↑' : '↓';
+  return `<div class="kpi-card">
+    <div class="label">${label}</div>
+    <div class="value">${fmt(cur)}</div>
+    <div class="sub" style="color:${color}">${arrow} ${Math.abs(pct).toFixed(1)}% geçen haftaya göre</div>
+  </div>`;
+}
+
+function renderWeeklyCampRow(camp) {
+  const pct = camp.prevSpend > 0 ? ((camp.spend - camp.prevSpend) / camp.prevSpend * 100).toFixed(0) : '—';
+  return `<div class="scale-row">
+    <div><div class="sc-name">${escapeHtml(camp.name)}</div><div class="sc-meta">₺${camp.spend.toFixed(0)} harcama</div></div>
+    <div class="sc-reason">${pct !== '—' ? (pct > 0 ? '+' : '') + pct + '% harcama değişimi' : 'Yeni kampanya'}</div>
+    <div style="font-size:12px;font-weight:600;color:${camp.roas > 1 ? 'var(--green)' : 'var(--red)'}">ROAS ${camp.roas > 0 ? camp.roas.toFixed(2) + 'x' : '—'}</div>
+  </div>`;
+}
+
 async function loadWeekly() {
   document.getElementById('weekly-loading').style.display = 'flex';
   document.getElementById('weekly-content').style.display = 'none';
@@ -2803,7 +2835,8 @@ async function loadWeekly() {
     ).join('');
 
   } catch (e) {
-    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px">Hata: ' + e.message + '</div>';
+    console.error('loadWeekly error:', e);
+    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-light);border-radius:10px">Veri çekilemedi: ' + (e.message||'Bilinmeyen hata') + '</div>';
   }
   document.getElementById('weekly-loading').style.display = 'none';
   document.getElementById('weekly-content').style.display = 'block';
