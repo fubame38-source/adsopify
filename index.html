@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<script>
+(function(){
+  var h = window.location.hash;
+  if (h && h.indexOf('type=recovery') > -1) {
+    window.location.href = '/dashboard.html' + h;
+  }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adsopify — Meta Reklam AI Dashboard</title>
