@@ -2367,10 +2367,11 @@ function nav(name) {
   if (name === 'creative' && !document.getElementById('creative-cards').innerHTML) loadCreative();
   if (name === 'settings') loadSettingsPage();
   if (name === 'weekly') {
-    document.getElementById('weekly-loading').style.display = 'flex';
-    document.getElementById('weekly-loading').innerHTML = '<div class="spinner"></div> Veriler yükleniyor...';
-    document.getElementById('weekly-content').style.display = 'none';
-    setTimeout(loadWeekly, 150);
+    var wl = document.getElementById('weekly-loading');
+    var wc = document.getElementById('weekly-content');
+    if (wl) { wl.style.display='flex'; wl.innerHTML='<div class="spinner"></div>&nbsp;Yükleniyor...'; }
+    if (wc) wc.style.display='none';
+    loadWeekly();
   }
   if (name === 'swipe') initSwipe();
 }
@@ -2741,6 +2742,10 @@ async function loadWeekly() {
   const contEl = document.getElementById('weekly-content');
   const dbgEl  = document.getElementById('weekly-debug');
 
+  // Show status immediately
+  if (loadEl) { loadEl.style.display='flex'; loadEl.innerHTML='<div class="spinner"></div>&nbsp;Bağlanıyor...'; }
+  if (contEl) contEl.style.display='none';
+
   if (!S.token || !S.accountId) {
     if (loadEl) { loadEl.style.display='flex'; loadEl.innerHTML='<div style="text-align:center;padding:24px;width:100%"><div style="font-size:28px;margin-bottom:8px">🔗</div><div style="font-weight:600;color:var(--text)">Meta hesabı bağlı değil</div></div>'; }
     return;
@@ -2845,7 +2850,8 @@ async function loadWeekly() {
 
   } catch(e) {
     console.error('Weekly error:', e);
-    if (loadEl) { loadEl.style.display='flex'; loadEl.innerHTML='<div style="width:100%;padding:20px;text-align:center"><div style="color:var(--red);font-weight:600;margin-bottom:8px">Hata: '+escapeHtml(e.message||String(e))+'</div><button class="btn btn-ghost btn-sm" onclick="loadWeekly()">Tekrar Dene</button></div>'; }
+    var msg = e && e.message ? e.message : String(e);
+    if (loadEl) { loadEl.style.display='flex'; loadEl.innerHTML='<div style="width:100%;padding:20px;text-align:center"><div style="color:var(--red);font-weight:600;margin-bottom:8px">Hata: '+msg+'</div><button class="btn btn-ghost btn-sm" onclick="loadWeekly()">Tekrar Dene</button></div>'; }
   }
 }
 
