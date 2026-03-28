@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
-<script>(function(){var t=localStorage.getItem('adsopify_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
+<script>(function(){localStorage.removeItem('adsopify_last_section');var t=localStorage.getItem('adsopify_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1905,23 +1905,17 @@ function startApp() {
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
   loadAllAccounts();
   initTheme();
-  // Restore last section
-  const lastSec = localStorage.getItem('adsopify_last_section');
+  // Restore last section (session only — fresh page load always starts at plan)
+  const lastSec = sessionStorage.getItem('adsopify_active_section');
   if (lastSec && lastSec !== 'plan') {
     try {
       setTimeout(function(){
-        // Switch to section without triggering data loads (just UI)
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        var secEl = document.getElementById('sec-' + lastSec);
-        var navEl = document.querySelector('[data-sec="' + lastSec + '"]');
-        if (secEl) secEl.classList.add('active');
-        if (navEl) navEl.classList.add('active');
-        // Trigger data load for section
-        if (lastSec === 'weekly') loadWeekly();
-        else if (lastSec === 'dash') loadDashboard();
+        nav(lastSec);
       }, 300);
     } catch(e) {}
+  } else {
+    // Always start at plan on fresh load
+    setTimeout(function(){ loadPlan(); }, 150);
   }
 
 
@@ -1940,7 +1934,6 @@ function startApp() {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
   }
-  setTimeout(function(){ loadPlan(); }, 150);
 }
 
 async function loadAllAccounts() {
@@ -2364,7 +2357,7 @@ function nav(name) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
   document.querySelector('[data-sec="' + name + '"]').classList.add('active');
-  try { localStorage.setItem('adsopify_last_section', name); } catch(e) {}
+  try { sessionStorage.setItem('adsopify_active_section', name); } catch(e) {}
 
   if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
 
@@ -2863,7 +2856,10 @@ async function loadWeekly() {
 
   } catch (e) {
     console.error('loadWeekly error:', e);
-    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-light);border-radius:10px">Veri çekilemedi: ' + (e.message||'Bilinmeyen hata') + '</div>';
+    document.getElementById('weekly-loading').style.display = 'none';
+    document.getElementById('weekly-content').style.display = 'block';
+    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px;padding:16px;background:var(--red-light);border-radius:12px;border:1px solid rgba(255,59,48,.2)"><strong>Hata:</strong> ' + escapeHtml(e.message||'Bilinmeyen hata') + '<br><br><button class="btn btn-ghost btn-sm" onclick="loadWeekly()">Tekrar Dene</button></div>';
+    return;
   }
   document.getElementById('weekly-loading').style.display = 'none';
   document.getElementById('weekly-content').style.display = 'block';
