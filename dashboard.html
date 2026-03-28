@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="tr">
-<script>(function(){var t=localStorage.getItem('adsopify_theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})()</script>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,39 +27,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{overflow-x:hidden}
-
-:root{
-  --bg:#F5F5F7;--surface:#FFFFFF;--surface2:#F5F5F7;--surface3:#EBEBED;
-  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--border-accent:rgba(0,113,227,0.22);
-  --text:#1D1D1F;--text2:#6E6E73;--text3:#AEAEB2;
-  --accent:#0071E3;--accent2:#147CE5;--accent-light:rgba(0,113,227,0.08);
-  --accent-glow:0 8px 24px rgba(0,113,227,0.2);
-  --green:#1DB954;--green-light:rgba(29,185,84,0.1);
-  --yellow:#FF9500;--yellow-light:rgba(255,149,0,0.1);
-  --red:#FF3B30;--red-light:rgba(255,59,48,0.1);
-  --shadow:0 1px 3px rgba(0,0,0,0.05),0 4px 14px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 20px rgba(0,0,0,0.08);
-  --shadow-lg:0 8px 40px rgba(0,0,0,0.14);
-  --radius:12px;--sidebar-w:220px;--topbar-h:52px;
-  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  --mono:'SF Mono','Fira Code',monospace;
-  --ease:cubic-bezier(0.25,0.46,0.45,0.94);
-}
-[data-theme="dark"]{
-  --bg:#0C0C0E;--surface:#1A1A1E;--surface2:#242428;--surface3:#2C2C30;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--border-accent:rgba(59,143,240,0.3);
-  --text:#F0F0F2;--text2:#8A8A95;--text3:#55555F;
-  --accent:#3B8FF0;--accent2:#5BA3F5;--accent-light:rgba(59,143,240,0.12);
-  --green:#25D366;--green-light:rgba(37,211,102,0.1);
-  --yellow:#FF9F0A;--yellow-light:rgba(255,159,10,0.1);
-  --red:#FF453A;--red-light:rgba(255,69,58,0.1);
-  --shadow:0 1px 3px rgba(0,0,0,0.4),0 4px 14px rgba(0,0,0,0.3);
-  --shadow-md:0 4px 20px rgba(0,0,0,0.5);--shadow-lg:0 8px 40px rgba(0,0,0,0.6);
-}
-body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+:root{--bg:#F5F5F7;--surface:#FFFFFF;--surface2:#F5F5F7;--surface3:#EBEBED;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--border-accent:rgba(0,113,227,0.22);--text:#1D1D1F;--text2:#6E6E73;--text3:#AEAEB2;--accent:#0071E3;--accent2:#147CE5;--accent-light:rgba(0,113,227,0.08);--accent-glow:0 8px 24px rgba(0,113,227,0.2);--green:#1DB954;--green-light:rgba(29,185,84,0.1);--yellow:#FF9500;--yellow-light:rgba(255,149,0,0.1);--red:#FF3B30;--red-light:rgba(255,59,48,0.1);--shadow:0 1px 3px rgba(0,0,0,0.05),0 4px 14px rgba(0,0,0,0.04);--shadow-md:0 4px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.14);--radius:12px;--sidebar-w:220px;--topbar-h:52px;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--mono:'SF Mono','Fira Code',monospace;--ease:cubic-bezier(0.25,0.46,0.45,0.94)}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
 #login-nav{display:none!important}
-#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:rgba(245,245,247,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:0.5px solid var(--border);display:flex;align-items:center;padding:0 16px 0 calc(var(--sidebar-w) + 16px);z-index:100;gap:8px;transition:background .25s}
-[data-theme="dark"] #topbar{background:rgba(12,12,14,0.88)}
+#topbar{position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:rgba(245,245,247,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:0.5px solid var(--border);display:flex;align-items:center;padding:0 16px 0 calc(var(--sidebar-w) + 16px);z-index:100;gap:8px}
 #topbar .brand{font-weight:700;font-size:16px;letter-spacing:-0.03em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
 #topbar .brand span{color:var(--accent)}
 #topbar .spacer{flex:1}
@@ -69,7 +39,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 #topbar .stat-badge.live{border-color:rgba(29,185,84,0.25);background:var(--green-light)}
 #topbar .stat-badge.live strong{color:var(--green)}
 #mob-menu{display:none;cursor:pointer;font-size:18px;color:var(--text2);padding:5px;border-radius:7px;line-height:1}
-#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:0.5px solid var(--border);overflow-y:auto;padding:0 0 32px;z-index:90;transition:transform .28s var(--ease),background .25s}
+#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:0.5px solid var(--border);overflow-y:auto;padding:0 0 32px;z-index:90;transition:transform .28s var(--ease)}
 #sidebar::-webkit-scrollbar{width:3px}
 #sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
 .nav-section{padding:16px 14px 5px;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3)}
@@ -81,23 +51,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .nav-item:hover .icon{transform:scale(1.12)}
 .nav-item.active .icon{background:rgba(0,113,227,0.1)}
 @keyframes navIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
-#sidebar .nav-item:nth-child(1){animation:navIn .3s .02s both}
-#sidebar .nav-item:nth-child(2){animation:navIn .3s .05s both}
-#sidebar .nav-item:nth-child(3){animation:navIn .3s .08s both}
-#sidebar .nav-item:nth-child(4){animation:navIn .3s .11s both}
-#sidebar .nav-item:nth-child(5){animation:navIn .3s .14s both}
-#sidebar .nav-item:nth-child(6){animation:navIn .3s .17s both}
-#sidebar .nav-item:nth-child(7){animation:navIn .3s .20s both}
-#sidebar .nav-item:nth-child(8){animation:navIn .3s .23s both}
-#sidebar .nav-item:nth-child(9){animation:navIn .3s .26s both}
-#sidebar .nav-item:nth-child(10){animation:navIn .3s .29s both}
-#sidebar .nav-item:nth-child(11){animation:navIn .3s .32s both}
-#sidebar .nav-item:nth-child(12){animation:navIn .3s .35s both}
-#sidebar .nav-item:nth-child(13){animation:navIn .3s .38s both}
-#sidebar .nav-item:nth-child(14){animation:navIn .3s .41s both}
+#sidebar .nav-item:nth-child(1){animation:navIn .3s .02s both}#sidebar .nav-item:nth-child(2){animation:navIn .3s .05s both}#sidebar .nav-item:nth-child(3){animation:navIn .3s .08s both}#sidebar .nav-item:nth-child(4){animation:navIn .3s .11s both}#sidebar .nav-item:nth-child(5){animation:navIn .3s .14s both}#sidebar .nav-item:nth-child(6){animation:navIn .3s .17s both}#sidebar .nav-item:nth-child(7){animation:navIn .3s .20s both}#sidebar .nav-item:nth-child(8){animation:navIn .3s .23s both}#sidebar .nav-item:nth-child(9){animation:navIn .3s .26s both}#sidebar .nav-item:nth-child(10){animation:navIn .3s .29s both}#sidebar .nav-item:nth-child(11){animation:navIn .3s .32s both}#sidebar .nav-item:nth-child(12){animation:navIn .3s .35s both}#sidebar .nav-item:nth-child(13){animation:navIn .3s .38s both}#sidebar .nav-item:nth-child(14){animation:navIn .3s .41s both}
 #main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:24px 24px 72px;min-height:calc(100vh - var(--topbar-h))}
-.section{display:none}
-.section.active{display:block;animation:fadeIn .2s var(--ease)}
+.section{display:none}.section.active{display:block;animation:fadeIn .2s var(--ease)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -106,7 +62,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .page-title{font-size:22px;font-weight:700;letter-spacing:-0.04em;margin-bottom:4px;display:inline-block;background:linear-gradient(135deg,var(--text) 0%,var(--text2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .page-sub{color:var(--text2);font-size:13px;margin-bottom:20px}
 h3{font-size:13px;font-weight:600;letter-spacing:-0.02em}
-.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:border-color .18s,transform .18s,box-shadow .18s,background .25s}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:border-color .18s,transform .18s,box-shadow .18s}
 .card:hover{border-color:var(--border2);box-shadow:var(--shadow-md)}
 .card+.card{margin-top:10px}
 .card-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:12px}
@@ -214,43 +170,27 @@ tbody td{padding:11px 12px;border-bottom:0.5px solid var(--border);vertical-alig
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover td{background:var(--surface2)}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap}
-.badge.green{background:var(--green-light);color:var(--green)}
-.badge.yellow{background:var(--yellow-light);color:var(--yellow)}
-.badge.red{background:var(--red-light);color:var(--red)}
-.badge.blue{background:var(--accent-light);color:var(--accent)}
-.badge.gray{background:var(--surface2);color:var(--text2);border:0.5px solid var(--border)}
+.badge.green{background:var(--green-light);color:var(--green)}.badge.yellow{background:var(--yellow-light);color:var(--yellow)}.badge.red{background:var(--red-light);color:var(--red)}.badge.blue{background:var(--accent-light);color:var(--accent)}.badge.gray{background:var(--surface2);color:var(--text2);border:0.5px solid var(--border)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:980px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s var(--ease);letter-spacing:-0.01em;white-space:nowrap}
 .btn:active{transform:scale(0.97)!important}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(0,113,227,.22)}
-.btn-primary:hover{background:var(--accent2);box-shadow:0 6px 18px rgba(0,113,227,.28);transform:translateY(-1px)}
-.btn-ghost{background:var(--surface2);color:var(--text2);border:0.5px solid var(--border)}
-.btn-ghost:hover{background:var(--surface3);color:var(--text);border-color:var(--border2)}
-.btn-danger{background:var(--red-light);color:var(--red);border:0.5px solid rgba(255,59,48,.18)}
-.btn-danger:hover{background:rgba(255,59,48,.16)}
-.btn-sm{padding:6px 12px;font-size:12px}
-.btn-xs{padding:4px 9px;font-size:11px}
-.w100{width:100%;justify-content:center}
-input,textarea,select{width:100%;background:var(--surface);border:0.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:9px 12px;border-radius:9px;outline:none;transition:border-color .18s,box-shadow .18s,background .25s;-webkit-appearance:none}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(0,113,227,.22)}.btn-primary:hover{background:var(--accent2);box-shadow:0 6px 18px rgba(0,113,227,.28);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:0.5px solid var(--border)}.btn-ghost:hover{background:var(--surface3);color:var(--text);border-color:var(--border2)}
+.btn-danger{background:var(--red-light);color:var(--red);border:0.5px solid rgba(255,59,48,.18)}.btn-danger:hover{background:rgba(255,59,48,.16)}
+.btn-sm{padding:6px 12px;font-size:12px}.btn-xs{padding:4px 9px;font-size:11px}.w100{width:100%;justify-content:center}
+input,textarea,select{width:100%;background:var(--surface);border:0.5px solid var(--border);color:var(--text);font-family:var(--font);font-size:13px;padding:9px 12px;border-radius:9px;outline:none;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none}
 input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,113,227,.1)}
 textarea{resize:vertical;min-height:78px}
 label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
-.mb-16{margin-bottom:13px}
-.date-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px}
-.date-row .df{flex:1;min-width:140px}
+.mb-16{margin-bottom:13px}.date-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px}.date-row .df{flex:1;min-width:140px}
 input[type="date"]{cursor:pointer}
-[data-theme="dark"] input[type="date"]{color-scheme:dark}
-#token-screen{position:fixed;inset:0;z-index:1050;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
-.token-box{background:var(--surface);border:0.5px solid var(--border2);border-radius:20px;padding:36px;max-width:420px;width:100%;box-shadow:var(--shadow-lg);position:relative;z-index:1}
+.token-box{background:var(--surface);border:0.5px solid var(--border2);border-radius:20px;padding:36px;max-width:420px;width:100%;box-shadow:var(--shadow-lg)}
 .token-box h2{font-size:20px;font-weight:700;letter-spacing:-0.04em;text-align:center;margin-bottom:6px;color:var(--text)}
 .token-box p{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px;line-height:1.6}
-.acct-item{padding:12px 14px;border:0.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .18s;display:flex;justify-content:space-between;align-items:center;background:var(--surface);margin-bottom:6px;position:relative;overflow:hidden}
-.acct-item::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:3px;background:var(--accent);opacity:0;border-radius:0 2px 2px 0;transition:opacity .18s}
+.acct-item{padding:12px 14px;border:0.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .18s;display:flex;justify-content:space-between;align-items:center;background:var(--surface);margin-bottom:6px}
 .acct-item:hover{border-color:var(--border-accent);background:var(--accent-light);transform:translateX(2px)}
-.acct-item:hover::before{opacity:1}
 .acct-item .ai-name{font-weight:600;font-size:14px;color:var(--text);margin-bottom:2px}
 .acct-item .ai-id{font-size:11px;color:var(--text3);font-family:var(--mono)}
 .acct-item .ai-select{font-size:13px;font-weight:600;color:var(--accent);flex-shrink:0}
-#acct-menu{background:var(--surface)!important;border:0.5px solid var(--border2)!important;border-radius:12px!important;box-shadow:var(--shadow-lg)!important}
 #hook-swipe-arena{display:flex;flex-direction:column;align-items:center;padding:24px 16px 20px}
 #hook-card-wrap{position:relative;width:300px;height:300px;margin-bottom:24px;flex-shrink:0}
 .hook-card-bg1{position:absolute;inset:0;background:var(--surface2);border:0.5px solid var(--border);border-radius:24px;transform:translateY(10px) scale(0.95);z-index:1}
@@ -313,7 +253,7 @@ input[type="date"]{cursor:pointer}
 #onboarding-popup input,#onboarding-popup textarea{background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.18)!important;color:#fff!important;border-radius:10px!important}
 #onboarding-popup input::placeholder,#onboarding-popup textarea::placeholder{color:rgba(255,255,255,.35)!important}
 .ai-premium-header{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:0.5px solid var(--border);background:var(--surface2)}
-.ai-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(0,113,227,.25)}
+.ai-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .ai-status{font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px;margin-top:2px}
 .ai-status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block}
 .msg.bot{background:var(--surface2);border:0.5px solid var(--border);border-radius:0 14px 14px 14px;padding:14px 16px;font-size:14px;line-height:1.65;color:var(--text);max-width:85%;margin-bottom:12px}
@@ -484,7 +424,7 @@ input[type="date"]{cursor:pointer}
 <!-- TOPBAR -->
 <div id="topbar">
   <span id="mob-menu" onclick="toggleSidebar()">☰</span>
-  <a href="https://adsopify.com" class="brand" style="text-decoration:none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect width="24" height="24" rx="6" fill="#0071E3"/><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="8.5" r="1.8" fill="white" opacity="0.9"/><path d="M17 11V17.5" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg>Adsopify</a>
+  <a href="https://adsopify.com" class="brand" style="text-decoration:none;color:inherit">Ads<span>opify</span></a>
   <div class="spacer"></div>
   <div id="fatigue-alert" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#dc2626;cursor:pointer" onclick="nav('creative')" title="Creative yorgunluğu olan kampanyalar var">⚠️ <span id="fatigue-count"></span> yorgun kampanya</div>
   <div class="stat-badge" id="top-spend"><span>Bugün:</span> <strong id="top-spend-val">—</strong></div>
@@ -504,7 +444,6 @@ input[type="date"]{cursor:pointer}
 
 <!-- SIDEBAR -->
 <div id="sidebar">
-  <div style="padding:13px 13px 11px;border-bottom:0.5px solid var(--border);margin-bottom:6px;display:flex;align-items:center;gap:9px"><div style="width:27px;height:27px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 17.5L8.8 8L12.6 17.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.8 14H11" stroke="white" stroke-width="2.2" stroke-linecap="round"/><circle cx="17" cy="8.5" r="2" fill="white"/><path d="M17 11.5V17.5" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg></div><span style="font-size:15px;font-weight:700;letter-spacing:-0.03em;color:var(--text)">Adsopify</span></div>
   <div class="nav-section">Ana</div>
   <div class="nav-item active" onclick="nav('plan')" data-sec="plan"><span class="icon">📋</span>Günlük Plan</div>
   <div class="nav-item" onclick="nav('dash')" data-sec="dash"><span class="icon">📊</span>Reklamları Analiz Et</div>
@@ -513,6 +452,7 @@ input[type="date"]{cursor:pointer}
   <div class="nav-section">Optimizasyon</div>
   <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><span class="icon">⚡</span>Reklam Hazırla</div>
   <div class="nav-item" onclick="nav('scale')" data-sec="scale"><span class="icon">📈</span>Ölçekleme</div>
+  <div class="nav-item" onclick="nav('creative')" data-sec="creative"><span class="icon">🎨</span>Creative Skor</div>
   <div class="nav-item" onclick="nav('budget')" data-sec="budget"><span class="icon">🗓️</span>Bütçe Planlayıcı</div>
 
   <div class="nav-section">İçerik</div>
@@ -1730,7 +1670,7 @@ function startApp() {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
   }
-  setTimeout(function(){ loadPlan(); }, 150);
+  loadPlan();
 }
 
 async function loadAllAccounts() {
@@ -2138,99 +2078,6 @@ async function getTodayInsights() {
   return getInsights(today, today);
 }
 
-
-async function loadWeekly() {
-  const loadEl = document.getElementById('weekly-loading');
-  const contEl = document.getElementById('weekly-content');
-  if (loadEl) { loadEl.style.display='flex'; loadEl.innerHTML='<div class="spinner"></div>&nbsp;Veriler yükleniyor...'; }
-  if (contEl) contEl.style.display='none';
-
-  if (!S.token || !S.accountId) {
-    if (loadEl) loadEl.innerHTML='<div style="padding:16px;color:var(--text2)">Meta hesabı bağlı değil.</div>';
-    return;
-  }
-  try {
-    const today  = new Date().toISOString().split('T')[0];
-    const d = n  => new Date(Date.now()-n*86400000).toISOString().split('T')[0];
-    const [thisWeek, lastWeek] = await Promise.all([
-      getInsights(d(6), today),
-      getInsights(d(13), d(7))
-    ]);
-    const sum  = (arr,k) => arr.reduce((s,i)=>s+parseFloat(i[k]||0),0);
-    const sumP = (arr,k) => arr.reduce((s,i)=>s+(i[k]||0),0);
-    const tw={spend:sum(thisWeek,'spend'),imp:sum(thisWeek,'impressions'),clicks:sum(thisWeek,'clicks'),purchases:sumP(thisWeek,'_purchases'),revenue:sumP(thisWeek,'_revenue')};
-    const lw={spend:sum(lastWeek,'spend'),imp:sum(lastWeek,'impressions'),clicks:sum(lastWeek,'clicks'),purchases:sumP(lastWeek,'_purchases'),revenue:sumP(lastWeek,'_revenue')};
-    tw.ctr=tw.imp>0?tw.clicks/tw.imp*100:0; tw.cpc=tw.clicks>0?tw.spend/tw.clicks:0; tw.roas=tw.spend>0&&tw.revenue>0?tw.revenue/tw.spend:0; tw.cpa=tw.purchases>0?tw.spend/tw.purchases:0;
-    lw.ctr=lw.imp>0?lw.clicks/lw.imp*100:0; lw.cpc=lw.clicks>0?lw.spend/lw.clicks:0; lw.roas=lw.spend>0&&lw.revenue>0?lw.revenue/lw.spend:0; lw.cpa=lw.purchases>0?lw.spend/lw.purchases:0;
-
-    const tc=(label,cv,pv,fmtFn,hi)=>{
-      const d2=pv>0?(cv-pv)/pv*100:0; const good=hi?d2>=0:d2<=0;
-      const col=Math.abs(d2)<1?'var(--text3)':good?'var(--green)':'var(--red)';
-      const arr=d2>1?'▲':d2<-1?'▼':'→';
-      return '<div class="kpi-card"><div class="label">'+label+'</div><div class="value">'+fmtFn(cv)+'</div><div class="sub" style="color:'+col+'">'+arr+' '+Math.abs(d2).toFixed(1)+'% geçen haftaya göre</div></div>';
-    };
-    const kEl=document.getElementById('weekly-kpis');
-    if(kEl) kEl.innerHTML=
-      tc('Harcama',tw.spend,lw.spend,v=>'₺'+v.toFixed(0),false)+
-      tc('Satış',tw.purchases,lw.purchases,v=>v>0?v.toFixed(0):'—',true)+
-      tc('Gelir',tw.revenue,lw.revenue,v=>v>0?'₺'+fmt(Math.round(v)):'—',true)+
-      tc('ROAS',tw.roas,lw.roas,v=>v>0?v.toFixed(2)+'x':'—',true)+
-      tc('CTR',tw.ctr,lw.ctr,v=>'%'+v.toFixed(2),true)+
-      tc('CPC',tw.cpc,lw.cpc,v=>'₺'+v.toFixed(2),false);
-
-    const rows=[
-      ['Harcama','₺'+lw.spend.toFixed(0),'₺'+tw.spend.toFixed(0),tw.spend-lw.spend,lw.spend,false],
-      ['Gösterim',fmt(lw.imp),fmt(tw.imp),tw.imp-lw.imp,lw.imp,true],
-      ['Tıklama',fmt(lw.clicks),fmt(tw.clicks),tw.clicks-lw.clicks,lw.clicks,true],
-      ['CTR','%'+lw.ctr.toFixed(2),'%'+tw.ctr.toFixed(2),tw.ctr-lw.ctr,lw.ctr,true],
-      ['CPC','₺'+lw.cpc.toFixed(2),'₺'+tw.cpc.toFixed(2),tw.cpc-lw.cpc,lw.cpc,false],
-      ['Satış',lw.purchases>0?lw.purchases.toFixed(0):'—',tw.purchases>0?tw.purchases.toFixed(0):'—',tw.purchases-lw.purchases,lw.purchases,true],
-      ['ROAS',lw.roas>0?lw.roas.toFixed(2)+'x':'—',tw.roas>0?tw.roas.toFixed(2)+'x':'—',tw.roas-lw.roas,lw.roas,true],
-    ];
-    const tEl=document.getElementById('weekly-tbody');
-    if(tEl) tEl.innerHTML=rows.map(([l,lv,tv,diff,base,hi])=>{
-      const pct=base>0?Math.abs(diff/base*100).toFixed(1):null;
-      const good=hi?diff>=0:diff<=0;
-      const col=!pct||parseFloat(pct)<1?'var(--text3)':good?'var(--green)':'var(--red)';
-      const arr=diff>0?'▲':diff<0?'▼':'→';
-      return '<tr><td style="font-weight:500">'+l+'</td><td style="color:var(--text2)">'+lv+'</td><td><strong>'+tv+'</strong></td><td><span style="color:'+col+';font-weight:600">'+arr+' '+(pct?pct+'%':'—')+'</span></td></tr>';
-    }).join('');
-
-    const campMap={};
-    [...thisWeek,...lastWeek].forEach(i=>{if(!campMap[i.campaign_name])campMap[i.campaign_name]={tw:null,lw:null};});
-    thisWeek.forEach(i=>{campMap[i.campaign_name].tw=i;});
-    lastWeek.forEach(i=>{campMap[i.campaign_name].lw=i;});
-    const cEl=document.getElementById('weekly-camps');
-    if(cEl) cEl.innerHTML=Object.entries(campMap).map(([name,d2])=>{
-      const twS=d2.tw?parseFloat(d2.tw.spend||0):0,lwS=d2.lw?parseFloat(d2.lw.spend||0):0;
-      const twR=d2.tw?(d2.tw._roas||0):0,twC=d2.tw?parseFloat(d2.tw.ctr||0):0,lwC=d2.lw?parseFloat(d2.lw.ctr||0):0;
-      const sd=lwS>0?((twS-lwS)/lwS*100).toFixed(1):null;
-      return '<div style="padding:12px 0;border-bottom:0.5px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center">'+
-        '<div style="font-weight:500;font-size:13px;flex:2;min-width:150px">'+escapeHtml(name)+'</div>'+
-        '<span class="badge gray">₺'+twS.toFixed(0)+(sd?' ('+(twS>=lwS?'▲':'▼')+Math.abs(parseFloat(sd)).toFixed(1)+'%)':'')+'</span>'+
-        (twR>0?'<span class="badge '+(twR>=2?'green':twR>=1?'yellow':'red')+'">ROAS '+twR.toFixed(2)+'x</span>':'')+
-        '<span class="badge gray" style="color:'+(twC>=lwC?'var(--green)':'var(--red)')+'">CTR %'+twC.toFixed(2)+'</span></div>';
-    }).join('')||'<div style="color:var(--text3);padding:16px">Veri yok</div>';
-
-    const acts=[];
-    if(tw.roas>0&&lw.roas>0&&tw.roas>=lw.roas*1.15) acts.push({t:'green',i:'🚀',title:'ROAS artıyor',desc:'ROAS '+tw.roas.toFixed(2)+'x. Bütçeyi %20-30 artırabilirsin.'});
-    if(tw.roas>0&&lw.roas>0&&tw.roas<lw.roas*0.85) acts.push({t:'red',i:'⚠️',title:'ROAS düştü',desc:'Kötü kampanyaları durdur, iyi olanları ölçekle.'});
-    if(tw.purchases===0&&tw.spend>100) acts.push({t:'red',i:'🔴',title:'Satış yok',desc:'₺'+tw.spend.toFixed(0)+' harcandı. Pixel ve landing page kontrol et.'});
-    if(acts.length===0) acts.push({t:'blue',i:'📊',title:'Stabil performans',desc:'Metrikler geçen haftayla benzer.'});
-    const ac={green:'rgba(29,185,84,0.1)',red:'rgba(255,59,48,0.1)',yellow:'rgba(255,149,0,0.1)',blue:'var(--accent-light)'};
-    const tc2={green:'var(--green)',red:'var(--red)',yellow:'var(--yellow)',blue:'var(--accent)'};
-    const aEl=document.getElementById('weekly-actions');
-    if(aEl) aEl.innerHTML=acts.map(a=>'<div style="background:'+ac[a.t]+';border-radius:12px;padding:16px;display:flex;gap:12px"><span style="font-size:22px">'+a.i+'</span><div><div style="font-weight:700;color:'+tc2[a.t]+';margin-bottom:4px">'+a.title+'</div><div style="font-size:13px;color:var(--text2)">'+a.desc+'</div></div></div>').join('');
-
-    if(loadEl) loadEl.style.display='none';
-    if(contEl) contEl.style.display='block';
-  } catch(e) {
-    console.error('Weekly error:',e);
-    if(loadEl) loadEl.innerHTML='<div style="padding:20px;color:var(--red)">Hata: '+String(e.message||e)+'<br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="loadWeekly()">Tekrar Dene</button></div>';
-  }
-}
-
-
 function refreshData() {
   loadPlan();
   const sec = document.querySelector('.section.active').id.replace('sec-', '');
@@ -2581,7 +2428,125 @@ function checkFatigueAlert(insights) {
 // ═══════════════════════════════════════════════
 // HAFTALIK ÖZET
 // ═══════════════════════════════════════════════
-async async 
+async function loadWeekly() {
+  document.getElementById('weekly-loading').style.display = 'flex';
+  document.getElementById('weekly-content').style.display = 'none';
+
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const weekStart = new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0];
+    const lastWeekEnd = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+    const lastWeekStart = new Date(Date.now() - 13 * 86400000).toISOString().split('T')[0];
+
+    const [thisWeek, lastWeek] = await Promise.all([
+      getInsights(weekStart, today),
+      getInsights(lastWeekStart, lastWeekEnd)
+    ]);
+
+    const sumF = (arr, f) => arr.reduce((s, i) => s + parseFloat(i[f] || 0), 0);
+    const sumI = (arr, f) => arr.reduce((s, i) => s + parseInt(i[f] || 0), 0);
+    const sumP = (arr, p) => arr.reduce((s, i) => s + (i[p] || 0), 0);
+
+    const tw = {
+      spend: sumF(thisWeek, 'spend'), imp: sumI(thisWeek, 'impressions'),
+      clicks: sumI(thisWeek, 'clicks'), purchases: sumP(thisWeek, '_purchases'), revenue: sumP(thisWeek, '_revenue')
+    };
+    const lw = {
+      spend: sumF(lastWeek, 'spend'), imp: sumI(lastWeek, 'impressions'),
+      clicks: sumI(lastWeek, 'clicks'), purchases: sumP(lastWeek, '_purchases'), revenue: sumP(lastWeek, '_revenue')
+    };
+
+    tw.ctr = tw.imp > 0 ? tw.clicks / tw.imp * 100 : 0;
+    tw.cpc = tw.clicks > 0 ? tw.spend / tw.clicks : 0;
+    tw.roas = tw.spend > 0 && tw.revenue > 0 ? tw.revenue / tw.spend : 0;
+    tw.cpa = tw.purchases > 0 ? tw.spend / tw.purchases : 0;
+    lw.ctr = lw.imp > 0 ? lw.clicks / lw.imp * 100 : 0;
+    lw.cpc = lw.clicks > 0 ? lw.spend / lw.clicks : 0;
+    lw.roas = lw.spend > 0 && lw.revenue > 0 ? lw.revenue / lw.spend : 0;
+    lw.cpa = lw.purchases > 0 ? lw.spend / lw.purchases : 0;
+
+    const trendCard = (label, twVal, lwVal, fmtFn, higherIsBetter) => {
+      const diff = lwVal > 0 ? ((twVal - lwVal) / lwVal * 100) : 0;
+      const good = higherIsBetter ? diff >= 0 : diff <= 0;
+      const arrow = diff > 1 ? '▲' : diff < -1 ? '▼' : '→';
+      const color = Math.abs(diff) < 1 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
+      return '<div class="kpi-card"><div class="label">' + label + '</div><div class="value">' + fmtFn(twVal) + '</div><div class="sub" style="color:' + color + '">' + arrow + ' ' + Math.abs(diff).toFixed(1) + '% geçen haftaya göre</div></div>';
+    };
+
+    document.getElementById('weekly-kpis').innerHTML =
+      trendCard('Harcama', tw.spend, lw.spend, v => '₺' + v.toFixed(0), false) +
+      trendCard('Satış', tw.purchases, lw.purchases, v => v > 0 ? v.toFixed(0) : '—', true) +
+      trendCard('Gelir', tw.revenue, lw.revenue, v => v > 0 ? '₺' + fmt(Math.round(v)) : '—', true) +
+      trendCard('ROAS', tw.roas, lw.roas, v => v > 0 ? v.toFixed(2) + 'x' : '—', true) +
+      trendCard('CTR', tw.ctr, lw.ctr, v => '%' + v.toFixed(2), true) +
+      trendCard('CPC', tw.cpc, lw.cpc, v => '₺' + v.toFixed(2), false);
+
+    const metrics = [
+      { label: 'Harcama', lw: '₺' + lw.spend.toFixed(0), tw: '₺' + tw.spend.toFixed(0), diff: tw.spend - lw.spend, base: lw.spend, higher: false },
+      { label: 'Gösterim', lw: fmt(lw.imp), tw: fmt(tw.imp), diff: tw.imp - lw.imp, base: lw.imp, higher: true },
+      { label: 'Tıklama', lw: fmt(lw.clicks), tw: fmt(tw.clicks), diff: tw.clicks - lw.clicks, base: lw.clicks, higher: true },
+      { label: 'CTR', lw: '%' + lw.ctr.toFixed(2), tw: '%' + tw.ctr.toFixed(2), diff: tw.ctr - lw.ctr, base: lw.ctr, higher: true },
+      { label: 'CPC', lw: '₺' + lw.cpc.toFixed(2), tw: '₺' + tw.cpc.toFixed(2), diff: tw.cpc - lw.cpc, base: lw.cpc, higher: false },
+      { label: 'Satış', lw: lw.purchases > 0 ? lw.purchases.toFixed(0) : '—', tw: tw.purchases > 0 ? tw.purchases.toFixed(0) : '—', diff: tw.purchases - lw.purchases, base: lw.purchases, higher: true },
+      { label: 'ROAS', lw: lw.roas > 0 ? lw.roas.toFixed(2) + 'x' : '—', tw: tw.roas > 0 ? tw.roas.toFixed(2) + 'x' : '—', diff: tw.roas - lw.roas, base: lw.roas, higher: true },
+      { label: 'CPA', lw: lw.cpa > 0 ? '₺' + lw.cpa.toFixed(0) : '—', tw: tw.cpa > 0 ? '₺' + tw.cpa.toFixed(0) : '—', diff: tw.cpa - lw.cpa, base: lw.cpa, higher: false },
+    ];
+
+    document.getElementById('weekly-tbody').innerHTML = metrics.map(m => {
+      const pct = m.base > 0 ? Math.abs(m.diff / m.base * 100).toFixed(1) : null;
+      const good = m.higher ? m.diff >= 0 : m.diff <= 0;
+      const arrow = m.diff > 0 ? '▲' : m.diff < 0 ? '▼' : '→';
+      const color = !pct || parseFloat(pct) < 1 ? 'var(--text3)' : good ? 'var(--green)' : 'var(--red)';
+      return '<tr><td style="font-weight:500">' + m.label + '</td><td style="color:var(--text2)">' + m.lw + '</td><td><strong>' + m.tw + '</strong></td><td><span style="color:' + color + ';font-weight:600">' + arrow + ' ' + (pct ? pct + '%' : '—') + '</span></td></tr>';
+    }).join('');
+
+    const campMap = {};
+    [...thisWeek, ...lastWeek].forEach(i => { if (!campMap[i.campaign_name]) campMap[i.campaign_name] = { tw: null, lw: null }; });
+    thisWeek.forEach(i => { campMap[i.campaign_name].tw = i; });
+    lastWeek.forEach(i => { campMap[i.campaign_name].lw = i; });
+
+    document.getElementById('weekly-camps').innerHTML = Object.entries(campMap).map(([name, d]) => {
+      const twS = d.tw ? parseFloat(d.tw.spend || 0) : 0;
+      const lwS = d.lw ? parseFloat(d.lw.spend || 0) : 0;
+      const twR = d.tw ? (d.tw._roas || 0) : 0;
+      const twC = d.tw ? parseFloat(d.tw.ctr || 0) : 0;
+      const lwC = d.lw ? parseFloat(d.lw.ctr || 0) : 0;
+      const spendDiff = lwS > 0 ? ((twS - lwS) / lwS * 100).toFixed(1) : null;
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
+        '<div style="font-weight:500;font-size:13px;flex:2;min-width:160px">' + name + '</div>' +
+        '<span class="badge gray">₺' + twS.toFixed(0) + (spendDiff ? ' (' + (twS >= lwS ? '▲' : '▼') + Math.abs(parseFloat(spendDiff)).toFixed(1) + '%)' : '') + '</span>' +
+        (twR > 0 ? '<span class="badge ' + (twR >= 2 ? 'green' : twR >= 1 ? 'yellow' : 'red') + '">ROAS ' + twR.toFixed(2) + 'x</span>' : '') +
+        '<span class="badge gray" style="color:' + (twC >= lwC ? 'var(--green)' : 'var(--red)') + '">CTR %' + twC.toFixed(2) + '</span>' +
+        '</div>';
+    }).join('') || '<div style="color:var(--text3);font-size:13px;padding:16px">Veri yok</div>';
+
+    // Aksiyon önerileri
+    const actions = [];
+    if (tw.roas > 0 && tw.roas >= lw.roas * 1.15) actions.push({ type: 'green', icon: '🚀', title: 'ROAS artıyor — bütçeyi artır', desc: 'Bu hafta ROAS ' + tw.roas.toFixed(2) + 'x. Geçen haftaya göre ' + (((tw.roas-lw.roas)/lw.roas)*100).toFixed(1) + '% artış. En iyi kampanyaların bütçesini %20-30 artırabilirsin.' });
+    if (tw.roas > 0 && tw.roas < lw.roas * 0.85) actions.push({ type: 'red', icon: '⚠️', title: 'ROAS düştü — optimize et', desc: 'ROAS geçen haftaya göre ' + (((lw.roas-tw.roas)/lw.roas)*100).toFixed(1) + '% düştü. Kötü performanslı kampanyaları durdur, iyi ROAS li olanları ölçekle.' });
+    if (tw.ctr > 0 && tw.ctr < lw.ctr * 0.9) actions.push({ type: 'yellow', icon: '🎨', title: 'CTR düştü — creative yenile', desc: 'CTR %' + tw.ctr.toFixed(2) + ' seviyesine geriledi. Creative yorgunluğu başlamış olabilir. Yeni hook formatları ve görseller dene.' });
+    if (tw.ctr > 0 && tw.ctr > lw.ctr * 1.1) actions.push({ type: 'green', icon: '🎯', title: 'CTR yüksek — bu creative ölçekle', desc: 'CTR %' + tw.ctr.toFixed(2) + ' ile iyi performans gösteriyor. Bu hook formatını farklı kitlelere test et.' });
+    if (tw.purchases > 0 && tw.cpa > 0 && lw.cpa > 0 && tw.cpa < lw.cpa * 0.9) actions.push({ type: 'green', icon: '💰', title: 'CPA iyileşti — mükemmel', desc: 'Satış başı maliyet ' + tw.cpa.toFixed(0) + ' TL seviyesine düştü. Bütçeyi artırmak için ideal zaman.' });
+    if (tw.purchases === 0 && tw.spend > 100) actions.push({ type: 'red', icon: '🔴', title: 'Satış yok — acil müdahale', desc: 'Bu hafta ' + tw.spend.toFixed(0) + ' TL harcandı ama satış olmadı. Pixel kurulumunu, hedeflemeyi ve landing page\'i kontrol et.' });
+    if (actions.length === 0) actions.push({ type: 'blue', icon: '📊', title: 'Stabil performans', desc: 'Metrikler geçen haftayla benzer. Yeni creative ve A/B testleri dene.' });
+
+    const actionColors = { green: 'rgba(16,185,129,0.1)', red: 'rgba(239,68,68,0.1)', yellow: 'rgba(245,158,11,0.1)', blue: 'rgba(99,102,241,0.1)' };
+    const actionBorders = { green: 'rgba(16,185,129,0.3)', red: 'rgba(239,68,68,0.3)', yellow: 'rgba(245,158,11,0.3)', blue: 'rgba(99,102,241,0.3)' };
+    const actionTextColors = { green: 'var(--green)', red: 'var(--red)', yellow: 'var(--yellow)', blue: 'var(--accent2)' };
+
+    document.getElementById('weekly-actions').innerHTML = actions.map(a =>
+      '<div style="background:' + actionColors[a.type] + ';border:1px solid ' + actionBorders[a.type] + ';border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start">' +
+      '<span style="font-size:22px;flex-shrink:0">' + a.icon + '</span>' +
+      '<div><div style="font-weight:700;font-size:14px;color:' + actionTextColors[a.type] + ';margin-bottom:4px">' + a.title + '</div>' +
+      '<div style="font-size:13px;color:var(--text2);line-height:1.6">' + a.desc + '</div></div></div>'
+    ).join('');
+
+  } catch (e) {
+    document.getElementById('weekly-kpis').innerHTML = '<div style="color:var(--red);font-size:13px">Hata: ' + e.message + '</div>';
+  }
+  document.getElementById('weekly-loading').style.display = 'none';
+  document.getElementById('weekly-content').style.display = 'block';
+}
 
 // ═══════════════════════════════════════════════
 // BÜTÇE PLANLAYICI
@@ -3869,17 +3834,21 @@ function addMsg(text, type) {
 // THEME TOGGLE
 // ═══════════════════════════════════════════════
 function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'light';
-  const next = cur === 'dark' ? 'light' : 'dark';
-  if (next === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.removeAttribute('data-theme'); }
-  localStorage.setItem('adsopify_theme', next);
-  const btn = document.getElementById('theme-toggle'); if (btn) btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  const isDark = document.body.classList.toggle('light-mode');
+  localStorage.setItem('adsopify_theme', isDark ? 'dark' : 'light');
+  document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';
 }
 
 function initTheme() {
-  const saved = localStorage.getItem('adsopify_theme') || 'light';
-  if (saved === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); } else { document.documentElement.removeAttribute('data-theme'); }
-  const btn = document.getElementById('theme-toggle'); if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  const saved = localStorage.getItem('adsopify_theme');
+  if (saved === 'dark') {
+    document.body.classList.add('light-mode');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  } else {
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '🌙';
+  }
 }
 
 // ═══════════════════════════════════════════════
