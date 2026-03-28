@@ -108,6 +108,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;ali
 /* SECTION COMMONS */
 .s-eye{font-size:16px;font-weight:600;color:var(--blue);letter-spacing:-0.02em;margin-bottom:12px}
 .s-title{font-size:clamp(34px,5vw,64px);font-weight:700;letter-spacing:-0.045em;line-height:1.05;margin-bottom:20px;color:var(--t1)}
+.s-title.gradient{background:linear-gradient(135deg,#1D1D1F 0%,#3a3a3f 40%,#0071E3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(0,113,227,0.18))}
 .s-desc{font-size:clamp(16px,1.8vw,20px);font-weight:300;color:var(--t2);letter-spacing:-0.02em;line-height:1.55;max-width:640px}
 
 /* FEATURES */
@@ -171,20 +172,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;ali
 .comp-inner{max-width:960px;margin:0 auto;padding:110px 5vw}
 .comp-inner .s-title,.comp-inner .s-eye{text-align:center}
 .comp-inner .s-desc{text-align:center;margin:0 auto 56px}
-.comp-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:16px;overflow:hidden;border:0.5px solid var(--line2);box-shadow:0 4px 20px rgba(0,0,0,0.06);background:#fff}
-.comp-table thead tr{background:var(--bg2)}
-.comp-table th{padding:16px 20px;font-size:12.5px;font-weight:600;color:var(--t2);border-bottom:0.5px solid var(--line);text-align:center;letter-spacing:-0.01em}
-.comp-table th:first-child{text-align:left;width:42%}
-.comp-table th.hl{background:rgba(0,113,227,0.05);color:var(--blue)}
-.comp-table td{padding:14px 20px;font-size:13.5px;color:var(--t2);border-bottom:0.5px solid var(--line);text-align:center;background:#fff}
-.comp-table td:first-child{text-align:left;font-weight:500;color:var(--t1)}
-.comp-table td.hl{background:rgba(0,113,227,0.025)}
-.comp-table tr:last-child td{border-bottom:none}
-.comp-table tr:hover td{background:var(--bg2)}
-.comp-table tr:hover td.hl{background:rgba(0,113,227,0.05)}
 .ico-yes{color:var(--green);font-size:16px}
 .ico-no{color:var(--t3);font-size:16px}
-.hl-badge{display:inline-flex;padding:2px 9px;background:rgba(0,113,227,0.08);color:var(--blue);border-radius:980px;font-size:10.5px;font-weight:600;margin-left:6px;vertical-align:middle}
+.hl-badge{display:inline-flex;padding:2px 9px;background:rgba(0,113,227,0.1);color:var(--blue);border-radius:980px;font-size:10.5px;font-weight:600;vertical-align:middle}
+.comp-grid{border:0.5px solid var(--line2);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.cg-head{display:grid;grid-template-columns:1fr 130px 130px;background:var(--bg2);border-bottom:0.5px solid var(--line)}
+.cg-col{padding:14px 16px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--t2);letter-spacing:-0.01em}
+.cg-col.hl-col{background:rgba(0,113,227,0.05);color:var(--blue)}
+.cg-col-name{font-size:13px;font-weight:600}
+.cg-feat-col{padding:14px 20px}
+.cg-row{display:grid;grid-template-columns:1fr 130px 130px;border-bottom:0.5px solid var(--line);align-items:center;transition:background .15s}
+.cg-row:hover{background:var(--bg2)}
+.cg-feat{padding:14px 20px;font-size:14px;font-weight:500;color:var(--t1)}
+.cg-val{padding:14px 16px;text-align:center;font-size:13px}
+.cg-val.hl-col{background:rgba(0,113,227,0.025)}
+.cg-row:hover .cg-val.hl-col{background:rgba(0,113,227,0.05)}
 
 /* REVIEWS */
 .reviews-wrap{max-width:1200px;margin:0 auto;padding:110px 5vw}
@@ -295,8 +297,8 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   .how-inner{grid-template-columns:1fr;gap:48px;padding:80px 5vw}
   .reviews-grid{grid-template-columns:1fr}
   .reviews-wrap{padding:80px 5vw}
-  .comp-inner{padding:80px 5vw;overflow-x:auto}
-  .comp-table{min-width:520px;font-size:12.5px}
+  .comp-inner{padding:80px 5vw;overflow-x:hidden}
+  .cg-head{grid-template-columns:1fr 100px 100px}.cg-row{grid-template-columns:1fr 100px 100px}.cg-feat{padding:12px 14px;font-size:13px}.cg-val{padding:12px 10px;font-size:12px}.cg-col{padding:12px 10px}
   .faq-wrap{padding:80px 5vw}
   .pricing-inner{padding:80px 5vw}
   .price-feats{grid-template-columns:1fr}
@@ -315,6 +317,78 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   .price-num{font-size:60px}
   .btn-p{width:100%;justify-content:center}
 }
+
+
+.video-section{padding:100px 5vw;max-width:960px;margin:0 auto;text-align:center}
+.video-thumb{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;box-shadow:0 20px 60px rgba(0,0,0,0.12);transition:transform .3s var(--spring),box-shadow .3s var(--ease)}
+.video-thumb:hover{transform:scale(1.01);box-shadow:0 28px 72px rgba(0,0,0,0.16)}
+.video-thumb-img{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#0a1628 0%,#0d2048 40%,#0a1628 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.vt-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,113,227,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,113,227,0.08) 1px,transparent 1px);background-size:40px 40px}
+.vt-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(0,113,227,0.25) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%)}
+.vt-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:20px}
+.vt-label{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+.vt-title{font-size:clamp(22px,3vw,36px);font-weight:700;letter-spacing:-0.03em;color:#fff;max-width:500px;line-height:1.2}
+.play-btn{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;transition:all .25s var(--spring);position:relative}
+.play-btn::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);animation:playPulse 2.5s ease-out infinite}
+@keyframes playPulse{0%{transform:scale(1);opacity:.6}70%{transform:scale(1.3);opacity:0}100%{transform:scale(1.3);opacity:0}}
+.video-thumb:hover .play-btn{background:rgba(0,113,227,0.8);border-color:rgba(0,113,227,0.6);transform:scale(1.08)}
+.play-btn svg{width:22px;height:22px;fill:#fff;margin-left:4px}
+.video-thumb-img{min-height:280px}
+
+
+/* ANIMATED DEMO */
+.demo-section{padding:100px 5vw;max-width:1000px;margin:0 auto;text-align:center}
+.demo-section .s-desc{margin:0 auto 48px}
+.demo-frame{background:#fff;border:0.5px solid var(--line2);border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.1),0 4px 16px rgba(0,0,0,0.06);text-align:left}
+.demo-topbar{background:var(--bg2);border-bottom:0.5px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:16px}
+.demo-dots{display:flex;gap:6px}
+.dd{display:block;width:10px;height:10px;border-radius:50%}
+.dd.r{background:#FF5F57}.dd.y{background:#FEBC2E}.dd.g{background:#28C840}
+.demo-tabs{display:flex;gap:4px;margin-left:8px}
+.demo-tab{padding:6px 14px;border-radius:7px;font-size:12.5px;color:var(--t2);cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
+.demo-tab.active{background:rgba(0,113,227,0.1);color:var(--blue);font-weight:500}
+.demo-live{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:var(--green)}
+.demo-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:livePulse 2s infinite}
+.demo-screen{display:none;padding:20px}
+.demo-screen.active{display:block}
+
+/* screen 1 */
+.demo-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.demo-kpi{background:var(--bg2);border:0.5px solid var(--line);border-radius:9px;padding:12px 14px}
+.dk-l{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.dk-v{font-size:22px;font-weight:700;letter-spacing:-0.03em;line-height:1}
+.dk-v.g{color:var(--green)}.dk-v.b{color:var(--blue)}
+.dk-s{font-size:11px;color:var(--green);margin-top:3px}
+.demo-chart{height:80px;background:var(--bg2);border:0.5px solid var(--line);border-radius:9px;margin-bottom:14px;overflow:hidden;padding:8px 12px}
+.demo-rows{}
+.demo-row-h{display:grid;grid-template-columns:2fr 80px 90px;padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);border-bottom:0.5px solid var(--line)}
+.demo-row{display:grid;grid-template-columns:2fr 80px 90px;padding:10px 12px;font-size:13px;border-bottom:0.5px solid var(--line);align-items:center;transition:opacity .4s ease,transform .4s ease}
+.demo-row:last-child{border:none}
+
+/* screen 2 */
+.ai-demo-body{display:flex;flex-direction:column;gap:12px;min-height:200px}
+.ai-msg{transition:opacity .4s ease,transform .4s ease}
+
+/* screen 3 */
+.hook-demo{display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px 0 4px}
+.hook-card{background:var(--bg2);border:0.5px solid var(--line2);border-radius:14px;padding:24px;width:100%;max-width:440px}
+.hook-tag{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.hook-text{font-size:15px;font-weight:500;letter-spacing:-0.02em;line-height:1.55;color:var(--t1);margin-bottom:18px}
+.hook-btns{display:flex;gap:10px}
+.hook-btn{flex:1;padding:10px;border-radius:9px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;transition:transform .15s}
+.hook-btn:hover{transform:scale(1.03)}
+.hook-btn.skip{background:rgba(255,59,48,0.07);color:var(--red);border:0.5px solid rgba(255,59,48,0.18)}
+.hook-btn.use{background:rgba(29,185,84,0.08);color:var(--green);border:0.5px solid rgba(29,185,84,0.22)}
+.hook-dots{display:flex;gap:6px}
+.hdot{display:block;width:6px;height:6px;border-radius:50%;background:var(--bg3);transition:background .3s}
+.hdot.on{background:var(--blue)}
+
+@media(max-width:600px){
+  .demo-tabs .demo-tab:nth-child(3){display:none}
+  .demo-kpis{grid-template-columns:repeat(2,1fr)}
+  .demo-topbar{padding:10px 14px}
+}
+
 </style>
 </head>
 <body>
@@ -424,6 +498,100 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <div class="bc sr d2"><div class="bc-icon">🎨</div><div class="bc-title">Gorsel Prompt Uretici</div><p class="bc-desc">Urun gorselini yukle — Midjourney, Gemini ve DALL-E icin profesyonel promptlar uretir.</p></div>
 </div>
 
+
+<!-- ANIMATED DEMO -->
+<div class="demo-section sr">
+  <p class="s-eye" style="margin-bottom:12px">Canli Demo</p>
+  <h2 class="s-title gradient" style="margin-bottom:16px">Gercekte nasil gorunuyor.</h2>
+  <p class="s-desc" style="margin:0 auto 48px">Kampanyalarini bagla — Adsopify saniyeler icinde ne yapman gerektigini soyler.</p>
+
+  <div class="demo-frame">
+    <!-- Top bar -->
+    <div class="demo-topbar">
+      <div class="demo-dots"><span class="dd r"></span><span class="dd y"></span><span class="dd g"></span></div>
+      <div class="demo-tabs">
+        <div class="demo-tab active" id="dtab1">📊 Dashboard</div>
+        <div class="demo-tab" id="dtab2">🤖 AI Hoca</div>
+        <div class="demo-tab" id="dtab3">🃏 Hook Swipe</div>
+      </div>
+      <div class="demo-live"><span class="demo-live-dot"></span> Canli</div>
+    </div>
+
+    <!-- SCREEN 1: Dashboard -->
+    <div class="demo-screen active" id="dscreen1">
+      <div class="demo-kpis">
+        <div class="demo-kpi"><div class="dk-l">ROAS</div><div class="dk-v g" id="dk-roas">0.00x</div><div class="dk-s" id="dk-roas-s"></div></div>
+        <div class="demo-kpi"><div class="dk-l">Harcama</div><div class="dk-v b" id="dk-spend">₺0</div></div>
+        <div class="demo-kpi"><div class="dk-l">CPA</div><div class="dk-v" id="dk-cpa">₺0</div></div>
+        <div class="demo-kpi"><div class="dk-l">Satis</div><div class="dk-v g" id="dk-sales">0</div></div>
+      </div>
+      <div class="demo-chart">
+        <svg id="demo-svg" viewBox="0 0 600 120" preserveAspectRatio="none" style="width:100%;height:100%">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="rgba(0,113,227,0.25)"/>
+              <stop offset="100%" stop-color="rgba(0,113,227,0)"/>
+            </linearGradient>
+          </defs>
+          <path id="chart-area" fill="url(#chartGrad)" d="M0,120 L0,120 L600,120 Z"/>
+          <path id="chart-line" fill="none" stroke="#0071E3" stroke-width="2.5" stroke-linecap="round" d="M0,120"/>
+        </svg>
+      </div>
+      <div class="demo-rows">
+        <div class="demo-row-h"><span>Kampanya</span><span>ROAS</span><span>Karar</span></div>
+        <div class="demo-row" id="dr1" style="opacity:0"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span><div class="pill g">Olcekle</div></span></div>
+        <div class="demo-row" id="dr2" style="opacity:0"><span>2 Gorsel</span><span style="color:var(--amber)">2.1x</span><span><div class="pill y">Izle</div></span></div>
+        <div class="demo-row" id="dr3" style="opacity:0"><span>Dogru Aci</span><span style="color:var(--red)">0.6x</span><span><div class="pill r">Kapat</div></span></div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: AI Hoca -->
+    <div class="demo-screen" id="dscreen2">
+      <div class="ai-demo-body">
+        <div class="ai-msg" id="ai-m1" style="opacity:0;transform:translateY(10px)">
+          <div class="chat-role">Sen</div>
+          <div class="bubble user">Viral Reel kampanyami olcekleyebilir miyim?</div>
+        </div>
+        <div class="ai-msg" id="ai-m2" style="opacity:0;transform:translateY(10px)">
+          <div class="chat-role">AI Hoca</div>
+          <div class="bubble ai">Evet — <span class="hi">Viral Reel olceklemeye hazir.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL. Butceyi <span class="hi">%30 artir</span>, 3 gun izle.</div>
+        </div>
+        <div class="ai-msg" id="ai-m3" style="opacity:0;transform:translateY(10px)">
+          <div class="chat-role">AI Hoca yazıyor</div>
+          <div class="bubble ai typing"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: Hook Swipe -->
+    <div class="demo-screen" id="dscreen3">
+      <div class="hook-demo">
+        <div class="hook-card" id="hc1">
+          <div class="hook-tag">Hook #7 — Merak</div>
+          <div class="hook-text">"Turk girisimcilerinin yuzde 73u Meta reklamlarinda bu hatayı yapiyor."</div>
+          <div class="hook-btns">
+            <div class="hook-btn skip">✕ Atla</div>
+            <div class="hook-btn use">✓ Kullan</div>
+          </div>
+        </div>
+        <div class="hook-card" id="hc2" style="display:none">
+          <div class="hook-tag">Hook #8 — Sonuc</div>
+          <div class="hook-text">"ROAS 1.2x'ten 7.8x'e nasil ciktim — 3 adimda."</div>
+          <div class="hook-btns">
+            <div class="hook-btn skip">✕ Atla</div>
+            <div class="hook-btn use">✓ Kullan</div>
+          </div>
+        </div>
+        <div class="hook-dots">
+          <span class="hdot on" id="hd1"></span>
+          <span class="hdot" id="hd2"></span>
+          <span class="hdot" id="hd3"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- HOW -->
 <section class="how" id="how">
   <div class="how-inner">
@@ -471,24 +639,45 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
     <p class="s-eye">Karsilastirma</p>
     <h2 class="s-title">Neden Adsopify?</h2>
     <p class="s-desc">Manuel analize, reklam ajansina ve genel araclara gore farki goruntuleyin.</p>
-    <table class="comp-table">
-      <thead>
-        <tr>
-          <th>Ozellik</th>
-          <th class="hl">Adsopify <span class="hl-badge">Onerilen</span></th>
-          <th>Manuel Analiz</th>
-          <th>Reklam Ajansi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Gercek zamanli ROAS</td><td class="hl"><span class="ico-yes">✓</span></td><td><span class="ico-no">—</span></td><td><span class="ico-yes">✓</span></td></tr>
-        <tr><td>Otomatik Olcekle/Kapat</td><td class="hl"><span class="ico-yes">✓</span></td><td><span class="ico-no">—</span></td><td><span class="ico-no">—</span></td></tr>
-        <tr><td>AI Hook & Creative uretici</td><td class="hl"><span class="ico-yes">✓</span></td><td><span class="ico-no">—</span></td><td><span class="ico-no">—</span></td></tr>
-        <tr><td>Creative yorgunluk alarmi</td><td class="hl"><span class="ico-yes">✓</span></td><td><span class="ico-no">—</span></td><td><span class="ico-yes">✓</span></td></tr>
-        <tr><td>Kurulum suresi</td><td class="hl" style="color:var(--green);font-weight:600">30 saniye</td><td style="color:var(--t2)">Saatler</td><td style="color:var(--t2)">Haftalar</td></tr>
-        <tr><td>Aylik maliyet</td><td class="hl" style="color:var(--green);font-weight:600">$29.99</td><td style="color:var(--t2)">Zaman = Para</td><td style="color:var(--red);font-weight:600">$1.000+</td></tr>
-      </tbody>
-    </table>
+    <div class="comp-grid">
+      <!-- Header -->
+      <div class="cg-head">
+        <div class="cg-feat-col"></div>
+        <div class="cg-col hl-col"><span class="cg-col-name">Adsopify</span><span class="hl-badge">Onerilen</span></div>
+        <div class="cg-col"><span class="cg-col-name">Reklam Ajansi</span></div>
+      </div>
+      <!-- Rows -->
+      <div class="cg-row">
+        <div class="cg-feat">Gercek zamanli ROAS</div>
+        <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
+        <div class="cg-val"><span class="ico-yes">✓</span></div>
+      </div>
+      <div class="cg-row">
+        <div class="cg-feat">Otomatik Olcekle/Kapat</div>
+        <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
+        <div class="cg-val"><span class="ico-no">—</span></div>
+      </div>
+      <div class="cg-row">
+        <div class="cg-feat">AI Hook & Creative uretici</div>
+        <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
+        <div class="cg-val"><span class="ico-no">—</span></div>
+      </div>
+      <div class="cg-row">
+        <div class="cg-feat">Creative yorgunluk alarmi</div>
+        <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
+        <div class="cg-val"><span class="ico-yes">✓</span></div>
+      </div>
+      <div class="cg-row">
+        <div class="cg-feat">Kurulum suresi</div>
+        <div class="cg-val hl-col" style="color:var(--green);font-weight:600;font-size:13px">30 saniye</div>
+        <div class="cg-val" style="color:var(--t2);font-size:13px">Haftalar</div>
+      </div>
+      <div class="cg-row" style="border-bottom:none">
+        <div class="cg-feat">Aylik maliyet</div>
+        <div class="cg-val hl-col" style="color:var(--green);font-weight:700;font-size:14px">$29.99</div>
+        <div class="cg-val" style="color:var(--red);font-weight:700;font-size:14px">$1.000+</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -547,7 +736,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 
 <!-- CTA -->
 <section class="cta">
-  <h2 class="s-title sr">Bugun basla.<br>Hemen fark gor.</h2>
+  <h2 class="s-title sr gradient">Bugun basla.<br>Hemen fark gor.</h2>
   <p class="s-desc sr">Meta hesabini bagla, dashboardu ac, ilk karari dakikalar icinde ver.</p>
   <a href="https://adsopify.com/dashboard.html" class="btn-p sr">Ucretsiz Basla</a>
   <p class="cta-note sr">14 gun ucretsiz · Kredi karti gerekmez · 30 saniyede kur</p>
@@ -736,6 +925,153 @@ document.addEventListener('DOMContentLoaded', function() {
     showNotif();
     setInterval(showNotif, 7000);
   }, 3000);
+
+
+
+
+
+  // ANIMATED DEMO
+  var demoStarted = false;
+  var demoObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting && !demoStarted) {
+        demoStarted = true;
+        startDemo();
+        demoObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  var demoEl = document.querySelector('.demo-frame');
+  if (demoEl) demoObs.observe(demoEl);
+
+  function startDemo() {
+    // Animate KPIs counting up
+    animateVal('dk-roas', 0, 6.31, 1200, function(v) { return v.toFixed(2) + 'x'; });
+    animateVal('dk-spend', 0, 1095, 1200, function(v) { return '₺' + Math.round(v).toLocaleString(); });
+    animateVal('dk-cpa', 0, 91, 1000, function(v) { return '₺' + Math.round(v); });
+    animateVal('dk-sales', 0, 12, 900, function(v) { return Math.round(v); });
+    setTimeout(function() {
+      document.getElementById('dk-roas-s').textContent = '↑ +0.8x bu hafta';
+    }, 1300);
+
+    // Draw chart line
+    setTimeout(function() { animateChart(); }, 400);
+
+    // Show rows one by one
+    setTimeout(function() { showRow('dr1'); }, 800);
+    setTimeout(function() { showRow('dr2'); }, 1100);
+    setTimeout(function() { showRow('dr3'); }, 1400);
+
+    // Auto-cycle tabs
+    setTimeout(function() { switchTab(2); }, 3500);
+    setTimeout(function() { switchTab(3); }, 7000);
+    setTimeout(function() { switchTab(1); cycleHooks(); }, 10500);
+  }
+
+  function animateVal(id, from, to, duration, fmt) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(from + (to - from) * ease);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function animateChart() {
+    var pts = [110,95,105,80,88,70,75,60,65,50,55,40,45,30,35,20,25,15,20,10,15,8,12,5];
+    var svg = document.getElementById('demo-svg');
+    if (!svg) return;
+    var line = document.getElementById('chart-line');
+    var area = document.getElementById('chart-area');
+    var w = 600, h = 120;
+    var step = w / (pts.length - 1);
+    var pathD = '';
+    var areaD = 'M0,' + h + ' ';
+    pts.forEach(function(v, i) {
+      var x = i * step;
+      var y = v;
+      if (i === 0) { pathD = 'M' + x + ',' + y; areaD += 'L' + x + ',' + y + ' '; }
+      else { pathD += ' L' + x + ',' + y; areaD += 'L' + x + ',' + y + ' '; }
+    });
+    areaD += 'L' + w + ',' + h + ' Z';
+    var totalLen = 0;
+    line.setAttribute('d', pathD);
+    area.setAttribute('d', areaD);
+    try {
+      totalLen = line.getTotalLength();
+      line.style.strokeDasharray = totalLen;
+      line.style.strokeDashoffset = totalLen;
+      line.style.transition = 'stroke-dashoffset 1.5s ease';
+      requestAnimationFrame(function() { line.style.strokeDashoffset = '0'; });
+    } catch(e) {}
+    area.style.opacity = '0';
+    area.style.transition = 'opacity 1s ease';
+    setTimeout(function() { area.style.opacity = '1'; }, 400);
+  }
+
+  function showRow(id) {
+    var r = document.getElementById(id);
+    if (!r) return;
+    r.style.transition = 'opacity .4s ease, transform .4s ease';
+    r.style.transform = 'translateX(-8px)';
+    requestAnimationFrame(function() {
+      r.style.opacity = '1';
+      r.style.transform = 'translateX(0)';
+    });
+  }
+
+  function switchTab(n) {
+    document.querySelectorAll('.demo-tab').forEach(function(t, i) {
+      t.classList.toggle('active', i === n - 1);
+    });
+    document.querySelectorAll('.demo-screen').forEach(function(s, i) {
+      s.classList.toggle('active', i === n - 1);
+    });
+    if (n === 2) animateAIChat();
+  }
+
+  function animateAIChat() {
+    ['ai-m1','ai-m2','ai-m3'].forEach(function(id) {
+      var m = document.getElementById(id);
+      if (m) { m.style.opacity = '0'; m.style.transform = 'translateY(10px)'; }
+    });
+    setTimeout(function() { fadeInMsg('ai-m1'); }, 300);
+    setTimeout(function() { fadeInMsg('ai-m2'); }, 1400);
+    setTimeout(function() { fadeInMsg('ai-m3'); }, 2600);
+  }
+
+  function fadeInMsg(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.style.transition = 'opacity .4s ease, transform .4s ease';
+    m.style.opacity = '1';
+    m.style.transform = 'translateY(0)';
+  }
+
+  var hookIdx = 0;
+  function cycleHooks() {
+    hookIdx = (hookIdx + 1) % 2;
+    var c1 = document.getElementById('hc1');
+    var c2 = document.getElementById('hc2');
+    if (c1 && c2) {
+      c1.style.display = hookIdx === 0 ? 'block' : 'none';
+      c2.style.display = hookIdx === 1 ? 'block' : 'none';
+    }
+    ['hd1','hd2','hd3'].forEach(function(id, i) {
+      var d = document.getElementById(id);
+      if (d) d.classList.toggle('on', i === hookIdx);
+    });
+  }
+
+  // Tab click
+  document.querySelectorAll('.demo-tab').forEach(function(tab, i) {
+    tab.addEventListener('click', function() { switchTab(i + 1); });
+  });
 
 });
 </script>
