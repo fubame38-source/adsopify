@@ -276,6 +276,24 @@ input[type="date"]{cursor:pointer}
 [data-theme="dark"] #sidebar{background:var(--surface)}
 [data-theme="dark"] body{background:var(--bg);color:var(--text)}
 
+
+/* ── PLAN HERO NEW ── */
+.plan-hero-new{margin-bottom:20px}
+.plan-kpi-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.plan-kpi-card{background:var(--surface);border:0.5px solid var(--border);border-radius:14px;padding:16px 14px;box-shadow:var(--shadow);transition:all .18s;position:relative;overflow:hidden}
+.plan-kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;border-radius:14px 14px 0 0;background:var(--border)}
+.plan-kpi-card.accent::before{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.plan-kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--border2)}
+.plan-kpi-icon{font-size:18px;margin-bottom:10px;display:block}
+.plan-kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px}
+.plan-kpi-value{font-size:22px;font-weight:700;letter-spacing:-0.04em;color:var(--text);font-family:var(--mono);margin-bottom:4px;line-height:1}
+.plan-kpi-sub{font-size:11px;color:var(--text3);line-height:1.4}
+.plan-kpi-card.accent .plan-kpi-value{color:var(--accent)}
+.plan-kpi-card.green .plan-kpi-value{color:var(--green)}
+.plan-kpi-card.red .plan-kpi-value{color:var(--red)}
+@media(max-width:1100px){.plan-kpi-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.plan-kpi-row{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -521,24 +539,49 @@ input[type="date"]{cursor:pointer}
 
     <div id="plan-loading" class="loading-row"><div class="spinner"></div> Kampanya verisi çekiliyor...</div>
     <div id="plan-content" style="display:none">
-      <div class="plan-hero">
-        <div class="plan-hero-card">
-          <div class="overview-kicker">Bugünün komuta merkezi</div>
-          <h2>Bugün <span>neyi yapman</span> gerektiğini hemen gör.</h2>
-          <p>Uzun rapor yerine kısa karar kartları. Önce hangi kampanyaya bakacağını, bugün hangi içeriği üreteceğini ve neyi test etmen gerektiğini sade şekilde gör.</p>
-        </div>
-        <div class="plan-mini-grid">
-          <div class="plan-mini-card">
-            <div class="plan-mini-label">Tarih</div>
-            <div class="plan-mini-title" id="plan-date-badge">—</div>
-            <div class="plan-mini-text">Günlük karar ekranı her açılışta yenilenir.</div>
+      <div class="plan-hero-new">
+        <!-- Sol: KPI kartları -->
+        <div class="plan-kpi-row">
+          <div class="plan-kpi-card accent">
+            <div class="plan-kpi-icon">💸</div>
+            <div class="plan-kpi-label">Bugün Harcama</div>
+            <div class="plan-kpi-value" id="pkpi-spend">—</div>
+            <div class="plan-kpi-sub" id="pkpi-spend-sub">Veri yükleniyor</div>
           </div>
-          <div class="plan-mini-card">
-            <div class="plan-mini-label">Bugün</div>
-            <div class="plan-mini-title" id="plan-budget-badge">—</div>
-            <div class="plan-mini-text">Harcama, satış ve temel sinyaller tek satırda.</div>
+          <div class="plan-kpi-card">
+            <div class="plan-kpi-icon">🛒</div>
+            <div class="plan-kpi-label">Satış</div>
+            <div class="plan-kpi-value" id="pkpi-sales">—</div>
+            <div class="plan-kpi-sub" id="pkpi-sales-sub">Bugün toplam</div>
+          </div>
+          <div class="plan-kpi-card">
+            <div class="plan-kpi-icon">📈</div>
+            <div class="plan-kpi-label">ROAS</div>
+            <div class="plan-kpi-value" id="pkpi-roas">—</div>
+            <div class="plan-kpi-sub" id="pkpi-roas-sub">Gelir / Harcama</div>
+          </div>
+          <div class="plan-kpi-card">
+            <div class="plan-kpi-icon">⚡</div>
+            <div class="plan-kpi-label">Aktif Kampanya</div>
+            <div class="plan-kpi-value" id="pkpi-camps">—</div>
+            <div class="plan-kpi-sub" id="pkpi-camps-sub">Yayında</div>
+          </div>
+          <div class="plan-kpi-card">
+            <div class="plan-kpi-icon">🎯</div>
+            <div class="plan-kpi-label">CTR Ort.</div>
+            <div class="plan-kpi-value" id="pkpi-ctr">—</div>
+            <div class="plan-kpi-sub" id="pkpi-ctr-sub">Tıklama oranı</div>
+          </div>
+          <div class="plan-kpi-card">
+            <div class="plan-kpi-icon">🔁</div>
+            <div class="plan-kpi-label">Frekans</div>
+            <div class="plan-kpi-value" id="pkpi-freq">—</div>
+            <div class="plan-kpi-sub" id="pkpi-freq-sub">Ortalama</div>
           </div>
         </div>
+        <!-- hidden badge for compat -->
+        <div style="display:none" id="plan-date-badge"></div>
+        <div style="display:none" id="plan-budget-badge"></div>
       </div>
 
       <div class="plan-block" id="ai-action-card">
@@ -2183,6 +2226,30 @@ async function loadPlan() {
 
     document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
     document.getElementById('plan-budget-badge').textContent = cur + totalSpend.toFixed(0) + (totalPurchases > 0 ? ' · ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' · ' + todayROAS + 'x' : '');
+
+    // New KPI cards
+    const avgCtr = insights.length > 0 ? (insights.reduce((s,i)=>s+parseFloat(i.ctr||0),0)/insights.length).toFixed(2) : null;
+    const avgFreq = insights.length > 0 ? (insights.reduce((s,i)=>s+parseFloat(i.frequency||0),0)/insights.length).toFixed(1) : null;
+    const activeCamps = insights.filter(i=>parseFloat(i.spend||0)>0).length;
+
+    const pkSpend = document.getElementById('pkpi-spend');
+    const pkSales = document.getElementById('pkpi-sales');
+    const pkRoas  = document.getElementById('pkpi-roas');
+    const pkCamps = document.getElementById('pkpi-camps');
+    const pkCtr   = document.getElementById('pkpi-ctr');
+    const pkFreq  = document.getElementById('pkpi-freq');
+
+    if(pkSpend){ pkSpend.textContent = cur + totalSpend.toFixed(0); }
+    if(pkSales){ pkSales.textContent = totalPurchases > 0 ? totalPurchases.toFixed(0) + ' adet' : '—'; document.getElementById('pkpi-sales-sub').textContent = totalRevenue > 0 ? cur + fmt(Math.round(totalRevenue)) + ' ciro' : 'Bugün toplam'; }
+    if(pkRoas){ 
+      pkRoas.textContent = todayROAS ? todayROAS + 'x' : '—';
+      const roasCard = pkRoas.closest('.plan-kpi-card');
+      if(roasCard && todayROAS){ roasCard.classList.toggle('green', parseFloat(todayROAS)>=2); roasCard.classList.toggle('red', parseFloat(todayROAS)<1); }
+      document.getElementById('pkpi-roas-sub').textContent = todayROAS ? (parseFloat(todayROAS)>=2 ? '✓ Hedef üstü' : parseFloat(todayROAS)<1 ? '⚠ Dikkat' : 'Normal') : 'Gelir / Harcama';
+    }
+    if(pkCamps){ pkCamps.textContent = activeCamps || '—'; document.getElementById('pkpi-camps-sub').textContent = activeCamps + ' kampanya yayında'; }
+    if(pkCtr){ pkCtr.textContent = avgCtr ? '%' + avgCtr : '—'; document.getElementById('pkpi-ctr-sub').textContent = avgCtr ? (parseFloat(avgCtr)>=1.5 ? '✓ İyi' : parseFloat(avgCtr)<0.5 ? '⚠ Düşük' : 'Orta') : 'Tıklama oranı'; }
+    if(pkFreq){ pkFreq.textContent = avgFreq || '—'; document.getElementById('pkpi-freq-sub').textContent = avgFreq ? (parseFloat(avgFreq)>=3 ? '⚠ Yorgunluk riski' : parseFloat(avgFreq)>=2 ? 'İzle' : 'Düşük') : 'Ortalama'; }
 
     document.getElementById('plan-loading').style.display = 'none';
     document.getElementById('plan-content').style.display = 'block';
