@@ -4519,6 +4519,130 @@ async function sendPasswordReset() {
 // Hide forgot form when switching tabs
 const origSwitchAuthTab = typeof switchAuthTab === 'function' ? switchAuthTab : null;
 
+
+// ════════════════════════════════════════
+// ŞİFRE SIFIRLAMA — URL hash kontrolü
+// ════════════════════════════════════════
+(function checkPasswordReset() {
+  const hash = window.location.hash;
+  if (!hash) return;
+  
+  const params = {};
+  hash.replace('#', '').split('&').forEach(p => {
+    const [k, v] = p.split('=');
+    params[k] = decodeURIComponent(v || '');
+  });
+  
+  if (params.type === 'recovery' && params.access_token) {
+    // Show reset password screen
+    window.addEventListener('DOMContentLoaded', function() {
+      showResetPasswordScreen(params.access_token);
+    });
+  }
+})();
+
+function showResetPasswordScreen(accessToken) {
+  // Hide everything else
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('token-screen').style.display = 'none';
+  
+  // Create reset screen
+  const el = document.createElement('div');
+  el.id = 'reset-screen';
+  el.style.cssText = 'position:fixed;inset:0;z-index:2000;background:linear-gradient(135deg,#0a0e1a 0%,#0f172a 50%,#0a0e1a 100%);display:flex;align-items:center;justify-content:center;padding:24px';
+  el.innerHTML = `
+    <div style="width:100%;max-width:400px">
+      <div style="text-align:center;margin-bottom:32px">
+        <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:6px">Ads<span style="color:#818cf8">opify</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4)">Yeni şifrenizi belirleyin</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px">
+        <div style="margin-bottom:16px">
+          <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">Yeni Şifre</label>
+          <input type="password" id="new-password" placeholder="En az 8 karakter" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:10px;padding:12px 14px;font-size:14px;width:100%;font-family:var(--font);outline:none;box-sizing:border-box" />
+        </div>
+        <div style="margin-bottom:20px">
+          <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:block">Şifre Tekrar</label>
+          <input type="password" id="new-password-confirm" placeholder="Şifreyi tekrar girin" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:10px;padding:12px 14px;font-size:14px;width:100%;font-family:var(--font);outline:none;box-sizing:border-box" />
+        </div>
+        <div id="reset-screen-msg" style="display:none;margin-bottom:14px;font-size:13px;border-radius:8px;padding:10px 12px"></div>
+        <button onclick="submitNewPassword('${accessToken}')" id="reset-submit-btn" style="width:100%;padding:13px;background:#818cf8;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">
+          Şifreyi Güncelle
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(el);
+}
+
+async function submitNewPassword(accessToken) {
+  const pwd = document.getElementById('new-password').value;
+  const pwd2 = document.getElementById('new-password-confirm').value;
+  const msgEl = document.getElementById('reset-screen-msg');
+  const btn = document.getElementById('reset-submit-btn');
+
+  msgEl.style.display = 'none';
+
+  if (pwd.length < 6) {
+    msgEl.style.display = 'block';
+    msgEl.style.background = 'rgba(255,59,48,0.15)';
+    msgEl.style.color = '#ff6b6b';
+    msgEl.textContent = 'Şifre en az 6 karakter olmalı.';
+    return;
+  }
+  if (pwd !== pwd2) {
+    msgEl.style.display = 'block';
+    msgEl.style.background = 'rgba(255,59,48,0.15)';
+    msgEl.style.color = '#ff6b6b';
+    msgEl.textContent = 'Şifreler eşleşmiyor.';
+    return;
+  }
+
+  btn.textContent = 'Güncelleniyor...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(SB_URL + '/auth/v1/user', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + accessToken
+      },
+      body: JSON.stringify({ password: pwd })
+    });
+
+    const d = await r.json();
+    if (r.ok) {
+      msgEl.style.display = 'block';
+      msgEl.style.background = 'rgba(29,185,84,0.15)';
+      msgEl.style.color = '#25d366';
+      msgEl.textContent = '✓ Şifreniz güncellendi! Giriş yapabilirsiniz.';
+      btn.textContent = 'Güncellendi ✓';
+      // Clean URL and redirect to login after 2s
+      setTimeout(() => {
+        window.location.hash = '';
+        document.getElementById('reset-screen').remove();
+        document.getElementById('auth-screen').style.display = 'flex';
+      }, 2000);
+    } else {
+      msgEl.style.display = 'block';
+      msgEl.style.background = 'rgba(255,59,48,0.15)';
+      msgEl.style.color = '#ff6b6b';
+      msgEl.textContent = 'Hata: ' + (d.msg || d.error_description || 'Şifre güncellenemedi.');
+      btn.textContent = 'Şifreyi Güncelle';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    msgEl.style.display = 'block';
+    msgEl.style.background = 'rgba(255,59,48,0.15)';
+    msgEl.style.color = '#ff6b6b';
+    msgEl.textContent = 'Bağlantı hatası. Tekrar deneyin.';
+    btn.textContent = 'Şifreyi Güncelle';
+    btn.disabled = false;
+  }
+}
+
 </script>
 </body>
 </html>
