@@ -39,7 +39,11 @@ body{background:#FBFBFD;color:#1D1D1F;font-family:'Inter',-apple-system,BlinkMac
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;background:rgba(251,251,253,0.82);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:0.5px solid var(--line)}
-.nav-logo{font-size:17px;font-weight:600;letter-spacing:-0.022em;color:var(--t1);text-decoration:none}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;transition:opacity .2s}
+.nav-logo:hover{opacity:.82}
+.nav-wordmark{font-size:17px;font-weight:700;letter-spacing:-0.03em;color:var(--t1)}
+.hero-eyebrow{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--blue);letter-spacing:.01em;margin-bottom:20px;background:rgba(0,113,227,0.07);border:1px solid rgba(0,113,227,0.15);padding:7px 16px;border-radius:980px;opacity:0;animation:fadeUp .8s .1s var(--ease) forwards}
+.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:livePulse 2s infinite;flex-shrink:0}
 .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
 .nav-links a{color:var(--t2);text-decoration:none;font-size:13px;transition:color .2s}
 .nav-links a:hover{color:var(--t1)}
@@ -53,8 +57,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;ali
 .blob3{width:350px;height:350px;background:radial-gradient(circle,rgba(140,100,255,0.08) 0%,transparent 70%);bottom:10%;left:30%;animation-delay:-6s}
 @keyframes blobFloat{from{transform:translate(0,0) scale(1)}to{transform:translate(20px,15px) scale(1.05)}}
 
-.hero-eyebrow{position:relative;z-index:1;font-size:16px;font-weight:500;color:var(--blue);letter-spacing:-0.02em;margin-bottom:14px;opacity:0;animation:fadeUp .8s .1s var(--ease) forwards}
-.hero h1{position:relative;z-index:1;font-size:clamp(42px,7.5vw,92px);font-weight:700;letter-spacing:-0.045em;line-height:1.04;max-width:860px;margin:0 auto 24px;color:var(--t1);opacity:0;animation:fadeUp .8s .2s var(--ease) forwards}
+
+.hero h1{position:relative;z-index:1;font-size:clamp(42px,7.5vw,92px);font-weight:700;letter-spacing:-0.045em;line-height:1.04;max-width:860px;margin:0 auto 24px;opacity:0;animation:fadeUp .8s .2s var(--ease) forwards;background:linear-gradient(135deg,#1D1D1F 0%,#3a3a3f 40%,#0071E3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 12px rgba(0,113,227,0.2))}
 .hero-sub{position:relative;z-index:1;font-size:clamp(17px,2.2vw,24px);font-weight:300;color:var(--t2);max-width:600px;margin:0 auto 44px;letter-spacing:-0.02em;line-height:1.5;opacity:0;animation:fadeUp .8s .3s var(--ease) forwards}
 .hero-btns{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .4s var(--ease) forwards}
 .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;text-decoration:none;font-size:16px;font-weight:500;letter-spacing:-0.02em;padding:13px 26px;border-radius:980px;transition:all .25s var(--ease);position:relative;overflow:hidden}
@@ -389,6 +393,131 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   .demo-topbar{padding:10px 14px}
 }
 
+
+/* ── NEW ANIMATIONS ── */
+
+/* Scroll-triggered text reveal with line mask */
+.text-reveal {
+  overflow: hidden;
+  display: block;
+}
+.text-reveal-inner {
+  display: block;
+  transform: translateY(100%);
+  transition: transform 0.7s var(--spring);
+}
+.text-reveal.on .text-reveal-inner {
+  transform: translateY(0);
+}
+
+/* Glowing border pulse on bento wide card */
+.bc.wide {
+  position: relative;
+}
+.bc.wide::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 19px;
+  background: linear-gradient(135deg, rgba(0,113,227,0.3), rgba(100,180,255,0.1), transparent 60%);
+  z-index: -1;
+  animation: borderGlow 4s ease-in-out infinite alternate;
+}
+@keyframes borderGlow {
+  from { opacity: 0.4; filter: blur(2px); }
+  to   { opacity: 1;   filter: blur(0px); }
+}
+
+/* Number pop on stat cards */
+.stat-n {
+  transition: transform 0.3s var(--spring);
+}
+.stat:hover .stat-n {
+  transform: scale(1.08);
+}
+
+/* Staggered bento reveal */
+.bento .bc.sr.on { animation: bentoIn 0.6s var(--spring) both; }
+@keyframes bentoIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Review card avatar glow on hover */
+.ava {
+  transition: box-shadow 0.3s ease, transform 0.3s var(--spring);
+}
+.rc:hover .ava {
+  box-shadow: 0 0 0 3px rgba(0,113,227,0.2);
+  transform: scale(1.08);
+}
+
+/* FAQ icon spin-in */
+.faq-ico {
+  transition: transform 0.35s var(--spring), background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* CTA button shimmer */
+.btn-p {
+  overflow: hidden;
+}
+.btn-p::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -75%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { left: -75%; }
+  60%  { left: 125%; }
+  100% { left: 125%; }
+}
+
+/* Pricing card top accent */
+.price-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #0071E3, transparent);
+  border-radius: 0 0 2px 2px;
+}
+
+/* Step hover arrow */
+.step::after {
+  content: '→';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+  opacity: 0;
+  color: var(--blue);
+  font-size: 16px;
+  transition: opacity 0.2s, transform 0.25s var(--spring);
+}
+.step { position: relative; }
+.step:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Scroll-triggered section line */
+.section-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,113,227,0.3), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s var(--ease);
+}
+.section-line.on {
+  transform: scaleX(1);
+}
+
 </style>
 </head>
 <body>
@@ -409,7 +538,16 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Adsopify</a>
+  <a href="#" class="nav-logo">
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+    <rect width="28" height="28" rx="8" fill="#0071E3"/>
+    <path d="M7 20L11.5 9L16 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9 16.5H14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="20" cy="10" r="2.5" fill="white" opacity="0.9"/>
+    <path d="M20 13.5V20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span class="nav-wordmark">Adsopify</span>
+</a>
   <ul class="nav-links">
     <li><a href="#features">Ozellikler</a></li>
     <li><a href="#how">Nasil Calisir</a></li>
@@ -423,7 +561,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <div class="blob blob1"></div>
   <div class="blob blob2"></div>
   <div class="blob blob3"></div>
-  <p class="hero-eyebrow">Adsopify</p>
+  <div class="hero-eyebrow"><span class="eyebrow-dot"></span>AI destekli Meta Reklam Platformu</div>
   <h1>Meta reklamlarini<br>kontrol et.</h1>
   <p class="hero-sub">Hangi kampanya para yakiyor, hangisi buyumeye hazir. Adsopify gercek verini alir, ne yapman gerektigini soyler.</p>
   <div class="hero-btns">
@@ -465,6 +603,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   </div>
 </section>
 
+<div class="section-line sr"></div>
 <!-- STATS -->
 <div class="stats-wrap sr">
   <div class="stats-row">
@@ -592,6 +731,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   </div>
 </div>
 
+<div class="section-line sr"></div>
 <!-- HOW -->
 <section class="how" id="how">
   <div class="how-inner">
@@ -633,6 +773,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   </div>
 </section>
 
+<div class="section-line sr"></div>
 <!-- COMPARISON -->
 <div class="comp-wrap">
   <div class="comp-inner sr">
