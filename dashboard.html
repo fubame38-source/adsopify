@@ -736,19 +736,26 @@ tbody tr:hover td{background:var(--surface2)}
 
 <!-- GÜNLÜK PLAN -->
 <div id="sec-plan" class="section active">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+
+  <!-- ── GREETING BAR ── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
     <div>
-      <div style="font-size:22px;font-weight:800;letter-spacing:-.04em;color:var(--text)">Günlük Plan</div>
-      <div style="font-size:13px;color:var(--text2);margin-top:2px" id="plan-date">Yükleniyor...</div>
+      <div id="plan-greeting" style="font-size:24px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Günaydın 👋</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:3px" id="plan-date">Yükleniyor...</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
-      <div id="plan-progress-wrap" style="display:none;align-items:center;gap:10px">
-        <div style="font-size:12px;font-weight:700;color:var(--text2)" id="plan-progress-label">0/4 tamamlandı</div>
-        <div style="width:100px;height:5px;background:var(--surface3);border-radius:99px;overflow:hidden">
-          <div id="plan-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:99px;transition:width .4s cubic-bezier(.34,1.56,.64,1)"></div>
+      <div id="plan-progress-wrap" style="display:none;align-items:center;gap:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text3)" id="plan-progress-label">0/4</div>
+        <div style="width:80px;height:4px;background:var(--surface3);border-radius:99px;overflow:hidden">
+          <div id="plan-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:99px;transition:width .5s cubic-bezier(.34,1.56,.64,1)"></div>
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh">↺ Yenile</button>
+      <div style="display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--border)">
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 5px rgba(29,78,216,.5)"></span>
+        <span style="font-size:12px;font-weight:600;color:var(--text2)" id="top-spend-val2">₺0</span>
+        <span style="font-size:12px;color:var(--text3)">bugün</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh" style="font-size:14px">↺</button>
     </div>
   </div>
 
@@ -756,74 +763,72 @@ tbody tr:hover td{background:var(--surface2)}
 
   <div id="plan-content" style="display:none">
 
-    <!-- ── HERO GRID ── -->
-    <div class="plan-hero">
-      <div class="plan-hero-main">
-        <div class="plan-overline">Bugünün planı</div>
-        <div class="plan-title">Bugün ne yapmalı?</div>
-        <p class="plan-sub">Kampanya verinden otomatik oluşturulan kişisel büyüme planın.</p>
-        <div class="plan-focus-grid">
-          <div class="focus-item"><div class="fi-label">Tarih</div><div class="fi-value" id="plan-date-badge">—</div><div class="fi-note">Otomatik yenilenir</div></div>
-          <div class="focus-item accent"><div class="fi-label">Bugün performans</div><div class="fi-value" id="plan-budget-badge">—</div><div class="fi-note">Harcama · Satış · ROAS</div></div>
+    <!-- ── ODAK KARTI (tek büyük mesaj) ── -->
+    <div id="focus-card" style="display:none;margin-bottom:16px"></div>
+
+    <!-- ── GÖREVLER ── -->
+    <div id="tasks-card" style="display:none;margin-bottom:16px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Bugünün Görevleri</span>
+          </div>
+          <span style="font-size:12px;font-weight:700;color:var(--text3)" id="checklist-count">0/0 tamamlandı</span>
         </div>
-      </div>
-      <div class="plan-command">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
-          <div><div class="cmd-kicker">Bugün modu</div><div class="cmd-title">Optimize</div></div>
-          <span class="cmd-live">Hazır</span>
+        <div id="ai-checklist-items" style="padding:10px 12px;display:flex;flex-direction:column;gap:6px"></div>
+        <!-- Devamını gör toggle -->
+        <div id="tasks-more-wrap" style="display:none;border-top:1px solid var(--border)">
+          <button onclick="toggleMoreTasks()" id="tasks-more-btn" style="width:100%;padding:12px;background:none;border:none;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font);transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">
+            + Daha fazla görev gör
+          </button>
+          <div id="tasks-more-items" style="display:none;padding:0 12px 10px;display:flex;flex-direction:column;gap:6px"></div>
         </div>
-        <div class="cmd-item"><div class="cmd-item-label">Öncelik</div><div class="cmd-item-value">Durdur → Düzelt → Büyüt</div></div>
-        <div class="cmd-item"><div class="cmd-item-label">Yaklaşım</div><div class="cmd-item-value">Önce sorunlu kampanyayı temizle, sonra kazananı büyüt.</div></div>
-        <div class="cmd-item"><div class="cmd-item-label">Bugün hedef</div><div class="cmd-item-value">3 net aksiyon al, test kuyruğunu boş bırakma.</div></div>
       </div>
     </div>
 
-    <!-- ── AI HERO CARD ── -->
-    <div id="ai-hero-card" style="display:none;margin-bottom:14px">
-      <!-- JS tarafından doldurulur -->
-    </div>
-
-    <!-- ── CHECKLIST ── -->
-    <div id="ai-checklist-card" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 6px rgba(29,78,216,.5)"></span>
-          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)">Bugünün Görevleri</span>
-        </div>
-        <span style="font-size:12px;color:var(--text3);font-weight:600" id="checklist-count">0/0</span>
-      </div>
-      <div id="ai-checklist-items" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-
-    <!-- Loading skeleton -->
-    <div id="ai-action-list-loading" style="margin-bottom:14px">
+    <!-- ── SKELETON ── -->
+    <div id="ai-action-list-loading" style="margin-bottom:16px">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
-        <div style="display:flex;gap:8px;margin-bottom:16px"><div class="skel" style="width:7px;height:7px;border-radius:50%"></div><div class="skel" style="width:120px;height:11px;border-radius:6px"></div></div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div class="skel" style="height:64px;border-radius:12px"></div>
-          <div class="skel" style="height:56px;border-radius:12px"></div>
-          <div class="skel" style="height:56px;border-radius:12px"></div>
-          <div class="skel" style="height:56px;border-radius:12px"></div>
+        <div style="margin-bottom:20px"><div class="skel" style="width:60%;height:28px;border-radius:8px;margin-bottom:8px"></div><div class="skel" style="width:40%;height:14px;border-radius:6px"></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="skel" style="height:58px;border-radius:12px"></div>
+          <div class="skel" style="height:52px;border-radius:12px"></div>
+          <div class="skel" style="height:52px;border-radius:12px"></div>
         </div>
       </div>
     </div>
 
-    <!-- hidden div for compat -->
+    <!-- compat -->
     <div id="ai-action-list" style="display:none"></div>
+    <div id="ai-hero-card" style="display:none"></div>
+    <div id="ai-checklist-card" style="display:none"></div>
+    <div id="plan-date-badge" style="display:none"></div>
+    <div id="plan-budget-badge" style="display:none"></div>
 
-    <div class="plan-sections">
-      <div class="plan-block">
-        <div class="pb-head"><div class="pb-title"><span class="pb-dot red"></span> Kritik bakış</div></div>
-        <div id="plan-urgent" class="compact-grid"></div>
-      </div>
-      <div class="plan-block">
-        <div class="pb-head">
-          <div class="pb-title"><span class="pb-dot warm"></span> İçerik & test backlog</div>
-          <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn">↺ Yenile</button>
+    <!-- ── KRİTİK + İÇERİK ── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="plan-bottom">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 5px rgba(220,38,38,.5);flex-shrink:0"></span>
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Kritik Bakış</span>
         </div>
-        <div id="plan-ideas" class="compact-grid"></div>
+        <div id="plan-urgent"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 5px rgba(180,83,9,.4);flex-shrink:0"></span>
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">İçerik Fikirleri</span>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" style="padding:3px 8px;font-size:11px">↺</button>
+        </div>
+        <div id="plan-ideas"></div>
       </div>
     </div>
+    <style>
+      @media(max-width:700px){#plan-bottom{grid-template-columns:1fr}}
+    </style>
+
   </div>
 </div>
 
@@ -1931,6 +1936,7 @@ async function loadPlan() {
     const cur = '₺';
 
     document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
+  var sv2 = document.getElementById('top-spend-val2'); if (sv2) sv2.textContent = cur + totalSpend.toFixed(0);
     document.getElementById('plan-budget-badge').textContent = cur + totalSpend.toFixed(0) + (totalPurchases > 0 ? ' · ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' · ' + todayROAS + 'x' : '');
 
     document.getElementById('plan-loading').style.display = 'none';
@@ -2083,96 +2089,120 @@ function renderCompactCard(opts) {
 function renderAIActions(actions) {
   if (!actions || !actions.length) return;
 
-  // Loading'i kapat
-  var loadingEl = document.getElementById('ai-action-list-loading');
-  if (loadingEl) loadingEl.style.display = 'none';
+  // Loading kapat
+  var loadEl = document.getElementById('ai-action-list-loading');
+  if (loadEl) loadEl.style.display = 'none';
 
-  // ── HERO CARD (ilk aksiyon) ──
-  var hero = actions[0];
-  var toneColors = {
-    high: { bg: 'linear-gradient(135deg,rgba(220,38,38,.11),rgba(239,68,68,.05))', border: 'rgba(220,38,38,.22)', badge: 'rgba(220,38,38,.15)', badgeText: 'var(--red)', icon: '🔥' },
-    mid:  { bg: 'linear-gradient(135deg,rgba(180,83,9,.11),rgba(245,158,11,.05))',  border: 'rgba(180,83,9,.22)',  badge: 'rgba(180,83,9,.15)',  badgeText: 'var(--yellow)', icon: '⚡' },
-    low:  { bg: 'linear-gradient(135deg,rgba(5,150,105,.11),rgba(16,185,129,.05))', border: 'rgba(5,150,105,.22)', badge: 'rgba(5,150,105,.15)', badgeText: 'var(--green)', icon: '📈' },
-    blue: { bg: 'linear-gradient(135deg,rgba(29,78,216,.11),rgba(99,102,241,.05))', border: 'rgba(29,78,216,.22)', badge: 'rgba(29,78,216,.15)', badgeText: 'var(--accent2)', icon: '🎯' }
-  };
-  var heroTone = hero.tone || 'blue';
-  var hc = toneColors[heroTone] || toneColors.blue;
-  var heroNav = hero.nav ? `onclick="nav('${escapeAttr(hero.nav)}')"` : '';
-
-  var heroEl = document.getElementById('ai-hero-card');
-  if (heroEl) {
-    heroEl.style.display = 'block';
-    heroEl.innerHTML = `
-      <div style="background:${hc.bg};border:1px solid ${hc.border};border-radius:20px;padding:24px 28px;box-shadow:0 8px 32px rgba(0,0,0,.07);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,.10)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,.07)'">
-        <div style="position:absolute;top:-20px;right:-20px;font-size:80px;opacity:.08;line-height:1;pointer-events:none;user-select:none">${hc.icon}</div>
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-              <span style="background:${hc.badge};color:${hc.badgeText};padding:4px 10px;border-radius:7px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em">${escapeHtml(hero.priority === 1 ? '🔥 Önce Bunu Yap' : 'Bugünün Odağı')}</span>
-              <span style="font-size:11px;color:var(--text3);font-weight:600;font-family:var(--mono)">#${hero.priority || 1}</span>
-            </div>
-            <div style="font-size:clamp(20px,2.5vw,26px);font-weight:900;letter-spacing:-.05em;color:var(--text);line-height:1.1;margin-bottom:10px">${escapeHtml(hero.title || '—')}</div>
-            <div style="font-size:13px;color:var(--text2);line-height:1.65;max-width:60ch">${escapeHtml(hero.reason || hero.detail || '')}</div>
-            ${hero.detail && hero.reason ? `<div style="margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.04);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6">${escapeHtml(hero.detail)}</div>` : ''}
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-items:flex-end">
-            ${hero.tool ? `<div style="font-size:11px;color:var(--text3);font-weight:600;text-align:right">${escapeHtml(hero.tool)}</div>` : ''}
-            ${hero.cta ? `<button ${heroNav} style="background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 14px rgba(29,78,216,.28);transition:all .15s;white-space:nowrap" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(29,78,216,.36)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(29,78,216,.28)'">${escapeHtml(hero.cta)} →</button>` : ''}
-          </div>
-        </div>
-      </div>`;
-  }
-
-  // ── CHECKLIST (diğer aksiyonlar) ──
-  var checklistCard = document.getElementById('ai-checklist-card');
-  var checklistItems = document.getElementById('ai-checklist-items');
-  var checklistCount = document.getElementById('checklist-count');
-  if (!checklistCard || !checklistItems) return;
-
-  var remaining = actions.slice(1);
-  if (!remaining.length) { checklistCard.style.display = 'none'; return; }
-
-  checklistCard.style.display = 'block';
-
-  // localStorage'dan tamamlanan görevleri yükle
   var today = new Date().toISOString().split('T')[0];
   var storageKey = 'adsopify_checklist_' + today;
   var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
-  function updateProgress() {
-    var done = document.querySelectorAll('#ai-checklist-items .task-item.done').length;
-    var total = remaining.length;
-    if (checklistCount) checklistCount.textContent = done + '/' + total + ' tamamlandı';
-    var pbar = document.getElementById('plan-progress-bar');
-    var plabel = document.getElementById('plan-progress-label');
-    var pwrap = document.getElementById('plan-progress-wrap');
-    if (pbar) pbar.style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
-    if (plabel) plabel.textContent = done + '/' + total + ' tamamlandı';
-    if (pwrap) pwrap.style.display = 'flex';
+  // ── ODAK KARTI — sadece #1 aksiyon, büyük ve net ──
+  var hero = actions[0];
+  var focusCard = document.getElementById('focus-card');
+  if (focusCard && hero) {
+    focusCard.style.display = 'block';
+    var toneGrad = {
+      high: 'linear-gradient(135deg,#1a0a0a,#2d1010)',
+      mid:  'linear-gradient(135deg,#1a1400,#2d2200)',
+      low:  'linear-gradient(135deg,#001a12,#002d1f)',
+      blue: 'linear-gradient(135deg,#06091a,#0d1433)'
+    };
+    var toneBorder = { high:'rgba(220,38,38,.3)', mid:'rgba(180,83,9,.3)', low:'rgba(5,150,105,.3)', blue:'rgba(29,78,216,.3)' };
+    var toneAccent = { high:'#f87171', mid:'#fbbf24', low:'#34d399', blue:'#818cf8' };
+    var toneTag = { high:'Acil', mid:'Önemli', low:'Büyüt', blue:'Odak' };
+    var t = hero.tone || 'blue';
+    var heroNavAttr = hero.nav ? 'onclick="nav(\'' + escapeAttr(hero.nav) + '\')"' : '';
+
+    focusCard.innerHTML = '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:20px;padding:28px 32px;position:relative;overflow:hidden;cursor:default" onmouseover="this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.transform=\'\'">' +
+      '<div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle at 70% 30%,' + (toneAccent[t]||toneAccent.blue) + '18,transparent 65%);pointer-events:none"></div>' +
+      '<div style="margin-bottom:16px;display:flex;align-items:center;gap:8px">' +
+        '<span style="background:' + (toneAccent[t]||toneAccent.blue) + '22;color:' + (toneAccent[t]||toneAccent.blue) + ';padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 Bugünün Odağı</span>' +
+        '<span style="font-size:11px;color:rgba(255,255,255,.3);font-family:var(--mono)">#' + (hero.priority||1) + '</span>' +
+      '</div>' +
+      '<div style="font-size:clamp(22px,3vw,30px);font-weight:900;letter-spacing:-.06em;color:#fff;line-height:1.05;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
+      '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:55ch;margin-bottom:18px">' + escapeHtml(hero.reason||hero.detail||'') + '</div>' +
+      (hero.detail && hero.reason ? '<div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:18px">' + escapeHtml(hero.detail) + '</div>' : '') +
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
+        (hero.cta ? '<button ' + heroNavAttr + ' style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .15s" onmouseover="this.style.opacity=\'.88\'" onmouseout="this.style.opacity=\'1\'">' + escapeHtml(hero.cta) + ' →</button>' : '') +
+        (hero.tool ? '<span style="font-size:12px;color:rgba(255,255,255,.3);font-weight:600">' + escapeHtml(hero.tool) + '</span>' : '') +
+      '</div>' +
+    '</div>';
   }
 
-  var toneIcon = { high: '🔴', mid: '🟡', low: '🟢', blue: '🔵' };
-  var toneNavAttr = function(n) { return n ? 'onclick="nav(\'' + escapeAttr(n) + '\')"' : ''; };
+  // ── GÖREV LİSTESİ — 2 görün, kalanı "+" ile ──
+  var tasksCard = document.getElementById('tasks-card');
+  var taskItems = document.getElementById('ai-checklist-items');
+  var moreWrap = document.getElementById('tasks-more-wrap');
+  var moreItems = document.getElementById('tasks-more-items');
+  var countEl = document.getElementById('checklist-count');
 
-  checklistItems.innerHTML = remaining.map(function(a, i) {
-    var isDone = completed.indexOf(i) !== -1;
-    var tone = a.tone || 'blue';
-    var ic = toneIcon[tone] || '🔵';
-    var navA = a.nav ? 'onclick="nav(\'' + escapeAttr(a.nav) + '\')"' : '';
-    return `<div class="task-item${isDone ? ' done' : ''}" data-idx="${i}" onclick="toggleTask(this,${i},'${escapeAttr(storageKey)}')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;border:1px solid ${isDone ? 'rgba(5,150,105,.25)' : 'var(--border)'};background:${isDone ? 'rgba(5,150,105,.06)' : 'var(--surface2)'};cursor:pointer;transition:all .18s;user-select:none">
-      <div style="width:22px;height:22px;border-radius:50%;border:2px solid ${isDone ? 'var(--green)' : 'var(--border2)'};background:${isDone ? 'var(--green)' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:11px;color:#fff;font-weight:800">${isDone ? '✓' : ''}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;color:${isDone ? 'var(--text3)' : 'var(--text)'};text-decoration:${isDone ? 'line-through' : 'none'};transition:all .2s;letter-spacing:-.02em">${escapeHtml(a.title || '—')}</div>
-        ${a.reason ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">${escapeHtml(a.reason)}</div>` : ''}
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        ${a.tool ? `<span style="font-size:11px;color:var(--text3);font-weight:600;white-space:nowrap">${escapeHtml(a.tool)}</span>` : ''}
-        ${a.cta && a.nav ? `<span ${navA} onclick="event.stopPropagation();nav('${escapeAttr(a.nav)}')" style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;transition:all .12s" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">${escapeHtml(a.cta)} →</span>` : ''}
-      </div>
-    </div>`;
-  }).join('');
+  if (!tasksCard || !taskItems) return;
 
-  updateProgress();
+  var rest = actions.slice(1);
+  if (!rest.length) { tasksCard.style.display = 'none'; return; }
+  tasksCard.style.display = 'block';
+
+  function makeTaskRow(a, idx, isMain) {
+    var isDone = completed.indexOf(idx) !== -1;
+    var toneColor = { high:'var(--red)', mid:'var(--yellow)', low:'var(--green)', blue:'var(--accent)' };
+    var tc = toneColor[a.tone] || toneColor.blue;
+    var navA = a.nav ? 'onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"' : '';
+    return '<div class="task-item' + (isDone?' done':'') + '" data-idx="' + idx + '" onclick="toggleTask(this,' + idx + ',\'' + escapeAttr(storageKey) + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid ' + (isDone?'rgba(5,150,105,.2)':'var(--border)') + ';background:' + (isDone?'rgba(5,150,105,.05)':'var(--surface2)') + ';cursor:pointer;transition:all .18s;user-select:none" onmouseover="if(!this.classList.contains(\'done\'))this.style.borderColor=\'' + tc + '44\'" onmouseout="if(!this.classList.contains(\'done\'))this.style.borderColor=\'var(--border)\'">' +
+      '<div style="width:20px;height:20px;border-radius:50%;border:2px solid ' + (isDone?'var(--green)':tc) + ';background:' + (isDone?'var(--green)':'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:10px;color:#fff;font-weight:800">' + (isDone?'✓':'') + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:700;color:' + (isDone?'var(--text3)':'var(--text)') + ';text-decoration:' + (isDone?'line-through':'none') + ';letter-spacing:-.02em;line-height:1.3">' + escapeHtml(a.title||'—') + '</div>' +
+        (a.reason ? '<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">' + escapeHtml(a.reason) + '</div>' : '') +
+      '</div>' +
+      (a.cta && a.nav ? '<span ' + navA + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;transition:all .12s" onmouseover="this.style.background=\'var(--accent)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'var(--accent-light)\';this.style.color=\'var(--accent)\'">' + escapeHtml(a.cta) + ' →</span>' : '') +
+    '</div>';
+  }
+
+  // İlk 2 görevi göster
+  var visible = rest.slice(0, 2);
+  var hidden = rest.slice(2);
+
+  taskItems.innerHTML = visible.map(function(a, i) { return makeTaskRow(a, i, true); }).join('');
+
+  if (hidden.length) {
+    moreWrap.style.display = 'block';
+    moreItems.innerHTML = hidden.map(function(a, i) { return makeTaskRow(a, i + 2, false); }).join('');
+  } else {
+    moreWrap.style.display = 'none';
+  }
+
+  // Progress güncelle
+  updatePlanProgress(rest.length, completed, storageKey);
+
+  // Greeting güncelle
+  var h = new Date().getHours();
+  var greet = h < 12 ? 'Günaydın 👋' : h < 18 ? 'İyi günler 👋' : 'İyi akşamlar 👋';
+  var greetEl = document.getElementById('plan-greeting');
+  if (greetEl) greetEl.textContent = greet;
+}
+
+function updatePlanProgress(total, completed, storageKey) {
+  var done = document.querySelectorAll('#ai-checklist-items .task-item.done').length +
+             document.querySelectorAll('#tasks-more-items .task-item.done').length;
+  var countEl = document.getElementById('checklist-count');
+  var pbar = document.getElementById('plan-progress-bar');
+  var plabel = document.getElementById('plan-progress-label');
+  var pwrap = document.getElementById('plan-progress-wrap');
+  if (countEl) countEl.textContent = done + '/' + total + ' tamamlandı';
+  if (pbar) pbar.style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
+  if (plabel) plabel.textContent = done + '/' + total;
+  if (pwrap) pwrap.style.display = 'flex';
+}
+
+function toggleMoreTasks() {
+  var wrap = document.getElementById('tasks-more-items');
+  var btn = document.getElementById('tasks-more-btn');
+  if (!wrap) return;
+  var isOpen = wrap.style.display !== 'none';
+  wrap.style.display = isOpen ? 'none' : 'flex';
+  wrap.style.flexDirection = 'column';
+  wrap.style.gap = '6px';
+  if (btn) btn.textContent = isOpen ? '+ Daha fazla görev gör' : '− Gizle';
 }
 
 function toggleTask(el, idx, storageKey) {
@@ -2205,14 +2235,8 @@ function toggleTask(el, idx, storageKey) {
   el.style.background = newDone ? 'rgba(5,150,105,.06)' : 'var(--surface2)';
 
   // Progress güncelle
-  var done = document.querySelectorAll('#ai-checklist-items .task-item.done').length;
-  var total = document.querySelectorAll('#ai-checklist-items .task-item').length;
-  var countEl = document.getElementById('checklist-count');
-  var pbar = document.getElementById('plan-progress-bar');
-  var plabel = document.getElementById('plan-progress-label');
-  if (countEl) countEl.textContent = done + '/' + total + ' tamamlandı';
-  if (pbar) pbar.style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
-  if (plabel) plabel.textContent = done + '/' + total + ' tamamlandı';
+  var total = document.querySelectorAll('#ai-checklist-items .task-item, #tasks-more-items .task-item').length;
+  updatePlanProgress(total, [], storageKey);
 
   // Hepsi tamam — konfeti mesajı
   if (done === total && total > 0) {
