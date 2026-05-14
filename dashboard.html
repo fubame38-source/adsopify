@@ -1753,19 +1753,18 @@ async function planFetchAI(cacheKey) {
   const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'öğleden sonra' : 'akşam';
 
   const prompt = brandCtx + '\n' +
-    'Şu an ' + timeCtx + '. Reklam yöneticisi dashboard'u açtı.\n' +
-    'Meta bağlantısı henüz kurulmamış veya günlük veri yok.\n\n' +
-    'Bugün ne yapmalı? Somut, uygulanabilir 4-5 aksiyon üret:\n' +
-    '- Creative üretimi (video, reels, story)\n' +
+    'Su an ' + timeCtx + '. Kullanici dashboard acti.\n' +
+    'Meta baglantisi kurulmamis veya gunluk veri yok.\n\n' +
+    'Bugun ne yapmali? Somut, uygulanabilir 4-5 aksiyon uret:\n' +
+    '- Creative uretimi (video, reels, story)\n' +
     '- Kitle/hedefleme denemeleri\n' +
     '- Reklam metni testleri\n' +
-    '- Bütçe/ölçekleme hamleleri\n' +
-    '- Rakip/trend araştırması\n\n' +
-    'Ayrıca:\n' +
-    '- verdict: Bu ' + timeCtx + ' için kısa motivasyonel bir yorum (1 cümle, enerjik)\n' +
-    '- tagline: Bugünün ana teması 3-4 kelime (örn: "Creative günü", "Test ve öğren", "Ölçek zamanı")\n\n' +
-    'SADECE bu JSON formatında yanıtla:\n' +
-    '{"tagline":"3-4 kelime tema","verdict":"motivasyonel 1 cümle","actions":[{"title":"aksiyon başlığı","reason":"nasıl ve neden kısaca","tone":"high|mid|low|blue","cta":"Git","nav":"hook|copy|scale|creative-prompt|dash|budget"}]}';
+    '- Butce/olcekleme hamleleri\n\n' +
+    'Ayrica:\n' +
+    '- verdict: Bu ' + timeCtx + ' icin kisa motivasyonel bir yorum (1 cumle, enerjik, Turkce)\n' +
+    '- tagline: Bugunun ana temasi 3-4 kelime (ornek: Creative Gunu, Test ve Ogren, Olcek Zamani)\n\n' +
+    'SADECE bu JSON formatinda yanıtla:\n' +
+    '{"tagline":"3-4 kelime","verdict":"1 cumle","actions":[{"title":"baslik","reason":"neden ve nasil","tone":"high|mid|low|blue","cta":"Git","nav":"hook|copy|scale|creative-prompt|dash|budget"}]}';
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
