@@ -1724,7 +1724,7 @@ function loadPlan() {
   if (de) de.textContent = dateStr;
 
   // Cache — aynı gün tekrar üretme
-  const cacheKey = 'dp_plan_v3_' + today.toISOString().split('T')[0];
+  const cacheKey = 'dp_plan_v4_' + today.toISOString().split('T')[0];
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
@@ -1746,46 +1746,79 @@ function loadPlan() {
 async function planFetchAI(cacheKey) {
   const brand = S.brand;
   const brandCtx = brand && brand.brandName
-    ? 'Marka: ' + brand.brandName + '. Ürün: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.' 
-    : 'Meta reklam hesabı.';
+    ? 'Marka: ' + brand.brandName + '. Urun: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.'
+    : 'Meta reklam hesabi.';
 
   const h = new Date().getHours();
-  const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'öğleden sonra' : 'akşam';
+  const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'ogleden sonra' : 'aksam';
+
+  // Meta baglysa bugunun kampanya verisini cek
+  let metaCtx = 'Meta verisi yok.';
+  if (S.token && S.accountId) {
+    try {
+      const ins = await getTodayInsights();
+      if (ins && ins.length > 0) {
+        const totalSpend   = ins.reduce((s,i) => s + parseFloat(i.spend||0), 0);
+        const totalSales   = ins.reduce((s,i) => s + (i._purchases||0), 0);
+        const totalRevenue = ins.reduce((s,i) => s + (i._revenue||0), 0);
+        const roas         = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue/totalSpend).toFixed(2) : null;
+        const avgFreq      = ins.reduce((s,i) => s + parseFloat(i.frequency||0), 0) / ins.length;
+        const avgCTR       = ins.reduce((s,i) => s + parseFloat(i.ctr||0), 0) / ins.length;
+        const cpa          = totalSales > 0 ? (totalSpend/totalSales).toFixed(0) : null;
+        const campLines    = ins.slice(0,4).map(i =>
+          i.campaign_name + ': harcama TL' + parseFloat(i.spend||0).toFixed(0) +
+          (i._roas ? ', ROAS ' + i._roas.toFixed(1) + 'x' : '') +
+          ', CTR %' + parseFloat(i.ctr||0).toFixed(2) +
+          ', Frekans ' + parseFloat(i.frequency||0).toFixed(1)
+        ).join(' | ');
+        metaCtx = 'Bugunun Meta verisi: Harcama TL' + totalSpend.toFixed(0) +
+          ', Satis ' + totalSales +
+          (roas ? ', ROAS ' + roas + 'x' : '') +
+          (cpa ? ', CPA TL' + cpa : '') +
+          ', Ort Frekans ' + avgFreq.toFixed(1) +
+          ', Ort CTR %' + avgCTR.toFixed(2) + '.' +
+          (campLines ? ' Kampanyalar: ' + campLines : '');
+      } else {
+        metaCtx = 'Meta bagli ama bugun henuz harcama yok veya kampanya aktif degil.';
+      }
+    } catch(e) {
+      metaCtx = 'Meta bagli ama veri cekilemedi.';
+    }
+  }
 
   const prompt = brandCtx + '\n' +
-    'Su an ' + timeCtx + '. Kullanici dashboard acti.\n' +
-    'Meta baglantisi kurulmamis veya gunluk veri yok.\n\n' +
-    'Bugun ne yapmali? Somut, uygulanabilir 4-5 aksiyon uret:\n' +
-    '- Creative uretimi (video, reels, story)\n' +
-    '- Kitle/hedefleme denemeleri\n' +
-    '- Reklam metni testleri\n' +
-    '- Butce/olcekleme hamleleri\n\n' +
-    'Ayrica:\n' +
-    '- verdict: Bu ' + timeCtx + ' icin kisa motivasyonel bir yorum (1 cumle, enerjik, Turkce)\n' +
-    '- tagline: Bugunun ana temasi 3-4 kelime (ornek: Creative Gunu, Test ve Ogren, Olcek Zamani)\n\n' +
-    'SADECE bu JSON formatinda yanıtla:\n' +
-    '{"tagline":"3-4 kelime","verdict":"1 cumle","actions":[{"title":"baslik","reason":"neden ve nasil","tone":"high|mid|low|blue","cta":"Git","nav":"hook|copy|scale|creative-prompt|dash|budget"}]}';
+    metaCtx + '\n\n' +
+    'Su an ' + timeCtx + '. Bu verilere gore bugun ne yapmali?\n\n' +
+    'Somut 4-5 aksiyon uret. Her aksiyon bunlardan biri olmali:\n' +
+    '- Cekilecek/uretilecek video veya reels (spesifik senaryo)\n' +
+    '- Test edilecek hook veya reklam metni\n' +
+    '- Hedef kitle veya segment denemesi\n' +
+    '- Butce veya teklif hamlesi\n' +
+    '- Creative format denemesi\n\n' +
+    'KESINLIKLE sunlari YAPMA:\n' +
+    '- Meta baglanmasini veya pixel kurulumunu onerme\n' +
+    '- Teknik entegrasyon tavsiyesi verme\n' +
+    '- nav degerlerinde sadece: hook, copy, creative-prompt, scale, budget kullan\n\n' +
+    'JSON formatinda yanit ver:\n' +
+    '{"tagline":"3-4 kelime tema","verdict":"1 cumle enerjik yorum","actions":[{"title":"aksiyon basligi","reason":"nasil ve neden detay","tone":"high|mid|low|blue","cta":"Git","nav":"hook"}]}';
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanısın. Türkçe yanıt ver. Enerjik ve motive edici ol. Sadece geçerli JSON döndür.',
+        system: 'Sen bir Meta reklam uzmanisisin. Turkce yanitla. Veri varsa ona gore somut aksiyon ver. Sadece gecerli JSON dondur, baska hicbir sey yazma.',
         message: prompt
       })
     });
     const data = await res.json();
-    let raw = (data.answer || '').trim();
+    const raw = (data.answer || '').trim();
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('JSON yok');
-    const parsed = safeJsonParse(match[0], { tagline: 'Bugünün Planı', verdict: '', actions: [] });
-
+    const parsed = safeJsonParse(match[0], { tagline: 'Bugunun Plani', verdict: '', actions: [] });
     if (cacheKey) localStorage.setItem(cacheKey, JSON.stringify(parsed));
     planShowResults(parsed.actions, parsed.verdict, parsed.tagline);
-
   } catch(e) {
-    // Hata: fallback olarak rastgele fikirlerle doldur
     console.error('planFetchAI error:', e);
     planShowFallback();
   }
@@ -1870,7 +1903,7 @@ function planShowFallback() {
 }
 
 function planReset() {
-  var cacheKey = 'dp_plan_v3_' + new Date().toISOString().split('T')[0];
+  var cacheKey = 'dp_plan_v4_' + new Date().toISOString().split('T')[0];
   localStorage.removeItem(cacheKey);
   var rb = document.getElementById('plan-reset-btn');
   if (rb) rb.style.display = 'none';
