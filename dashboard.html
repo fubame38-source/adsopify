@@ -36,7 +36,7 @@
   --red-light:rgba(220,38,38,0.09);
   --shadow:0 1px 3px rgba(0,0,0,0.04),0 8px 24px rgba(0,0,0,0.06);
   --shadow-md:0 4px 16px rgba(0,0,0,0.07),0 24px 64px rgba(0,0,0,0.09);
-  --sidebar-w:220px;
+  --sidebar-w:196px;
   --topbar-h:56px;
   --font:'Geist',sans-serif;
   --mono:'Geist Mono',monospace;
@@ -74,38 +74,38 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 /* ── TOPBAR ── */
 #topbar{
   position:fixed;top:0;left:0;right:0;height:var(--topbar-h);z-index:200;
-  display:flex;align-items:center;padding:0 16px 0 calc(var(--sidebar-w) + 16px);gap:8px;
-  background:rgba(247,248,251,0.85);backdrop-filter:blur(20px) saturate(180%);
+  display:flex;align-items:center;padding:0 16px 0 calc(var(--sidebar-w) + 20px);gap:8px;
+  background:rgba(247,248,251,0.92);backdrop-filter:blur(20px) saturate(180%);
   border-bottom:1px solid var(--border);
 }
-[data-theme=dark] #topbar{background:rgba(7,8,16,0.82);}
-#topbar .brand{font-weight:800;font-size:15px;letter-spacing:-.5px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:7px}
-#topbar .brand .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(29,78,216,.5)}
-[data-theme=dark] #topbar .brand .dot{box-shadow:0 0 8px rgba(79,142,247,.5)}
+[data-theme=dark] #topbar{background:rgba(15,17,23,0.92);}
+#topbar .brand{font-weight:800;font-size:14px;letter-spacing:-.04em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:6px;opacity:.5;pointer-events:none}
 #topbar .spacer{flex:1}
-.top-pill{display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s var(--ease)}
+.top-pill{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .14s;white-space:nowrap}
 .top-pill:hover{border-color:var(--border2);color:var(--text)}
-.top-pill.live{border-color:rgba(5,150,105,.25);background:var(--green-light);color:var(--green)}
-.top-pill .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:livePulse 2s ease infinite}
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;font-size:14px;color:var(--text2)}
-.icon-btn:hover{border-color:var(--border2);color:var(--text);background:var(--surface2)}
+.top-pill.live{border-color:rgba(5,150,105,.22);background:var(--green-light);color:var(--green)}
+.top-pill .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;animation:livePulse 2s ease infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.icon-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .13s;font-size:13px;color:var(--text2)}
+.icon-btn:hover{border-color:var(--border2);color:var(--text)}
 
 /* ── SIDEBAR ── */
 #sidebar{
   position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:100;
   background:var(--surface);border-right:1px solid var(--border);
-  padding:12px 0 24px;overflow-y:auto;
+  padding:0 0 24px;overflow-y:auto;
 }
+[data-theme=dark] #sidebar{background:var(--surface)}
 #sidebar::-webkit-scrollbar{width:0}
-.nav-grp{padding:18px 14px 4px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
-.nav-item{display:flex;align-items:center;gap:9px;margin:1px 8px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .14s var(--ease)}
+.nav-grp{padding:16px 14px 3px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:8px;margin:1px 8px;padding:7px 9px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s;line-height:1}
 .nav-item:hover{background:var(--surface2);color:var(--text)}
 .nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:600}
-[data-theme=dark] .nav-item.active{color:var(--accent2)}
-.nav-item .ni{font-size:14px;width:18px;text-align:center;flex-shrink:0;opacity:.75}
-.nav-item.active .ni{opacity:1}
-.nav-divider{height:1px;background:var(--border);margin:8px 14px}
+[data-theme=dark] .nav-item.active{color:var(--accent2);background:rgba(79,142,247,.12)}
+.ni-svg{width:15px;height:15px;flex-shrink:0;opacity:.6;transition:opacity .12s;color:currentColor}
+.nav-item:hover .ni-svg{opacity:.85}
+.nav-item.active .ni-svg{opacity:1}
+.nav-divider{height:1px;background:var(--border);margin:6px 12px}
 
 /* ── MAIN ── */
 #main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:24px 24px 80px;min-height:calc(100vh - var(--topbar-h))}
@@ -358,10 +358,16 @@ tbody tr:hover td{background:var(--surface2)}
 .le-text{font-size:13px;line-height:1.6;color:var(--text2)}
 
 /* ── ACCOUNT SELECT ── */
-.acct-item{padding:11px 14px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .14s;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;background:var(--surface2)}
-.acct-item:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-1px)}
-.ai-name{font-weight:700;font-size:13px;color:var(--text)}
-.ai-id{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.acct-item{padding:13px 16px;border:1px solid rgba(255,255,255,.09);border-radius:12px;cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.05);color:#fff}
+.acct-item:hover{border-color:rgba(29,78,216,.5);background:rgba(29,78,216,.15);transform:translateY(-1px)}
+.ai-name{font-weight:700;font-size:14px;color:#fff}
+.ai-id{font-size:11px;color:rgba(255,255,255,.3);font-family:var(--mono);margin-top:2px}
+.acct-item .sel-arrow{font-size:13px;font-weight:700;color:rgba(99,155,255,.8);flex-shrink:0}
+/* dashboard içindeki hesap menüsü için override */
+#acct-menu .acct-item{background:var(--surface2);border-color:var(--border);color:var(--text)}
+#acct-menu .acct-item .ai-name{color:var(--text)}
+#acct-menu .acct-item .ai-id{color:var(--text3)}
+#acct-menu .acct-item:hover{border-color:var(--accent);background:var(--accent-light)}
 
 /* ── HOOK CARDS ── */
 .hook-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .14s;font-size:13px;line-height:1.6;color:var(--text);margin-bottom:8px}
@@ -539,43 +545,59 @@ tbody tr:hover td{background:var(--surface2)}
 <!-- TOKEN SCREEN -->
 <!-- ──────────────────────────────────────────── -->
 <div id="token-screen">
-  <div class="token-box">
-    <div style="display:flex;gap:6px;align-items:center;margin-bottom:22px;justify-content:center">
-      <div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(5,150,105,.35)">✓</div>
-      <div style="height:2px;width:32px;background:linear-gradient(90deg,var(--green),#1d4ed8)"></div>
-      <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(29,78,216,.35)">2</div>
-      <div style="height:2px;width:32px;background:rgba(255,255,255,.08)"></div>
-      <div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.07);color:rgba(255,255,255,.3);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)">3</div>
-    </div>
-    <div style="font-size:28px;text-align:center;margin-bottom:10px">🔗</div>
-    <h2>Meta Hesabını Bağla</h2>
-    <p>Reklam verilerini çekmek için Meta reklam hesabını bağla.</p>
+  <div style="position:absolute;top:-10%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(29,78,216,.07),transparent 65%);pointer-events:none"></div>
+  <div style="position:absolute;bottom:-10%;right:-5%;width:400px;height:400px;background:radial-gradient(circle,rgba(79,70,229,.05),transparent 65%);pointer-events:none"></div>
 
-    <button class="btn btn-primary w100" id="fb-login-btn" onclick="fbLogin()" style="justify-content:center;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;font-size:13px;padding:13px;margin-bottom:12px;border-radius:10px;box-shadow:0 4px 14px rgba(24,119,242,.35)">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="white" style="margin-right:6px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-      Facebook ile Bağlan
-    </button>
+  <div style="width:100%;max-width:520px;padding:20px;position:relative;z-index:1">
 
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div>
-      <span style="font-size:11px;color:rgba(255,255,255,.25);font-weight:600">veya manuel token</span>
-      <div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div>
+    <!-- Steps -->
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:28px;justify-content:center">
+      <div style="width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(5,150,105,.35)">✓</div>
+      <div style="height:2px;width:40px;background:linear-gradient(90deg,var(--green),#1d4ed8)"></div>
+      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(29,78,216,.35)">2</div>
+      <div style="height:2px;width:40px;background:rgba(255,255,255,.08)"></div>
+      <div style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.07);color:rgba(255,255,255,.3);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.08)">3</div>
     </div>
 
-    <div id="token-step1">
-      <label>Access Token</label>
-      <input type="password" id="token-input" placeholder="EAAxxxx..." style="margin-top:5px" />
-      <p class="token-help">Token almak için → <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Graph API Explorer</a> → ads_read izni</p>
-      <button class="btn btn-ghost w100 mt-16" onclick="loadAccounts()" style="justify-content:center;margin-top:12px">Hesapları Listele →</button>
-      <div id="token-err" style="color:#f87171;font-size:12px;margin-top:8px;display:none;background:rgba(248,113,113,.10);border:1px solid rgba(248,113,113,.18);border-radius:8px;padding:8px 11px;font-weight:600"></div>
-    </div>
-    <div id="token-step2" style="display:none">
-      <p style="margin-bottom:10px;font-size:13px;color:rgba(255,255,255,.45)">Reklam hesabı seçin:</p>
-      <div id="acct-list"></div>
-      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('token-step2').style.display='none';document.getElementById('token-step1').style.display='block'" style="margin-top:8px">← Geri</button>
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:36px;margin-bottom:10px">🔗</div>
+      <h2 style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.04em">Meta Hesabını Bağla</h2>
+      <p style="font-size:13px;color:rgba(255,255,255,.38);line-height:1.6">Reklam verilerini çekmek için Meta reklam hesabını bağla.</p>
     </div>
 
-    <button onclick="authLogout()" style="display:block;width:100%;margin-top:14px;background:none;border:none;font-size:12px;color:rgba(255,255,255,.25);cursor:pointer;font-family:var(--font)">← Çıkış yap</button>
+    <div style="background:rgba(255,255,255,.042);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:24px;backdrop-filter:blur(24px);box-shadow:0 32px 80px rgba(0,0,0,.5)">
+
+      <button class="btn w100" id="fb-login-btn" onclick="fbLogin()" style="justify-content:center;background:linear-gradient(135deg,#1877f2,#2d8cf0);color:#fff;border:none;font-size:14px;font-weight:800;padding:14px;margin-bottom:16px;border-radius:12px;box-shadow:0 4px 16px rgba(24,119,242,.38)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right:7px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook ile Bağlan
+      </button>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div>
+        <span style="font-size:11px;color:rgba(255,255,255,.22);font-weight:600;letter-spacing:.04em">VEYA MANUEL TOKEN</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div>
+      </div>
+
+      <div id="token-step1">
+        <div style="margin-bottom:10px">
+          <label style="color:rgba(255,255,255,.35)!important;font-size:10px!important;text-transform:uppercase!important;letter-spacing:.09em!important;display:block;margin-bottom:5px">Access Token</label>
+          <input type="password" id="token-input" placeholder="EAAxxxx..." style="background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.09)!important;color:#fff!important;font-size:14px;padding:12px 14px" />
+          <p style="font-size:11px;color:rgba(255,255,255,.25);margin-top:6px">Token almak için → <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:#6ba0ff;text-decoration:none">Graph API Explorer</a> → ads_read izni ekle</p>
+        </div>
+        <button onclick="loadAccounts()" style="width:100%;padding:11px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.12)'" onmouseout="this.style.background='rgba(255,255,255,.07)'">Hesapları Listele →</button>
+        <div id="token-err" style="color:#fca5a5;font-size:12px;margin-top:10px;display:none;background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.2);border-radius:8px;padding:9px 12px;font-weight:600"></div>
+      </div>
+
+      <div id="token-step2" style="display:none">
+        <p style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:12px;font-weight:600">Reklam hesabı seçin:</p>
+        <div id="acct-list" style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto"></div>
+        <button onclick="document.getElementById('token-step2').style.display='none';document.getElementById('token-step1').style.display='block'" style="margin-top:12px;background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;font-family:var(--font)">← Geri</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:14px">
+      <button onclick="authLogout()" style="background:none;border:none;font-size:12px;color:rgba(255,255,255,.2);cursor:pointer;font-family:var(--font)">← Çıkış yap</button>
+    </div>
   </div>
 </div>
 
@@ -611,29 +633,75 @@ tbody tr:hover td{background:var(--surface2)}
 <!-- SIDEBAR -->
 <!-- ──────────────────────────────────────────── -->
 <div id="sidebar">
+  <div style="padding:16px 14px 8px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);margin-bottom:6px">
+    <div style="width:24px;height:24px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 10L4.5 4L7 10" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8H5.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/><circle cx="9.5" cy="4" r="1.3" fill="white" opacity=".9"/><path d="M9.5 6V10" stroke="white" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </div>
+    <span style="font-size:14px;font-weight:800;letter-spacing:-.03em;color:var(--text)">Adsopify</span>
+  </div>
+
   <div class="nav-grp">Ana</div>
-  <div class="nav-item active" onclick="nav('plan')" data-sec="plan"><span class="ni">📋</span>Günlük Plan</div>
-  <div class="nav-item" onclick="nav('dash')" data-sec="dash"><span class="ni">📊</span>Reklamları Analiz</div>
-  <div class="nav-item" onclick="nav('weekly')" data-sec="weekly"><span class="ni">📅</span>Haftalık Özet</div>
+  <div class="nav-item active" onclick="nav('plan')" data-sec="plan">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h6M5 8.5h4M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Günlük Plan
+  </div>
+  <div class="nav-item" onclick="nav('dash')" data-sec="dash">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M2 12L5.5 7.5L8.5 9.5L12.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="7.5" r="1" fill="currentColor"/><circle cx="8.5" cy="9.5" r="1" fill="currentColor"/><circle cx="12.5" cy="4" r="1" fill="currentColor"/></svg>
+    Reklamları Analiz
+  </div>
+  <div class="nav-item" onclick="nav('weekly')" data-sec="weekly">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    Haftalık Özet
+  </div>
 
   <div class="nav-divider"></div>
   <div class="nav-grp">Optimizasyon</div>
-  <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><span class="ni">⚡</span>Reklam Hazırla</div>
-  <div class="nav-item" onclick="nav('scale')" data-sec="scale"><span class="ni">📈</span>Ölçekleme</div>
-  <div class="nav-item" onclick="nav('budget')" data-sec="budget"><span class="ni">🗓️</span>Bütçe Planı</div>
+  <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    Reklam Hazırla
+  </div>
+  <div class="nav-item" onclick="nav('scale')" data-sec="scale">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M2 12L6 7L9 9.5L14 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 3h3v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Ölçekleme
+  </div>
+  <div class="nav-item" onclick="nav('budget')" data-sec="budget">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v6M6.5 6.5C6.5 5.7 7.2 5 8 5s1.5.7 1.5 1.5C9.5 8 6.5 8 6.5 9.5c0 .8.7 1.5 1.5 1.5s1.5-.7 1.5-1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Bütçe Planı
+  </div>
 
   <div class="nav-divider"></div>
   <div class="nav-grp">İçerik</div>
-  <div class="nav-item" onclick="nav('hook')" data-sec="hook"><span class="ni">🪝</span>Hook Üretici</div>
-  <div class="nav-item" onclick="nav('swipe')" data-sec="swipe"><span class="ni">🃏</span>Hook Swipe</div>
-  <div class="nav-item" onclick="nav('copy')" data-sec="copy"><span class="ni">✍️</span>Reklam Metni</div>
-  <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt"><span class="ni">🖼️</span>Görsel Prompt</div>
+  <div class="nav-item" onclick="nav('hook')" data-sec="hook">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M10.5 3a3.5 3.5 0 0 1 0 7H5.5a1.5 1.5 0 0 0 0 3H9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    Hook Üretici
+  </div>
+  <div class="nav-item" onclick="nav('swipe')" data-sec="swipe">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Hook Swipe
+  </div>
+  <div class="nav-item" onclick="nav('copy')" data-sec="copy">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M3 8h8M3 11h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    Reklam Metni
+  </div>
+  <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><circle cx="5.5" cy="5.5" r="1.2" fill="currentColor" opacity=".7"/><path d="M2 10.5L5 7.5L7.5 10L10 7.5L14 11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Görsel Prompt
+  </div>
 
   <div class="nav-divider"></div>
   <div class="nav-grp">Asistan</div>
-  <div class="nav-item" onclick="nav('ai')" data-sec="ai"><span class="ni">🤖</span>AI Hoca</div>
-  <div class="nav-item" onclick="nav('log')" data-sec="log"><span class="ni">📓</span>Günlük</div>
-  <div class="nav-item" onclick="nav('settings')" data-sec="settings"><span class="ni">⚙️</span>Ayarlar</div>
+  <div class="nav-item" onclick="nav('ai')" data-sec="ai">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 13.5C2.5 11.5 5 10 8 10s5.5 1.5 5.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M6 6h.01M10 6h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    AI Hoca
+  </div>
+  <div class="nav-item" onclick="nav('log')" data-sec="log">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 2.5h7l3 3V13a.5.5 0 0 1-.5.5h-9A.5.5 0 0 1 3 13V2.5Z" stroke="currentColor" stroke-width="1.4"/><path d="M10 2.5V5.5H13M5.5 8h5M5.5 10.5h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Günlük
+  </div>
+  <div class="nav-item" onclick="nav('settings')" data-sec="settings">
+    <svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Ayarlar
+  </div>
 </div>
 
 <!-- ──────────────────────────────────────────── -->
@@ -1310,12 +1378,12 @@ function setDefaultDates() {
 
 function startApp() {
   document.getElementById('token-screen').style.display = 'none';
-  document.getElementById('login-nav').style.display = 'none';
+  var loginNav = document.getElementById('login-nav');
+  if (loginNav) loginNav.style.display = 'none';
   document.getElementById('top-acct').style.display = 'flex';
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
   loadAllAccounts();
   initTheme();
-
 
   // Supabase
   if (S.token) {
@@ -1327,12 +1395,14 @@ function startApp() {
 
   const brandData = localStorage.getItem('adsopify_brand');
   if (!brandData) {
+    // Onboarding göster ama loadPlan'ı BLOKLAMADAN çalıştır
     document.getElementById('onboarding-popup').style.display = 'flex';
   } else {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
   }
-  setTimeout(function(){ loadPlan(); }, 150);
+  // loadPlan her zaman çalışsın — onboarding üstünde overlay olarak açılır
+  loadPlan();
 }
 
 async function loadAllAccounts() {
@@ -1590,7 +1660,7 @@ async function loadAccounts() {
     accounts.forEach(a => {
       const el = document.createElement('div');
       el.className = 'acct-item';
-      el.innerHTML = '<div><div class="ai-name">' + escapeHtml(a.name || 'Hesap') + '</div><div class="ai-id">' + escapeHtml(a.id) + '</div></div><span style="color:var(--accent)">Seç →</span>';
+      el.innerHTML = '<div><div class="ai-name">' + escapeHtml(a.name || 'Hesap') + '</div><div class="ai-id">' + escapeHtml(a.id) + '</div></div><span class="sel-arrow">Seç →</span>';
       el.onclick = () => selectAccount(a.id, a.name || a.id, t);
       list.appendChild(el);
     });
@@ -1655,7 +1725,7 @@ function fbLogin() {
           accounts.forEach(a => {
             const el = document.createElement('div');
             el.className = 'acct-item';
-            el.innerHTML = '<div><div class="ai-name">' + escapeHtml(a.name || 'Hesap') + '</div><div class="ai-id">' + escapeHtml(a.id) + '</div></div><span style="color:var(--accent)">Seç →</span>';
+            el.innerHTML = '<div><div class="ai-name">' + escapeHtml(a.name || 'Hesap') + '</div><div class="ai-id">' + escapeHtml(a.id) + '</div></div><span class="sel-arrow">Seç →</span>';t)">Seç →</span>';
             el.onclick = () => selectAccount(a.id, a.name || a.id, token);
             list.appendChild(el);
           });
