@@ -629,61 +629,131 @@ tbody tr:hover td{background:var(--surface2)}
 
 <!-- REKLAM ANALİZ -->
 <div id="sec-dash" class="section">
-  <div class="ph-row mb-16">
-    <div class="ph"><div class="ph-title">Reklamları Analiz Et</div><div class="ph-sub">Meta hesabındaki riskleri, fırsatları ve sonraki hamleyi tek ekranda gör.</div></div>
-    <button class="btn btn-primary btn-sm" onclick="loadDashboard()">Analizi Yenile</button>
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Reklamları Analiz Et</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:2px">Meta hesabındaki riskleri, fırsatları ve sonraki hamleyi tek ekranda gör</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface)">
+        <div class="df" style="padding:0"><input type="date" id="dash-from" style="border:none;background:transparent;padding:7px 10px;font-size:12px;color:var(--text2);font-family:var(--font);outline:none"/></div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div class="df" style="padding:0"><input type="date" id="dash-to" style="border:none;background:transparent;padding:7px 10px;font-size:12px;color:var(--text2);font-family:var(--font);outline:none"/></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="loadDashboard()">Analiz Et</button>
+    </div>
   </div>
-  <div class="date-row"><div class="df"><label>Başlangıç</label><input type="date" id="dash-from"/></div><div class="df"><label>Bitiş</label><input type="date" id="dash-to"/></div></div>
+
+  <!-- Loading -->
   <div id="dash-loading" class="loading-row" style="display:none"><div class="spinner"></div> Veriler analiz ediliyor...</div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+
+  <!-- Özet banner -->
+  <div style="background:linear-gradient(135deg,#06091a,#0d1433);border:1px solid rgba(29,78,216,.25);border-radius:16px;padding:20px 24px;margin-bottom:14px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-20%;right:-5%;width:220px;height:220px;background:radial-gradient(circle,rgba(79,142,247,.12),transparent 65%);pointer-events:none"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
       <div>
-        <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;background:var(--accent-light);border:1px solid var(--border2);color:var(--accent2);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Overview</div>
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.04em;color:var(--text);margin-bottom:3px">Hesabını okuyup sana net aksiyon verelim.</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6" id="dash-summary-text">Dönemi seçtiğinde harcama, ROAS, CTR ve kampanya sağlığını aynı ekranda görürsün.</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.25);color:#818cf8;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Overview</div>
+        <div style="font-size:18px;font-weight:800;letter-spacing:-.04em;color:#fff;margin-bottom:4px">Hesabını okuyup sana net aksiyon verelim.</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;max-width:52ch" id="dash-summary-text">Dönem seçtiğinde harcama, ROAS, CTR ve kampanya sağlığını aynı ekranda görürsün.</div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2)" id="dash-period-chip">Seçili dönem —</div>
+      <div style="padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:600;color:rgba(255,255,255,.5)" id="dash-period-chip">Seçili dönem —</div>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(240px,.6fr);gap:14px">
-    <div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">
-        <div class="ov-stat"><div class="ov-stat-label">Harcama</div><div class="ov-stat-value" id="ov-spend">—</div><div class="ov-stat-note">Seçili dönem</div></div>
-        <div class="ov-stat"><div class="ov-stat-label">Satış</div><div class="ov-stat-value" id="ov-sales">—</div><div class="ov-stat-note">Dönüşüm</div></div>
-        <div class="ov-stat"><div class="ov-stat-label">Gelir</div><div class="ov-stat-value" id="ov-revenue">—</div><div class="ov-stat-note">Meta ölçüm</div></div>
-        <div class="ov-stat"><div class="ov-stat-label">ROAS</div><div class="ov-stat-value" id="ov-roas">—</div><div class="ov-stat-note" id="ov-roas-note">Getiri</div></div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px">Günlük performans ritmi</div>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Kampanya harcama dağılımı</div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:160px" id="overview-bars"></div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)">
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px">Kampanya tablosu</div>
-        <div class="tbl-wrap" style="border:none;border-radius:0">
-          <table><thead><tr><th>Kampanya</th><th>Harcama</th><th>Satış</th><th>Gelir</th><th>ROAS</th><th>CPA</th><th>CTR</th><th>CPC</th><th>Freq</th></tr></thead><tbody id="camp-tbody"><tr><td colspan="9" style="text-align:center;color:var(--text3);padding:24px">Dönem seçildiğinde analiz burada görünür.</td></tr></tbody></table>
+
+  <!-- 4 KPI kartı -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;box-shadow:var(--shadow)">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Harcama</div>
+      <div style="font-size:24px;font-weight:900;font-family:var(--mono);color:var(--text);letter-spacing:-.03em" id="ov-spend">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Seçili dönem</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;box-shadow:var(--shadow)">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Satış</div>
+      <div style="font-size:24px;font-weight:900;font-family:var(--mono);color:var(--text);letter-spacing:-.03em" id="ov-sales">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Dönüşüm</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:16px;box-shadow:var(--shadow)">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Gelir</div>
+      <div style="font-size:24px;font-weight:900;font-family:var(--mono);color:var(--text);letter-spacing:-.03em" id="ov-revenue">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Meta ölçüm</div>
+    </div>
+    <div style="background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:13px;padding:16px;box-shadow:var(--shadow)">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.55);margin-bottom:8px">ROAS</div>
+      <div style="font-size:24px;font-weight:900;font-family:var(--mono);color:#fff;letter-spacing:-.03em" id="ov-roas">—</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px" id="ov-roas-note">Getiri</div>
+    </div>
+  </div>
+
+  <!-- Ana grid: grafik + sağ panel -->
+  <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(220px,.5fr);gap:12px;margin-bottom:12px">
+
+    <!-- Sol: bar chart -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow)">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">Günlük performans ritmi</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:16px">Kampanya harcama dağılımı</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:160px" id="overview-bars"></div>
+    </div>
+
+    <!-- Sağ: hızlı metrikler -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow)">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:14px">Hızlı Metrikler</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:600;color:var(--text2)">CTR</span>
+          <span style="font-size:16px;font-weight:900;font-family:var(--mono);color:var(--text)" id="ov-ctr">—</span>
+        </div>
+        <div style="height:1px;background:var(--border)"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:600;color:var(--text2)">CPC</span>
+          <span style="font-size:16px;font-weight:900;font-family:var(--mono);color:var(--text)" id="ov-cpc">—</span>
+        </div>
+        <div style="height:1px;background:var(--border)"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:600;color:var(--text2)">CPM</span>
+          <span style="font-size:16px;font-weight:900;font-family:var(--mono);color:var(--text)" id="ov-cpm">—</span>
+        </div>
+        <div style="height:1px;background:var(--border)"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px;font-weight:600;color:var(--text2)">Tıklama</span>
+          <span style="font-size:16px;font-weight:900;font-family:var(--mono);color:var(--text)" id="ov-clicks">—</span>
         </div>
       </div>
     </div>
-    <div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px">
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">Aksiyon önerileri</div>
-        <div class="opp"><div class="opp-badge urgent">Önce bunu yap</div><div class="opp-title" id="dash-primary-title">Analiz bekleniyor</div><div class="opp-text" id="dash-primary-text">Veriler yüklendiğinde ilk aksiyon burada görünür.</div></div>
-        <div class="opp"><div class="opp-badge scale">Büyüt</div><div class="opp-title" id="dash-scale-title">—</div><div class="opp-text" id="dash-scale-text">—</div></div>
-        <div class="opp"><div class="opp-badge test">Bugün test et</div><div class="opp-title" id="dash-test-title">—</div><div class="opp-text" id="dash-test-text">—</div></div>
+  </div>
+
+  <!-- Aksiyon önerileri — tam genişlik -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow);margin-bottom:12px">
+    <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:14px">AI Aksiyon Önerileri</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div class="opp" style="margin:0;padding:14px;background:var(--red-light);border:1px solid rgba(220,38,38,.15);border-radius:11px">
+        <div class="opp-badge urgent" style="margin-bottom:8px">Önce Bunu Yap</div>
+        <div class="opp-title" id="dash-primary-title" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3">Analiz bekleniyor</div>
+        <div class="opp-text" id="dash-primary-text" style="font-size:12px;color:var(--text2);line-height:1.5">Veriler yüklendiğinde görünür.</div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)">
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">Hızlı metrikler</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div style="padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:3px">CTR</div><div style="font-size:17px;font-weight:800;color:var(--text);font-family:var(--mono)" id="ov-ctr">—</div></div>
-          <div style="padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:3px">CPC</div><div style="font-size:17px;font-weight:800;color:var(--text);font-family:var(--mono)" id="ov-cpc">—</div></div>
-          <div style="padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:3px">CPM</div><div style="font-size:17px;font-weight:800;color:var(--text);font-family:var(--mono)" id="ov-cpm">—</div></div>
-          <div style="padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:9px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:3px">Tıklama</div><div style="font-size:17px;font-weight:800;color:var(--text);font-family:var(--mono)" id="ov-clicks">—</div></div>
-        </div>
+      <div class="opp" style="margin:0;padding:14px;background:var(--green-light);border:1px solid rgba(5,150,105,.15);border-radius:11px">
+        <div class="opp-badge scale" style="margin-bottom:8px">Büyüt</div>
+        <div class="opp-title" id="dash-scale-title" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3">—</div>
+        <div class="opp-text" id="dash-scale-text" style="font-size:12px;color:var(--text2);line-height:1.5">—</div>
       </div>
+      <div class="opp" style="margin:0;padding:14px;background:var(--yellow-light);border:1px solid rgba(180,83,9,.15);border-radius:11px">
+        <div class="opp-badge test" style="margin-bottom:8px">Bugün Test Et</div>
+        <div class="opp-title" id="dash-test-title" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.3">—</div>
+        <div class="opp-text" id="dash-test-text" style="font-size:12px;color:var(--text2);line-height:1.5">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kampanya tablosu -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow)">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">Kampanya Tablosu</div>
+    <div class="tbl-wrap" style="border:none;border-radius:0">
+      <table><thead><tr><th>Kampanya</th><th>Harcama</th><th>Satış</th><th>Gelir</th><th>ROAS</th><th>CPA</th><th>CTR</th><th>CPC</th><th>Freq</th></tr></thead><tbody id="camp-tbody"><tr><td colspan="9" style="text-align:center;color:var(--text3);padding:24px">Dönem seçildiğinde analiz burada görünür.</td></tr></tbody></table>
     </div>
   </div>
 </div>
+
 
 <!-- ÇOKLU MARKA -->
 <div id="sec-brands" class="section">
