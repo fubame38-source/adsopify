@@ -408,6 +408,12 @@ tbody tr:hover td{background:var(--surface2)}
       <div id="auth-name-wrap" style="display:none;margin-bottom:12px"><label style="color:rgba(255,255,255,.35)!important;font-size:10px!important">Ad Soyad</label><input type="text" id="auth-name" placeholder="Ad Soyad" autocomplete="off" style="background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.09)!important;color:#fff!important;margin-top:5px" /></div>
       <div style="margin-bottom:12px"><label style="color:rgba(255,255,255,.35);font-size:10px;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.09em">E-posta</label><input type="email" id="auth-email" placeholder="ornek@email.com" autocomplete="off" style="background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.09)!important;color:#fff!important" /></div>
       <div style="margin-bottom:18px"><label style="color:rgba(255,255,255,.35);font-size:10px;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.09em">Şifre</label><input type="password" id="auth-password" placeholder="En az 6 karakter" autocomplete="new-password" style="background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.09)!important;color:#fff!important" /></div>
+      <!-- Erişim kodu — sadece kayıtta görünür -->
+      <div id="auth-code-wrap" style="display:none;margin-bottom:14px">
+        <label style="color:rgba(255,255,255,.35);font-size:10px;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.09em">Erişim Kodu <span style="color:rgba(255,255,255,.2);font-weight:400;text-transform:none;letter-spacing:0">(MLYNR öğrenciysen gir)</span></label>
+        <input type="text" id="auth-code" placeholder="Örn: MLYNR2025" autocomplete="off" style="background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.09)!important;color:#fff!important;text-transform:uppercase;letter-spacing:.05em" oninput="this.value=this.value.toUpperCase()" />
+        <div style="font-size:11px;color:rgba(255,255,255,.2);margin-top:5px">Kodu yoksa boş bırak — 14 gün ücretsiz deneme başlar.</div>
+      </div>
       <div id="auth-err" style="color:#fca5a5;font-size:12px;margin-bottom:12px;display:none;background:rgba(220,38,38,.11);border:1px solid rgba(220,38,38,.18);border-radius:8px;padding:8px 12px;font-weight:600"></div>
       <button id="auth-submit-btn" onclick="submitAuth()" style="width:100%;padding:12px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 4px 18px rgba(29,78,216,.36)">Giriş Yap</button>
       <div id="forgot-wrap" style="text-align:center;margin-top:11px"><button onclick="showForgotPassword()" style="background:none;border:none;color:rgba(255,255,255,.26);font-size:12px;cursor:pointer;font-family:var(--font)">Şifremi unuttum</button></div>
@@ -480,6 +486,7 @@ tbody tr:hover td{background:var(--surface2)}
       </div>
     </div>
   </div>
+  <div id="mlynr-plan-badge" style="display:none;align-items:center;padding:4px 10px;border-radius:999px;background:var(--green-light);border:1px solid rgba(5,150,105,.22);color:var(--green);font-size:11px;font-weight:800;letter-spacing:.04em"></div>
   <div class="iBtn" id="alarm-bell-btn" onclick="nav('alarms')" title="Alarmlar" style="position:relative">
     🔔
     <span id="alarm-badge" style="display:none;position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg)"></span>
@@ -1090,6 +1097,7 @@ function switchAuthTab(tab) {
   regBtn.style.background = !isLogin ? 'var(--accent)' : 'transparent';
   regBtn.style.color = !isLogin ? '#fff' : 'rgba(255,255,255,0.4)';
   document.getElementById('auth-name-wrap').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('auth-code-wrap').style.display = isLogin ? 'none' : 'block';
   document.getElementById('auth-submit-btn').textContent = isLogin ? 'Giriş Yap' : 'Kayıt Ol';
   document.getElementById('auth-err').style.display = 'none';
   document.getElementById('auth-screen').setAttribute('data-mode', tab);
@@ -1136,6 +1144,16 @@ async function submitAuth() {
     setStored('sb_user_id', data.user?.id || '');
 
     await sbUpsertUser(null, name || email.split('@')[0], email);
+
+    // Kayıt modunda erişim kodu kontrolü
+    if (mode === 'register') {
+      const code = (document.getElementById('auth-code')?.value || '').trim().toUpperCase();
+      if (code) {
+        await validateAndApplyCode(code, data.user?.id || getStored('sb_user_id'));
+      } else {
+        await setUserPlan(data.user?.id || getStored('sb_user_id'), 'trial', null);
+      }
+    }
 
     document.getElementById('auth-screen').style.display = 'none';
     showTokenScreen();
@@ -1195,6 +1213,7 @@ window.addEventListener('DOMContentLoaded', () => {
   S.accountName = getStored('adsopify_account_name');
   const sbToken = getStored('sb_token');
 
+  checkRefParam();
   setDefaultDates();
   loadLogs();
 
@@ -1247,6 +1266,7 @@ function startApp() {
   }
   // loadPlan her zaman çalışsın — onboarding üstünde overlay olarak açılır
   loadPlan();
+  loadUserPlan();
 }
 
 async function loadAllAccounts() {
@@ -4660,6 +4680,136 @@ if (typeof showBrandToast !== 'function') {
     document.body.appendChild(t);
     setTimeout(function(){ t.remove(); }, 2800);
   };
+}
+
+// ═══════════════════════════════════════════════
+// ERİŞİM KODU SİSTEMİ
+// ═══════════════════════════════════════════════
+
+async function validateAndApplyCode(code, userId) {
+  try {
+    // Kodu sorgula
+    const r = await fetch(SB_URL + '/rest/v1/access_codes?code=eq.' + encodeURIComponent(code) + '&select=*', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    const rows = await r.json();
+
+    if (!rows || !rows.length) {
+      showBrandToast('⚠️ Geçersiz erişim kodu. Trial planıyla devam ediliyor.');
+      await setUserPlan(userId, 'trial', null);
+      return;
+    }
+
+    const row = rows[0];
+    if (row.used_count >= row.max_uses) {
+      showBrandToast('⚠️ Bu kod kullanım limitine ulaştı. Trial planıyla devam ediliyor.');
+      await setUserPlan(userId, 'trial', null);
+      return;
+    }
+
+    // Kodu kullan — used_count artır
+    await fetch(SB_URL + '/rest/v1/access_codes?code=eq.' + encodeURIComponent(code), {
+      method: 'PATCH',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ used_count: row.used_count + 1 })
+    });
+
+    // Kullanıcıya planı yaz
+    await setUserPlan(userId, row.plan || 'mlynr_free', code);
+    setStored('adsopify_plan', row.plan || 'mlynr_free');
+    setStored('adsopify_code', code);
+
+    showBrandToast('🎉 ' + code + ' kodu doğrulandı! MLYNR erişimi aktif.');
+
+  } catch(e) {
+    console.error('Code validation error:', e);
+    await setUserPlan(userId, 'trial', null);
+  }
+}
+
+async function setUserPlan(userId, plan, code) {
+  if (!userId) return;
+  try {
+    await fetch(SB_URL + '/rest/v1/profiles', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ user_id: userId, plan: plan, code_used: code })
+    });
+    setStored('adsopify_plan', plan);
+  } catch(e) { console.error('setUserPlan error:', e); }
+}
+
+async function loadUserPlan() {
+  const userId = getStored('sb_user_id');
+  const cachedPlan = getStored('adsopify_plan');
+  if (cachedPlan) { applyPlan(cachedPlan); return; }
+  if (!userId) return;
+  try {
+    const r = await fetch(SB_URL + '/rest/v1/profiles?user_id=eq.' + encodeURIComponent(userId) + '&select=plan,code_used', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    const rows = await r.json();
+    if (rows && rows.length) {
+      setStored('adsopify_plan', rows[0].plan);
+      applyPlan(rows[0].plan);
+    }
+  } catch(e) { console.error('loadUserPlan error:', e); }
+}
+
+function applyPlan(plan) {
+  const isMlynr = plan === 'mlynr_free' || plan === 'mlynr_pro';
+  const isTrial = plan === 'trial' || !plan;
+
+  // MLYNR badge topbar'da göster
+  var badge = document.getElementById('mlynr-plan-badge');
+  if (badge) {
+    if (isMlynr) {
+      badge.style.display = 'flex';
+      badge.textContent = '🎓 MLYNR';
+    } else if (isTrial) {
+      badge.style.display = 'flex';
+      badge.textContent = '🔓 Trial';
+      badge.style.background = 'var(--yellow-light)';
+      badge.style.borderColor = 'rgba(180,83,9,.2)';
+      badge.style.color = 'var(--yellow)';
+    }
+  }
+}
+
+// ?ref=mlynr parametresi ile gelince otomatik kayıt tab'ına geç
+function checkRefParam() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('ref') === 'mlynr') {
+    // Auth ekranında kayıt tab'ına geç ve banner göster
+    setTimeout(function() {
+      var authScreen = document.getElementById('auth-screen');
+      if (authScreen && authScreen.style.display !== 'none') {
+        switchAuthTab('register');
+        showMlynrBanner();
+      }
+    }, 200);
+  }
+}
+
+function showMlynrBanner() {
+  var existing = document.getElementById('mlynr-auth-banner');
+  if (existing) return;
+  var authCard = document.querySelector('#auth-screen > div > div');
+  if (!authCard) return;
+
+  var banner = document.createElement('div');
+  banner.id = 'mlynr-auth-banner';
+  banner.style.cssText = 'background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px';
+  banner.innerHTML = '<div style="font-size:20px">🎓</div>' +
+    '<div><div style="font-size:12px;font-weight:800;color:#22c98a;margin-bottom:2px">MLYNR Öğrencisi</div>' +
+    '<div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.4">Erişim kodunu aşağıya girerek ücretsiz erişim sağla.</div></div>';
+
+  authCard.insertBefore(banner, authCard.firstChild);
 }
 
 </script>
