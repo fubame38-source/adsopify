@@ -546,35 +546,82 @@ tbody tr:hover td{background:var(--surface2)}
 
 <!-- GÜNLÜK PLAN -->
 <div id="sec-plan" class="section active">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px">
+
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
     <div>
       <div id="plan-greeting" style="font-size:22px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Günaydın 👋</div>
       <div style="font-size:13px;color:var(--text2);margin-top:2px" id="plan-date">Yükleniyor...</div>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div id="plan-progress-wrap" style="display:none;align-items:center;gap:7px">
-        <div style="font-size:12px;font-weight:700;color:var(--text3)" id="plan-progress-label">0/4</div>
-        <div style="width:70px;height:4px;background:var(--surface3);border-radius:99px;overflow:hidden"><div id="plan-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:99px;transition:width .5s cubic-bezier(.34,1.56,.64,1)"></div></div>
+    <button class="btn btn-ghost btn-sm" onclick="planReset()" id="plan-reset-btn" style="display:none">↺ Sıfırla</button>
+  </div>
+
+  <!-- ADIM 1: VERİ GİRİŞİ -->
+  <div id="plan-step-input">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);margin-bottom:14px">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:16px">Bugünün Rakamları</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Harcama (₺)</label>
+          <input id="dp-spend" type="number" min="0" placeholder="0" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:15px;font-weight:700;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" oninput="dpAutoROAS()" />
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Satış Adedi</label>
+          <input id="dp-sales" type="number" min="0" placeholder="0" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:15px;font-weight:700;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" oninput="dpAutoROAS()" />
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Ürün Fiyatı (₺)</label>
+          <input id="dp-price" type="number" min="0" placeholder="1999" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:15px;font-weight:700;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" oninput="dpAutoROAS()" />
+        </div>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh">↺ Yenile</button>
+
+      <!-- CANLI ROAS önizleme -->
+      <div id="dp-roas-preview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:11px;color:var(--text3);font-weight:700">ROAS</span>
+          <span id="dp-roas-val" style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--text)">—</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:11px;color:var(--text3);font-weight:700">CPA</span>
+          <span id="dp-cpa-val" style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--text)">—</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:11px;color:var(--text3);font-weight:700">Gelir</span>
+          <span id="dp-rev-val" style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--text)">—</span>
+        </div>
+        <div id="dp-roas-badge" style="margin-left:auto;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em"></div>
+      </div>
+
+      <!-- SERBEST NOT -->
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Not / Gözlem <span style="font-weight:400;text-transform:none;letter-spacing:0">(isteğe bağlı)</span></label>
+        <textarea id="dp-note" rows="2" placeholder="Örn: Dün creative değiştirdim, frekans yüksek, yeni bir kitle denemeliyim..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;resize:none;transition:border-color .15s;line-height:1.5" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+
+      <button id="dp-analyze-btn" onclick="dpAnalyze()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:11px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.opacity='.88';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform=''">
+        <span>✨</span> <span id="dp-btn-text">AI ile Analiz Et</span>
+      </button>
     </div>
   </div>
 
-  <div id="plan-loading" class="loading-row"><div class="spinner"></div> Kampanya verisi çekiliyor...</div>
+  <!-- ADIM 2: AI SONUÇLARI -->
+  <div id="plan-step-results" style="display:none">
 
-  <div id="plan-content" style="display:none">
-    <!-- ODAK KARTI -->
-    <div id="focus-card" style="display:none;margin-bottom:14px"></div>
+    <!-- ÖZET KPI'LAR -->
+    <div id="dp-kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
 
-    <!-- GÖREVLER -->
-    <div id="tasks-card" style="display:none;margin-bottom:14px">
+    <!-- ODAK KARTI (büyük AI aksiyonu) -->
+    <div id="focus-card" style="margin-bottom:14px"></div>
+
+    <!-- GÖREV LİSTESİ -->
+    <div id="tasks-card" style="margin-bottom:14px;display:none">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
           <div style="display:flex;align-items:center;gap:7px">
             <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 5px rgba(29,78,216,.5)"></span>
-            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Bugünün Görevleri</span>
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Bugünün Aksiyonları</span>
           </div>
-          <span style="font-size:12px;font-weight:700;color:var(--text3)" id="checklist-count">0/0 tamamlandı</span>
+          <span style="font-size:12px;font-weight:700;color:var(--text3)" id="checklist-count">0/0</span>
         </div>
         <div id="ai-checklist-items" style="padding:8px 10px;display:flex;flex-direction:column;gap:5px"></div>
         <div id="tasks-more-wrap" style="display:none;border-top:1px solid var(--border)">
@@ -584,42 +631,37 @@ tbody tr:hover td{background:var(--surface2)}
       </div>
     </div>
 
-    <!-- Skeleton -->
-    <div id="ai-action-list-loading" style="margin-bottom:14px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow)">
-        <div style="margin-bottom:18px"><div class="skel" style="width:55%;height:26px;border-radius:8px;margin-bottom:8px"></div><div class="skel" style="width:38%;height:13px;border-radius:6px"></div></div>
-        <div style="display:flex;flex-direction:column;gap:7px"><div class="skel" style="height:54px;border-radius:10px"></div><div class="skel" style="height:48px;border-radius:10px"></div><div class="skel" style="height:48px;border-radius:10px"></div></div>
-      </div>
-    </div>
-
-    <!-- compat hidden -->
-    <div id="ai-action-list" style="display:none"></div>
-    <div id="ai-hero-card" style="display:none"></div>
-    <div id="ai-checklist-card" style="display:none"></div>
-    <div id="plan-date-badge" style="display:none"></div>
-    <div id="plan-budget-badge" style="display:none"></div>
-
-    <!-- ALT: KRİTİK + İÇERİK -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
-          <span style="width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 5px rgba(220,38,38,.5);flex-shrink:0"></span>
-          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Kritik Bakış</span>
+    <!-- İÇERİK FİKİRLERİ -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 4px rgba(180,83,9,.4);flex-shrink:0"></span>
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">AI İçerik Fikirleri</span>
         </div>
-        <div id="plan-urgent"></div>
+        <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" style="padding:2px 7px;font-size:11px">↺</button>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 4px rgba(180,83,9,.4);flex-shrink:0"></span>
-            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">İçerik Fikirleri</span>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" style="padding:2px 7px;font-size:11px">↺</button>
-        </div>
-        <div id="plan-ideas"></div>
-      </div>
+      <div id="plan-ideas"></div>
     </div>
   </div>
+
+  <!-- LOADING durumu -->
+  <div id="plan-loading" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:14px">
+    <div class="spinner" style="width:28px;height:28px;border-width:3px"></div>
+    <div style="font-size:13px;font-weight:600;color:var(--text2)" id="plan-loading-msg">Analiz ediliyor...</div>
+  </div>
+
+  <!-- compat hidden -->
+  <div id="plan-content" style="display:none"></div>
+  <div id="ai-action-list" style="display:none"></div>
+  <div id="ai-hero-card" style="display:none"></div>
+  <div id="ai-checklist-card" style="display:none"></div>
+  <div id="plan-date-badge" style="display:none"></div>
+  <div id="plan-budget-badge" style="display:none"></div>
+  <div id="plan-urgent" style="display:none"></div>
+  <div id="plan-progress-wrap" style="display:none"></div>
+  <div id="plan-progress-bar" style="display:none"></div>
+  <div id="plan-progress-label" style="display:none"></div>
+  <div id="ai-action-list-loading" style="display:none"></div>
 </div>
 
 <!-- REKLAM ANALİZ -->
@@ -1705,170 +1747,290 @@ function toggleSidebar() {
 }
 
 // ═══════════════════════════════════════════════
-// GÜNLÜK PLAN
+// GÜNLÜK PLAN — YENİ SİSTEM
 // ═══════════════════════════════════════════════
-async function loadPlan() {
+
+function loadPlan() {
+  // Tarihi set et
   const today = new Date();
   const dateStr = today.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  document.getElementById('plan-date').textContent = dateStr;
-  document.getElementById('plan-date-badge').textContent = today.toISOString().split('T')[0];
+  const el = document.getElementById('plan-date');
+  if (el) el.textContent = dateStr;
+  const h = today.getHours();
+  const greet = h < 12 ? 'Günaydın 👋' : h < 18 ? 'İyi günler 👋' : 'İyi akşamlar 👋';
+  const ge = document.getElementById('plan-greeting');
+  if (ge) ge.textContent = greet;
 
-  document.getElementById('plan-loading').style.display = 'flex';
-  document.getElementById('plan-loading').innerHTML = '<div class="spinner"></div> Kampanya verisi çekiliyor...';
-  document.getElementById('plan-content').style.display = 'none';
-
-  // Token yoksa direkt plan göster (boş veriyle)
-  if (!S.token || !S.accountId) {
-    document.getElementById('plan-loading').style.display = 'none';
-    document.getElementById('plan-content').style.display = 'block';
-    S.todayInsight = [];
-    renderPlan([], []);
-    loadAIActionPlan(false, []);
-    return;
+  // Cache kontrolü — aynı gün analiz yapıldıysa direkt sonuçları göster
+  const cacheKey = 'dp_result_' + today.toISOString().split('T')[0];
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      const c = JSON.parse(cached);
+      dpFillInputs(c.spend, c.sales, c.price, c.note);
+      dpShowResults(c.spend, c.sales, c.price, c.actions);
+      return;
+    } catch(e) {}
   }
 
-  try {
-    const [campaigns, insights] = await Promise.all([getCampaigns(), getTodayInsights()]);
-    S.campaigns = campaigns;
-    S.todayInsight = insights;
-
-    const totalSpend = insights.reduce((s, i) => s + parseFloat(i.spend || 0), 0);
-    const totalPurchases = insights.reduce((s, i) => s + (i._purchases || 0), 0);
-    const totalRevenue = insights.reduce((s, i) => s + (i._revenue || 0), 0);
-    const todayROAS = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue / totalSpend).toFixed(2) : null;
-    const cur = '₺';
-
-    document.getElementById('top-spend-val').textContent = cur + totalSpend.toFixed(2) + (todayROAS ? ' • ROAS ' + todayROAS + 'x' : '');
-  var sv2 = document.getElementById('top-spend-val2'); if (sv2) sv2.textContent = cur + totalSpend.toFixed(0);
-    document.getElementById('plan-budget-badge').textContent = cur + totalSpend.toFixed(0) + (totalPurchases > 0 ? ' · ' + totalPurchases.toFixed(0) + ' satış' : '') + (todayROAS ? ' · ' + todayROAS + 'x' : '');
-
-    document.getElementById('plan-loading').style.display = 'none';
-    document.getElementById('plan-content').style.display = 'block';
-
-    renderPlan(campaigns, insights);
-    checkFatigueAlert(insights);
-    loadAIActionPlan(false, insights);
-
-  } catch (e) {
-    var msg = e ? (e.message || '') : '';
-    var isTokenErr = msg.includes('190') || msg.toLowerCase().includes('token') || msg.toLowerCase().includes('oauth') || msg.toLowerCase().includes('session') || msg.toLowerCase().includes('expired');
-    var errHtml = '<div style="text-align:center;padding:24px">' +
-      '<div style="font-size:32px;margin-bottom:12px">' + (isTokenErr ? '🔑' : '⚠️') + '</div>' +
-      '<div style="font-weight:600;color:var(--text);margin-bottom:8px">' + (isTokenErr ? 'Meta bağlantısı kesildi' : 'Veri çekilemedi') + '</div>' +
-      '<div style="font-size:13px;color:var(--text2);margin-bottom:16px">' + (isTokenErr ? 'Facebook ile yeniden bağlan.' : msg) + '</div>' +
-      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' +
-        (isTokenErr ? '<button class="btn btn-primary btn-sm" onclick="reconnectMeta()">🔗 Yeniden Bağlan</button>' : '') +
-        '<button class="btn btn-ghost btn-sm" onclick="loadPlanOffline()">📊 Verisiz Devam Et</button>' +
-      '</div></div>';
-    document.getElementById('plan-loading').innerHTML = errHtml;
-  }
-}
-
-function loadPlanOffline() {
-  // Veri olmadan plan ekranını göster
+  // Sadece giriş ekranını göster
+  document.getElementById('plan-step-input').style.display = 'block';
+  document.getElementById('plan-step-results').style.display = 'none';
   document.getElementById('plan-loading').style.display = 'none';
-  document.getElementById('plan-content').style.display = 'block';
-  S.todayInsight = [];
-  renderPlan([], []);
-  loadAIActionPlan(false, []);
-}
 
-function reconnectMeta() {
-  // Token'ı temizle, token screen'e dön
-  localStorage.removeItem('adsopify_token');
-  localStorage.removeItem('adsopify_account_id');
-  localStorage.removeItem('adsopify_account_name');
-  S.token = null; S.accountId = null;
-  location.reload();
-}
-
-async function loadAIActionPlan(forceRefresh, insightsData) {
-  const el = document.getElementById('ai-action-list');
-  const btn = document.getElementById('ai-plan-refresh');
-  if (!el) return;
-
-  // Cache — aynı gün tekrar yükleme
-  const cacheKey = 'ai_action_plan_v2_' + new Date().toISOString().split('T')[0];
-  if (!forceRefresh && localStorage.getItem(cacheKey)) {
-    renderAIActions(JSON.parse(localStorage.getItem(cacheKey)));
-    return;
+  // Marka fiyatını otomatik doldur
+  if (S.brand && S.brand.price) {
+    const priceEl = document.getElementById('dp-price');
+    if (priceEl && !priceEl.value) priceEl.value = S.brand.price;
   }
+}
 
-  // Show loading skeleton
-  var loadingEl = document.getElementById('ai-action-list-loading');
-  if (loadingEl) loadingEl.style.display = 'block';
-  var heroEl = document.getElementById('ai-hero-card');
-  if (heroEl) heroEl.style.display = 'none';
-  var checkEl = document.getElementById('ai-checklist-card');
-  if (checkEl) checkEl.style.display = 'none';
-  el.innerHTML = '';
-  if (btn) btn.disabled = true;
+function dpFillInputs(spend, sales, price, note) {
+  var s = document.getElementById('dp-spend');
+  var sa = document.getElementById('dp-sales');
+  var p = document.getElementById('dp-price');
+  var n = document.getElementById('dp-note');
+  if (s) s.value = spend || '';
+  if (sa) sa.value = sales || '';
+  if (p) p.value = price || '';
+  if (n && note) n.value = note;
+  dpAutoROAS();
+}
 
-  const ins = insightsData || S.todayInsight || [];
-  const brand = S.brand;
+function dpAutoROAS() {
+  var spend = parseFloat(document.getElementById('dp-spend').value) || 0;
+  var sales = parseFloat(document.getElementById('dp-sales').value) || 0;
+  var price = parseFloat(document.getElementById('dp-price').value) || 0;
 
-  const totalSpend    = ins.reduce((s,i) => s + parseFloat(i.spend||0), 0);
-  const totalSales    = ins.reduce((s,i) => s + (i._purchases||0), 0);
-  const totalRevenue  = ins.reduce((s,i) => s + (i._revenue||0), 0);
-  const avgFreq       = ins.length ? ins.reduce((s,i) => s + parseFloat(i.frequency||0), 0)/ins.length : 0;
-  const avgCTR        = ins.length ? ins.reduce((s,i) => s + parseFloat(i.ctr||0), 0)/ins.length : 0;
-  const roas          = totalSpend > 0 ? totalRevenue/totalSpend : 0;
-  const cpa           = totalSales > 0 ? totalSpend/totalSales : 0;
+  var preview = document.getElementById('dp-roas-preview');
+  if (!preview) return;
 
-  const campSummary = ins.slice(0,5).map(i =>
-    `"${i.campaign_name}": ₺${parseFloat(i.spend||0).toFixed(0)} harcama, ROAS ${i._roas ? i._roas.toFixed(1)+'x' : '—'}, CTR %${parseFloat(i.ctr||0).toFixed(2)}, Frekans ${parseFloat(i.frequency||0).toFixed(1)}`
-  ).join('\n');
+  if (spend <= 0 && sales <= 0) { preview.style.display = 'none'; return; }
+  preview.style.display = 'flex';
 
-  const brandCtx = brand && brand.brandName
-    ? `Marka: ${brand.brandName}. Ürün: ${brand.product||''}. Hedef kitle: ${brand.audience||''}.`
-    : 'Marka bilgisi yok.';
+  var revenue = sales * price;
+  var roas = spend > 0 && revenue > 0 ? (revenue / spend) : 0;
+  var cpa = sales > 0 && spend > 0 ? (spend / sales) : 0;
+
+  var roasEl = document.getElementById('dp-roas-val');
+  var cpaEl = document.getElementById('dp-cpa-val');
+  var revEl = document.getElementById('dp-rev-val');
+  var badge = document.getElementById('dp-roas-badge');
+
+  if (roasEl) roasEl.textContent = roas > 0 ? roas.toFixed(2) + 'x' : '—';
+  if (cpaEl) cpaEl.textContent = cpa > 0 ? '₺' + cpa.toFixed(0) : '—';
+  if (revEl) revEl.textContent = revenue > 0 ? '₺' + revenue.toFixed(0) : '—';
+
+  if (badge && roas > 0) {
+    if (roas >= 3) { badge.textContent = '✅ İyi'; badge.style.background = 'var(--green-light)'; badge.style.color = 'var(--green)'; }
+    else if (roas >= 2) { badge.textContent = '⚠️ Orta'; badge.style.background = 'var(--yellow-light)'; badge.style.color = 'var(--yellow)'; }
+    else if (roas >= 1) { badge.textContent = '🔶 Düşük'; badge.style.background = 'var(--yellow-light)'; badge.style.color = 'var(--yellow)'; }
+    else { badge.textContent = '🔴 Zararda'; badge.style.background = 'var(--red-light)'; badge.style.color = 'var(--red)'; }
+    badge.style.display = 'inline-flex';
+  } else if (badge) { badge.style.display = 'none'; }
+}
+
+async function dpAnalyze() {
+  var spend = parseFloat(document.getElementById('dp-spend').value) || 0;
+  var sales = parseFloat(document.getElementById('dp-sales').value) || 0;
+  var price = parseFloat(document.getElementById('dp-price').value) || 0;
+  var note = (document.getElementById('dp-note').value || '').trim();
+
+  // Loading göster
+  document.getElementById('plan-step-input').style.display = 'none';
+  document.getElementById('plan-step-results').style.display = 'none';
+  var loadEl = document.getElementById('plan-loading');
+  loadEl.style.display = 'flex';
+  var msgs = ['Rakamlar hesaplanıyor...', 'Performans analiz ediliyor...', 'Aksiyon planı hazırlanıyor...'];
+  var mi = 0;
+  var msgEl = document.getElementById('plan-loading-msg');
+  if (msgEl) msgEl.textContent = msgs[0];
+  var ticker = setInterval(function() {
+    mi = (mi + 1) % msgs.length;
+    if (msgEl) msgEl.textContent = msgs[mi];
+  }, 1400);
+
+  var revenue = sales * price;
+  var roas = spend > 0 && revenue > 0 ? (revenue / spend) : 0;
+  var cpa = sales > 0 && spend > 0 ? (spend / sales) : 0;
+
+  var brand = S.brand;
+  var brandCtx = brand && brand.brandName
+    ? 'Marka: ' + brand.brandName + '. Ürün: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.'
+    : 'Meta reklam hesabı.';
+
+  var prompt = brandCtx + '\n\n' +
+    'Bugünkü performans:\n' +
+    '- Harcama: ₺' + spend.toFixed(0) + '\n' +
+    '- Satış: ' + sales + ' adet\n' +
+    '- Gelir: ₺' + revenue.toFixed(0) + '\n' +
+    '- ROAS: ' + (roas > 0 ? roas.toFixed(2) + 'x' : 'hesaplanamadı') + '\n' +
+    '- CPA: ' + (cpa > 0 ? '₺' + cpa.toFixed(0) : 'hesaplanamadı') + '\n' +
+    (note ? '- Kullanıcı notu: ' + note + '\n' : '') +
+    '\nBu verilere bakarak:\n' +
+    '1. ROAS/CPA durumu kritik mi, iyi mi, geliştirilebilir mi — net bir cümleyle yargıla\n' +
+    '2. Bugün yapılması gereken 4-5 somut aksiyon üret (creative üretme, hedefleme değişikliği, bütçe hamlesi, test fikirler)\n' +
+    '3. Her aksiyon için kısa ama uygulanabilir detay ver\n\n' +
+    'Yanıtı SADECE bu JSON formatında döndür, başka hiçbir şey yazma:\n' +
+    '{"verdict":"tek cümle performans yorumu","actions":[{"title":"aksiyon başlığı","reason":"neden ve nasıl yapılacak kısaca","tone":"high|mid|low|blue","cta":"Git","nav":"hook|copy|scale|creative-prompt|dash|budget"}]}';
 
   try {
-    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanı ve AI koçsun. Türkçe yanıt ver. Sadece geçerli JSON döndür, başka hiçbir şey yazma.',
-        message: `${brandCtx}
-
-Bugünkü veri: Harcama ₺${totalSpend.toFixed(0)}, Satış ${totalSales}, ROAS ${roas.toFixed(2)}x, CTR %${avgCTR.toFixed(2)}, Frekans ${avgFreq.toFixed(1)}, CPA ₺${cpa.toFixed(0)}.
-${campSummary ? 'Kampanyalar: ' + campSummary : 'Kampanya verisi yok.'}
-
-Tekrar aynı performans yorumlarını yazma. Bunun yerine bugün yapılacak somut işler üret:
-- üretilecek video
-- hazırlanacak story
-- test edilecek copy
-- yapılacak görsel veya hook denemesi
-
-Her kart kısa olsun, ama detay alanında uygulanabilir olsun.
-
-{"actions":[{"priority":1,"tone":"high","title":"2 kısa video üret","reason":"neden bugün önemli 1 kısa cümle","detail":"ne çekilecek, format, açı, CTA","tool":"hangi araç veya bölüm kullanılacak","cta":"kısa CTA","nav":"creative-prompt"},{"priority":2,"tone":"mid","title":"3 story hazırla","reason":"...","detail":"story akışı / ne paylaşılacak","tool":"Instagram Story Creator","cta":"Story planı aç","nav":"creative"},{"priority":3,"tone":"low","title":"1 copy testi yaz","reason":"...","detail":"hangi mesajı test et","tool":"Copy Studio","cta":"Copy üret","nav":"copy"},{"priority":4,"tone":"blue","title":"2 yeni hook dene","reason":"...","detail":"hook tarzı ve giriş cümlesi","tool":"Hook Generator","cta":"Hook üret","nav":"hook"}]}
-
-nav değerleri: hook, swipe, copy, scale, creative, budget, dash, ai, creative-prompt`
+        system: 'Sen bir Meta reklam uzmanısın. Türkçe yanıt ver. Sadece geçerli JSON döndür.',
+        message: prompt
       })
     });
+    var data = await res.json();
+    var raw = (data.answer || '').trim();
+    var match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('JSON bulunamadı');
+    var parsed = safeJsonParse(match[0], { verdict: '', actions: [] });
 
-    const data = await res.json();
-    let raw = (data.answer || '').trim();
+    clearInterval(ticker);
 
-    // JSON bloğunu bul
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('JSON bulunamadı');
+    // Cache'e kaydet
+    var cacheKey = 'dp_result_' + new Date().toISOString().split('T')[0];
+    localStorage.setItem(cacheKey, JSON.stringify({ spend, sales, price, note, actions: parsed.actions, verdict: parsed.verdict }));
 
-    const parsed = safeJsonParse(jsonMatch[0], { actions: [] });
-    const actions = parsed.actions || [];
+    // Reset butonu göster
+    var rb = document.getElementById('plan-reset-btn');
+    if (rb) rb.style.display = 'inline-flex';
 
-    if (!actions.length) throw new Error('Aksiyon listesi boş');
-
-    localStorage.setItem(cacheKey, JSON.stringify(actions));
-    renderAIActions(actions);
+    dpShowResults(spend, sales, price, parsed.actions, parsed.verdict);
 
   } catch(e) {
-    el.innerHTML = '<div style="color:var(--red);font-size:13px;padding:12px;background:var(--red-light);border-radius:10px;border:1px solid rgba(239,68,68,0.2)">Hata: ' + e.message + '<br><button onclick="loadAIActionPlan(true)" style="margin-top:8px;background:var(--accent);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:var(--font);font-size:12px">Tekrar Dene</button></div>';
+    clearInterval(ticker);
+    loadEl.style.display = 'none';
+    document.getElementById('plan-step-input').style.display = 'block';
+    var btnText = document.getElementById('dp-btn-text');
+    if (btnText) btnText.textContent = '⚠️ Hata — Tekrar Dene';
+    console.error('dpAnalyze error:', e);
+  }
+}
+
+function dpShowResults(spend, sales, price, actions, verdict) {
+  var revenue = sales * price;
+  var roas = spend > 0 && revenue > 0 ? (revenue / spend) : 0;
+  var cpa = sales > 0 && spend > 0 ? (spend / sales) : 0;
+  var roasColor = roas >= 3 ? 'var(--green)' : roas >= 2 ? 'var(--yellow)' : roas >= 1 ? 'var(--yellow)' : roas > 0 ? 'var(--red)' : 'var(--text)';
+
+  // KPI row
+  var kpiRow = document.getElementById('dp-kpi-row');
+  if (kpiRow) {
+    kpiRow.innerHTML = [
+      { label:'Harcama', val:'₺'+spend.toFixed(0), color:'var(--text)' },
+      { label:'Satış', val:sales+' ad.', color:'var(--text)' },
+      { label:'ROAS', val: roas > 0 ? roas.toFixed(2)+'x' : '—', color: roasColor },
+      { label:'CPA', val: cpa > 0 ? '₺'+cpa.toFixed(0) : '—', color:'var(--text)' }
+    ].map(function(k) {
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)">' +
+        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">'+k.label+'</div>' +
+        '<div style="font-size:22px;font-weight:900;font-family:var(--mono);color:'+k.color+';letter-spacing:-.03em">'+k.val+'</div>' +
+        '</div>';
+    }).join('');
   }
 
-  if (btn) btn.disabled = false;
+  // Verdict + focus card (büyük kart)
+  var focusCard = document.getElementById('focus-card');
+  var hero = (actions || [])[0];
+  if (focusCard && (hero || verdict)) {
+    var toneGrad = { high:'linear-gradient(135deg,#1a0a0a,#2d1010)', mid:'linear-gradient(135deg,#1a1400,#2d2200)', low:'linear-gradient(135deg,#001a12,#002d1f)', blue:'linear-gradient(135deg,#06091a,#0d1433)' };
+    var toneBorder = { high:'rgba(220,38,38,.3)', mid:'rgba(180,83,9,.3)', low:'rgba(5,150,105,.3)', blue:'rgba(29,78,216,.3)' };
+    var toneAccent = { high:'#f87171', mid:'#fbbf24', low:'#34d399', blue:'#818cf8' };
+    var t = hero ? (hero.tone || 'blue') : 'blue';
+    var heroNavAttr = hero && hero.nav ? 'onclick="nav(\'' + escapeAttr(hero.nav) + '\')"' : '';
+    focusCard.style.display = 'block';
+    focusCard.innerHTML = '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:20px;padding:24px 28px;position:relative;overflow:hidden">' +
+      '<div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle at 70% 30%,' + (toneAccent[t]||toneAccent.blue) + '18,transparent 65%);pointer-events:none"></div>' +
+      (verdict ? '<div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:16px;padding:10px 14px;background:rgba(255,255,255,.05);border-radius:9px">📊 ' + escapeHtml(verdict) + '</div>' : '') +
+      (hero ? ('<div style="margin-bottom:12px"><span style="background:' + (toneAccent[t]||toneAccent.blue) + '22;color:' + (toneAccent[t]||toneAccent.blue) + ';padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 #1 Aksiyon</span></div>' +
+      '<div style="font-size:clamp(18px,2.5vw,26px);font-weight:900;letter-spacing:-.05em;color:#fff;line-height:1.1;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:16px">' + escapeHtml(hero.reason||'') + '</div>' +
+      (hero.cta ? '<button ' + heroNavAttr + ' style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .15s" onmouseover="this.style.opacity=\'.88\'" onmouseout="this.style.opacity=\'1\'">' + escapeHtml(hero.cta) + ' →</button>' : '')) : '') +
+    '</div>';
+  }
+
+  // Görev listesi (aksiyon 2-5)
+  var rest = (actions || []).slice(1);
+  var tasksCard = document.getElementById('tasks-card');
+  var taskItems = document.getElementById('ai-checklist-items');
+  var moreWrap = document.getElementById('tasks-more-wrap');
+  var moreItems = document.getElementById('tasks-more-items');
+
+  if (tasksCard && rest.length > 0) {
+    tasksCard.style.display = 'block';
+    var today = new Date().toISOString().split('T')[0];
+    var storageKey = 'adsopify_checklist_' + today;
+    var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    var toneColor = { high:'var(--red)', mid:'var(--yellow)', low:'var(--green)', blue:'var(--accent)' };
+
+    function makeRow(a, idx) {
+      var isDone = completed.indexOf(idx) !== -1;
+      var tc = toneColor[a.tone] || toneColor.blue;
+      var navA = a.nav ? 'onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"' : '';
+      return '<div class="task-item' + (isDone?' done':'') + '" data-idx="' + idx + '" onclick="toggleTask(this,' + idx + ',\'' + escapeAttr(storageKey) + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid ' + (isDone?'rgba(5,150,105,.2)':'var(--border)') + ';background:' + (isDone?'rgba(5,150,105,.05)':'var(--surface2)') + ';cursor:pointer;transition:all .18s;user-select:none">' +
+        '<div style="width:20px;height:20px;border-radius:50%;border:2px solid ' + (isDone?'var(--green)':tc) + ';background:' + (isDone?'var(--green)':'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fff;font-weight:800">' + (isDone?'✓':'') + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:13px;font-weight:700;color:' + (isDone?'var(--text3)':'var(--text)') + ';text-decoration:' + (isDone?'line-through':'none') + ';letter-spacing:-.02em;line-height:1.3">' + escapeHtml(a.title||'—') + '</div>' +
+          (a.reason ? '<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">' + escapeHtml(a.reason) + '</div>' : '') +
+        '</div>' +
+        (a.cta && a.nav ? '<span ' + navA + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;transition:all .12s" onmouseover="this.style.background=\'var(--accent)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'var(--accent-light)\';this.style.color=\'var(--accent)\'">' + escapeHtml(a.cta) + ' →</span>' : '') +
+      '</div>';
+    }
+
+    var vis = rest.slice(0,2);
+    var hid = rest.slice(2);
+    if (taskItems) taskItems.innerHTML = vis.map(function(a,i){ return makeRow(a,i); }).join('');
+    if (hid.length && moreWrap && moreItems) {
+      moreWrap.style.display = 'block';
+      moreItems.innerHTML = hid.map(function(a,i){ return makeRow(a,i+2); }).join('');
+    }
+    var cc = document.getElementById('checklist-count');
+    if (cc) cc.textContent = '0/' + rest.length;
+  }
+
+  // Loading kapat, sonuçları göster
+  document.getElementById('plan-loading').style.display = 'none';
+  document.getElementById('plan-step-results').style.display = 'block';
+
+  // İçerik fikirlerini de yükle
+  refreshIdeas();
 }
+
+function planReset() {
+  // Cache temizle
+  var cacheKey = 'dp_result_' + new Date().toISOString().split('T')[0];
+  localStorage.removeItem(cacheKey);
+
+  // Reset btn gizle
+  var rb = document.getElementById('plan-reset-btn');
+  if (rb) rb.style.display = 'none';
+
+  // Input alanlarını temizle
+  ['dp-spend','dp-sales','dp-price','dp-note'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  var preview = document.getElementById('dp-roas-preview');
+  if (preview) preview.style.display = 'none';
+  var btnText = document.getElementById('dp-btn-text');
+  if (btnText) btnText.textContent = 'AI ile Analiz Et';
+
+  // Sonuçları gizle, inputu göster
+  document.getElementById('plan-step-results').style.display = 'none';
+  document.getElementById('plan-step-input').style.display = 'block';
+}
+
+// Eski fonksiyonlar — compat için boş bırakıldı
+function loadPlanOffline() { loadPlan(); }
+function reconnectMeta() { localStorage.removeItem('adsopify_token'); localStorage.removeItem('adsopify_account_id'); localStorage.removeItem('adsopify_account_name'); S.token = null; S.accountId = null; location.reload(); }
+async function loadAIActionPlan(forceRefresh, insightsData) { /* yeni sistemde kullanılmıyor */ }
+function renderAIActions(actions) { /* yeni sistemde kullanılmıyor */ }
+function updatePlanProgress() { /* yeni sistemde kullanılmıyor */ }
+function renderPlan(a, b) { /* yeni sistemde kullanılmıyor */ }
 
 function renderCompactCard(opts) {
   const tone = opts.tone || 'blue';
@@ -1889,114 +2051,6 @@ function renderCompactCard(opts) {
   </div>`;
 }
 
-function renderAIActions(actions) {
-  if (!actions || !actions.length) return;
-
-  // Loading kapat
-  var loadEl = document.getElementById('ai-action-list-loading');
-  if (loadEl) loadEl.style.display = 'none';
-
-  var today = new Date().toISOString().split('T')[0];
-  var storageKey = 'adsopify_checklist_' + today;
-  var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
-
-  // ── ODAK KARTI — sadece #1 aksiyon, büyük ve net ──
-  var hero = actions[0];
-  var focusCard = document.getElementById('focus-card');
-  if (focusCard && hero) {
-    focusCard.style.display = 'block';
-    var toneGrad = {
-      high: 'linear-gradient(135deg,#1a0a0a,#2d1010)',
-      mid:  'linear-gradient(135deg,#1a1400,#2d2200)',
-      low:  'linear-gradient(135deg,#001a12,#002d1f)',
-      blue: 'linear-gradient(135deg,#06091a,#0d1433)'
-    };
-    var toneBorder = { high:'rgba(220,38,38,.3)', mid:'rgba(180,83,9,.3)', low:'rgba(5,150,105,.3)', blue:'rgba(29,78,216,.3)' };
-    var toneAccent = { high:'#f87171', mid:'#fbbf24', low:'#34d399', blue:'#818cf8' };
-    var toneTag = { high:'Acil', mid:'Önemli', low:'Büyüt', blue:'Odak' };
-    var t = hero.tone || 'blue';
-    var heroNavAttr = hero.nav ? 'onclick="nav(\'' + escapeAttr(hero.nav) + '\')"' : '';
-
-    focusCard.innerHTML = '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:20px;padding:28px 32px;position:relative;overflow:hidden;cursor:default" onmouseover="this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.transform=\'\'">' +
-      '<div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle at 70% 30%,' + (toneAccent[t]||toneAccent.blue) + '18,transparent 65%);pointer-events:none"></div>' +
-      '<div style="margin-bottom:16px;display:flex;align-items:center;gap:8px">' +
-        '<span style="background:' + (toneAccent[t]||toneAccent.blue) + '22;color:' + (toneAccent[t]||toneAccent.blue) + ';padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 Bugünün Odağı</span>' +
-        '<span style="font-size:11px;color:rgba(255,255,255,.3);font-family:var(--mono)">#' + (hero.priority||1) + '</span>' +
-      '</div>' +
-      '<div style="font-size:clamp(22px,3vw,30px);font-weight:900;letter-spacing:-.06em;color:#fff;line-height:1.05;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
-      '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;max-width:55ch;margin-bottom:18px">' + escapeHtml(hero.reason||hero.detail||'') + '</div>' +
-      (hero.detail && hero.reason ? '<div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:18px">' + escapeHtml(hero.detail) + '</div>' : '') +
-      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
-        (hero.cta ? '<button ' + heroNavAttr + ' style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .15s" onmouseover="this.style.opacity=\'.88\'" onmouseout="this.style.opacity=\'1\'">' + escapeHtml(hero.cta) + ' →</button>' : '') +
-        (hero.tool ? '<span style="font-size:12px;color:rgba(255,255,255,.3);font-weight:600">' + escapeHtml(hero.tool) + '</span>' : '') +
-      '</div>' +
-    '</div>';
-  }
-
-  // ── GÖREV LİSTESİ — 2 görün, kalanı "+" ile ──
-  var tasksCard = document.getElementById('tasks-card');
-  var taskItems = document.getElementById('ai-checklist-items');
-  var moreWrap = document.getElementById('tasks-more-wrap');
-  var moreItems = document.getElementById('tasks-more-items');
-  var countEl = document.getElementById('checklist-count');
-
-  if (!tasksCard || !taskItems) return;
-
-  var rest = actions.slice(1);
-  if (!rest.length) { tasksCard.style.display = 'none'; return; }
-  tasksCard.style.display = 'block';
-
-  function makeTaskRow(a, idx, isMain) {
-    var isDone = completed.indexOf(idx) !== -1;
-    var toneColor = { high:'var(--red)', mid:'var(--yellow)', low:'var(--green)', blue:'var(--accent)' };
-    var tc = toneColor[a.tone] || toneColor.blue;
-    var navA = a.nav ? 'onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"' : '';
-    return '<div class="task-item' + (isDone?' done':'') + '" data-idx="' + idx + '" onclick="toggleTask(this,' + idx + ',\'' + escapeAttr(storageKey) + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid ' + (isDone?'rgba(5,150,105,.2)':'var(--border)') + ';background:' + (isDone?'rgba(5,150,105,.05)':'var(--surface2)') + ';cursor:pointer;transition:all .18s;user-select:none" onmouseover="if(!this.classList.contains(\'done\'))this.style.borderColor=\'' + tc + '44\'" onmouseout="if(!this.classList.contains(\'done\'))this.style.borderColor=\'var(--border)\'">' +
-      '<div style="width:20px;height:20px;border-radius:50%;border:2px solid ' + (isDone?'var(--green)':tc) + ';background:' + (isDone?'var(--green)':'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:10px;color:#fff;font-weight:800">' + (isDone?'✓':'') + '</div>' +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;font-weight:700;color:' + (isDone?'var(--text3)':'var(--text)') + ';text-decoration:' + (isDone?'line-through':'none') + ';letter-spacing:-.02em;line-height:1.3">' + escapeHtml(a.title||'—') + '</div>' +
-        (a.reason ? '<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">' + escapeHtml(a.reason) + '</div>' : '') +
-      '</div>' +
-      (a.cta && a.nav ? '<span ' + navA + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;transition:all .12s" onmouseover="this.style.background=\'var(--accent)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'var(--accent-light)\';this.style.color=\'var(--accent)\'">' + escapeHtml(a.cta) + ' →</span>' : '') +
-    '</div>';
-  }
-
-  // İlk 2 görevi göster
-  var visible = rest.slice(0, 2);
-  var hidden = rest.slice(2);
-
-  taskItems.innerHTML = visible.map(function(a, i) { return makeTaskRow(a, i, true); }).join('');
-
-  if (hidden.length) {
-    moreWrap.style.display = 'block';
-    moreItems.innerHTML = hidden.map(function(a, i) { return makeTaskRow(a, i + 2, false); }).join('');
-  } else {
-    moreWrap.style.display = 'none';
-  }
-
-  // Progress güncelle
-  updatePlanProgress(rest.length, completed, storageKey);
-
-  // Greeting güncelle
-  var h = new Date().getHours();
-  var greet = h < 12 ? 'Günaydın 👋' : h < 18 ? 'İyi günler 👋' : 'İyi akşamlar 👋';
-  var greetEl = document.getElementById('plan-greeting');
-  if (greetEl) greetEl.textContent = greet;
-}
-
-function updatePlanProgress(total, completed, storageKey) {
-  var done = document.querySelectorAll('#ai-checklist-items .task-item.done').length +
-             document.querySelectorAll('#tasks-more-items .task-item.done').length;
-  var countEl = document.getElementById('checklist-count');
-  var pbar = document.getElementById('plan-progress-bar');
-  var plabel = document.getElementById('plan-progress-label');
-  var pwrap = document.getElementById('plan-progress-wrap');
-  if (countEl) countEl.textContent = done + '/' + total + ' tamamlandı';
-  if (pbar) pbar.style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
-  if (plabel) plabel.textContent = done + '/' + total;
-  if (pwrap) pwrap.style.display = 'flex';
-}
-
 function toggleMoreTasks() {
   var wrap = document.getElementById('tasks-more-items');
   var btn = document.getElementById('tasks-more-btn');
@@ -2011,23 +2065,17 @@ function toggleMoreTasks() {
 function toggleTask(el, idx, storageKey) {
   var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
   var isDone = el.classList.contains('done');
-
   if (isDone) {
     completed = completed.filter(function(i) { return i !== idx; });
     el.classList.remove('done');
   } else {
     if (completed.indexOf(idx) === -1) completed.push(idx);
     el.classList.add('done');
-    // Animasyon: scale bounce
     el.style.transform = 'scale(1.01)';
     setTimeout(function() { el.style.transform = ''; }, 200);
   }
-
   localStorage.setItem(storageKey, JSON.stringify(completed));
-
-  // Checkbox güncelle
   var checkbox = el.querySelector('div');
-  var title = el.querySelectorAll('div')[1]?.querySelector('div');
   var newDone = !isDone;
   if (checkbox) {
     checkbox.style.background = newDone ? 'var(--green)' : 'transparent';
@@ -2036,72 +2084,18 @@ function toggleTask(el, idx, storageKey) {
   }
   el.style.borderColor = newDone ? 'rgba(5,150,105,.25)' : 'var(--border)';
   el.style.background = newDone ? 'rgba(5,150,105,.06)' : 'var(--surface2)';
-
-  // Progress güncelle
+  // Count güncelle
   var total = document.querySelectorAll('#ai-checklist-items .task-item, #tasks-more-items .task-item').length;
-  updatePlanProgress(total, [], storageKey);
-
-  // Hepsi tamam — konfeti mesajı
+  var done = document.querySelectorAll('#ai-checklist-items .task-item.done, #tasks-more-items .task-item.done').length;
+  var cc = document.getElementById('checklist-count');
+  if (cc) cc.textContent = done + '/' + total;
   if (done === total && total > 0) {
-    var confetti = document.createElement('div');
-    confetti.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(5,150,105,.35);animation:secIn .3s ease';
-    confetti.textContent = '🎉 Harika! Bugünün tüm görevlerini tamamladın!';
-    document.body.appendChild(confetti);
-    setTimeout(function() { confetti.remove(); }, 3500);
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(5,150,105,.35);animation:secIn .3s ease';
+    toast.textContent = '🎉 Bugünün tüm aksiyonlarını tamamladın!';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3500);
   }
-}
-
-function renderPlan(campaigns, insights) {
-  const insMap = {};
-  insights.forEach(i => { insMap[i.campaign_id] = i; });
-
-  const active = campaigns.filter(c => c.status === 'ACTIVE');
-  const hasPix = insights.some(i => (i._purchases || 0) > 0);
-
-  const urgentItems = [];
-  insights.forEach(i => {
-    const cpc = parseFloat(i.cpc || 0);
-    const ctr = parseFloat(i.ctr || 0);
-    const spend = parseFloat(i.spend || 0);
-    const freq = parseFloat(i.frequency || 0);
-    const roas = i._roas || 0;
-    const purchases = i._purchases || 0;
-
-    // ROAS alerts (highest priority)
-    if (hasPix && spend > 50 && purchases === 0) {
-      urgentItems.push({ icon: '🔴', title: i.campaign_name + ': Satış Yok', desc: '₺' + spend.toFixed(0) + ' harcandı ama sıfır dönüşüm. Hemen durdur veya hedef kitleyi değiştir.', urgent: true });
-    } else if (hasPix && roas > 0 && roas < 1) {
-      urgentItems.push({ icon: '🔴', title: i.campaign_name + ': Zararda', desc: 'ROAS ' + roas.toFixed(2) + 'x — harcama getirinin altında. Durdur ve yeniden yapılandır.', urgent: true });
-    }
-    // Frequency fatigue
-    if (freq > 3.5) {
-      urgentItems.push({ icon: '😴', title: i.campaign_name + ': Creative Yorgunluğu', desc: 'Frekans ' + freq.toFixed(1) + ' — aynı kişilere çok gösterim yapılıyor. Yeni creative ekle.', urgent: true });
-    }
-    // CPC/CTR alerts
-    if (cpc > 15) urgentItems.push({ icon: '⚠️', title: i.campaign_name + ': Yüksek CPC', desc: 'CPC ₺' + cpc.toFixed(2) + ' — hedef kitle veya kreatifi kontrol et.', urgent: true });
-    if (ctr < 0.5 && spend > 50) urgentItems.push({ icon: '⚠️', title: i.campaign_name + ': Düşük CTR', desc: 'CTR %' + ctr.toFixed(2) + ' — hook çalışmıyor, creative değiştir.', urgent: true });
-  });
-
-  if (active.length === 0) urgentItems.push({ icon: '⛔', title: 'Aktif Kampanya Yok', desc: 'Hiçbir kampanya aktif değil. En iyi performanslı kampanyayı aktifleştir.', urgent: true });
-  if (!hasPix) urgentItems.push({ icon: '📡', title: 'Pixel Satış Takibi Yok', desc: 'Meta Pixel\'de "purchase" eventi aktif değil. Gerçek ROAS ve CPA görmek için kur.', urgent: true });
-  if (urgentItems.length === 0) urgentItems.push({ icon: '✅', title: 'Kritik Sorun Yok', desc: 'Kampanyalar normal seyrinde görünüyor.', urgent: true });
-
-  const brand = S.brand;
-  const brandName = (brand && brand.brandName) ? brand.brandName : null;
-
-  document.getElementById('plan-urgent').innerHTML = urgentItems.slice(0, 4).map(i =>
-    renderCompactCard({
-      tone: 'high',
-      badge: 'Hemen bak',
-      kicker: 'Bugün',
-      title: i.title,
-      text: i.desc,
-      tool: 'Reklamları Analiz Et',
-      cta: 'İncele',
-      nav: 'dash'
-    })
-  ).join('');
-  refreshIdeas();
 }
 
 function refreshIdeas() {
