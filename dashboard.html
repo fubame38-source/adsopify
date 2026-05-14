@@ -1725,7 +1725,7 @@ function fbLogin() {
           accounts.forEach(a => {
             const el = document.createElement('div');
             el.className = 'acct-item';
-            el.innerHTML = '<div><div class="ai-name">' + escapeHtml(a.name || 'Hesap') + '</div><div class="ai-id">' + escapeHtml(a.id) + '</div></div><span class="sel-arrow">Seç →</span>';t)">Seç →</span>';
+            el.innerHTML = '<div><div class="ai-name">' + escapeHtml(a.name || 'Hesap') + '</div><div class="ai-id">' + escapeHtml(a.id) + '</div></div><span class="sel-arrow">Seç →</span>';
             el.onclick = () => selectAccount(a.id, a.name || a.id, token);
             list.appendChild(el);
           });
