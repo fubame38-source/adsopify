@@ -812,17 +812,115 @@ tbody tr:hover td{background:var(--surface2)}
 
 <!-- REKLAM SİHİRBAZI -->
 <div id="sec-ad-wizard" class="section">
-  <div class="ph"><div class="ph-title">Reklam Hazırla</div><div class="ph-sub">Hook → Metin → Ayarlar → Meta'da Aç</div></div>
-  <div style="display:flex;align-items:center;gap:4px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px">
-    <div class="wizard-step active" id="ws-1"><div class="ws-num">1</div><div class="ws-label">Hook</div></div><div class="ws-line"></div>
-    <div class="wizard-step" id="ws-2"><div class="ws-num">2</div><div class="ws-label">Metin</div></div><div class="ws-line"></div>
-    <div class="wizard-step" id="ws-3"><div class="ws-num">3</div><div class="ws-label">Ayarlar</div></div><div class="ws-line"></div>
-    <div class="wizard-step" id="ws-4"><div class="ws-num">4</div><div class="ws-label">Özet</div></div>
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Reklam Hazırla</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:2px">AI tek tıkla komple reklam paketi üretir</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="adWizReset()" id="adwiz-reset-btn" style="display:none">↺ Yenile</button>
   </div>
-  <div id="wizard-panel-1"><div class="card mb-12"><div class="clabel">Adım 1: Hook</div><textarea id="wiz-hook" rows="3" placeholder="&#34;POV: Bu ürünü keşfedince hayatım değişti&#34;"></textarea><div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="nav('hook')">🪝 Hook Üretici</button><button class="btn btn-ghost btn-sm" onclick="nav('swipe')">🃏 Swipe</button><button class="btn btn-primary btn-sm" onclick="wizardNext(1)" style="margin-left:auto">Devam →</button></div></div></div>
-  <div id="wizard-panel-2" style="display:none"><div class="card mb-12"><div class="clabel">Adım 2: Metin & CTA</div><textarea id="wiz-body" rows="5" placeholder="Reklam metni..."></textarea><div style="margin-top:10px"><label>CTA</label><select id="wiz-cta" style="margin-top:5px"><option>Hemen Satın Al</option><option>Daha Fazla Bilgi</option><option>Şimdi Sipariş Ver</option><option>Ürünü Gör</option><option>İndir</option><option>Kaydol</option></select></div><div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="useGeneratedCopy()">✍️ Metin'den Al</button><div style="flex:1"></div><button class="btn btn-ghost btn-sm" onclick="wizardBack(2)">← Geri</button><button class="btn btn-primary btn-sm" onclick="wizardNext(2)">Devam →</button></div></div></div>
-  <div id="wizard-panel-3" style="display:none"><div class="card mb-12"><div class="clabel">Adım 3: Ayarlar</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label>Hedef <span id="wiz-obj-hint" style="color:var(--accent);font-weight:700"></span></label><select id="wiz-objective"><option value="OUTCOME_SALES">Satış</option><option value="OUTCOME_TRAFFIC">Trafik</option><option value="OUTCOME_ENGAGEMENT">Etkileşim</option><option value="OUTCOME_AWARENESS">Farkındalık</option></select></div><div><label>Günlük Bütçe (₺)</label><input type="number" id="wiz-budget" value="200"/></div><div><label>Kitle</label><select id="wiz-audience"><option value="broad">Geniş (18-65, Türkiye)</option><option value="interest">İlgi Alanı</option><option value="retarget">Yeniden Hedefleme</option><option value="lookalike">Benzer Kitle</option></select></div><div><label>Format</label><select id="wiz-format"><option value="video">Video</option><option value="image">Görsel</option><option value="carousel">Carousel</option></select></div><div><label>URL</label><input type="url" id="wiz-url" placeholder="https://siteniz.com"/></div><div style="display:flex;align-items:flex-end"><span style="font-size:11px;color:var(--text3)">CTA: <span id="wiz-cta-hint" style="color:var(--text2);font-weight:700"></span></span></div></div><div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="wizardBack(3)">← Geri</button><button class="btn btn-primary btn-sm" onclick="wizardNext(3)" style="margin-left:auto">Özeti Gör →</button></div></div></div>
-  <div id="wizard-panel-4" style="display:none"><div class="card mb-12"><div class="clabel">Adım 4: Özet</div><div id="wiz-summary" style="margin-bottom:14px"></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="wizardBack(4)">← Düzenle</button><button id="wiz-open-meta" onclick="openWizardInMeta()" class="btn btn-primary" style="margin-left:auto"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Meta'da Aç</button></div></div></div>
+
+  <!-- FORMAT SEÇİMİ + ÜRET -->
+  <div id="adwiz-input" style="display:block">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+      <div id="adwiz-card-format" style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Format</div>
+        <select id="adwiz-format" style="width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-weight:700;outline:none;cursor:pointer">
+          <option value="video">📹 Video / Reels</option>
+          <option value="image">🖼 Görsel</option>
+          <option value="carousel">🎠 Carousel</option>
+          <option value="story">📱 Story</option>
+        </select>
+      </div>
+      <div id="adwiz-card-goal" style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Hedef</div>
+        <select id="adwiz-goal" style="width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-weight:700;outline:none;cursor:pointer">
+          <option value="satis">💰 Satış</option>
+          <option value="trafik">🔗 Trafik</option>
+          <option value="etkilesim">💬 Etkileşim</option>
+          <option value="farkindalik">📢 Farkındalık</option>
+        </select>
+      </div>
+      <div id="adwiz-card-angle" style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Açı / Ton</div>
+        <select id="adwiz-angle" style="width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-weight:700;outline:none;cursor:pointer">
+          <option value="pov">🎬 POV Keşif</option>
+          <option value="uzman">🩺 Uzman / Bilim</option>
+          <option value="ugc">😊 UGC Samimi</option>
+          <option value="problem">😤 Problem-Çözüm</option>
+          <option value="karsilastirma">⚖️ Karşılaştırma</option>
+          <option value="sosyal">📊 Sosyal Kanıt</option>
+        </select>
+      </div>
+    </div>
+    <button onclick="adWizGenerate()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.opacity='.88';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform=''">
+      <span>✨</span> <span id="adwiz-btn-text">Reklam Paketi Üret</span>
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="adwiz-loading" style="display:none;flex-direction:column;align-items:center;padding:60px 20px;gap:14px">
+    <div class="spinner" style="width:28px;height:28px;border-width:3px"></div>
+    <div style="font-size:13px;font-weight:600;color:var(--text2)" id="adwiz-loading-msg">Hook yazılıyor...</div>
+  </div>
+
+  <!-- SONUÇ -->
+  <div id="adwiz-result" style="display:none">
+    <!-- Hook -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🪝 Hook</span>
+        <button onclick="adWizCopy('adwiz-hook-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+      </div>
+      <div id="adwiz-hook-text" style="padding:16px;font-size:15px;font-weight:700;color:var(--text);line-height:1.5"></div>
+    </div>
+
+    <!-- Primary Text -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">✍️ Primary Text</span>
+        <button onclick="adWizCopy('adwiz-body-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+      </div>
+      <div id="adwiz-body-text" style="padding:16px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line"></div>
+    </div>
+
+    <!-- Başlık + CTA -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">📌 Başlık</span>
+          <button onclick="adWizCopy('adwiz-headline-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+        </div>
+        <div id="adwiz-headline-text" style="padding:14px;font-size:14px;font-weight:700;color:var(--text);line-height:1.4"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+          <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎯 Hedef Kitle</span>
+        </div>
+        <div id="adwiz-audience-text" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.6"></div>
+      </div>
+    </div>
+
+    <!-- Creative Brief -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎬 Creative Brief</span>
+      </div>
+      <div id="adwiz-brief-text" style="padding:16px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line"></div>
+    </div>
+
+    <!-- Meta'da Aç -->
+    <button onclick="adWizOpenMeta()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1877f2,#0d6ef2);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      <span id="adwiz-meta-btn-text">Tümünü Kopyala & Meta Ads'da Aç</span>
+    </button>
+  </div>
+
+  <!-- compat -->
+  <div id="wiz-hook" style="display:none"></div>
+  <div id="wiz-body" style="display:none"></div>
+  <div id="wiz-summary" style="display:none"></div>
 </div>
 
 <!-- HOOK SWIPE -->
@@ -3115,7 +3213,116 @@ function goWizardStep(step) {
   }
 }
 
-function wizardNext(currentStep) {
+// REKLAM HAZIRLA — TEK TIKLA AI PAKETİ
+// ═══════════════════════════════════════════════
+async function adWizGenerate() {
+  var format = document.getElementById('adwiz-format').value;
+  var goal   = document.getElementById('adwiz-goal').value;
+  var angle  = document.getElementById('adwiz-angle').value;
+  var brand  = S.brand;
+  var brandCtx = brand && brand.brandName
+    ? 'Marka: ' + brand.brandName + '. Urun: ' + (brand.product||'') + '. Hedef kitle: ' + (brand.audience||'') + '.'
+    : 'Urun reklamı.';
+
+  var formatMap = {video:'Video/Reels (9:16, 15-30sn)',image:'Tek gorsel',carousel:'Carousel',story:'Story (9:16)'};
+  var goalMap   = {satis:'Satis/Donusum',trafik:'Trafik',etkilesim:'Etkilesim',farkindalik:'Farkindalik'};
+  var angleMap  = {pov:'POV Kesif (kisisel deneyim)',uzman:'Uzman/Bilimsel kanit',ugc:'UGC samimi',problem:'Problem-Cozum',karsilastirma:'Karsilastirma (once-sonra)',sosyal:'Sosyal kanit/yorum'};
+
+  document.getElementById('adwiz-input').style.display   = 'none';
+  document.getElementById('adwiz-result').style.display  = 'none';
+  var loadEl  = document.getElementById('adwiz-loading');
+  var msgEl   = document.getElementById('adwiz-loading-msg');
+  loadEl.style.display = 'flex';
+  var msgs = ['Hook yaziliyor...','Primary text hazirlaniyor...','Creative brief olusturuluyor...','Son dokunuslar...'];
+  var mi = 0; if(msgEl) msgEl.textContent = msgs[0];
+  var ticker = setInterval(function(){ mi=(mi+1)%msgs.length; if(msgEl) msgEl.textContent=msgs[mi]; }, 1200);
+
+  var prompt = brandCtx + '\n\n' +
+    'Format: ' + (formatMap[format]||format) + '\n' +
+    'Hedef: ' + (goalMap[goal]||goal) + '\n' +
+    'Acı/Ton: ' + (angleMap[angle]||angle) + '\n\n' +
+    'Bu bilgilere gore komple bir Meta reklam paketi olustur.\n\n' +
+    'Yanıt SADECE su JSON formatinda olmali:\n' +
+    '{"hook":"dikkat cekici ilk cumle veya metin (max 2 cumle, Turkce, guclu)","body":"primary text (3-5 cumle, Turkce, bolumlere ayır, CTA ile bitir)","headline":"kisa baslik (max 40 karakter)","audience":"hedef kitle tanimi ve Meta segmentasyon onerileri (2-3 cumle)","brief":"creative brief (cekim acisi, ortam, oyuncular, sahne suresi, ses, vs - 4-6 madde halinde)"}';
+
+  try {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system:'Sen bir Meta reklam uzmanisin. Sadece gecerli JSON dondur. Turkce yaz. Kopyalanmaya hazir, gercekci ve guclü reklam metinleri uret.',
+        message:prompt
+      })
+    });
+    var data = await res.json();
+    var raw  = (data.answer||'').trim();
+    var match = raw.match(/\{[\s\S]*\}/);
+    if(!match) throw new Error('JSON yok');
+    var p = safeJsonParse(match[0],{hook:'',body:'',headline:'',audience:'',brief:''});
+
+    clearInterval(ticker);
+    loadEl.style.display = 'none';
+
+    document.getElementById('adwiz-hook-text').textContent     = p.hook     || '';
+    document.getElementById('adwiz-body-text').textContent     = p.body     || '';
+    document.getElementById('adwiz-headline-text').textContent = p.headline || '';
+    document.getElementById('adwiz-audience-text').textContent = p.audience || '';
+    document.getElementById('adwiz-brief-text').textContent    = p.brief    || '';
+    document.getElementById('adwiz-result').style.display  = 'block';
+    document.getElementById('adwiz-reset-btn').style.display = 'inline-flex';
+    document._adwizData = p;
+
+  } catch(e) {
+    clearInterval(ticker);
+    loadEl.style.display = 'none';
+    document.getElementById('adwiz-input').style.display = 'block';
+    var btn = document.getElementById('adwiz-btn-text');
+    if(btn) btn.textContent = 'Hata — Tekrar Dene';
+    console.error('adWizGenerate error:',e);
+  }
+}
+
+function adWizCopy(elId) {
+  var el = document.getElementById(elId);
+  if(!el) return;
+  var text = el.textContent.trim();
+  navigator.clipboard.writeText(text).then(function(){
+    var allBtns = document.querySelectorAll('[onclick*="' + elId + '"]');
+    allBtns.forEach(function(b){ b.textContent = '✓ Kopyalandı'; setTimeout(function(){ b.textContent = 'Kopyala'; },1500); });
+  }).catch(function(){ alert(text); });
+}
+
+function adWizOpenMeta() {
+  var d = document._adwizData || {};
+  var full = (d.hook||'') + '\n\n' + (d.body||'');
+  var accountId = S.accountId ? S.accountId.replace('act_','') : '';
+  var url = accountId
+    ? 'https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=' + accountId
+    : 'https://adsmanager.facebook.com/adsmanager/manage/campaigns';
+  var btn = document.getElementById('adwiz-meta-btn-text');
+  navigator.clipboard.writeText(full).then(function(){
+    if(btn) btn.textContent = 'Kopyalandı! Meta açılıyor...';
+    setTimeout(function(){
+      window.open(url,'_blank');
+      if(btn) btn.textContent = 'Tümünü Kopyala & Meta Ads\'da Aç';
+    },800);
+  }).catch(function(){ window.open(url,'_blank'); });
+}
+
+function adWizReset() {
+  document.getElementById('adwiz-result').style.display  = 'none';
+  document.getElementById('adwiz-input').style.display   = 'block';
+  document.getElementById('adwiz-reset-btn').style.display = 'none';
+  var btn = document.getElementById('adwiz-btn-text');
+  if(btn) btn.textContent = 'Reklam Paketi Üret';
+}
+
+// Eski wizard compat stubs
+function wizardNext(){}
+function wizardBack(){}
+function goWizardStep(){}
+function renderWizardSummary(){}
+function openWizardInMeta(){ adWizOpenMeta(); }
+function useGeneratedCopy(){}
   if (currentStep === 1) {
     const hook = document.getElementById('wiz-hook').value.trim();
     if (!hook) { alert('Lütfen bir hook girin.'); return; }
