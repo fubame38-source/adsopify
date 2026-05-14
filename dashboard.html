@@ -1815,7 +1815,7 @@ function planShowResults(actions, verdict, tagline) {
       (verdict ? '<div style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.65;margin-bottom:18px;max-width:60ch">' + escapeHtml(verdict) + '</div>' : '') +
       '<div style="font-size:clamp(19px,2.5vw,27px);font-weight:900;letter-spacing:-.05em;color:#fff;line-height:1.1;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
       '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:18px;max-width:58ch">' + escapeHtml(hero.reason||'') + '</div>' +
-      (hero.cta && hero.nav ? '<button onclick="nav(\'' + escapeAttr(hero.nav) + '\')" style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=''1\'>">' + escapeHtml(hero.cta) + ' →</button>' : '') +
+      (hero.cta && hero.nav ? '<button onclick="nav(\'' + escapeAttr(hero.nav) + '\')" style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">' + escapeHtml(hero.cta) + ' →</button>' : '') +
       '</div>';
   }
 
@@ -1836,14 +1836,14 @@ function planShowResults(actions, verdict, tagline) {
     function makeRow(a, idx) {
       var isDone = completed.indexOf(idx) !== -1;
       var tc = toneColor[a.tone] || toneColor.blue;
-      var navA = a.nav ? 'onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"}' : '';
+      var navStr = a.nav ? ' onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"' : '';
       return '<div class="task-item' + (isDone?' done':'') + '" data-idx="' + idx + '" onclick="toggleTask(this,' + idx + ',\'' + escapeAttr(storageKey) + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid ' + (isDone?'rgba(5,150,105,.2)':'var(--border)') + ';background:' + (isDone?'rgba(5,150,105,.05)':'var(--surface2)') + ';cursor:pointer;transition:all .18s;user-select:none">' +
         '<div style="width:20px;height:20px;border-radius:50%;border:2px solid ' + (isDone?'var(--green)':tc) + ';background:' + (isDone?'var(--green)':'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fff;font-weight:800">' + (isDone?'✓':'') + '</div>' +
         '<div style="flex:1;min-width:0">' +
           '<div style="font-size:13px;font-weight:700;color:' + (isDone?'var(--text3)':'var(--text)') + ';text-decoration:' + (isDone?'line-through':'none') + ';letter-spacing:-.02em;line-height:1.3">' + escapeHtml(a.title||'—') + '</div>' +
           (a.reason ? '<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">' + escapeHtml(a.reason) + '</div>' : '') +
         '</div>' +
-        (a.cta && a.nav ? '<span ' + navA + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;transition:all .12s" onmouseover="this.style.background=''var(--accent)'';this.style.color=''#fff''" onmouseout="this.style.background=''var(--accent-light)'';this.style.color=''var(--accent)''">' + escapeHtml(a.cta) + ' →</span>' : '') +
+        (a.cta && a.nav ? '<span' + navStr + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;cursor:pointer">' + escapeHtml(a.cta) + ' →</span>' : '') +
       '</div>';
     }
 
@@ -1867,7 +1867,7 @@ function planShowFallback() {
   var actions = shuffleArray(pool).slice(0, 4).map(function(i, idx) {
     return { title: i.title, reason: i.desc, tone: ['blue','mid','low','high'][idx % 4], cta: 'Uygula', nav: 'creative-prompt' };
   });
-  planShowResults(actions, 'Bugün üretim günü — en iyi creative'ler sahaya çık.', 'Creative Günü');
+  planShowResults(actions, 'Bugün üretim günü — en iyi creative\'ler sahaya çıksın.', 'Creative Günü');
 }
 
 function planReset() {
