@@ -550,71 +550,33 @@ tbody tr:hover td{background:var(--surface2)}
   <!-- HEADER -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
     <div>
-      <div id="plan-greeting" style="font-size:22px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Günaydın 👋</div>
-      <div style="font-size:13px;color:var(--text2);margin-top:2px" id="plan-date">Yükleniyor...</div>
+      <div id="plan-greeting" style="font-size:22px;font-weight:800;letter-spacing:-.05em;color:var(--text)">İyi akşamlar 👋</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:2px" id="plan-date"></div>
     </div>
-    <button class="btn btn-ghost btn-sm" onclick="planReset()" id="plan-reset-btn" style="display:none">↺ Sıfırla</button>
+    <button class="btn btn-ghost btn-sm" onclick="planReset()" id="plan-reset-btn" style="display:none">↺ Yenile</button>
   </div>
 
-  <!-- ADIM 1: VERİ GİRİŞİ -->
-  <div id="plan-step-input">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow);margin-bottom:14px">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:16px">Bugünün Rakamları</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
-        <div>
-          <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Harcama (₺)</label>
-          <input id="dp-spend" type="number" min="0" placeholder="0" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:15px;font-weight:700;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" oninput="dpAutoROAS()" />
-        </div>
-        <div>
-          <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Satış Adedi</label>
-          <input id="dp-sales" type="number" min="0" placeholder="0" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:15px;font-weight:700;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" oninput="dpAutoROAS()" />
-        </div>
-        <div>
-          <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Ürün Fiyatı (₺)</label>
-          <input id="dp-price" type="number" min="0" placeholder="1999" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:15px;font-weight:700;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" oninput="dpAutoROAS()" />
-        </div>
-      </div>
-
-      <!-- CANLI ROAS önizleme -->
-      <div id="dp-roas-preview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:7px">
-          <span style="font-size:11px;color:var(--text3);font-weight:700">ROAS</span>
-          <span id="dp-roas-val" style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--text)">—</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:7px">
-          <span style="font-size:11px;color:var(--text3);font-weight:700">CPA</span>
-          <span id="dp-cpa-val" style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--text)">—</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:7px">
-          <span style="font-size:11px;color:var(--text3);font-weight:700">Gelir</span>
-          <span id="dp-rev-val" style="font-size:20px;font-weight:900;font-family:var(--mono);color:var(--text)">—</span>
-        </div>
-        <div id="dp-roas-badge" style="margin-left:auto;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em"></div>
-      </div>
-
-      <!-- SERBEST NOT -->
-      <div style="margin-bottom:16px">
-        <label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Not / Gözlem <span style="font-weight:400;text-transform:none;letter-spacing:0">(isteğe bağlı)</span></label>
-        <textarea id="dp-note" rows="2" placeholder="Örn: Dün creative değiştirdim, frekans yüksek, yeni bir kitle denemeliyim..." style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;resize:none;transition:border-color .15s;line-height:1.5" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-      </div>
-
-      <button id="dp-analyze-btn" onclick="dpAnalyze()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:11px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.opacity='.88';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform=''">
-        <span>✨</span> <span id="dp-btn-text">AI ile Analiz Et</span>
-      </button>
+  <!-- LOADING — açılışta skeleton -->
+  <div id="plan-loading" style="display:block">
+    <div style="border-radius:20px;height:200px;margin-bottom:12px;overflow:hidden">
+      <div class="skel" style="width:100%;height:100%;border-radius:20px"></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px">
+      <div class="skel" style="height:44px;border-radius:10px"></div>
+      <div class="skel" style="height:44px;border-radius:10px"></div>
+      <div class="skel" style="height:44px;border-radius:10px"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="skel" style="height:90px;border-radius:12px"></div>
+      <div class="skel" style="height:90px;border-radius:12px"></div>
     </div>
   </div>
 
-  <!-- ADIM 2: AI SONUÇLARI -->
+  <!-- SONUÇLAR -->
   <div id="plan-step-results" style="display:none">
+    <div id="focus-card" style="margin-bottom:12px"></div>
 
-    <!-- ÖZET KPI'LAR -->
-    <div id="dp-kpi-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
-
-    <!-- ODAK KARTI (büyük AI aksiyonu) -->
-    <div id="focus-card" style="margin-bottom:14px"></div>
-
-    <!-- GÖREV LİSTESİ -->
-    <div id="tasks-card" style="margin-bottom:14px;display:none">
+    <div id="tasks-card" style="margin-bottom:12px;display:none">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
         <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
           <div style="display:flex;align-items:center;gap:7px">
@@ -631,12 +593,11 @@ tbody tr:hover td{background:var(--surface2)}
       </div>
     </div>
 
-    <!-- İÇERİK FİKİRLERİ -->
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <div style="display:flex;align-items:center;gap:6px">
           <span style="width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 4px rgba(180,83,9,.4);flex-shrink:0"></span>
-          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">AI İçerik Fikirleri</span>
+          <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">İçerik Fikirleri</span>
         </div>
         <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" style="padding:2px 7px;font-size:11px">↺</button>
       </div>
@@ -644,14 +605,9 @@ tbody tr:hover td{background:var(--surface2)}
     </div>
   </div>
 
-  <!-- LOADING durumu -->
-  <div id="plan-loading" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:14px">
-    <div class="spinner" style="width:28px;height:28px;border-width:3px"></div>
-    <div style="font-size:13px;font-weight:600;color:var(--text2)" id="plan-loading-msg">Analiz ediliyor...</div>
-  </div>
-
   <!-- compat hidden -->
   <div id="plan-content" style="display:none"></div>
+  <div id="plan-step-input" style="display:none"></div>
   <div id="ai-action-list" style="display:none"></div>
   <div id="ai-hero-card" style="display:none"></div>
   <div id="ai-checklist-card" style="display:none"></div>
@@ -662,7 +618,14 @@ tbody tr:hover td{background:var(--surface2)}
   <div id="plan-progress-bar" style="display:none"></div>
   <div id="plan-progress-label" style="display:none"></div>
   <div id="ai-action-list-loading" style="display:none"></div>
+  <div id="dp-roas-preview" style="display:none"></div>
+  <div id="dp-roas-val" style="display:none"></div>
+  <div id="dp-cpa-val" style="display:none"></div>
+  <div id="dp-rev-val" style="display:none"></div>
+  <div id="dp-roas-badge" style="display:none"></div>
+  <div id="dp-kpi-row" style="display:none"></div>
 </div>
+
 
 <!-- REKLAM ANALİZ -->
 <div id="sec-dash" class="section">
@@ -1747,213 +1710,116 @@ function toggleSidebar() {
 }
 
 // ═══════════════════════════════════════════════
-// GÜNLÜK PLAN — YENİ SİSTEM
+// GÜNLÜK PLAN — FORM YOK, DIREKT AI
 // ═══════════════════════════════════════════════
 
 function loadPlan() {
-  // Tarihi set et
   const today = new Date();
   const dateStr = today.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  const el = document.getElementById('plan-date');
-  if (el) el.textContent = dateStr;
   const h = today.getHours();
   const greet = h < 12 ? 'Günaydın 👋' : h < 18 ? 'İyi günler 👋' : 'İyi akşamlar 👋';
   const ge = document.getElementById('plan-greeting');
+  const de = document.getElementById('plan-date');
   if (ge) ge.textContent = greet;
+  if (de) de.textContent = dateStr;
 
-  // Cache kontrolü — aynı gün analiz yapıldıysa direkt sonuçları göster
-  const cacheKey = 'dp_result_' + today.toISOString().split('T')[0];
+  // Cache — aynı gün tekrar üretme
+  const cacheKey = 'dp_plan_v3_' + today.toISOString().split('T')[0];
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
       const c = JSON.parse(cached);
-      dpFillInputs(c.spend, c.sales, c.price, c.note);
-      dpShowResults(c.spend, c.sales, c.price, c.actions);
+      planShowResults(c.actions, c.verdict, c.tagline);
       return;
     } catch(e) {}
   }
 
-  // Sadece giriş ekranını göster
-  document.getElementById('plan-step-input').style.display = 'block';
+  // Skeleton göster, API'ye git
+  document.getElementById('plan-loading').style.display = 'block';
   document.getElementById('plan-step-results').style.display = 'none';
-  document.getElementById('plan-loading').style.display = 'none';
+  var rb = document.getElementById('plan-reset-btn');
+  if (rb) rb.style.display = 'none';
 
-  // Marka fiyatını otomatik doldur
-  if (S.brand && S.brand.price) {
-    const priceEl = document.getElementById('dp-price');
-    if (priceEl && !priceEl.value) priceEl.value = S.brand.price;
-  }
+  planFetchAI(cacheKey);
 }
 
-function dpFillInputs(spend, sales, price, note) {
-  var s = document.getElementById('dp-spend');
-  var sa = document.getElementById('dp-sales');
-  var p = document.getElementById('dp-price');
-  var n = document.getElementById('dp-note');
-  if (s) s.value = spend || '';
-  if (sa) sa.value = sales || '';
-  if (p) p.value = price || '';
-  if (n && note) n.value = note;
-  dpAutoROAS();
-}
-
-function dpAutoROAS() {
-  var spend = parseFloat(document.getElementById('dp-spend').value) || 0;
-  var sales = parseFloat(document.getElementById('dp-sales').value) || 0;
-  var price = parseFloat(document.getElementById('dp-price').value) || 0;
-
-  var preview = document.getElementById('dp-roas-preview');
-  if (!preview) return;
-
-  if (spend <= 0 && sales <= 0) { preview.style.display = 'none'; return; }
-  preview.style.display = 'flex';
-
-  var revenue = sales * price;
-  var roas = spend > 0 && revenue > 0 ? (revenue / spend) : 0;
-  var cpa = sales > 0 && spend > 0 ? (spend / sales) : 0;
-
-  var roasEl = document.getElementById('dp-roas-val');
-  var cpaEl = document.getElementById('dp-cpa-val');
-  var revEl = document.getElementById('dp-rev-val');
-  var badge = document.getElementById('dp-roas-badge');
-
-  if (roasEl) roasEl.textContent = roas > 0 ? roas.toFixed(2) + 'x' : '—';
-  if (cpaEl) cpaEl.textContent = cpa > 0 ? '₺' + cpa.toFixed(0) : '—';
-  if (revEl) revEl.textContent = revenue > 0 ? '₺' + revenue.toFixed(0) : '—';
-
-  if (badge && roas > 0) {
-    if (roas >= 3) { badge.textContent = '✅ İyi'; badge.style.background = 'var(--green-light)'; badge.style.color = 'var(--green)'; }
-    else if (roas >= 2) { badge.textContent = '⚠️ Orta'; badge.style.background = 'var(--yellow-light)'; badge.style.color = 'var(--yellow)'; }
-    else if (roas >= 1) { badge.textContent = '🔶 Düşük'; badge.style.background = 'var(--yellow-light)'; badge.style.color = 'var(--yellow)'; }
-    else { badge.textContent = '🔴 Zararda'; badge.style.background = 'var(--red-light)'; badge.style.color = 'var(--red)'; }
-    badge.style.display = 'inline-flex';
-  } else if (badge) { badge.style.display = 'none'; }
-}
-
-async function dpAnalyze() {
-  var spend = parseFloat(document.getElementById('dp-spend').value) || 0;
-  var sales = parseFloat(document.getElementById('dp-sales').value) || 0;
-  var price = parseFloat(document.getElementById('dp-price').value) || 0;
-  var note = (document.getElementById('dp-note').value || '').trim();
-
-  // Loading göster
-  document.getElementById('plan-step-input').style.display = 'none';
-  document.getElementById('plan-step-results').style.display = 'none';
-  var loadEl = document.getElementById('plan-loading');
-  loadEl.style.display = 'flex';
-  var msgs = ['Rakamlar hesaplanıyor...', 'Performans analiz ediliyor...', 'Aksiyon planı hazırlanıyor...'];
-  var mi = 0;
-  var msgEl = document.getElementById('plan-loading-msg');
-  if (msgEl) msgEl.textContent = msgs[0];
-  var ticker = setInterval(function() {
-    mi = (mi + 1) % msgs.length;
-    if (msgEl) msgEl.textContent = msgs[mi];
-  }, 1400);
-
-  var revenue = sales * price;
-  var roas = spend > 0 && revenue > 0 ? (revenue / spend) : 0;
-  var cpa = sales > 0 && spend > 0 ? (spend / sales) : 0;
-
-  var brand = S.brand;
-  var brandCtx = brand && brand.brandName
-    ? 'Marka: ' + brand.brandName + '. Ürün: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.'
+async function planFetchAI(cacheKey) {
+  const brand = S.brand;
+  const brandCtx = brand && brand.brandName
+    ? 'Marka: ' + brand.brandName + '. Ürün: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.' 
     : 'Meta reklam hesabı.';
 
-  var prompt = brandCtx + '\n\n' +
-    'Bugünkü performans:\n' +
-    '- Harcama: ₺' + spend.toFixed(0) + '\n' +
-    '- Satış: ' + sales + ' adet\n' +
-    '- Gelir: ₺' + revenue.toFixed(0) + '\n' +
-    '- ROAS: ' + (roas > 0 ? roas.toFixed(2) + 'x' : 'hesaplanamadı') + '\n' +
-    '- CPA: ' + (cpa > 0 ? '₺' + cpa.toFixed(0) : 'hesaplanamadı') + '\n' +
-    (note ? '- Kullanıcı notu: ' + note + '\n' : '') +
-    '\nBu verilere bakarak:\n' +
-    '1. ROAS/CPA durumu kritik mi, iyi mi, geliştirilebilir mi — net bir cümleyle yargıla\n' +
-    '2. Bugün yapılması gereken 4-5 somut aksiyon üret (creative üretme, hedefleme değişikliği, bütçe hamlesi, test fikirler)\n' +
-    '3. Her aksiyon için kısa ama uygulanabilir detay ver\n\n' +
-    'Yanıtı SADECE bu JSON formatında döndür, başka hiçbir şey yazma:\n' +
-    '{"verdict":"tek cümle performans yorumu","actions":[{"title":"aksiyon başlığı","reason":"neden ve nasıl yapılacak kısaca","tone":"high|mid|low|blue","cta":"Git","nav":"hook|copy|scale|creative-prompt|dash|budget"}]}';
+  const h = new Date().getHours();
+  const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'öğleden sonra' : 'akşam';
+
+  const prompt = brandCtx + '\n' +
+    'Şu an ' + timeCtx + '. Reklam yöneticisi dashboard'u açtı.\n' +
+    'Meta bağlantısı henüz kurulmamış veya günlük veri yok.\n\n' +
+    'Bugün ne yapmalı? Somut, uygulanabilir 4-5 aksiyon üret:\n' +
+    '- Creative üretimi (video, reels, story)\n' +
+    '- Kitle/hedefleme denemeleri\n' +
+    '- Reklam metni testleri\n' +
+    '- Bütçe/ölçekleme hamleleri\n' +
+    '- Rakip/trend araştırması\n\n' +
+    'Ayrıca:\n' +
+    '- verdict: Bu ' + timeCtx + ' için kısa motivasyonel bir yorum (1 cümle, enerjik)\n' +
+    '- tagline: Bugünün ana teması 3-4 kelime (örn: "Creative günü", "Test ve öğren", "Ölçek zamanı")\n\n' +
+    'SADECE bu JSON formatında yanıtla:\n' +
+    '{"tagline":"3-4 kelime tema","verdict":"motivasyonel 1 cümle","actions":[{"title":"aksiyon başlığı","reason":"nasıl ve neden kısaca","tone":"high|mid|low|blue","cta":"Git","nav":"hook|copy|scale|creative-prompt|dash|budget"}]}';
 
   try {
-    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanısın. Türkçe yanıt ver. Sadece geçerli JSON döndür.',
+        system: 'Sen bir Meta reklam uzmanısın. Türkçe yanıt ver. Enerjik ve motive edici ol. Sadece geçerli JSON döndür.',
         message: prompt
       })
     });
-    var data = await res.json();
-    var raw = (data.answer || '').trim();
-    var match = raw.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('JSON bulunamadı');
-    var parsed = safeJsonParse(match[0], { verdict: '', actions: [] });
+    const data = await res.json();
+    let raw = (data.answer || '').trim();
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('JSON yok');
+    const parsed = safeJsonParse(match[0], { tagline: 'Bugünün Planı', verdict: '', actions: [] });
 
-    clearInterval(ticker);
-
-    // Cache'e kaydet
-    var cacheKey = 'dp_result_' + new Date().toISOString().split('T')[0];
-    localStorage.setItem(cacheKey, JSON.stringify({ spend, sales, price, note, actions: parsed.actions, verdict: parsed.verdict }));
-
-    // Reset butonu göster
-    var rb = document.getElementById('plan-reset-btn');
-    if (rb) rb.style.display = 'inline-flex';
-
-    dpShowResults(spend, sales, price, parsed.actions, parsed.verdict);
+    if (cacheKey) localStorage.setItem(cacheKey, JSON.stringify(parsed));
+    planShowResults(parsed.actions, parsed.verdict, parsed.tagline);
 
   } catch(e) {
-    clearInterval(ticker);
-    loadEl.style.display = 'none';
-    document.getElementById('plan-step-input').style.display = 'block';
-    var btnText = document.getElementById('dp-btn-text');
-    if (btnText) btnText.textContent = '⚠️ Hata — Tekrar Dene';
-    console.error('dpAnalyze error:', e);
+    // Hata: fallback olarak rastgele fikirlerle doldur
+    console.error('planFetchAI error:', e);
+    planShowFallback();
   }
 }
 
-function dpShowResults(spend, sales, price, actions, verdict) {
-  var revenue = sales * price;
-  var roas = spend > 0 && revenue > 0 ? (revenue / spend) : 0;
-  var cpa = sales > 0 && spend > 0 ? (spend / sales) : 0;
-  var roasColor = roas >= 3 ? 'var(--green)' : roas >= 2 ? 'var(--yellow)' : roas >= 1 ? 'var(--yellow)' : roas > 0 ? 'var(--red)' : 'var(--text)';
+function planShowResults(actions, verdict, tagline) {
+  document.getElementById('plan-loading').style.display = 'none';
+  document.getElementById('plan-step-results').style.display = 'block';
+  var rb = document.getElementById('plan-reset-btn');
+  if (rb) rb.style.display = 'inline-flex';
 
-  // KPI row
-  var kpiRow = document.getElementById('dp-kpi-row');
-  if (kpiRow) {
-    kpiRow.innerHTML = [
-      { label:'Harcama', val:'₺'+spend.toFixed(0), color:'var(--text)' },
-      { label:'Satış', val:sales+' ad.', color:'var(--text)' },
-      { label:'ROAS', val: roas > 0 ? roas.toFixed(2)+'x' : '—', color: roasColor },
-      { label:'CPA', val: cpa > 0 ? '₺'+cpa.toFixed(0) : '—', color:'var(--text)' }
-    ].map(function(k) {
-      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)">' +
-        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">'+k.label+'</div>' +
-        '<div style="font-size:22px;font-weight:900;font-family:var(--mono);color:'+k.color+';letter-spacing:-.03em">'+k.val+'</div>' +
-        '</div>';
-    }).join('');
-  }
-
-  // Verdict + focus card (büyük kart)
+  // Odak kartı
   var focusCard = document.getElementById('focus-card');
   var hero = (actions || [])[0];
-  if (focusCard && (hero || verdict)) {
+  if (focusCard && hero) {
     var toneGrad = { high:'linear-gradient(135deg,#1a0a0a,#2d1010)', mid:'linear-gradient(135deg,#1a1400,#2d2200)', low:'linear-gradient(135deg,#001a12,#002d1f)', blue:'linear-gradient(135deg,#06091a,#0d1433)' };
     var toneBorder = { high:'rgba(220,38,38,.3)', mid:'rgba(180,83,9,.3)', low:'rgba(5,150,105,.3)', blue:'rgba(29,78,216,.3)' };
     var toneAccent = { high:'#f87171', mid:'#fbbf24', low:'#34d399', blue:'#818cf8' };
-    var t = hero ? (hero.tone || 'blue') : 'blue';
-    var heroNavAttr = hero && hero.nav ? 'onclick="nav(\'' + escapeAttr(hero.nav) + '\')"' : '';
+    var t = hero.tone || 'blue';
+    var heroNavAttr = hero.nav ? 'onclick="nav(\'' + escapeAttr(hero.nav) + '\')"}' : '';
     focusCard.style.display = 'block';
-    focusCard.innerHTML = '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:20px;padding:24px 28px;position:relative;overflow:hidden">' +
-      '<div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle at 70% 30%,' + (toneAccent[t]||toneAccent.blue) + '18,transparent 65%);pointer-events:none"></div>' +
-      (verdict ? '<div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:16px;padding:10px 14px;background:rgba(255,255,255,.05);border-radius:9px">📊 ' + escapeHtml(verdict) + '</div>' : '') +
-      (hero ? ('<div style="margin-bottom:12px"><span style="background:' + (toneAccent[t]||toneAccent.blue) + '22;color:' + (toneAccent[t]||toneAccent.blue) + ';padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 #1 Aksiyon</span></div>' +
-      '<div style="font-size:clamp(18px,2.5vw,26px);font-weight:900;letter-spacing:-.05em;color:#fff;line-height:1.1;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
-      '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:16px">' + escapeHtml(hero.reason||'') + '</div>' +
-      (hero.cta ? '<button ' + heroNavAttr + ' style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .15s" onmouseover="this.style.opacity=\'.88\'" onmouseout="this.style.opacity=\'1\'">' + escapeHtml(hero.cta) + ' →</button>' : '')) : '') +
-    '</div>';
+    focusCard.innerHTML =
+      '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:20px;padding:26px 30px;position:relative;overflow:hidden">' +
+      '<div style="position:absolute;top:0;right:0;width:240px;height:240px;background:radial-gradient(circle at 70% 30%,' + (toneAccent[t]||toneAccent.blue) + '18,transparent 65%);pointer-events:none"></div>' +
+      (tagline ? '<div style="margin-bottom:14px"><span style="background:' + (toneAccent[t]||toneAccent.blue) + '22;color:' + (toneAccent[t]||toneAccent.blue) + ';padding:5px 12px;border-radius:7px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 ' + escapeHtml(tagline) + '</span></div>' : '') +
+      (verdict ? '<div style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.65;margin-bottom:18px;max-width:60ch">' + escapeHtml(verdict) + '</div>' : '') +
+      '<div style="font-size:clamp(19px,2.5vw,27px);font-weight:900;letter-spacing:-.05em;color:#fff;line-height:1.1;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:18px;max-width:58ch">' + escapeHtml(hero.reason||'') + '</div>' +
+      (hero.cta && hero.nav ? '<button onclick="nav(\'' + escapeAttr(hero.nav) + '\')" style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=''1\'>">' + escapeHtml(hero.cta) + ' →</button>' : '') +
+      '</div>';
   }
 
-  // Görev listesi (aksiyon 2-5)
+  // Görev listesi
   var rest = (actions || []).slice(1);
   var tasksCard = document.getElementById('tasks-card');
   var taskItems = document.getElementById('ai-checklist-items');
@@ -1962,75 +1828,70 @@ function dpShowResults(spend, sales, price, actions, verdict) {
 
   if (tasksCard && rest.length > 0) {
     tasksCard.style.display = 'block';
-    var today = new Date().toISOString().split('T')[0];
-    var storageKey = 'adsopify_checklist_' + today;
+    var todayStr = new Date().toISOString().split('T')[0];
+    var storageKey = 'adsopify_checklist_' + todayStr;
     var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
     var toneColor = { high:'var(--red)', mid:'var(--yellow)', low:'var(--green)', blue:'var(--accent)' };
 
     function makeRow(a, idx) {
       var isDone = completed.indexOf(idx) !== -1;
       var tc = toneColor[a.tone] || toneColor.blue;
-      var navA = a.nav ? 'onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"' : '';
+      var navA = a.nav ? 'onclick="event.stopPropagation();nav(\'' + escapeAttr(a.nav) + '\')"}' : '';
       return '<div class="task-item' + (isDone?' done':'') + '" data-idx="' + idx + '" onclick="toggleTask(this,' + idx + ',\'' + escapeAttr(storageKey) + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid ' + (isDone?'rgba(5,150,105,.2)':'var(--border)') + ';background:' + (isDone?'rgba(5,150,105,.05)':'var(--surface2)') + ';cursor:pointer;transition:all .18s;user-select:none">' +
         '<div style="width:20px;height:20px;border-radius:50%;border:2px solid ' + (isDone?'var(--green)':tc) + ';background:' + (isDone?'var(--green)':'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fff;font-weight:800">' + (isDone?'✓':'') + '</div>' +
         '<div style="flex:1;min-width:0">' +
           '<div style="font-size:13px;font-weight:700;color:' + (isDone?'var(--text3)':'var(--text)') + ';text-decoration:' + (isDone?'line-through':'none') + ';letter-spacing:-.02em;line-height:1.3">' + escapeHtml(a.title||'—') + '</div>' +
           (a.reason ? '<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">' + escapeHtml(a.reason) + '</div>' : '') +
         '</div>' +
-        (a.cta && a.nav ? '<span ' + navA + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;transition:all .12s" onmouseover="this.style.background=\'var(--accent)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'var(--accent-light)\';this.style.color=\'var(--accent)\'">' + escapeHtml(a.cta) + ' →</span>' : '') +
+        (a.cta && a.nav ? '<span ' + navA + ' style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;flex-shrink:0;transition:all .12s" onmouseover="this.style.background=''var(--accent)'';this.style.color=''#fff''" onmouseout="this.style.background=''var(--accent-light)'';this.style.color=''var(--accent)''">' + escapeHtml(a.cta) + ' →</span>' : '') +
       '</div>';
     }
 
-    var vis = rest.slice(0,2);
+    var vis = rest.slice(0, 2);
     var hid = rest.slice(2);
-    if (taskItems) taskItems.innerHTML = vis.map(function(a,i){ return makeRow(a,i); }).join('');
+    if (taskItems) taskItems.innerHTML = vis.map(function(a, i) { return makeRow(a, i); }).join('');
     if (hid.length && moreWrap && moreItems) {
       moreWrap.style.display = 'block';
-      moreItems.innerHTML = hid.map(function(a,i){ return makeRow(a,i+2); }).join('');
+      moreItems.innerHTML = hid.map(function(a, i) { return makeRow(a, i + 2); }).join('');
     }
     var cc = document.getElementById('checklist-count');
     if (cc) cc.textContent = '0/' + rest.length;
   }
 
-  // Loading kapat, sonuçları göster
-  document.getElementById('plan-loading').style.display = 'none';
-  document.getElementById('plan-step-results').style.display = 'block';
-
-  // İçerik fikirlerini de yükle
   refreshIdeas();
 }
 
-function planReset() {
-  // Cache temizle
-  var cacheKey = 'dp_result_' + new Date().toISOString().split('T')[0];
-  localStorage.removeItem(cacheKey);
-
-  // Reset btn gizle
-  var rb = document.getElementById('plan-reset-btn');
-  if (rb) rb.style.display = 'none';
-
-  // Input alanlarını temizle
-  ['dp-spend','dp-sales','dp-price','dp-note'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.value = '';
+function planShowFallback() {
+  // API çalışmazsa statik fikirlerle devam
+  var pool = typeof ALL_CREATIVE_IDEAS !== 'undefined' ? ALL_CREATIVE_IDEAS : [];
+  var actions = shuffleArray(pool).slice(0, 4).map(function(i, idx) {
+    return { title: i.title, reason: i.desc, tone: ['blue','mid','low','high'][idx % 4], cta: 'Uygula', nav: 'creative-prompt' };
   });
-  var preview = document.getElementById('dp-roas-preview');
-  if (preview) preview.style.display = 'none';
-  var btnText = document.getElementById('dp-btn-text');
-  if (btnText) btnText.textContent = 'AI ile Analiz Et';
-
-  // Sonuçları gizle, inputu göster
-  document.getElementById('plan-step-results').style.display = 'none';
-  document.getElementById('plan-step-input').style.display = 'block';
+  planShowResults(actions, 'Bugün üretim günü — en iyi creative'ler sahaya çık.', 'Creative Günü');
 }
 
-// Eski fonksiyonlar — compat için boş bırakıldı
+function planReset() {
+  var cacheKey = 'dp_plan_v3_' + new Date().toISOString().split('T')[0];
+  localStorage.removeItem(cacheKey);
+  var rb = document.getElementById('plan-reset-btn');
+  if (rb) rb.style.display = 'none';
+  document.getElementById('plan-step-results').style.display = 'none';
+  document.getElementById('plan-loading').style.display = 'block';
+  planFetchAI(cacheKey);
+}
+
+// Compat stubs
 function loadPlanOffline() { loadPlan(); }
 function reconnectMeta() { localStorage.removeItem('adsopify_token'); localStorage.removeItem('adsopify_account_id'); localStorage.removeItem('adsopify_account_name'); S.token = null; S.accountId = null; location.reload(); }
-async function loadAIActionPlan(forceRefresh, insightsData) { /* yeni sistemde kullanılmıyor */ }
-function renderAIActions(actions) { /* yeni sistemde kullanılmıyor */ }
-function updatePlanProgress() { /* yeni sistemde kullanılmıyor */ }
-function renderPlan(a, b) { /* yeni sistemde kullanılmıyor */ }
+async function loadAIActionPlan() {}
+function renderAIActions() {}
+function updatePlanProgress() {}
+function renderPlan() {}
+function dpAutoROAS() {}
+function dpAnalyze() {}
+function dpShowResults() {}
+function dpFillInputs() {}
+
 
 function renderCompactCard(opts) {
   const tone = opts.tone || 'blue';
