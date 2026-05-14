@@ -736,32 +736,40 @@ tbody tr:hover td{background:var(--surface2)}
 
 <!-- GÜNLÜK PLAN -->
 <div id="sec-plan" class="section active">
-  <div class="ph-row mb-12">
-    <div class="ph">
-      <div class="ph-title">Günlük Plan</div>
-      <div class="ph-sub" id="plan-date">Yükleniyor...</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div>
+      <div style="font-size:22px;font-weight:800;letter-spacing:-.04em;color:var(--text)">Günlük Plan</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:2px" id="plan-date">Yükleniyor...</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div id="plan-progress-wrap" style="display:none;align-items:center;gap:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text2)" id="plan-progress-label">0/4 tamamlandı</div>
+        <div style="width:100px;height:5px;background:var(--surface3);border-radius:99px;overflow:hidden">
+          <div id="plan-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:99px;transition:width .4s cubic-bezier(.34,1.56,.64,1)"></div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh">↺ Yenile</button>
     </div>
   </div>
 
   <div id="plan-loading" class="loading-row"><div class="spinner"></div> Kampanya verisi çekiliyor...</div>
 
   <div id="plan-content" style="display:none">
+
+    <!-- ── HERO GRID ── -->
     <div class="plan-hero">
       <div class="plan-hero-main">
         <div class="plan-overline">Bugünün planı</div>
         <div class="plan-title">Bugün ne yapmalı?</div>
-        <p class="plan-sub">Önce neyi kapatacağını, neyi test edeceğini ve neyi büyüteceğini tek ekranda gör.</p>
+        <p class="plan-sub">Kampanya verinden otomatik oluşturulan kişisel büyüme planın.</p>
         <div class="plan-focus-grid">
           <div class="focus-item"><div class="fi-label">Tarih</div><div class="fi-value" id="plan-date-badge">—</div><div class="fi-note">Otomatik yenilenir</div></div>
           <div class="focus-item accent"><div class="fi-label">Bugün performans</div><div class="fi-value" id="plan-budget-badge">—</div><div class="fi-note">Harcama · Satış · ROAS</div></div>
         </div>
       </div>
       <div class="plan-command">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">
-          <div>
-            <div class="cmd-kicker">Bugün modu</div>
-            <div class="cmd-title">Optimize</div>
-          </div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+          <div><div class="cmd-kicker">Bugün modu</div><div class="cmd-title">Optimize</div></div>
           <span class="cmd-live">Hazır</span>
         </div>
         <div class="cmd-item"><div class="cmd-item-label">Öncelik</div><div class="cmd-item-value">Durdur → Düzelt → Büyüt</div></div>
@@ -770,15 +778,38 @@ tbody tr:hover td{background:var(--surface2)}
       </div>
     </div>
 
-    <div class="plan-block mb-12" id="ai-action-card">
-      <div class="pb-head">
-        <div class="pb-title"><span class="pb-dot"></span> AI Koç — bugün üret / düzelt / test et</div>
-        <button class="btn btn-ghost btn-sm" onclick="loadAIActionPlan(true)" id="ai-plan-refresh">↺ Yenile</button>
+    <!-- ── AI HERO CARD ── -->
+    <div id="ai-hero-card" style="display:none;margin-bottom:14px">
+      <!-- JS tarafından doldurulur -->
+    </div>
+
+    <!-- ── CHECKLIST ── -->
+    <div id="ai-checklist-card" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 6px rgba(29,78,216,.5)"></span>
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)">Bugünün Görevleri</span>
+        </div>
+        <span style="font-size:12px;color:var(--text3);font-weight:600" id="checklist-count">0/0</span>
       </div>
-      <div id="ai-action-list" class="compact-grid">
-        <div class="skel-grid" style="grid-column:1/-1"><div class="skel skel-card"></div><div class="skel skel-card"></div><div class="skel skel-card"></div><div class="skel skel-card"></div></div>
+      <div id="ai-checklist-items" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div id="ai-action-list-loading" style="margin-bottom:14px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
+        <div style="display:flex;gap:8px;margin-bottom:16px"><div class="skel" style="width:7px;height:7px;border-radius:50%"></div><div class="skel" style="width:120px;height:11px;border-radius:6px"></div></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="skel" style="height:64px;border-radius:12px"></div>
+          <div class="skel" style="height:56px;border-radius:12px"></div>
+          <div class="skel" style="height:56px;border-radius:12px"></div>
+          <div class="skel" style="height:56px;border-radius:12px"></div>
+        </div>
       </div>
     </div>
+
+    <!-- hidden div for compat -->
+    <div id="ai-action-list" style="display:none"></div>
 
     <div class="plan-sections">
       <div class="plan-block">
@@ -1954,7 +1985,14 @@ async function loadAIActionPlan(forceRefresh, insightsData) {
     return;
   }
 
-  el.innerHTML = '<div class="loading-skeleton" style="grid-column:1/-1"><div class="s-card"></div><div class="s-card"></div><div class="s-card"></div><div class="s-card"></div></div>';
+  // Show loading skeleton
+  var loadingEl = document.getElementById('ai-action-list-loading');
+  if (loadingEl) loadingEl.style.display = 'block';
+  var heroEl = document.getElementById('ai-hero-card');
+  if (heroEl) heroEl.style.display = 'none';
+  var checkEl = document.getElementById('ai-checklist-card');
+  if (checkEl) checkEl.style.display = 'none';
+  el.innerHTML = '';
   if (btn) btn.disabled = true;
 
   const ins = insightsData || S.todayInsight || [];
@@ -2024,38 +2062,166 @@ nav değerleri: hook, swipe, copy, scale, creative, budget, dash, ai, creative-p
 }
 
 function renderCompactCard(opts) {
-  const toneClass = opts.tone || 'blue';
-  const nav = opts.nav ? `onclick="nav('${escapeAttr(opts.nav)}')"` : '';
-  return `<div class="compact-card" style="animation:fadeIn 0.28s ease both">
-    <div class="compact-top">
-      <span class="compact-badge ${toneClass}">${escapeHtml(opts.badge || 'Plan')}</span>
-      <span style="font-size:11px;color:var(--text3);font-weight:700">${escapeHtml(opts.kicker || '')}</span>
+  const tone = opts.tone || 'blue';
+  const navAttr = opts.nav ? `onclick="nav('${escapeAttr(opts.nav)}')"` : '';
+  return `<div class="compact-card tone-${tone}" style="animation:fadeUp 0.3s ease both">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span class="cc-badge ${tone}">${escapeHtml(opts.badge || 'Plan')}</span>
+        <span style="font-size:11px;color:var(--text3);font-weight:700;font-family:var(--mono)">${escapeHtml(opts.kicker || '')}</span>
+      </div>
+      <div class="cc-title">${escapeHtml(opts.title || '—')}</div>
+      <div class="cc-text">${escapeHtml(opts.text || '')}</div>
     </div>
-    <div class="compact-title">${escapeHtml(opts.title || '—')}</div>
-    <div class="compact-text">${escapeHtml(opts.text || '')}</div>
-    <div class="compact-meta">
-      <span class="compact-tool">${escapeHtml(opts.tool || '')}</span>
-      ${opts.cta ? `<button class="compact-action" ${nav}>${escapeHtml(opts.cta)} →</button>` : ''}
+    <div class="cc-footer">
+      <span class="cc-tool">${escapeHtml(opts.tool || '')}</span>
+      ${opts.cta ? `<span class="cc-action" ${navAttr}>${escapeHtml(opts.cta)} →</span>` : ''}
     </div>
   </div>`;
 }
 
 function renderAIActions(actions) {
-  const el = document.getElementById('ai-action-list');
-  if (!el || !actions.length) return;
+  if (!actions || !actions.length) return;
 
-  el.innerHTML = actions.map((a, i) =>
-    renderCompactCard({
-      tone: a.tone || (a.priority === 1 ? 'high' : a.priority === 2 ? 'mid' : a.priority === 3 ? 'low' : 'blue'),
-      badge: a.priority === 1 ? 'Önce yap' : a.priority === 2 ? 'Bugün üret' : a.priority === 3 ? 'Test' : 'Ek görev',
-      kicker: '#' + escapeHtml(String(a.priority || i + 1)),
-      title: a.title,
-      text: a.reason || a.detail || '',
-      tool: a.tool || '',
-      cta: a.cta || 'Aç',
-      nav: a.nav
-    })
-  ).join('');
+  // Loading'i kapat
+  var loadingEl = document.getElementById('ai-action-list-loading');
+  if (loadingEl) loadingEl.style.display = 'none';
+
+  // ── HERO CARD (ilk aksiyon) ──
+  var hero = actions[0];
+  var toneColors = {
+    high: { bg: 'linear-gradient(135deg,rgba(220,38,38,.11),rgba(239,68,68,.05))', border: 'rgba(220,38,38,.22)', badge: 'rgba(220,38,38,.15)', badgeText: 'var(--red)', icon: '🔥' },
+    mid:  { bg: 'linear-gradient(135deg,rgba(180,83,9,.11),rgba(245,158,11,.05))',  border: 'rgba(180,83,9,.22)',  badge: 'rgba(180,83,9,.15)',  badgeText: 'var(--yellow)', icon: '⚡' },
+    low:  { bg: 'linear-gradient(135deg,rgba(5,150,105,.11),rgba(16,185,129,.05))', border: 'rgba(5,150,105,.22)', badge: 'rgba(5,150,105,.15)', badgeText: 'var(--green)', icon: '📈' },
+    blue: { bg: 'linear-gradient(135deg,rgba(29,78,216,.11),rgba(99,102,241,.05))', border: 'rgba(29,78,216,.22)', badge: 'rgba(29,78,216,.15)', badgeText: 'var(--accent2)', icon: '🎯' }
+  };
+  var heroTone = hero.tone || 'blue';
+  var hc = toneColors[heroTone] || toneColors.blue;
+  var heroNav = hero.nav ? `onclick="nav('${escapeAttr(hero.nav)}')"` : '';
+
+  var heroEl = document.getElementById('ai-hero-card');
+  if (heroEl) {
+    heroEl.style.display = 'block';
+    heroEl.innerHTML = `
+      <div style="background:${hc.bg};border:1px solid ${hc.border};border-radius:20px;padding:24px 28px;box-shadow:0 8px 32px rgba(0,0,0,.07);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,.10)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,0,0,.07)'">
+        <div style="position:absolute;top:-20px;right:-20px;font-size:80px;opacity:.08;line-height:1;pointer-events:none;user-select:none">${hc.icon}</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <span style="background:${hc.badge};color:${hc.badgeText};padding:4px 10px;border-radius:7px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em">${escapeHtml(hero.priority === 1 ? '🔥 Önce Bunu Yap' : 'Bugünün Odağı')}</span>
+              <span style="font-size:11px;color:var(--text3);font-weight:600;font-family:var(--mono)">#${hero.priority || 1}</span>
+            </div>
+            <div style="font-size:clamp(20px,2.5vw,26px);font-weight:900;letter-spacing:-.05em;color:var(--text);line-height:1.1;margin-bottom:10px">${escapeHtml(hero.title || '—')}</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.65;max-width:60ch">${escapeHtml(hero.reason || hero.detail || '')}</div>
+            ${hero.detail && hero.reason ? `<div style="margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.04);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6">${escapeHtml(hero.detail)}</div>` : ''}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;align-items:flex-end">
+            ${hero.tool ? `<div style="font-size:11px;color:var(--text3);font-weight:600;text-align:right">${escapeHtml(hero.tool)}</div>` : ''}
+            ${hero.cta ? `<button ${heroNav} style="background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 14px rgba(29,78,216,.28);transition:all .15s;white-space:nowrap" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(29,78,216,.36)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 14px rgba(29,78,216,.28)'">${escapeHtml(hero.cta)} →</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── CHECKLIST (diğer aksiyonlar) ──
+  var checklistCard = document.getElementById('ai-checklist-card');
+  var checklistItems = document.getElementById('ai-checklist-items');
+  var checklistCount = document.getElementById('checklist-count');
+  if (!checklistCard || !checklistItems) return;
+
+  var remaining = actions.slice(1);
+  if (!remaining.length) { checklistCard.style.display = 'none'; return; }
+
+  checklistCard.style.display = 'block';
+
+  // localStorage'dan tamamlanan görevleri yükle
+  var today = new Date().toISOString().split('T')[0];
+  var storageKey = 'adsopify_checklist_' + today;
+  var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+  function updateProgress() {
+    var done = document.querySelectorAll('#ai-checklist-items .task-item.done').length;
+    var total = remaining.length;
+    if (checklistCount) checklistCount.textContent = done + '/' + total + ' tamamlandı';
+    var pbar = document.getElementById('plan-progress-bar');
+    var plabel = document.getElementById('plan-progress-label');
+    var pwrap = document.getElementById('plan-progress-wrap');
+    if (pbar) pbar.style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
+    if (plabel) plabel.textContent = done + '/' + total + ' tamamlandı';
+    if (pwrap) pwrap.style.display = 'flex';
+  }
+
+  var toneIcon = { high: '🔴', mid: '🟡', low: '🟢', blue: '🔵' };
+  var toneNavAttr = function(n) { return n ? 'onclick="nav(\'' + escapeAttr(n) + '\')"' : ''; };
+
+  checklistItems.innerHTML = remaining.map(function(a, i) {
+    var isDone = completed.indexOf(i) !== -1;
+    var tone = a.tone || 'blue';
+    var ic = toneIcon[tone] || '🔵';
+    var navA = a.nav ? 'onclick="nav(\'' + escapeAttr(a.nav) + '\')"' : '';
+    return `<div class="task-item${isDone ? ' done' : ''}" data-idx="${i}" onclick="toggleTask(this,${i},'${escapeAttr(storageKey)}')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;border:1px solid ${isDone ? 'rgba(5,150,105,.25)' : 'var(--border)'};background:${isDone ? 'rgba(5,150,105,.06)' : 'var(--surface2)'};cursor:pointer;transition:all .18s;user-select:none">
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid ${isDone ? 'var(--green)' : 'var(--border2)'};background:${isDone ? 'var(--green)' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:11px;color:#fff;font-weight:800">${isDone ? '✓' : ''}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:${isDone ? 'var(--text3)' : 'var(--text)'};text-decoration:${isDone ? 'line-through' : 'none'};transition:all .2s;letter-spacing:-.02em">${escapeHtml(a.title || '—')}</div>
+        ${a.reason ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">${escapeHtml(a.reason)}</div>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        ${a.tool ? `<span style="font-size:11px;color:var(--text3);font-weight:600;white-space:nowrap">${escapeHtml(a.tool)}</span>` : ''}
+        ${a.cta && a.nav ? `<span ${navA} onclick="event.stopPropagation();nav('${escapeAttr(a.nav)}')" style="font-size:11px;font-weight:700;color:var(--accent);padding:4px 9px;border-radius:6px;border:1px solid var(--border2);background:var(--accent-light);white-space:nowrap;transition:all .12s" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='var(--accent-light)';this.style.color='var(--accent)'">${escapeHtml(a.cta)} →</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  updateProgress();
+}
+
+function toggleTask(el, idx, storageKey) {
+  var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+  var isDone = el.classList.contains('done');
+
+  if (isDone) {
+    completed = completed.filter(function(i) { return i !== idx; });
+    el.classList.remove('done');
+  } else {
+    if (completed.indexOf(idx) === -1) completed.push(idx);
+    el.classList.add('done');
+    // Animasyon: scale bounce
+    el.style.transform = 'scale(1.01)';
+    setTimeout(function() { el.style.transform = ''; }, 200);
+  }
+
+  localStorage.setItem(storageKey, JSON.stringify(completed));
+
+  // Checkbox güncelle
+  var checkbox = el.querySelector('div');
+  var title = el.querySelectorAll('div')[1]?.querySelector('div');
+  var newDone = !isDone;
+  if (checkbox) {
+    checkbox.style.background = newDone ? 'var(--green)' : 'transparent';
+    checkbox.style.borderColor = newDone ? 'var(--green)' : 'var(--border2)';
+    checkbox.textContent = newDone ? '✓' : '';
+  }
+  el.style.borderColor = newDone ? 'rgba(5,150,105,.25)' : 'var(--border)';
+  el.style.background = newDone ? 'rgba(5,150,105,.06)' : 'var(--surface2)';
+
+  // Progress güncelle
+  var done = document.querySelectorAll('#ai-checklist-items .task-item.done').length;
+  var total = document.querySelectorAll('#ai-checklist-items .task-item').length;
+  var countEl = document.getElementById('checklist-count');
+  var pbar = document.getElementById('plan-progress-bar');
+  var plabel = document.getElementById('plan-progress-label');
+  if (countEl) countEl.textContent = done + '/' + total + ' tamamlandı';
+  if (pbar) pbar.style.width = (total > 0 ? Math.round(done/total*100) : 0) + '%';
+  if (plabel) plabel.textContent = done + '/' + total + ' tamamlandı';
+
+  // Hepsi tamam — konfeti mesajı
+  if (done === total && total > 0) {
+    var confetti = document.createElement('div');
+    confetti.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 24px rgba(5,150,105,.35);animation:secIn .3s ease';
+    confetti.textContent = '🎉 Harika! Bugünün tüm görevlerini tamamladın!';
+    document.body.appendChild(confetti);
+    setTimeout(function() { confetti.remove(); }, 3500);
+  }
 }
 
 function renderPlan(campaigns, insights) {
