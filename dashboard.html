@@ -3751,41 +3751,87 @@ async function vaExtractAndAnalyze(file) {
   document.getElementById('va-result').style.display = 'none';
   var loadEl = document.getElementById('va-loading');
   loadEl.style.display = 'flex';
-  vaSetProgress(5, 'Video okunuyor...', '');
+  vaSetProgress(10, 'Video okunuyor...', '');
 
   try {
+    // Blob URL yarat
     var videoUrl = URL.createObjectURL(file);
 
+    // Video elementi hazirla — Safari icin kritik siralam
+    var vid = document.createElement('video');
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.preload = 'auto';
+    vid.style.display = 'none';
+    document.body.appendChild(vid);
+
+    // Once metadata bekle
     var duration = await new Promise(function(resolve) {
-      var vid = document.createElement('video');
-      vid.muted = true;
-      vid.playsInline = true;
-      vid.preload = 'metadata';
       var done = false;
-      function finish(d) { if (done) return; done = true; resolve(d); }
-      vid.onloadedmetadata = function() { finish(vid.duration > 0 ? vid.duration : 30); };
-      vid.onerror = function() { finish(30); };
-      setTimeout(function() { finish(30); }, 4000);
+      function finish(d) {
+        if (done) return;
+        done = true;
+        resolve(d > 0 ? d : 30);
+      }
+      vid.onloadedmetadata = function() { finish(vid.duration); };
+      vid.onerror = function(e) { finish(30); };
+      setTimeout(function() { finish(30); }, 5000);
       vid.src = videoUrl;
       vid.load();
     });
 
-    vaSetProgress(15, 'Kareler cikariliyor...', Math.round(duration) + ' saniye');
+    vaSetProgress(20, 'Kareler cikariliyor...', Math.round(duration) + ' saniye');
 
-    var frameCount = Math.min(7, Math.max(4, Math.floor(duration / 3)));
+    // Timestamp hesapla
+    var frameCount = Math.min(6, Math.max(3, Math.floor(duration / 4)));
     var timestamps = [];
     var step = duration / (frameCount + 1);
-    for (var i = 1; i <= frameCount; i++) timestamps.push(Math.min(step * i, duration - 0.5));
+    for (var i = 1; i <= frameCount; i++) {
+      timestamps.push(Math.min(step * i, duration - 1));
+    }
 
-    var frames = await vaExtractFrames(videoUrl, timestamps, function(done, total) {
-      vaSetProgress(15 + Math.round((done / total) * 50), 'Kareler cikariliyor...', done + '/' + total);
-    });
+    // Frame'leri sirayla cek
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var frames = [];
 
+    for (var fi = 0; fi < timestamps.length; fi++) {
+      vaSetProgress(20 + Math.round((fi / timestamps.length) * 45), 'Kareler cikariliyor...', (fi+1) + '/' + timestamps.length);
+      var frameData = await new Promise(function(seekTime) {
+        return function(resolve) {
+          var done = false;
+          var tid = setTimeout(function() {
+            if (!done) { done = true; resolve(null); }
+          }, 4000);
+          vid.onseeked = function() {
+            if (done) return;
+            done = true;
+            clearTimeout(tid);
+            try {
+              var w = Math.min(vid.videoWidth || 640, 640);
+              var h = Math.min(vid.videoHeight || 1136, 1136);
+              canvas.width = w;
+              canvas.height = h;
+              ctx.drawImage(vid, 0, 0, w, h);
+              var d = canvas.toDataURL('image/jpeg', 0.75).split(',')[1];
+              resolve(d && d.length > 500 ? d : null);
+            } catch(ex) { resolve(null); }
+          };
+          vid.currentTime = seekTime;
+        };
+      }(timestamps[fi]));
+      if (frameData) frames.push(frameData);
+    }
+
+    // Temizle
+    document.body.removeChild(vid);
     URL.revokeObjectURL(videoUrl);
 
-    if (frames.length === 0) throw new Error('Kareler alinamadi. Farkli bir video deneyin.');
+    if (frames.length === 0) {
+      throw new Error('Video kareleri alinamadi. Lutfen MP4 formatinda bir video deneyin.');
+    }
 
-    vaSetProgress(70, 'AI analiz ediyor...', 'Reklam uzmani degerlendiriyor');
+    vaSetProgress(70, 'AI analiz ediyor...', '');
 
     var brand = S.brand;
     var brandCtx = brand && brand.brandName
@@ -3810,54 +3856,8 @@ async function vaExtractAndAnalyze(file) {
 }
 
 async function vaExtractFrames(videoUrl, timestamps, onProgress) {
-  return new Promise(function(resolve) {
-    var vid = document.createElement('video');
-    vid.muted = true;
-    vid.playsInline = true;
-    vid.preload = 'auto';
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    var frames = [];
-    var idx = 0;
-    var timeoutId = null;
-    var started = false;
-
-    function captureNext() {
-      if (idx >= timestamps.length) { resolve(frames); return; }
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(function() { idx++; captureNext(); }, 3000);
-      vid.currentTime = timestamps[idx];
-    }
-
-    vid.onseeked = function() {
-      clearTimeout(timeoutId);
-      try {
-        var w = vid.videoWidth  || 640;
-        var h = vid.videoHeight || 1136;
-        canvas.width  = Math.min(w, 640);
-        canvas.height = Math.min(h, 1136);
-        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
-        var data = canvas.toDataURL('image/jpeg', 0.72).split(',')[1];
-        if (data && data.length > 200) frames.push(data);
-      } catch(e) {}
-      if (onProgress) onProgress(idx + 1, timestamps.length);
-      idx++;
-      setTimeout(captureNext, 100);
-    };
-
-    vid.onerror = function() { resolve(frames); };
-
-    function startCapture() {
-      if (started) return; started = true;
-      captureNext();
-    }
-    vid.oncanplay    = startCapture;
-    vid.onloadeddata = startCapture;
-    setTimeout(function() { if (!started) { started = true; captureNext(); } }, 2500);
-
-    vid.src = videoUrl;
-    vid.load();
-  });
+  // Eski fonksiyon - artik kullanilmiyor, vaExtractAndAnalyze icinde inline
+  return [];
 }
 
 
