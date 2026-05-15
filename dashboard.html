@@ -867,69 +867,68 @@ tbody tr:hover td{background:var(--surface2)}
     <button class="btn btn-ghost btn-sm" onclick="vaReset()" id="va-reset-btn" style="display:none">↺ Yeni Analiz</button>
   </div>
 
-  <!-- UPLOAD ALANI -->
+  <!-- UPLOAD -->
   <div id="va-upload-area">
     <div id="va-dropzone" onclick="document.getElementById('va-file-input').click()"
-      style="border:2px dashed var(--border);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface)"
-      ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='var(--accent-light)'"
-      ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--surface)'"
-      ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='var(--surface)';vaHandleDrop(event)">
-      <div style="font-size:36px;margin-bottom:10px">🎬</div>
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">Video yükle veya buraya sürükle</div>
-      <div style="font-size:12px;color:var(--text3)">MP4, MOV — max 200MB</div>
+      ondragover="event.preventDefault();vaDropHover(true)"
+      ondragleave="vaDropHover(false)"
+      ondrop="event.preventDefault();vaDropHover(false);vaHandleDrop(event)"
+      style="background:linear-gradient(135deg,#06091a,#0d1433);border:1.5px dashed rgba(79,142,247,.35);border-radius:20px;padding:60px 24px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(79,142,247,.07),transparent 65%);pointer-events:none"></div>
+      <div style="font-size:44px;margin-bottom:14px;position:relative">🎬</div>
+      <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:6px;position:relative;letter-spacing:-.03em">Videoyu buraya sürükle</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.35);margin-bottom:20px;position:relative">ya da tıkla ve seç</div>
+      <div style="display:inline-flex;align-items:center;gap:10px;position:relative">
+        <span style="padding:5px 12px;border-radius:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:700;color:rgba(255,255,255,.4)">MP4</span>
+        <span style="padding:5px 12px;border-radius:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:700;color:rgba(255,255,255,.4)">MOV</span>
+        <span style="font-size:11px;color:rgba(255,255,255,.2)">max 200MB</span>
+      </div>
     </div>
     <input type="file" id="va-file-input" accept="video/mp4,video/quicktime,video/*" style="display:none" onchange="vaHandleFile(this.files[0])"/>
   </div>
 
   <!-- LOADING -->
-  <div id="va-loading" style="display:none;flex-direction:column;align-items:center;padding:60px 20px;gap:16px">
-    <div class="spinner" style="width:32px;height:32px;border-width:3px"></div>
-    <div>
-      <div style="font-size:14px;font-weight:700;color:var(--text);text-align:center;margin-bottom:4px" id="va-loading-title">Videо analiz ediliyor...</div>
-      <div style="font-size:12px;color:var(--text3);text-align:center" id="va-loading-sub">Frame'ler çıkarılıyor</div>
+  <div id="va-loading" style="display:none;flex-direction:column;align-items:center;padding:64px 20px;gap:18px">
+    <div class="spinner" style="width:36px;height:36px;border-width:3px;border-color:rgba(79,142,247,.2);border-top-color:var(--accent)"></div>
+    <div style="text-align:center">
+      <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:-.03em" id="va-loading-title">Analiz ediliyor...</div>
+      <div style="font-size:12px;color:var(--text3)" id="va-loading-sub">Kareler okunuyor</div>
     </div>
-    <div style="width:240px;height:4px;background:var(--border);border-radius:99px;overflow:hidden">
-      <div id="va-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#818cf8);border-radius:99px;transition:width .4s ease"></div>
+    <div style="width:200px;height:3px;background:var(--border);border-radius:99px;overflow:hidden">
+      <div id="va-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#818cf8);border-radius:99px;transition:width .5s ease"></div>
     </div>
   </div>
 
   <!-- SONUÇ -->
   <div id="va-result" style="display:none">
-
-    <!-- Skor kartları -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px" id="va-scores"></div>
-
-    <!-- Verdict banner -->
     <div id="va-verdict" style="margin-bottom:12px"></div>
-
-    <!-- Detay kartları grid -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🪝 Hook Analizi (ilk 3sn)</span></div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🪝 Hook Analizi</span></div>
         <div id="va-hook" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">📣 Organik mi Reklam mı?</span></div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">📣 Organik mi Reklam mı?</span></div>
         <div id="va-organic" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎯 Hedef Kitle & Kampanya</span></div>
-        <div id="va-targeting" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">⚗️ A/B Test Önerileri</span></div>
+        <div style="padding:11px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">⚗️ A/B Test Onerileri</span></div>
         <div id="va-abtest" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
       </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:11px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎯 Hedef Kitle</span></div>
+        <div id="va-targeting" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
+      </div>
     </div>
-
-    <!-- Creative Brief tam genişlik -->
     <div style="background:linear-gradient(135deg,#06091a,#0d1433);border:1px solid rgba(29,78,216,.25);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
-      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4)">🎬 Creative Brief — Bu Videoyu Reklamlara Nasıl Uygula</span></div>
-      <div id="va-brief" style="padding:16px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.8;white-space:pre-line"></div>
+      <div style="padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.08)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4)">🎬 Creative Brief</span></div>
+      <div id="va-brief" style="padding:16px;font-size:13px;color:rgba(255,255,255,.55);line-height:1.8;white-space:pre-line"></div>
     </div>
   </div>
 
 </div>
+
 
 
 <!-- REKLAM SİHİRBAZI -->
@@ -3719,6 +3718,13 @@ var _uploadedImageType = 'image/jpeg';
 // VİDEO ANALİZ — VA
 // ═══════════════════════════════════════════════
 
+function vaDropHover(on) {
+  var dz = document.getElementById('va-dropzone');
+  if (!dz) return;
+  dz.style.borderColor = on ? 'rgba(79,142,247,.8)' : 'rgba(79,142,247,.35)';
+  dz.style.background  = on ? 'linear-gradient(135deg,#0a0f2a,#141b3d)' : 'linear-gradient(135deg,#06091a,#0d1433)';
+}
+
 function vaHandleDrop(e) {
   var file = e.dataTransfer.files[0];
   if (file) vaHandleFile(file);
@@ -3726,113 +3732,134 @@ function vaHandleDrop(e) {
 
 function vaHandleFile(file) {
   if (!file) return;
-  if (!file.type.startsWith('video/')) { vaShowError('Lütfen bir video dosyası seçin (MP4, MOV).'); return; }
-  if (file.size > 200 * 1024 * 1024) { vaShowError('Dosya 200MB den buyuk olamaz.'); return; }
+  if (!file.type.startsWith('video/')) { alert('Lutfen bir video dosyasi secin (MP4, MOV).'); return; }
+  if (file.size > 200 * 1024 * 1024) { alert('Dosya 200MB den buyuk olamaz.'); return; }
   vaExtractAndAnalyze(file);
-}
-
-function vaShowError(msg) {
-  var dz = document.getElementById('va-dropzone');
-  if (dz) { dz.style.borderColor = 'var(--red)'; setTimeout(function(){ dz.style.borderColor = 'var(--border)'; }, 2000); }
-  alert(msg);
 }
 
 function vaSetProgress(pct, title, sub) {
   var bar = document.getElementById('va-progress-bar');
-  var t = document.getElementById('va-loading-title');
-  var s = document.getElementById('va-loading-sub');
+  var t   = document.getElementById('va-loading-title');
+  var s   = document.getElementById('va-loading-sub');
   if (bar) bar.style.width = pct + '%';
   if (t && title) t.textContent = title;
-  if (s && sub) s.textContent = sub;
+  if (s && sub !== undefined) s.textContent = sub;
 }
 
 async function vaExtractAndAnalyze(file) {
-  // Show loading
   document.getElementById('va-upload-area').style.display = 'none';
   document.getElementById('va-result').style.display = 'none';
   var loadEl = document.getElementById('va-loading');
   loadEl.style.display = 'flex';
-  vaSetProgress(5, 'Video okunuyor...', 'Dosya yükleniyor');
+  vaSetProgress(5, 'Video okunuyor...', '');
 
   try {
-    // Video element ile metadata al
     var videoUrl = URL.createObjectURL(file);
-    var duration = await new Promise(function(resolve, reject) {
+
+    var duration = await new Promise(function(resolve) {
       var vid = document.createElement('video');
+      vid.muted = true;
+      vid.playsInline = true;
       vid.preload = 'metadata';
-      vid.onloadedmetadata = function() { resolve(vid.duration); };
-      vid.onerror = function() { resolve(30); };
+      var done = false;
+      function finish(d) { if (done) return; done = true; resolve(d); }
+      vid.onloadedmetadata = function() { finish(vid.duration > 0 ? vid.duration : 30); };
+      vid.onerror = function() { finish(30); };
+      setTimeout(function() { finish(30); }, 4000);
       vid.src = videoUrl;
+      vid.load();
     });
 
-    vaSetProgress(15, 'Kareler cikariliyor...', Math.round(duration) + ' saniye video');
+    vaSetProgress(15, 'Kareler cikariliyor...', Math.round(duration) + ' saniye');
 
-    // Canvas ile frame çıkar — 0.5s, 2s, 4s, 7s, 10s, 15s anlarından
-    var frameCount = Math.min(8, Math.max(4, Math.floor(duration / 2)));
+    var frameCount = Math.min(7, Math.max(4, Math.floor(duration / 3)));
     var timestamps = [];
     var step = duration / (frameCount + 1);
-    for (var i = 1; i <= frameCount; i++) timestamps.push(Math.min(step * i, duration - 0.1));
+    for (var i = 1; i <= frameCount; i++) timestamps.push(Math.min(step * i, duration - 0.5));
 
     var frames = await vaExtractFrames(videoUrl, timestamps, function(done, total) {
-      vaSetProgress(15 + (done/total) * 50, 'Kareler cikariliyor...', done + '/' + total + ' kare');
+      vaSetProgress(15 + Math.round((done / total) * 50), 'Kareler cikariliyor...', done + '/' + total);
     });
 
     URL.revokeObjectURL(videoUrl);
-    vaSetProgress(70, 'AI analiz ediyor...', 'Reklam uzmanı değerlendiriyor');
 
-    // API çağrısı
+    if (frames.length === 0) throw new Error('Kareler alinamadi. Farkli bir video deneyin.');
+
+    vaSetProgress(70, 'AI analiz ediyor...', 'Reklam uzmani degerlendiriyor');
+
     var brand = S.brand;
     var brandCtx = brand && brand.brandName
-      ? 'Marka: ' + brand.brandName + '. Urun: ' + (brand.product||'') + '. Hedef kitle: ' + (brand.audience||'') + '.'
+      ? 'Marka: ' + brand.brandName + '. Urun: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.'
       : 'Meta reklamcisi';
 
     var result = await vaCallAPI(frames, duration, brandCtx);
 
-    vaSetProgress(100, 'Analiz tamamlandı!', '');
+    vaSetProgress(100, 'Tamamlandi!', '');
     setTimeout(function() {
       loadEl.style.display = 'none';
       vaRenderResult(result);
       document.getElementById('va-reset-btn').style.display = 'inline-flex';
-    }, 400);
+    }, 300);
 
   } catch(e) {
-    console.error('vaExtractAndAnalyze error:', e);
+    console.error('vaExtractAndAnalyze:', e);
     loadEl.style.display = 'none';
     document.getElementById('va-upload-area').style.display = 'block';
-    vaShowError('Analiz sırasında hata: ' + e.message);
+    alert('Analiz hatasi: ' + (e.message || String(e)));
   }
 }
 
 async function vaExtractFrames(videoUrl, timestamps, onProgress) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     var vid = document.createElement('video');
-    vid.crossOrigin = 'anonymous';
+    vid.muted = true;
+    vid.playsInline = true;
     vid.preload = 'auto';
     var canvas = document.createElement('canvas');
     var ctx = canvas.getContext('2d');
     var frames = [];
     var idx = 0;
+    var timeoutId = null;
+    var started = false;
 
     function captureNext() {
       if (idx >= timestamps.length) { resolve(frames); return; }
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(function() { idx++; captureNext(); }, 3000);
       vid.currentTime = timestamps[idx];
     }
 
     vid.onseeked = function() {
-      canvas.width  = Math.min(vid.videoWidth,  720);
-      canvas.height = Math.min(vid.videoHeight, 1280);
-      ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
-      frames.push(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+      clearTimeout(timeoutId);
+      try {
+        var w = vid.videoWidth  || 640;
+        var h = vid.videoHeight || 1136;
+        canvas.width  = Math.min(w, 640);
+        canvas.height = Math.min(h, 1136);
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+        var data = canvas.toDataURL('image/jpeg', 0.72).split(',')[1];
+        if (data && data.length > 200) frames.push(data);
+      } catch(e) {}
       if (onProgress) onProgress(idx + 1, timestamps.length);
       idx++;
-      setTimeout(captureNext, 50);
+      setTimeout(captureNext, 100);
     };
 
     vid.onerror = function() { resolve(frames); };
-    vid.onloadeddata = function() { captureNext(); };
+
+    function startCapture() {
+      if (started) return; started = true;
+      captureNext();
+    }
+    vid.oncanplay    = startCapture;
+    vid.onloadeddata = startCapture;
+    setTimeout(function() { if (!started) { started = true; captureNext(); } }, 2500);
+
     vid.src = videoUrl;
+    vid.load();
   });
 }
+
 
 async function vaCallAPI(frames, duration, brandCtx) {
   // Her frame'i image block olarak gönder
