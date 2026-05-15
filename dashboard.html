@@ -577,6 +577,10 @@ tbody tr:hover td{background:var(--surface2)}
 
   <!-- SONUÇLAR -->
   <div id="plan-step-results" style="display:none">
+
+    <!-- HAFIZA ŞERİDİ — dolu olunca görünür -->
+    <div id="plan-memory-strip" style="display:none;margin-bottom:12px"></div>
+
     <div id="focus-card" style="margin-bottom:12px"></div>
 
     <div id="tasks-card" style="margin-bottom:12px;display:none">
@@ -2088,7 +2092,9 @@ function planShowResults(actions, verdict, tagline) {
   var rb = document.getElementById('plan-reset-btn');
   if (rb) rb.style.display = 'inline-flex';
 
-  // Odak kartı
+  // Hafiza seridini render et
+  planRenderMemoryStrip();
+
   var focusCard = document.getElementById('focus-card');
   var hero = (actions || [])[0];
   if (focusCard && hero) {
@@ -2158,6 +2164,65 @@ function planShowFallback() {
     return { title: i.title, reason: i.desc, tone: ['blue','mid','low','high'][idx % 4], cta: 'Uygula', nav: 'creative-prompt' };
   });
   planShowResults(actions, 'Bugün üretim günü — en iyi creative\'ler sahaya çıksın.', 'Creative Günü');
+}
+
+async function planRenderMemoryStrip() {
+  var strip = document.getElementById('plan-memory-strip');
+  if (!strip) return;
+  var brand = S.brand;
+  if (!brand || !brand.brandName) return;
+
+  var rows = await sbGet('ad_memory', { brand_name: brand.brandName });
+  if (!rows || rows.length < 2) return; // En az 2 gun olmadan gosterme
+
+  var last7 = rows.slice(0, 7);
+  var avgRoas = last7.filter(function(r){ return r.roas; }).reduce(function(s,r){ return s + parseFloat(r.roas); }, 0) / (last7.filter(function(r){ return r.roas; }).length || 1);
+  var avgFreq = last7.filter(function(r){ return r.frequency; }).reduce(function(s,r){ return s + parseFloat(r.frequency); }, 0) / (last7.filter(function(r){ return r.frequency; }).length || 1);
+  var avgCpa  = last7.filter(function(r){ return r.cpa; }).reduce(function(s,r){ return s + parseFloat(r.cpa); }, 0) / (last7.filter(function(r){ return r.cpa; }).length || 1);
+
+  // Trend hesapla
+  var trendText = '';
+  var trendColor = 'var(--text3)';
+  if (last7.length >= 3) {
+    var recent = parseFloat(last7[0].roas || 0);
+    var older  = parseFloat(last7[Math.min(2, last7.length-1)].roas || 0);
+    if (recent > older * 1.1) { trendText = 'ROAS yukseliyor'; trendColor = 'var(--green)'; }
+    else if (recent < older * 0.9) { trendText = 'ROAS dusuyor'; trendColor = 'var(--red)'; }
+    else { trendText = 'ROAS stabil'; trendColor = 'var(--text3)'; }
+  }
+
+  var freqWarn = avgFreq > 2.5;
+
+  strip.style.display = 'block';
+  strip.innerHTML =
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:12px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;flex-wrap:wrap">' +
+      '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);white-space:nowrap">Son ' + last7.length + ' Gun</div>' +
+      '<div style="width:1px;height:20px;background:var(--border)"></div>' +
+      '<div style="display:flex;align-items:baseline;gap:4px">' +
+        '<span style="font-size:18px;font-weight:900;font-family:var(--mono);color:var(--text)">' + avgRoas.toFixed(1) + 'x</span>' +
+        '<span style="font-size:10px;color:var(--text3)">ROAS</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:4px">' +
+        '<span style="font-size:18px;font-weight:900;font-family:var(--mono);color:var(--text)">TL' + Math.round(avgCpa) + '</span>' +
+        '<span style="font-size:10px;color:var(--text3)">CPA</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:baseline;gap:4px">' +
+        '<span style="font-size:18px;font-weight:900;font-family:var(--mono);color:' + (freqWarn ? 'var(--yellow)' : 'var(--text)') + '">' + avgFreq.toFixed(1) + '</span>' +
+        '<span style="font-size:10px;color:var(--text3)">Freq' + (freqWarn ? ' ⚠' : '') + '</span>' +
+      '</div>' +
+      (trendText ? '<div style="margin-left:auto;font-size:11px;font-weight:700;color:' + trendColor + '">' + trendText + '</div>' : '') +
+    '</div>';
+}
+
+function creativeFeedback(hookTitle, hookType, result) {
+  var brand = S.brand;
+  if (!brand || !brand.brandName) return;
+  creativeSave(brand.brandName, 'video', hookType || hookTitle, result, 0);
+  // Butonu guncelle
+  var btns = document.querySelectorAll('[data-hook="' + hookTitle.replace(/"/g,'') + '"]');
+  btns.forEach(function(b) {
+    b.closest('.creative-fb-row').innerHTML = '<span style="font-size:11px;color:var(--text3);font-style:italic">Kaydedildi, tesekkurler</span>';
+  });
 }
 
 function planReset() {
@@ -2287,19 +2352,27 @@ async function refreshIdeas() {
   var picked = shuffleArray(pool).slice(0, 4);
   var el = document.getElementById('plan-ideas');
   if (el) el.innerHTML = picked.map(function(i) {
-    return renderCompactCard({
-      tone: 'mid',
-      badge: i.badge || 'Icerik fikri',
-      kicker: i.icon,
-      title: i.title,
-      text: i.desc,
-      tool: 'Creative / Hook',
-      cta: 'Uygula',
-      nav: 'hook'
-    });
+    var safeTitle = (i.title || '').replace(/'/g, '');
+    return '<div style="margin-bottom:8px">' +
+      renderCompactCard({
+        tone: 'mid',
+        badge: i.badge || 'Icerik fikri',
+        kicker: i.icon,
+        title: i.title,
+        text: i.desc,
+        tool: 'Creative / Hook',
+        cta: 'Uygula',
+        nav: 'hook'
+      }) +
+      '<div class="creative-fb-row" style="display:flex;align-items:center;gap:6px;margin-top:5px;padding:0 4px">' +
+        '<span style="font-size:10px;color:var(--text3)">Bu format sende calisti mi?</span>' +
+        '<button data-hook="' + safeTitle + '" onclick="creativeFeedback(\'' + safeTitle + '\',\'' + safeTitle + '\',\'viral\')" style="padding:2px 8px;border-radius:5px;border:1px solid var(--green);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Tuttu</button>' +
+        '<button data-hook="' + safeTitle + '" onclick="creativeFeedback(\'' + safeTitle + '\',\'' + safeTitle + '\',\'dusuk\')" style="padding:2px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Tutmadi</button>' +
+      '</div>' +
+    '</div>';
   }).join('');
 
-  if (btn) { btn.textContent = '↺'; btn.disabled = false; }
+  if (btn) { btn.textContent = '\u21BA'; btn.disabled = false; }
 }
 
 
