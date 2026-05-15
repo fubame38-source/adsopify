@@ -188,6 +188,9 @@ tbody tr:hover td{background:var(--surface2)}
 .opp-badge.urgent{background:var(--red-light);color:var(--red)}
 .opp-badge.scale{background:var(--green-light);color:var(--green)}
 .opp-badge.test{background:var(--yellow-light);color:var(--yellow)}
+.adwiz-opt{padding:8px 14px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.adwiz-opt:hover{border-color:var(--accent);color:var(--text);background:var(--accent-light)}
+.adwiz-opt.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);font-weight:800}
 .opp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
 .opp-text{font-size:12px;color:var(--text2);line-height:1.5}
 
@@ -893,40 +896,50 @@ tbody tr:hover td{background:var(--surface2)}
 
   <!-- FORMAT SEÇİMİ + ÜRET -->
   <div id="adwiz-input" style="display:block">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
-      <div id="adwiz-card-format" style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Format</div>
-        <select id="adwiz-format" style="width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-weight:700;outline:none;cursor:pointer">
-          <option value="video">📹 Video / Reels</option>
-          <option value="image">🖼 Görsel</option>
-          <option value="carousel">🎠 Carousel</option>
-          <option value="story">📱 Story</option>
-        </select>
-      </div>
-      <div id="adwiz-card-goal" style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Hedef</div>
-        <select id="adwiz-goal" style="width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-weight:700;outline:none;cursor:pointer">
-          <option value="satis">💰 Satış</option>
-          <option value="trafik">🔗 Trafik</option>
-          <option value="etkilesim">💬 Etkileşim</option>
-          <option value="farkindalik">📢 Farkındalık</option>
-        </select>
-      </div>
-      <div id="adwiz-card-angle" style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Açı / Ton</div>
-        <select id="adwiz-angle" style="width:100%;border:none;background:transparent;color:var(--text);font-size:14px;font-weight:700;outline:none;cursor:pointer">
-          <option value="pov">🎬 POV Keşif</option>
-          <option value="uzman">🩺 Uzman / Bilim</option>
-          <option value="ugc">😊 UGC Samimi</option>
-          <option value="problem">😤 Problem-Çözüm</option>
-          <option value="karsilastirma">⚖️ Karşılaştırma</option>
-          <option value="sosyal">📊 Sosyal Kanıt</option>
-        </select>
+
+    <!-- FORMAT -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Format</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="adwiz-format-group">
+        <button onclick="adWizSelect('format','video',this)" class="adwiz-opt active" data-val="video">📹 Video / Reels</button>
+        <button onclick="adWizSelect('format','image',this)" class="adwiz-opt" data-val="image">🖼 Görsel</button>
+        <button onclick="adWizSelect('format','carousel',this)" class="adwiz-opt" data-val="carousel">🎠 Carousel</button>
+        <button onclick="adWizSelect('format','story',this)" class="adwiz-opt" data-val="story">📱 Story</button>
       </div>
     </div>
+
+    <!-- HEDEF -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Hedef</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="adwiz-goal-group">
+        <button onclick="adWizSelect('goal','satis',this)" class="adwiz-opt active" data-val="satis">💰 Satış</button>
+        <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-opt" data-val="trafik">🔗 Trafik</button>
+        <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-opt" data-val="etkilesim">💬 Etkileşim</button>
+        <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-opt" data-val="farkindalik">📢 Farkındalık</button>
+      </div>
+    </div>
+
+    <!-- AÇI -->
+    <div style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Açı / Ton</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="adwiz-angle-group">
+        <button onclick="adWizSelect('angle','pov',this)" class="adwiz-opt active" data-val="pov">🎬 POV Keşif</button>
+        <button onclick="adWizSelect('angle','uzman',this)" class="adwiz-opt" data-val="uzman">🩺 Uzman</button>
+        <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-opt" data-val="ugc">😊 UGC</button>
+        <button onclick="adWizSelect('angle','problem',this)" class="adwiz-opt" data-val="problem">😤 Problem-Çözüm</button>
+        <button onclick="adWizSelect('angle','karsilastirma',this)" class="adwiz-opt" data-val="karsilastirma">⚖️ Karşılaştırma</button>
+        <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-opt" data-val="sosyal">📊 Sosyal Kanıt</button>
+      </div>
+    </div>
+
     <button onclick="adWizGenerate()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.opacity='.88';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform=''">
       <span>✨</span> <span id="adwiz-btn-text">Reklam Paketi Üret</span>
     </button>
+
+    <!-- hidden inputs for compat -->
+    <select id="adwiz-format" style="display:none"><option value="video" selected>video</option></select>
+    <select id="adwiz-goal" style="display:none"><option value="satis" selected>satis</option></select>
+    <select id="adwiz-angle" style="display:none"><option value="pov" selected>pov</option></select>
   </div>
 
   <!-- LOADING -->
@@ -1920,39 +1933,36 @@ async function planFetchAI(cacheKey) {
   const h = new Date().getHours();
   const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'ogleden sonra' : 'aksam';
 
-  // Meta baglysa bugunun kampanya verisini cek
+  // Meta verisini 800ms timeout ile paralel cek
   let metaCtx = 'Meta verisi yok.';
   if (S.token && S.accountId) {
     try {
-      const ins = await getTodayInsights();
+      const ins = await Promise.race([
+        getTodayInsights(),
+        new Promise(function(r){ setTimeout(function(){ r(null); }, 800); })
+      ]);
       if (ins && ins.length > 0) {
-        const totalSpend   = ins.reduce((s,i) => s + parseFloat(i.spend||0), 0);
-        const totalSales   = ins.reduce((s,i) => s + (i._purchases||0), 0);
-        const totalRevenue = ins.reduce((s,i) => s + (i._revenue||0), 0);
+        const totalSpend   = ins.reduce(function(s,i){ return s + parseFloat(i.spend||0); }, 0);
+        const totalSales   = ins.reduce(function(s,i){ return s + (i._purchases||0); }, 0);
+        const totalRevenue = ins.reduce(function(s,i){ return s + (i._revenue||0); }, 0);
         const roas         = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue/totalSpend).toFixed(2) : null;
-        const avgFreq      = ins.reduce((s,i) => s + parseFloat(i.frequency||0), 0) / ins.length;
-        const avgCTR       = ins.reduce((s,i) => s + parseFloat(i.ctr||0), 0) / ins.length;
+        const avgFreq      = ins.reduce(function(s,i){ return s + parseFloat(i.frequency||0); }, 0) / ins.length;
+        const avgCTR       = ins.reduce(function(s,i){ return s + parseFloat(i.ctr||0); }, 0) / ins.length;
         const cpa          = totalSales > 0 ? (totalSpend/totalSales).toFixed(0) : null;
-        const campLines    = ins.slice(0,4).map(i =>
-          i.campaign_name + ': harcama TL' + parseFloat(i.spend||0).toFixed(0) +
-          (i._roas ? ', ROAS ' + i._roas.toFixed(1) + 'x' : '') +
-          ', CTR %' + parseFloat(i.ctr||0).toFixed(2) +
-          ', Frekans ' + parseFloat(i.frequency||0).toFixed(1)
-        ).join(' | ');
         metaCtx = 'Bugunun Meta verisi: Harcama TL' + totalSpend.toFixed(0) +
           ', Satis ' + totalSales +
           (roas ? ', ROAS ' + roas + 'x' : '') +
           (cpa ? ', CPA TL' + cpa : '') +
           ', Ort Frekans ' + avgFreq.toFixed(1) +
-          ', Ort CTR %' + avgCTR.toFixed(2) + '.' +
-          (campLines ? ' Kampanyalar: ' + campLines : '');
+          ', Ort CTR %' + avgCTR.toFixed(2) + '.';
       } else {
-        metaCtx = 'Meta bagli ama bugun henuz harcama yok veya kampanya aktif degil.';
+        metaCtx = 'Meta bagli ama bugun henuz harcama yok.';
       }
     } catch(e) {
       metaCtx = 'Meta bagli ama veri cekilemedi.';
     }
   }
+
 
   const prompt = brandCtx + '\n' +
     metaCtx + '\n\n' +
@@ -3281,6 +3291,17 @@ function goWizardStep(step) {
       if (i === step) stepEl.classList.add('active');
     }
   }
+}
+
+// REKLAM HAZIRLA — toggle seçim
+function adWizSelect(group, val, btn) {
+  // Aktif sınıfı gruba göre temizle
+  var groupEl = document.getElementById('adwiz-' + group + '-group');
+  if (groupEl) groupEl.querySelectorAll('.adwiz-opt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  // Hidden select güncelle
+  var sel = document.getElementById('adwiz-' + group);
+  if (sel) { for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){ sel.selectedIndex=i; break; } } }
 }
 
 // REKLAM HAZIRLA — TEK TIKLA AI PAKETİ
