@@ -534,7 +534,7 @@ tbody tr:hover td{background:var(--surface2)}
   <div class="nav-item" onclick="nav('hook')" data-sec="hook"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M10.5 3a3.5 3.5 0 0 1 0 7H5.5a1.5 1.5 0 0 0 0 3H9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Hook Üretici</div>
   <div class="nav-item" onclick="nav('swipe')" data-sec="swipe"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M6 6h4M6 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Hook Swipe</div>
   <div class="nav-item" onclick="nav('copy')" data-sec="copy"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M3 8h8M3 11h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Reklam Metni</div>
-  <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><circle cx="5.5" cy="5.5" r="1.2" fill="currentColor" opacity=".7"/><path d="M2 10.5L5 7.5L7.5 10L10 7.5L14 11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Görsel Prompt</div>
+  <div class="nav-item" onclick="nav('creative-prompt')" data-sec="creative-prompt"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 6L10 8L6.5 10V6Z" fill="currentColor" opacity=".7"/></svg>Video Analizi</div>
 
   <div class="nav-div"></div>
   <div class="nav-grp">Asistan</div>
@@ -856,32 +856,81 @@ tbody tr:hover td{background:var(--surface2)}
   <div id="copy-results"></div>
 </div>
 
-<!-- GÖRSEL PROMPT -->
+<!-- VİDEO ANALİZ -->
 <div id="sec-creative-prompt" class="section">
-  <div class="ph"><div class="ph-title">Görsel Prompt</div><div class="ph-sub">Ürün görselinizi yükleyin, AI profesyonel reklam promptları üretsin</div></div>
-  <div class="card mb-12">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      <div>
-        <div id="img-upload-area" onclick="document.getElementById('img-upload').click()" style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border-color .14s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div id="img-placeholder"><div style="font-size:28px;margin-bottom:7px">📸</div><div style="font-size:13px;font-weight:600;color:var(--text2)">Görsel Yükle</div><div style="font-size:11px;color:var(--text3);margin-top:3px">PNG, JPG, WEBP</div></div>
-          <img id="img-preview-wrap" src="" style="display:none;max-width:100%;max-height:160px;border-radius:8px;object-fit:contain" />
-        </div>
-        <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="handleImageUpload(event)" />
-      </div>
-      <div style="display:flex;flex-direction:column;gap:9px">
-        <div><label>Hedef</label><select id="prompt-goal"><option value="sales">Satış</option><option value="awareness">Bilinirlik</option><option value="engagement">Etkileşim</option><option value="traffic">Trafik</option></select></div>
-        <div><label>Platform</label><select id="prompt-platform"><option value="instagram">Instagram Reels/Story</option><option value="facebook">Facebook Feed</option><option value="both">İkisi de</option></select></div>
-        <div><label>Stil</label><select id="prompt-style"><option value="lifestyle">Lifestyle</option><option value="studio">Stüdyo</option><option value="ugc">UGC</option><option value="cinematic">Sinematik</option></select></div>
-        <button class="btn btn-primary" id="prompt-gen-btn" onclick="generateVisualPrompts()">✨ Promptları Üret</button>
-      </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Video Analizi</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:2px">Reklamını yükle — AI reklam uzmanı olarak analiz etsin</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="vaReset()" id="va-reset-btn" style="display:none">↺ Yeni Analiz</button>
+  </div>
+
+  <!-- UPLOAD ALANI -->
+  <div id="va-upload-area">
+    <div id="va-dropzone" onclick="document.getElementById('va-file-input').click()"
+      style="border:2px dashed var(--border);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface)"
+      ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='var(--accent-light)'"
+      ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--surface)'"
+      ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='var(--surface)';vaHandleDrop(event)">
+      <div style="font-size:36px;margin-bottom:10px">🎬</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">Video yükle veya buraya sürükle</div>
+      <div style="font-size:12px;color:var(--text3)">MP4, MOV — max 200MB</div>
+    </div>
+    <input type="file" id="va-file-input" accept="video/mp4,video/quicktime,video/*" style="display:none" onchange="vaHandleFile(this.files[0])"/>
+  </div>
+
+  <!-- LOADING -->
+  <div id="va-loading" style="display:none;flex-direction:column;align-items:center;padding:60px 20px;gap:16px">
+    <div class="spinner" style="width:32px;height:32px;border-width:3px"></div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);text-align:center;margin-bottom:4px" id="va-loading-title">Videо analiz ediliyor...</div>
+      <div style="font-size:12px;color:var(--text3);text-align:center" id="va-loading-sub">Frame'ler çıkarılıyor</div>
+    </div>
+    <div style="width:240px;height:4px;background:var(--border);border-radius:99px;overflow:hidden">
+      <div id="va-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#818cf8);border-radius:99px;transition:width .4s ease"></div>
     </div>
   </div>
-  <div id="prompt-loading" style="display:none" class="loading-row"><div class="spinner"></div> <span id="prompt-loading-msg">Görsel analiz ediliyor...</span></div>
-  <div id="prompt-results" style="display:none">
-    <div class="card mb-12"><div class="clabel">Görsel Analizi</div><div id="prompt-analysis" style="font-size:13px;color:var(--text2);line-height:1.7"></div></div>
-    <div id="prompt-cards" style="display:flex;flex-direction:column;gap:12px"></div>
+
+  <!-- SONUÇ -->
+  <div id="va-result" style="display:none">
+
+    <!-- Skor kartları -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px" id="va-scores"></div>
+
+    <!-- Verdict banner -->
+    <div id="va-verdict" style="margin-bottom:12px"></div>
+
+    <!-- Detay kartları grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🪝 Hook Analizi (ilk 3sn)</span></div>
+        <div id="va-hook" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">📣 Organik mi Reklam mı?</span></div>
+        <div id="va-organic" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎯 Hedef Kitle & Kampanya</span></div>
+        <div id="va-targeting" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">⚗️ A/B Test Önerileri</span></div>
+        <div id="va-abtest" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.7"></div>
+      </div>
+    </div>
+
+    <!-- Creative Brief tam genişlik -->
+    <div style="background:linear-gradient(135deg,#06091a,#0d1433);border:1px solid rgba(29,78,216,.25);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08)"><span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4)">🎬 Creative Brief — Bu Videoyu Reklamlara Nasıl Uygula</span></div>
+      <div id="va-brief" style="padding:16px;font-size:13px;color:rgba(255,255,255,.6);line-height:1.8;white-space:pre-line"></div>
+    </div>
   </div>
+
 </div>
+
 
 <!-- REKLAM SİHİRBAZI -->
 <div id="sec-ad-wizard" class="section">
@@ -3667,122 +3716,261 @@ function initTheme() {
 var _uploadedImageBase64 = null;
 var _uploadedImageType = 'image/jpeg';
 
-function handleImageUpload(input) {
-  const file = input.files ? input.files[0] : input;
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert('Dosya 5MB\'dan büyük olamaz.'); return; }
+// VİDEO ANALİZ — VA
+// ═══════════════════════════════════════════════
 
-  _uploadedImageType = file.type;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    _uploadedImageBase64 = e.target.result.split(',')[1];
-    var prev = document.getElementById('img-preview-wrap');
-    var placeholder = document.getElementById('img-placeholder');
-    if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
-    if (placeholder) placeholder.style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+function vaHandleDrop(e) {
+  var file = e.dataTransfer.files[0];
+  if (file) vaHandleFile(file);
 }
-async function generateVisualPrompts() {
-  if (!_uploadedImageBase64) { alert('Önce bir görsel yükleyin.'); return; }
 
-  const btn = document.getElementById('prompt-gen-btn');
-  btn.textContent = '⏳ Analiz ediliyor...';
-  btn.disabled = true;
+function vaHandleFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('video/')) { vaShowError('Lütfen bir video dosyası seçin (MP4, MOV).'); return; }
+  if (file.size > 200 * 1024 * 1024) { vaShowError('Dosya 200MB den buyuk olamaz.'); return; }
+  vaExtractAndAnalyze(file);
+}
 
-  document.getElementById('prompt-results').style.display = 'none';
-  document.getElementById('prompt-loading').style.display = 'block';
+function vaShowError(msg) {
+  var dz = document.getElementById('va-dropzone');
+  if (dz) { dz.style.borderColor = 'var(--red)'; setTimeout(function(){ dz.style.borderColor = 'var(--border)'; }, 2000); }
+  alert(msg);
+}
 
-  const loadingMsgs = ['Görsel analiz ediliyor...', 'Ürün özellikleri belirleniyor...', 'Stil konseptleri oluşturuluyor...', 'Profesyonel promptlar yazılıyor...'];
-  let msgIdx = 0;
-  const msgInterval = setInterval(() => {
-    const el = document.getElementById('prompt-loading-msg');
-    if (el && msgIdx < loadingMsgs.length) { el.textContent = loadingMsgs[msgIdx++]; }
-  }, 1200);
+function vaSetProgress(pct, title, sub) {
+  var bar = document.getElementById('va-progress-bar');
+  var t = document.getElementById('va-loading-title');
+  var s = document.getElementById('va-loading-sub');
+  if (bar) bar.style.width = pct + '%';
+  if (t && title) t.textContent = title;
+  if (s && sub) s.textContent = sub;
+}
 
-  const goal = document.getElementById('prompt-goal').value;
-  const platform = document.getElementById('prompt-platform').value;
-  const style = document.getElementById('prompt-style')?.value || 'lifestyle';
-  const brand = S.brand;
-  const brandCtx = brand && brand.brandName ? `Marka: ${brand.brandName}. Ürün: ${brand.product || ''}. Hedef kitle: ${brand.audience || ''}.` : '';
-
-  const goalMap = { sales:'satış dönüşümü', awareness:'marka bilinirliği', engagement:'etkileşim', traffic:'trafik' };
-  const platformMap = { instagram:'Instagram Reels/Story (9:16)', facebook:'Facebook Feed (1:1 veya 4:5)', both:'Instagram ve Facebook (9:16 ve 1:1)' };
-  const styleMap = { lifestyle:'lifestyle/yaşam tarzı', studio:'stüdyo/ürün odaklı', ugc:'UGC kullanıcı videosu tarzı', cinematic:'sinematik/film tarzı' };
-
-  const prompt = 'Bu urun gorselini profesyonel reklam direktoru olarak analiz et. ' + brandCtx + ' Hedef: ' + goalMap[goal] + '. Platform: ' + platformMap[platform] + '. Stil: ' + styleMap[style] + '. Sadece asagidaki JSON formatinda don, baska hicbir sey yazma. Her prompt cok detayli, spesifik, Ingilizce olmali. analysis alani Turkce olmali. {"analysis":"gorselin detayli analizi turkce 3-4 cumle","prompts":[{"tool":"Midjourney v6","style":"Lifestyle","mood":"Sicak davetkar","prompt":"detailed english prompt with lighting composition camera settings atmosphere style references --ar 9:16 --v 6","tr":"bu prompt ne uretiyor turkce aciklama","usage":"Instagram Story Reels"},{"tool":"Gemini Ideogram","style":"Studio Premium","mood":"Profesyonel","prompt":"detailed english studio product photography prompt with lighting setup surface reflections background","tr":"turkce aciklama","usage":"Facebook Feed"},{"tool":"DALL-E 3","style":"UGC Authentic","mood":"Samimi","prompt":"detailed english ugc style prompt handheld camera natural light everyday scene authentic feel","tr":"turkce aciklama","usage":"Instagram Reels viral"}]}';
+async function vaExtractAndAnalyze(file) {
+  // Show loading
+  document.getElementById('va-upload-area').style.display = 'none';
+  document.getElementById('va-result').style.display = 'none';
+  var loadEl = document.getElementById('va-loading');
+  loadEl.style.display = 'flex';
+  vaSetProgress(5, 'Video okunuyor...', 'Dosya yükleniyor');
 
   try {
-    const res = await fetch('https://adsopify-api.fubame38.workers.dev/vision', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: _uploadedImageBase64, imageType: _uploadedImageType, prompt })
+    // Video element ile metadata al
+    var videoUrl = URL.createObjectURL(file);
+    var duration = await new Promise(function(resolve, reject) {
+      var vid = document.createElement('video');
+      vid.preload = 'metadata';
+      vid.onloadedmetadata = function() { resolve(vid.duration); };
+      vid.onerror = function() { resolve(30); };
+      vid.src = videoUrl;
     });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
 
-    // Robust parse — data zaten obje olmalı ama string gelirse de çöz
-    const parsed = (data.prompts || data.analysis) ? data : (() => {
-      try { return JSON.parse(JSON.stringify(data)); } catch(e) { return data; }
-    })();
+    vaSetProgress(15, 'Kareler cikariliyor...', Math.round(duration) + ' saniye video');
 
-    clearInterval(msgInterval);
-    document.getElementById('prompt-loading').style.display = 'none';
-    document.getElementById('prompt-results').style.display = 'block';
-    document.getElementById('prompt-analysis').textContent = parsed.analysis || data.analysis || '';
+    // Canvas ile frame çıkar — 0.5s, 2s, 4s, 7s, 10s, 15s anlarından
+    var frameCount = Math.min(8, Math.max(4, Math.floor(duration / 2)));
+    var timestamps = [];
+    var step = duration / (frameCount + 1);
+    for (var i = 1; i <= frameCount; i++) timestamps.push(Math.min(step * i, duration - 0.1));
 
-    const configs = [
-      { gradient: 'linear-gradient(135deg,rgba(99,102,241,0.1),rgba(124,58,237,0.05))', border: 'rgba(99,102,241,0.25)', accent: '#818cf8', icon: '🎨' },
-      { gradient: 'linear-gradient(135deg,rgba(16,185,129,0.1),rgba(5,150,105,0.05))', border: 'rgba(16,185,129,0.25)', accent: '#34d399', icon: '📸' },
-      { gradient: 'linear-gradient(135deg,rgba(245,158,11,0.1),rgba(217,119,6,0.05))', border: 'rgba(245,158,11,0.25)', accent: '#fbbf24', icon: '🎬' },
-    ];
+    var frames = await vaExtractFrames(videoUrl, timestamps, function(done, total) {
+      vaSetProgress(15 + (done/total) * 50, 'Kareler cikariliyor...', done + '/' + total + ' kare');
+    });
 
-    document.getElementById('prompt-cards').innerHTML = (parsed.prompts || data.prompts || []).map((p, i) => {
-      const c = configs[i] || configs[0];
-      return `
-      <div style="background:${c.gradient};border:1px solid ${c.border};border-radius:16px;padding:24px;transition:all 0.2s;cursor:default" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
-          <div style="display:flex;gap:12px;align-items:center">
-            <div style="width:44px;height:44px;border-radius:12px;background:${c.border};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${c.icon}</div>
-            <div>
-              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${c.accent};margin-bottom:3px">${escapeHtml(p.tool)}</div>
-              <div style="font-size:16px;font-weight:700;color:var(--text)">${escapeHtml(p.style)}</div>
-              <div style="font-size:12px;color:var(--text3);margin-top:2px">Mood: ${escapeHtml(p.mood || '')} • ${escapeHtml(p.usage || '')}</div>
-            </div>
-          </div>
-          <button onclick="copyPrompt(this,${i})" style="background:${c.border};border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;color:${c.accent};cursor:pointer;transition:all 0.15s;font-family:var(--font);white-space:nowrap" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">📋 Kopyala</button>
-        </div>
-        
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:8px">PROMPT</div>
-          <div id="prompt-text-${i}" style="font-size:12px;line-height:1.8;color:var(--text2);font-family:var(--mono)">${escapeHtml(p.prompt)}</div>
-        </div>
+    URL.revokeObjectURL(videoUrl);
+    vaSetProgress(70, 'AI analiz ediyor...', 'Reklam uzmanı değerlendiriyor');
 
-        <div style="display:flex;gap:8px;align-items:flex-start">
-          <span style="font-size:16px;flex-shrink:0">💡</span>
-          <div style="font-size:13px;color:var(--text2);line-height:1.6">${escapeHtml(p.tr)}</div>
-        </div>
-      </div>`;
-    }).join('');
+    // API çağrısı
+    var brand = S.brand;
+    var brandCtx = brand && brand.brandName
+      ? 'Marka: ' + brand.brandName + '. Urun: ' + (brand.product||'') + '. Hedef kitle: ' + (brand.audience||'') + '.'
+      : 'Meta reklamcisi';
 
-    document.getElementById('prompt-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var result = await vaCallAPI(frames, duration, brandCtx);
+
+    vaSetProgress(100, 'Analiz tamamlandı!', '');
+    setTimeout(function() {
+      loadEl.style.display = 'none';
+      vaRenderResult(result);
+      document.getElementById('va-reset-btn').style.display = 'inline-flex';
+    }, 400);
+
   } catch(e) {
-    clearInterval(msgInterval);
-    document.getElementById('prompt-loading').style.display = 'none';
-    alert('Hata: ' + e.message);
+    console.error('vaExtractAndAnalyze error:', e);
+    loadEl.style.display = 'none';
+    document.getElementById('va-upload-area').style.display = 'block';
+    vaShowError('Analiz sırasında hata: ' + e.message);
   }
-
-  btn.textContent = '✨ Promptları Üret';
-  btn.disabled = false;
 }
 
-function copyPrompt(btn, i) {
-  const text = document.getElementById('prompt-text-' + i).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✅ Kopyalandı!';
-    setTimeout(() => { btn.textContent = '📋 Kopyala'; }, 2000);
+async function vaExtractFrames(videoUrl, timestamps, onProgress) {
+  return new Promise(function(resolve, reject) {
+    var vid = document.createElement('video');
+    vid.crossOrigin = 'anonymous';
+    vid.preload = 'auto';
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var frames = [];
+    var idx = 0;
+
+    function captureNext() {
+      if (idx >= timestamps.length) { resolve(frames); return; }
+      vid.currentTime = timestamps[idx];
+    }
+
+    vid.onseeked = function() {
+      canvas.width  = Math.min(vid.videoWidth,  720);
+      canvas.height = Math.min(vid.videoHeight, 1280);
+      ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+      frames.push(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+      if (onProgress) onProgress(idx + 1, timestamps.length);
+      idx++;
+      setTimeout(captureNext, 50);
+    };
+
+    vid.onerror = function() { resolve(frames); };
+    vid.onloadeddata = function() { captureNext(); };
+    vid.src = videoUrl;
   });
 }
+
+async function vaCallAPI(frames, duration, brandCtx) {
+  // Her frame'i image block olarak gönder
+  var imageBlocks = frames.map(function(f) {
+    return { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: f } };
+  });
+
+  var prompt = brandCtx + '\n\n' +
+    'Bu videonun ' + frames.length + ' karesini inceliyorum. Suresi: ' + Math.round(duration) + ' saniye.\n\n' +
+    'Meta reklam ve sosyal medya uzmani olarak su analizleri yap:\n\n' +
+    '1. HOOK_SKORU (1-10): Ilk 3 saniye - izleyici devam eder mi?\n' +
+    '2. HOOK_ANALIZ: Hook guclu/zayif neden, spesifik\n' +
+    '3. ORGANIK_REKLAM: Organik mi reklam mi daha uygun, hangisinde daha iyi performans gosterir\n' +
+    '4. BRIEF: Bu videoyu reklama donusturmek icin brief (format, kesim, CTA, Primary text onerisi)\n' +
+    '5. ABTEST: 3 somut A/B test - ne degistir, neden\n' +
+    '6. TUTMA_OLASILIGI (1-100): Bu videonun iyi performans gosterme olasiligi. ' +
+    'Kesinlikle garantilemeden, veri bazli tahmin yap. ' +
+    'Hesaplama kriterleri: hook gucu 30puan, format uygunlugu 20puan, uzunluk 15puan, izleyici baglantilanabilirlik 20puan, CTA ve aksiyon cagirisi 15puan. ' +
+    'Toplam skoru 100 uzerinden ver, ama hicbir zaman 95 veya uzeri verme - belirsizlik payi birak.\n' +
+    '7. TUTMA_GEREKCE: Neden bu skoru verdin, hangi faktorler olumlu/olumsuz etkiledi (2-3 cumle)\n' +
+    '8. GENEL_SKOR (1-10): Reklamcilik skoru\n' +
+    '9. VERDICT: Tek guclu cumle ozet\n\n' +
+    'SADECE JSON: {"hook_skoru":8,"genel_skor":7,"tutma_olasiligi":72,"verdict":"ozet","hook_analiz":"detay","organik_reklam":"detay","brief":"detay","abtest":"detay","tutma_gerekce":"detay"}';
+
+  imageBlocks.push({ type: 'text', text: prompt });
+
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: 'Sen bir Meta reklam uzmanisin. Sadece gecerli JSON dondur, baska hicbir sey yazma.',
+      messages: [{ role: 'user', content: imageBlocks }]
+    })
+  });
+
+  var data = await res.json();
+  var raw = '';
+  if (data.content && data.content[0]) raw = data.content[0].text || '';
+  var match = raw.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('API gecersiz yanit: ' + raw.slice(0,100));
+  return safeJsonParse(match[0], {});
+}
+
+function vaRenderResult(r) {
+  var hookSkor  = r.hook_skoru || 0;
+  var genelSkor = r.genel_skor || 0;
+  var tutma     = r.tutma_olasiligi || 0;
+
+  function scoreColor(s, max) {
+    var pct = s / max;
+    return pct >= 0.75 ? 'var(--green)' : pct >= 0.5 ? 'var(--yellow)' : 'var(--red)';
+  }
+  function scoreBg(s, max) {
+    var pct = s / max;
+    return pct >= 0.75 ? 'rgba(5,150,105,.06)' : pct >= 0.5 ? 'rgba(180,83,9,.06)' : 'rgba(220,38,38,.06)';
+  }
+  function scoreBorder(s, max) {
+    var pct = s / max;
+    return pct >= 0.75 ? 'rgba(5,150,105,.2)' : pct >= 0.5 ? 'rgba(180,83,9,.2)' : 'rgba(220,38,38,.2)';
+  }
+
+  // Tutma olasılığı label
+  var tutmaLabel = tutma >= 75 ? 'Yuksek Potansiyel' : tutma >= 55 ? 'Orta Potansiyel' : tutma >= 35 ? 'Dusuk Potansiyel' : 'Zayif';
+  var tutmaNote  = tutma >= 75 ? 'Veri bazli tahmin' : tutma >= 55 ? 'Revizyonla artabilir' : 'Onemli degisiklik gerekli';
+
+  // Skor kartları — 4 kart
+  var scores = document.getElementById('va-scores');
+  if (scores) scores.innerHTML =
+    // TUTMA OLASILIGI — büyük öne çıkan kart
+    '<div style="grid-column:span 2;background:' + scoreBg(tutma,100) + ';border:1.5px solid ' + scoreBorder(tutma,100) + ';border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:16px">' +
+      '<div>' +
+        '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:6px">Performans Olasiligi</div>' +
+        '<div style="font-size:36px;font-weight:900;font-family:var(--mono);color:' + scoreColor(tutma,100) + ';letter-spacing:-.04em;line-height:1">' + tutma + '<span style="font-size:18px">/100</span></div>' +
+        '<div style="font-size:11px;color:var(--text3);margin-top:5px">' + tutmaNote + '</div>' +
+      '</div>' +
+      '<div style="text-align:right">' +
+        '<div style="font-size:13px;font-weight:700;color:' + scoreColor(tutma,100) + ';margin-bottom:4px">' + tutmaLabel + '</div>' +
+        '<div style="font-size:11px;color:var(--text3);max-width:160px;line-height:1.5">' + escapeHtml((r.tutma_gerekce||'').slice(0,80)) + (r.tutma_gerekce && r.tutma_gerekce.length>80?'...':'') + '</div>' +
+      '</div>' +
+    '</div>' +
+    // HOOK SKORU
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px 16px;box-shadow:var(--shadow)">' +
+      '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">Hook Skoru</div>' +
+      '<div style="font-size:28px;font-weight:900;font-family:var(--mono);color:' + scoreColor(hookSkor,10) + ';letter-spacing:-.03em">' + hookSkor + '<span style="font-size:14px">/10</span></div>' +
+      '<div style="font-size:11px;color:var(--text3);margin-top:4px">Ilk 3 saniye</div>' +
+    '</div>' +
+    // GENEL SKOR
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px 16px;box-shadow:var(--shadow)">' +
+      '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:6px">Genel Skor</div>' +
+      '<div style="font-size:28px;font-weight:900;font-family:var(--mono);color:' + scoreColor(genelSkor,10) + ';letter-spacing:-.03em">' + genelSkor + '<span style="font-size:14px">/10</span></div>' +
+      '<div style="font-size:11px;color:var(--text3);margin-top:4px">Reklam uygunlugu</div>' +
+    '</div>';
+
+  // Verdict banner
+  var verdict = document.getElementById('va-verdict');
+  if (verdict && r.verdict) {
+    var vBg     = scoreBg(genelSkor, 10);
+    var vBorder = scoreBorder(genelSkor, 10);
+    verdict.innerHTML = '<div style="background:' + vBg + ';border:1px solid ' + vBorder + ';border-radius:12px;padding:14px 18px;font-size:14px;font-weight:600;color:var(--text);line-height:1.6">📊 ' + escapeHtml(r.verdict) + '</div>';
+  }
+
+  // Detay kartları içerik
+  function setField(id, val) {
+    var el = document.getElementById(id);
+    if (el && val) el.innerHTML = escapeHtml(val).replace(/\n/g, '<br>');
+  }
+  setField('va-hook',    r.hook_analiz);
+  setField('va-organic', r.organik_reklam);
+  setField('va-abtest',  r.abtest);
+
+  // Targeting artık yok, brief'e yönlendir
+  var tEl = document.getElementById('va-targeting');
+  if (tEl) { tEl.innerHTML = escapeHtml(r.hedefleme || r.brief || '').replace(/\n/g,'<br>'); }
+
+  var briefEl = document.getElementById('va-brief');
+  if (briefEl && r.brief) briefEl.textContent = r.brief;
+
+  document.getElementById('va-result').style.display = 'block';
+}
+
+
+function vaReset() {
+  document.getElementById('va-result').style.display = 'none';
+  document.getElementById('va-upload-area').style.display = 'block';
+  document.getElementById('va-reset-btn').style.display = 'none';
+  var progress = document.getElementById('va-progress-bar');
+  if (progress) progress.style.width = '0%';
+  var fileInput = document.getElementById('va-file-input');
+  if (fileInput) fileInput.value = '';
+}
+
+// Compat stubs
+function handleImageUpload(){}
+async function generateVisualPrompts(){}
+function copyPrompt(){}
+
 // ═══════════════════════════════════════════════
 var _swipeCards = [];
 var _swipeIdx = 0;
