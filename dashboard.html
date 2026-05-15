@@ -1900,8 +1900,108 @@ function loadPlan() {
   planFetchAI(cacheKey);
 }
 
+// HAFIZA & CREATIVE ZEKA
+// ═══════════════════════════════════════════════
+
+async function sbGet(table, filters) {
+  var token = getStored('sb_token');
+  if (!token) return [];
+  var url = SB_URL + '/rest/v1/' + table + '?select=*';
+  Object.keys(filters || {}).forEach(function(k) {
+    url += '&' + k + '=eq.' + encodeURIComponent(filters[k]);
+  });
+  url += '&order=created_at.desc&limit=30';
+  try {
+    var res = await fetch(url, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    });
+    return await res.json();
+  } catch(e) { return []; }
+}
+
+async function sbInsert(table, data) {
+  var token = getStored('sb_token');
+  if (!token) return;
+  try {
+    await fetch(SB_URL + '/rest/v1/' + table, {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) { console.log('sbInsert error:', e.message); }
+}
+
+async function memoryLoad(brandName) {
+  var rows = await sbGet('ad_memory', { brand_name: brandName });
+  if (!rows || !rows.length) return null;
+  // Son 7 gunun ozeti
+  var last7 = rows.slice(0, 7);
+  var avgRoas = last7.filter(function(r){ return r.roas; }).reduce(function(s,r){ return s + parseFloat(r.roas); }, 0) / (last7.filter(function(r){ return r.roas; }).length || 1);
+  var avgCpa  = last7.filter(function(r){ return r.cpa; }).reduce(function(s,r){ return s + parseFloat(r.cpa); }, 0) / (last7.filter(function(r){ return r.cpa; }).length || 1);
+  var avgFreq = last7.filter(function(r){ return r.frequency; }).reduce(function(s,r){ return s + parseFloat(r.frequency); }, 0) / (last7.filter(function(r){ return r.frequency; }).length || 1);
+  var trend = '';
+  if (last7.length >= 2) {
+    var first = parseFloat(last7[last7.length-1].roas || 0);
+    var last  = parseFloat(last7[0].roas || 0);
+    if (last > first * 1.1) trend = 'ROAS yukseliyor';
+    else if (last < first * 0.9) trend = 'ROAS dusuyor';
+    else trend = 'ROAS stabil';
+  }
+  return 'Son 7 gun hafiza: Ort ROAS ' + avgRoas.toFixed(2) + 'x, Ort CPA TL' + avgCpa.toFixed(0) + ', Ort Frekans ' + avgFreq.toFixed(1) + '. ' + trend + '. Toplam ' + rows.length + ' gun verisi var.';
+}
+
+async function memorySave(brandName, metaData) {
+  var token = getStored('sb_token');
+  if (!token || !brandName || !metaData) return;
+  await sbInsert('ad_memory', {
+    brand_name: brandName,
+    date: new Date().toISOString().split('T')[0],
+    spend: metaData.spend || 0,
+    sales: metaData.sales || 0,
+    roas: metaData.roas || null,
+    cpa: metaData.cpa || null,
+    ctr: metaData.ctr || null,
+    frequency: metaData.frequency || null
+  });
+}
+
+async function creativeLoad(brandName) {
+  var rows = await sbGet('creative_performance', { brand_name: brandName });
+  if (!rows || !rows.length) return null;
+  // En iyi formatlari bul
+  var byFormat = {};
+  rows.forEach(function(r) {
+    if (!r.format) return;
+    if (!byFormat[r.format]) byFormat[r.format] = { count: 0, viral: 0 };
+    byFormat[r.format].count++;
+    if (r.result === 'viral') byFormat[r.format].viral++;
+  });
+  var best = Object.keys(byFormat).sort(function(a,b){
+    return (byFormat[b].viral/byFormat[b].count) - (byFormat[a].viral/byFormat[a].count);
+  }).slice(0, 3);
+  if (!best.length) return null;
+  return 'Creative hafiza: En iyi formatlar: ' + best.map(function(f){
+    var d = byFormat[f];
+    return f + ' (%' + Math.round(d.viral/d.count*100) + ' viral oran)';
+  }).join(', ') + '.';
+}
+
+async function creativeSave(brandName, format, hookType, result, reach) {
+  var token = getStored('sb_token');
+  if (!token || !brandName) return;
+  await sbInsert('creative_performance', {
+    brand_name: brandName,
+    format: format || '',
+    hook_type: hookType || '',
+    result: result || 'orta',
+    reach: reach || 0,
+    date: new Date().toISOString().split('T')[0]
+  });
+}
+
 async function planFetchAI(cacheKey) {
   const brand = S.brand;
+  const brandName = brand && brand.brandName ? brand.brandName : '';
   const brandCtx = brand && brand.brandName
     ? 'Marka: ' + brand.brandName + '. Urun: ' + (brand.product || '') + '. Hedef kitle: ' + (brand.audience || '') + '.'
     : 'Meta reklam hesabi.';
@@ -1909,59 +2009,63 @@ async function planFetchAI(cacheKey) {
   const h = new Date().getHours();
   const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'ogleden sonra' : 'aksam';
 
-  // Meta verisini 800ms timeout ile paralel cek
-  let metaCtx = 'Meta verisi yok.';
-  if (S.token && S.accountId) {
-    try {
-      const ins = await Promise.race([
-        getTodayInsights(),
-        new Promise(function(r){ setTimeout(function(){ r(null); }, 800); })
-      ]);
-      if (ins && ins.length > 0) {
-        const totalSpend   = ins.reduce(function(s,i){ return s + parseFloat(i.spend||0); }, 0);
-        const totalSales   = ins.reduce(function(s,i){ return s + (i._purchases||0); }, 0);
-        const totalRevenue = ins.reduce(function(s,i){ return s + (i._revenue||0); }, 0);
-        const roas         = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue/totalSpend).toFixed(2) : null;
-        const avgFreq      = ins.reduce(function(s,i){ return s + parseFloat(i.frequency||0); }, 0) / ins.length;
-        const avgCTR       = ins.reduce(function(s,i){ return s + parseFloat(i.ctr||0); }, 0) / ins.length;
-        const cpa          = totalSales > 0 ? (totalSpend/totalSales).toFixed(0) : null;
-        metaCtx = 'Bugunun Meta verisi: Harcama TL' + totalSpend.toFixed(0) +
-          ', Satis ' + totalSales +
-          (roas ? ', ROAS ' + roas + 'x' : '') +
-          (cpa ? ', CPA TL' + cpa : '') +
-          ', Ort Frekans ' + avgFreq.toFixed(1) +
-          ', Ort CTR %' + avgCTR.toFixed(2) + '.';
-      } else {
-        metaCtx = 'Meta bagli ama bugun henuz harcama yok.';
-      }
-    } catch(e) {
-      metaCtx = 'Meta bagli ama veri cekilemedi.';
-    }
+  // Meta verisi, hafiza ve creative zeka paralel cek
+  var metaCtx = 'Meta verisi yok.';
+  var memCtx = '';
+  var creativeCtx = '';
+  var savedMetaData = null;
+
+  var [metaIns, memData, creativeData] = await Promise.all([
+    S.token && S.accountId ? Promise.race([getTodayInsights(), new Promise(function(r){ setTimeout(function(){ r(null); }, 1200); })]) : Promise.resolve(null),
+    brandName ? memoryLoad(brandName) : Promise.resolve(null),
+    brandName ? creativeLoad(brandName) : Promise.resolve(null)
+  ]);
+
+  if (metaIns && metaIns.length > 0) {
+    var totalSpend   = metaIns.reduce(function(s,i){ return s + parseFloat(i.spend||0); }, 0);
+    var totalSales   = metaIns.reduce(function(s,i){ return s + (i._purchases||0); }, 0);
+    var totalRevenue = metaIns.reduce(function(s,i){ return s + (i._revenue||0); }, 0);
+    var roas         = totalSpend > 0 && totalRevenue > 0 ? (totalRevenue/totalSpend) : null;
+    var avgFreq      = metaIns.reduce(function(s,i){ return s + parseFloat(i.frequency||0); }, 0) / metaIns.length;
+    var avgCTR       = metaIns.reduce(function(s,i){ return s + parseFloat(i.ctr||0); }, 0) / metaIns.length;
+    var cpa          = totalSales > 0 ? (totalSpend/totalSales) : null;
+    metaCtx = 'Bugunun Meta verisi: Harcama TL' + totalSpend.toFixed(0) +
+      ', Satis ' + totalSales +
+      (roas ? ', ROAS ' + roas.toFixed(2) + 'x' : '') +
+      (cpa ? ', CPA TL' + cpa.toFixed(0) : '') +
+      ', Frekans ' + avgFreq.toFixed(1) +
+      ', CTR %' + avgCTR.toFixed(2) + '.';
+    savedMetaData = { spend: totalSpend, sales: totalSales, roas: roas ? roas.toFixed(2) : null, cpa: cpa ? cpa.toFixed(0) : null, ctr: avgCTR.toFixed(2), frequency: avgFreq.toFixed(1) };
+    // Hafizaya kaydet — arkaplanda
+    if (brandName) memorySave(brandName, savedMetaData);
+  } else {
+    metaCtx = 'Meta bagli ama bugun henuz harcama yok.';
   }
 
+  if (memData) memCtx = memData;
+  if (creativeData) creativeCtx = creativeData;
 
   const prompt = brandCtx + '\n' +
-    metaCtx + '\n\n' +
-    'Su an ' + timeCtx + '. Bu verilere gore bugun ne yapmali?\n\n' +
-    'Somut 4-5 aksiyon uret. Her aksiyon bunlardan biri olmali:\n' +
-    '- Cekilecek/uretilecek video veya reels (spesifik senaryo)\n' +
-    '- Test edilecek hook veya reklam metni\n' +
-    '- Hedef kitle veya segment denemesi\n' +
-    '- Butce veya teklif hamlesi\n' +
-    '- Creative format denemesi\n\n' +
-    'KESINLIKLE sunlari YAPMA:\n' +
-    '- Meta baglanmasini veya pixel kurulumunu onerme\n' +
-    '- Teknik entegrasyon tavsiyesi verme\n' +
-    '- nav degerlerinde sadece: hook, copy, creative-prompt, scale, budget kullan\n\n' +
-    'JSON formatinda yanit ver:\n' +
-    '{"tagline":"3-4 kelime tema","verdict":"1 cumle enerjik yorum","actions":[{"title":"aksiyon basligi","reason":"nasil ve neden detay","tone":"high|mid|low|blue","cta":"Git","nav":"hook"}]}';
+    metaCtx + '\n' +
+    (memCtx ? 'Gecmis hafiza: ' + memCtx + '\n' : '') +
+    (creativeCtx ? creativeCtx + '\n' : '') +
+    '\nSu an ' + timeCtx + '. Tum bu verilere ve gecmis hafizaya gore bugun ne yapmali?\n\n' +
+    'Somut 4-5 aksiyon uret:\n' +
+    '- Cekilecek video veya reels (spesifik senaryo)\n' +
+    '- Test edilecek hook veya metin\n' +
+    '- Kitle veya segment denemesi\n' +
+    '- Butce veya teklif hamlesi\n\n' +
+    'Gecmis hafizadan ogren: frekans yukseldiyse uyar, ROAS dustuyse neden diye sor, iyi formatlari tekrar oner.\n' +
+    'YAPMA: Meta baglanma, pixel kurulumu, teknik entegrasyon onerme.\n' +
+    'nav: sadece hook, copy, scale, budget kullan.\n\n' +
+    'JSON: {"tagline":"3-4 kelime","verdict":"1 cumle","actions":[{"title":"baslik","reason":"detay","tone":"blue","cta":"Git","nav":"hook"}]}';
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanisisin. Turkce yanitla. Veri varsa ona gore somut aksiyon ver. Sadece gecerli JSON dondur, baska hicbir sey yazma.',
+        system: 'Sen bir Meta reklam uzmanisisin. Gecmis veri varsa ona gore ogren ve onerileri kisisellelstir. Turkce yanitla. Sadece gecerli JSON dondur.',
         message: prompt
       })
     });
@@ -2145,31 +2249,59 @@ function toggleTask(el, idx, storageKey) {
   }
 }
 
-function refreshIdeas() {
+async function refreshIdeas() {
   const btn = document.getElementById('ideas-refresh-btn');
-  if (btn) { btn.textContent = '✓'; setTimeout(() => { btn.textContent = '↺ Yenile'; }, 600); }
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
 
-  // Marka analizi varsa önce onları göster
-  let pool = ALL_CREATIVE_IDEAS;
-  if (S.brand && S.brand.ideas && S.brand.ideas.length > 0) {
-    const brandIdeas = S.brand.ideas.map(i => ({ icon: i.icon, title: i.title, desc: i.desc }));
-    pool = [...brandIdeas, ...ALL_CREATIVE_IDEAS];
+  const brand = S.brand;
+  const brandName = brand && brand.brandName ? brand.brandName : '';
+
+  // Creative hafizayi cek
+  var creativeRows = brandName ? await sbGet('creative_performance', { brand_name: brandName }) : [];
+  var bestFormats = {};
+  (creativeRows || []).forEach(function(r) {
+    if (!r.hook_type) return;
+    if (!bestFormats[r.hook_type]) bestFormats[r.hook_type] = { count: 0, viral: 0 };
+    bestFormats[r.hook_type].count++;
+    if (r.result === 'viral') bestFormats[r.hook_type].viral++;
+  });
+
+  var topFormats = Object.keys(bestFormats).sort(function(a,b){
+    return (bestFormats[b].viral/bestFormats[b].count) - (bestFormats[a].viral/bestFormats[a].count);
+  }).slice(0, 2);
+
+  var pool = [];
+  topFormats.forEach(function(fmt) {
+    var match = ALL_CREATIVE_IDEAS.filter(function(i){
+      return i.title.toLowerCase().includes(fmt.toLowerCase()) || fmt.toLowerCase().includes(i.title.toLowerCase());
+    });
+    match.forEach(function(m) { pool.push(Object.assign({}, m, { badge: 'Sana ozel' })); });
+  });
+
+  if (brand && brand.ideas && brand.ideas.length > 0) {
+    brand.ideas.forEach(function(i){ pool.push({ icon: i.icon, title: i.title, desc: i.desc }); });
   }
 
-  const picked = shuffleArray(pool).slice(0, 5);
-  document.getElementById('plan-ideas').innerHTML = picked.slice(0, 4).map(function(i) {
+  pool = pool.concat(ALL_CREATIVE_IDEAS);
+
+  var picked = shuffleArray(pool).slice(0, 4);
+  var el = document.getElementById('plan-ideas');
+  if (el) el.innerHTML = picked.map(function(i) {
     return renderCompactCard({
       tone: 'mid',
-      badge: 'İçerik fikri',
+      badge: i.badge || 'Icerik fikri',
       kicker: i.icon,
       title: i.title,
       text: i.desc,
       tool: 'Creative / Hook',
       cta: 'Uygula',
-      nav: 'creative-prompt'
+      nav: 'hook'
     });
   }).join('');
+
+  if (btn) { btn.textContent = '↺'; btn.disabled = false; }
 }
+
 
 var ALL_CREATIVE_IDEAS = [
   { icon: '🎬', title: 'POV Keşif', desc: '"POV: Bu ürünü keşfedince hayatım değişti" — handheld kamera, doğal ışık, samimi reaksiyon' },
