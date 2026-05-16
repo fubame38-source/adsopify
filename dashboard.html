@@ -342,6 +342,24 @@ tbody tr:hover td{background:var(--surface2)}
 #onboarding-popup{position:fixed;inset:0;background:linear-gradient(135deg,#02040e,#080f1f,#02040e);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px}
 #onboarding-popup input,#onboarding-popup textarea{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.10)!important;color:#fff!important}
 
+/* ── İDEA CARDS ── */
+.idea-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .18s var(--ease);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
+.idea-card:hover{border-color:var(--border2);background:var(--surface);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.idea-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0;background:linear-gradient(90deg,var(--accent),var(--purple));opacity:0;transition:opacity .18s}
+.idea-card:hover::before{opacity:1}
+.idea-icon{font-size:22px;line-height:1}
+.idea-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.02em;line-height:1.3}
+.idea-desc{font-size:11px;color:var(--text2);line-height:1.6;flex:1}
+.idea-footer{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.idea-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)}
+.idea-actions{display:flex;gap:5px;opacity:0;transition:opacity .15s}
+.idea-card:hover .idea-actions{opacity:1}
+.idea-fb-btn{padding:2px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .12s}
+.idea-fb-btn.yes{color:var(--green);border-color:rgba(5,150,105,.3)}
+.idea-fb-btn.yes:hover{background:var(--green-light);border-color:var(--green)}
+.idea-fb-btn.no{color:var(--text3)}
+.idea-fb-btn.no:hover{background:var(--surface3)}
+
 /* ── OVERVIEW BAR CHART ── */
 .overview-bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
 .overview-bar{width:100%;flex:1;display:flex;align-items:flex-end;border-radius:6px;overflow:hidden;background:var(--surface2)}
@@ -658,14 +676,14 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
 
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:var(--shadow)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:6px">
           <span style="width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 4px rgba(180,83,9,.4);flex-shrink:0"></span>
           <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">İçerik Fikirleri</span>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" style="padding:2px 7px;font-size:11px">↺</button>
+        <button class="btn btn-ghost btn-sm" onclick="refreshIdeas()" id="ideas-refresh-btn" style="padding:3px 9px;font-size:11px;gap:4px">↺ Yenile</button>
       </div>
-      <div id="plan-ideas"></div>
+      <div id="plan-ideas" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
     </div>
   </div>
 
@@ -2389,7 +2407,7 @@ async function refreshIdeas() {
   const brand = S.brand;
   const brandName = brand && brand.brandName ? brand.brandName : '';
 
-  // Creative hafizayi cek
+  // Creative hafızayı çek
   var creativeRows = brandName ? await sbGet('creative_performance', { brand_name: brandName }) : [];
   var bestFormats = {};
   (creativeRows || []).forEach(function(r) {
@@ -2408,7 +2426,7 @@ async function refreshIdeas() {
     var match = ALL_CREATIVE_IDEAS.filter(function(i){
       return i.title.toLowerCase().includes(fmt.toLowerCase()) || fmt.toLowerCase().includes(i.title.toLowerCase());
     });
-    match.forEach(function(m) { pool.push(Object.assign({}, m, { badge: 'Sana ozel' })); });
+    match.forEach(function(m) { pool.push(Object.assign({}, m, { badge: '⭐ Sana özel' })); });
   });
 
   if (brand && brand.ideas && brand.ideas.length > 0) {
@@ -2419,28 +2437,23 @@ async function refreshIdeas() {
 
   var picked = shuffleArray(pool).slice(0, 4);
   var el = document.getElementById('plan-ideas');
-  if (el) el.innerHTML = picked.map(function(i) {
-    var safeTitle = (i.title || '').replace(/'/g, '');
-    return '<div style="margin-bottom:8px">' +
-      renderCompactCard({
-        tone: 'mid',
-        badge: i.badge || 'Icerik fikri',
-        kicker: i.icon,
-        title: i.title,
-        text: i.desc,
-        tool: 'Creative / Hook',
-        cta: 'Uygula',
-        nav: 'hook'
-      }) +
-      '<div class="creative-fb-row" style="display:flex;align-items:center;gap:6px;margin-top:5px;padding:0 4px">' +
-        '<span style="font-size:10px;color:var(--text3)">Bu format sende calisti mi?</span>' +
-        '<button data-hook="' + safeTitle + '" onclick="creativeFeedback(\'' + safeTitle + '\',\'' + safeTitle + '\',\'viral\')" style="padding:2px 8px;border-radius:5px;border:1px solid var(--green);background:transparent;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Tuttu</button>' +
-        '<button data-hook="' + safeTitle + '" onclick="creativeFeedback(\'' + safeTitle + '\',\'' + safeTitle + '\',\'dusuk\')" style="padding:2px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Tutmadi</button>' +
+  if (el) el.innerHTML = picked.map(function(idea) {
+    var safeTitle = (idea.title || '').replace(/'/g, '&#39;');
+    return '<div class="idea-card" onclick="nav(\'hook\')">' +
+      '<div class="idea-icon">' + (idea.icon || '💡') + '</div>' +
+      '<div class="idea-title">' + escapeHtml(idea.title) + '</div>' +
+      '<div class="idea-desc">' + escapeHtml(idea.desc) + '</div>' +
+      '<div class="idea-footer">' +
+        '<span class="idea-badge">' + escapeHtml(idea.badge || 'İçerik Fikri') + '</span>' +
+        '<div class="idea-actions">' +
+          '<button class="idea-fb-btn yes" onclick="event.stopPropagation();creativeFeedback(\'' + safeTitle + '\',\'' + safeTitle + '\',\'viral\')" title="Tuttu">✓ Tuttu</button>' +
+          '<button class="idea-fb-btn no" onclick="event.stopPropagation();creativeFeedback(\'' + safeTitle + '\',\'' + safeTitle + '\',\'dusuk\')" title="Tutmadı">✕</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }).join('');
 
-  if (btn) { btn.textContent = '\u21BA'; btn.disabled = false; }
+  if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; }
 }
 
 
