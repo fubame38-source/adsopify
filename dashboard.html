@@ -1496,7 +1496,9 @@ function startApp() {
     S.brand = parsed.skipped ? null : parsed;
   }
   // loadPlan her zaman çalışsın — onboarding üstünde overlay olarak açılır
-  loadPlan();
+  var lastSection = localStorage.getItem('adsopify_last_section') || 'plan';
+  nav(lastSection);
+  if (lastSection === 'plan') loadPlan();
   loadUserPlan();
 }
 
@@ -1921,6 +1923,7 @@ function nav(name) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('sec-' + name).classList.add('active');
   document.querySelector('[data-sec="' + name + '"]').classList.add('active');
+  localStorage.setItem('adsopify_last_section', name);
 
   if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
 
