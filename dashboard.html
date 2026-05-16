@@ -4,8 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adsopify — AI Growth Operator</title>
-<script>
-  window.fbAsyncInit = function() {
+<!-- ──────── KAMPANYA POPUP ──────── -->
+<div id="camp-popup-overlay" onclick="closeCampPopup(event)">
+  <div id="camp-popup">
+    <div class="cp-header">
+      <div>
+        <div id="cp-camp-name" class="cp-name">Kampanya</div>
+        <div id="cp-camp-period" style="font-size:12px;color:var(--text3);margin-top:3px;font-family:var(--mono)"></div>
+      </div>
+      <div class="cp-close" onclick="closeCampPopup()">✕</div>
+    </div>
+    <div class="cp-body">
+      <!-- KPI grid -->
+      <div class="cp-kpi-row" id="cp-kpis"></div>
+      <!-- Sinyal okuma -->
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">Sinyal Okuma</div>
+      <div id="cp-signals" style="margin-bottom:18px"></div>
+      <!-- AI yorum -->
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">AI Yorumu</div>
+      <div class="cp-ai-box">
+        <div id="cp-ai-content">
+          <div class="cp-ai-loading"><div class="spinner"></div> Analiz hazırlanıyor...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ = function() {
     FB.init({ appId: '1602280044394114', cookie: true, xfbml: false, version: 'v19.0' });
   };
   (function(d,s,id){ var js,fjs=d.getElementsByTagName(s)[0]; if(d.getElementById(id))return; js=d.createElement(s);js.id=id; js.src='https://connect.facebook.net/tr_TR/sdk.js'; fjs.parentNode.insertBefore(js,fjs); }(document,'script','facebook-jssdk'));
@@ -317,7 +343,39 @@ tbody tr:hover td{background:var(--surface2)}
 #onboarding-popup{position:fixed;inset:0;background:linear-gradient(135deg,#02040e,#080f1f,#02040e);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px}
 #onboarding-popup input,#onboarding-popup textarea{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.10)!important;color:#fff!important}
 
-/* ── RESPONSIVE ── */
+/* ── OVERVIEW BAR CHART ── */
+.overview-bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.overview-bar{width:100%;flex:1;display:flex;align-items:flex-end;border-radius:6px;overflow:hidden;background:var(--surface2)}
+.overview-bar-fill{width:100%;border-radius:6px;background:linear-gradient(180deg,var(--accent),#3b82f6);transition:height .4s var(--ease)}
+.overview-bar-value{font-size:10px;font-weight:700;color:var(--text2);font-family:var(--mono);white-space:nowrap}
+.overview-bar-label{font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
+
+/* ── CAMPAIGN POPUP ── */
+#camp-popup-overlay{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
+#camp-popup-overlay.open{display:flex}
+#camp-popup{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:760px;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:slideUp .28s var(--ease)}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.cp-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:sticky;top:0;background:var(--surface);z-index:2;border-radius:20px 20px 0 0}
+.cp-name{font-size:18px;font-weight:800;letter-spacing:-.04em;color:var(--text);line-height:1.2}
+.cp-close{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text2);flex-shrink:0;transition:all .13s}
+.cp-close:hover{background:var(--surface3);color:var(--text)}
+.cp-body{padding:20px 24px}
+.cp-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.cp-kpi{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.cp-kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:4px}
+.cp-kpi-val{font-size:20px;font-weight:900;letter-spacing:-.04em;font-family:var(--mono);color:var(--text)}
+.cp-ai-box{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.cp-ai-loading{display:flex;align-items:center;gap:10px;color:var(--text2);font-size:13px}
+.cp-signal-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.cp-signal-row:last-child{border-bottom:none}
+.cp-signal-icon{font-size:16px;width:24px;text-align:center;flex-shrink:0}
+.cp-signal-label{color:var(--text2);font-weight:500;flex:1}
+.cp-signal-val{font-weight:700;color:var(--text);font-family:var(--mono)}
+
+tbody tr.camp-row{cursor:pointer;transition:background .12s}
+tbody tr.camp-row:hover td{background:var(--accent-light)!important}
+
+
 @media(max-width:768px){
   :root{--sidebar-w:0px}
   #sidebar{transform:translateX(-210px);width:210px;transition:transform .2s;z-index:200}
@@ -2668,17 +2726,20 @@ async function loadDashboard() {
     document.getElementById('dash-summary-text').textContent = summaryText;
 
     const sorted = insights.slice().sort((a, b) => parseFloat(b.spend || 0) - parseFloat(a.spend || 0));
-    const top = sorted.slice(0, 6);
+    const top = sorted.slice(0, 7);
     const maxSpend = Math.max(...top.map(i => parseFloat(i.spend || 0)), 1);
     const barsEl = document.getElementById('overview-bars');
+    barsEl.style.gridTemplateColumns = 'repeat(' + (top.length || 1) + ',1fr)';
     barsEl.innerHTML = top.length ? top.map(i => {
       const spend = parseFloat(i.spend || 0);
-      const h = Math.max(16, Math.round((spend / maxSpend) * 100));
-      const name = String(i.campaign_name || 'Kampanya').slice(0, 8);
+      const h = Math.max(8, Math.round((spend / maxSpend) * 100));
+      const name = String(i.campaign_name || 'Kampanya').slice(0, 10);
+      const roas = i._roas || 0;
+      const color = roas >= 3 ? 'linear-gradient(180deg,#059669,#10b981)' : roas >= 1.5 ? 'linear-gradient(180deg,#b45309,#f59e0b)' : roas > 0 ? 'linear-gradient(180deg,#dc2626,#f87171)' : 'linear-gradient(180deg,var(--accent),#3b82f6)';
       return '<div class="overview-bar-col">' +
-        '<div class="overview-bar"><div class="overview-bar-fill" style="height:' + h + '%"></div></div>' +
-        '<div class="overview-bar-value">₺' + spend.toFixed(0) + '</div>' +
-        '<div class="overview-bar-label">' + escapeHtml(name) + '</div>' +
+        '<div class="overview-bar"><div class="overview-bar-fill" style="height:' + h + '%;background:' + color + '"></div></div>' +
+        '<div class="overview-bar-value">₺' + (spend >= 1000 ? (spend/1000).toFixed(1) + 'K' : spend.toFixed(0)) + '</div>' +
+        '<div class="overview-bar-label" title="' + escapeHtml(i.campaign_name) + '">' + escapeHtml(name) + '</div>' +
       '</div>';
     }).join('') : '<div style="grid-column:1/-1;color:var(--text3);font-size:13px;text-align:center;padding:30px 0">Bu dönemde gösterilecek veri yok.</div>';
 
@@ -2723,10 +2784,12 @@ async function loadDashboard() {
 
     // Table
     const tbody = document.getElementById('camp-tbody');
+    // Kampanya verilerini popup için sakla
+    window._campData = insights;
     if (!insights.length) {
       tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:32px">Bu dönemde veri yok</td></tr>';
     } else {
-      tbody.innerHTML = insights.map(i => {
+      tbody.innerHTML = insights.map((i, idx) => {
         const spend = parseFloat(i.spend || 0);
         const ctr = parseFloat(i.ctr || 0);
         const cpc = parseFloat(i.cpc || 0);
@@ -2741,7 +2804,7 @@ async function loadDashboard() {
         const roasBadge = roas >= 3 ? 'green' : roas >= 1.5 ? 'yellow' : roas > 0 ? 'red' : 'gray';
         const freqBadge = freq > 3 ? 'red' : freq > 2 ? 'yellow' : 'gray';
 
-        return '<tr>' +
+        return '<tr class="camp-row" onclick="openCampPopup(' + idx + ')" title="Detay için tıkla">' +
         '<td style="font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(i.campaign_name) + '</td>' +
           '<td><strong>₺' + spend.toFixed(0) + '</strong></td>' +
           '<td>' + (purchases > 0 ? '<strong>' + purchases.toFixed(0) + '</strong>' : '<span style="color:var(--text3)">—</span>') + '</td>' +
@@ -5093,8 +5156,113 @@ if (typeof showBrandToast !== 'function') {
   };
 }
 
+
 // ═══════════════════════════════════════════════
-// ERİŞİM KODU SİSTEMİ
+// KAMPANYA POPUP
+// ═══════════════════════════════════════════════
+function openCampPopup(idx) {
+  var data = window._campData;
+  if (!data || !data[idx]) return;
+  var i = data[idx];
+
+  var spend    = parseFloat(i.spend || 0);
+  var ctr      = parseFloat(i.ctr || 0);
+  var cpc      = parseFloat(i.cpc || 0);
+  var cpm      = parseFloat(i.cpm || 0);
+  var freq     = parseFloat(i.frequency || 0);
+  var imp      = parseInt(i.impressions || 0);
+  var clicks   = parseInt(i.clicks || 0);
+  var purchases= i._purchases || 0;
+  var revenue  = i._revenue || 0;
+  var roas     = i._roas || (spend > 0 && revenue > 0 ? revenue / spend : 0);
+  var cpa      = purchases > 0 ? spend / purchases : 0;
+  var reach    = parseInt(i.reach || 0);
+
+  document.getElementById('cp-camp-name').textContent = i.campaign_name || 'Kampanya';
+  document.getElementById('cp-camp-period').textContent =
+    (document.getElementById('dash-from').value || '') + ' → ' + (document.getElementById('dash-to').value || '');
+
+  // KPI cards
+  var roasColor = roas >= 3 ? 'var(--green)' : roas >= 1.5 ? 'var(--yellow)' : roas > 0 ? 'var(--red)' : 'var(--text)';
+  document.getElementById('cp-kpis').innerHTML = [
+    {label:'Harcama', val:'₺'+spend.toFixed(0), color:'var(--text)'},
+    {label:'ROAS', val: roas > 0 ? roas.toFixed(2)+'x' : '—', color: roasColor},
+    {label:'CTR', val:'%'+ctr.toFixed(2), color: ctr>=1.5?'var(--green)':ctr>=0.8?'var(--yellow)':'var(--red)'},
+    {label:'CPC', val:'₺'+cpc.toFixed(2), color: cpc<=6?'var(--green)':cpc<=14?'var(--yellow)':'var(--red)'},
+    {label:'Satış', val: purchases > 0 ? purchases.toFixed(0) : '—', color:'var(--text)'},
+    {label:'CPA', val: cpa > 0 ? '₺'+cpa.toFixed(0) : '—', color:'var(--text)'},
+    {label:'Frekans', val:freq.toFixed(1), color: freq>3?'var(--red)':freq>2?'var(--yellow)':'var(--text)'},
+    {label:'CPM', val:'₺'+cpm.toFixed(2), color:'var(--text)'}
+  ].map(function(k){
+    return '<div class="cp-kpi"><div class="cp-kpi-label">'+k.label+'</div><div class="cp-kpi-val" style="color:'+k.color+'">'+k.val+'</div></div>';
+  }).join('');
+
+  // Sinyaller
+  var signals = [];
+  if (ctr >= 2)   signals.push({icon:'🟢', label:'CTR güçlü', val:'%'+ctr.toFixed(2), note:'Creative başarılı iş görüyor'});
+  else if (ctr >= 1) signals.push({icon:'🟡', label:'CTR orta', val:'%'+ctr.toFixed(2), note:'Hook veya thumb iyileştirilebilir'});
+  else             signals.push({icon:'🔴', label:'CTR zayıf', val:'%'+ctr.toFixed(2), note:'Creative yorulmuş veya kitle uyuşmuyor olabilir'});
+
+  if (freq > 3)    signals.push({icon:'🔴', label:'Frekans yüksek', val:freq.toFixed(1), note:'Kitle doygunluğu — yeni creative şart'});
+  else if (freq > 2) signals.push({icon:'🟡', label:'Frekans orta', val:freq.toFixed(1), note:'Yakında creative yenilemeye hazır ol'});
+  else             signals.push({icon:'🟢', label:'Frekans sağlıklı', val:freq.toFixed(1), note:'Kitle henüz taze'});
+
+  if (roas >= 3)   signals.push({icon:'🟢', label:'ROAS güçlü', val:roas.toFixed(2)+'x', note:'Bütçe artışı için uygun sinyal'});
+  else if (roas >= 1.5) signals.push({icon:'🟡', label:'ROAS kabul edilebilir', val:roas.toFixed(2)+'x', note:'Optimize edilirse büyümeye geçebilir'});
+  else if (roas > 0) signals.push({icon:'🔴', label:'ROAS düşük', val:roas.toFixed(2)+'x', note:'Para kaybediyor — acil müdahale gerekli'});
+
+  if (cpc > 14)    signals.push({icon:'🔴', label:'CPC pahalı', val:'₺'+cpc.toFixed(2), note:'Teklif yapısı veya hedefleme pahalıya mal oluyor'});
+  else if (cpc > 6) signals.push({icon:'🟡', label:'CPC orta', val:'₺'+cpc.toFixed(2), note:'İyileştirme payı var'});
+  else             signals.push({icon:'🟢', label:'CPC verimli', val:'₺'+cpc.toFixed(2), note:'Tıklama maliyeti kontrol altında'});
+
+  document.getElementById('cp-signals').innerHTML = signals.map(function(s){
+    return '<div class="cp-signal-row"><span class="cp-signal-icon">'+s.icon+'</span>' +
+      '<span class="cp-signal-label">'+s.label+' <span style="color:var(--text3);font-weight:400;font-size:11px">— '+s.note+'</span></span>' +
+      '<span class="cp-signal-val">'+s.val+'</span></div>';
+  }).join('');
+
+  // AI yorum — async
+  document.getElementById('cp-ai-content').innerHTML = '<div class="cp-ai-loading"><div class="spinner"></div> AI analiz hazırlanıyor...</div>';
+
+  var overlay = document.getElementById('camp-popup-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // AI çağrısı
+  var prompt = 'Kampanya adı: ' + (i.campaign_name || '?') + '\n' +
+    'Harcama: ₺' + spend.toFixed(0) + ' | ROAS: ' + (roas > 0 ? roas.toFixed(2)+'x' : 'yok') +
+    ' | CTR: %' + ctr.toFixed(2) + ' | CPC: ₺' + cpc.toFixed(2) +
+    ' | Frekans: ' + freq.toFixed(1) + ' | Satış: ' + purchases +
+    (cpa > 0 ? ' | CPA: ₺' + cpa.toFixed(0) : '') + '\n\n' +
+    'Bu kampanyayı kısaca değerlendir: ne iyi, ne kötü, ne yapılmalı? ' +
+    '3-4 cümle. Direkt ve somut ol. Türkçe yaz.';
+
+  fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system: 'Sen bir Meta reklam uzmanısın. Kampanya verilerini analiz edip kısa, net, Türkçe yorum yap. Jargon kullanma, kullanıcıya direkt konuş.',
+      message: prompt
+    })
+  }).then(function(r){ return r.json(); })
+    .then(function(d){
+      var text = (d.answer || '').trim();
+      document.getElementById('cp-ai-content').innerHTML =
+        '<div style="font-size:13px;color:var(--text);line-height:1.75;white-space:pre-wrap">' + escapeHtml(text) + '</div>';
+    })
+    .catch(function(){
+      document.getElementById('cp-ai-content').innerHTML =
+        '<div style="color:var(--text2);font-size:13px">AI şu an yanıt veremiyor. Sinyal okuma bölümüne bakabilirsin.</div>';
+    });
+}
+
+function closeCampPopup(e) {
+  if (e && e.target !== document.getElementById('camp-popup-overlay')) return;
+  document.getElementById('camp-popup-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
 // ═══════════════════════════════════════════════
 
 async function validateAndApplyCode(code, userId) {
