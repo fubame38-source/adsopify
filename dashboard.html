@@ -101,16 +101,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .nav-div{height:1px;background:var(--border);margin:5px 10px}
 
 /* brand switcher in sidebar */
-.brand-switcher{margin:8px 8px 4px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.brand-item{display:flex;align-items:center;gap:9px;padding:9px 11px;cursor:pointer;transition:all .12s;border-bottom:1px solid var(--border)}
+.brand-switcher{margin:0;background:transparent;border:none;border-radius:0;overflow:hidden}
+.brand-item{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:7px;cursor:pointer;transition:all .12s;border:none;margin-bottom:1px}
 .brand-item:last-child{border-bottom:none}
-.brand-item:hover{background:var(--surface3)}
+.brand-item:hover{background:var(--surface2)}
 .brand-item.active-brand{background:var(--accent-light)}
-.brand-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.brand-label{font-size:12px;font-weight:600;color:var(--text);flex:1}
-.brand-id{font-size:10px;color:var(--text3);font-family:var(--mono)}
-.brand-add{display:flex;align-items:center;gap:7px;padding:9px 11px;cursor:pointer;font-size:12px;color:var(--text3);font-weight:600;transition:color .12s}
-.brand-add:hover{color:var(--accent)}
+.brand-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.brand-label{font-size:12px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-id{display:none}
+.brand-add{display:none}
 
 /* ── MAIN ── */
 #main{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);padding:22px 22px 80px;min-height:calc(100vh - var(--topbar-h))}
@@ -564,12 +563,13 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     <span class="sb-name">Adsopify</span>
   </div>
 
-  <!-- Brand Switcher -->
-  <div style="padding:10px 8px 4px">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);padding:0 4px;margin-bottom:6px">Markalar</div>
-    <div class="brand-switcher" id="sb-brand-list">
-      <!-- JS tarafından doldurulur -->
+  <!-- Brand Switcher — compact -->
+  <div style="padding:8px 8px 2px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:4px">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3)">Markalar</span>
+      <div onclick="showAddBrandModal()" title="Marka Ekle" style="width:18px;height:18px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--text3);line-height:1;transition:all .12s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--text3)';this.style.borderColor='var(--border)'">+</div>
     </div>
+    <div id="sb-brand-list"></div>
   </div>
 
   <div class="nav-div"></div>
@@ -4752,15 +4752,12 @@ function renderBrandSwitcher(brands) {
   var active = getActiveBrand();
   el.innerHTML = brands.map(function(b, i) {
     var isActive = b.id === active;
-    return '<div class="brand-item' + (isActive ? ' active-brand' : '') + '" onclick="switchToBrand(\'' + escapeAttr(b.id) + '\',\'' + escapeAttr(b.name) + '\')">' +
+    return '<div class="brand-item' + (isActive ? ' active-brand' : '') + '" onclick="switchToBrand(\'' + escapeAttr(b.id) + '\',\'' + escapeAttr(b.name) + '\')" title="' + escapeHtml(b.name) + '">' +
       '<div class="brand-dot" style="background:' + (b.color || BRAND_COLORS[i % BRAND_COLORS.length]) + '"></div>' +
-      '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(b.name) + '</div>' +
-      (isActive ? '<div style="font-size:10px;color:var(--accent);font-weight:600">Aktif</div>' : '') +
-      '</div>' +
-      (isActive ? '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '') +
+      '<div class="brand-label">' + escapeHtml(b.name) + '</div>' +
+      (isActive ? '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5 3.5-4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '') +
     '</div>';
-  }).join('') +
-  '<div class="brand-add" onclick="showAddBrandModal()">+ Marka Ekle</div>';
+  }).join('');
 }
 
 function switchToBrand(id, name) {
