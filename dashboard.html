@@ -2411,15 +2411,54 @@ async function refreshIdeas() {
   var el = document.getElementById('plan-ideas');
   if (!el) { if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; } return; }
 
-  // Skeleton göster
+  // Skeleton
   el.innerHTML = [1,2,3,4].map(function(){
     return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;height:110px;" class="skel"></div>';
   }).join('');
 
-  try {
-    const brand = S.brand;
-    const brandName = brand && brand.brandName ? brand.brandName : '';
+  var brand = S.brand;
+  var brandName = brand && brand.brandName ? brand.brandName : '';
 
+  // Önce AI'dan markaya özel fikirler iste
+  if (brandName) {
+    try {
+      var h = new Date().getHours();
+      var timeCtx = h < 12 ? 'sabah' : h < 18 ? 'öğleden sonra' : 'akşam';
+      var prompt = 'Marka: ' + brandName + '\n' +
+        'Ürün: ' + (brand.product || 'bilinmiyor') + '\n' +
+        'Hedef kitle: ' + (brand.audience || 'genel') + '\n' +
+        'Zaman: ' + timeCtx + '\n\n' +
+        'Bu markaya özel 4 adet viral video/içerik fikri üret. ' +
+        'Her fikir için spesifik bir senaryo, hook ve neden işe yarayacağını açıkla. ' +
+        'Genel kalıplar değil, bu ürünün kimliğine özel fikirler olsun.\n\n' +
+        'Sadece JSON dön: {"ideas":[{"icon":"emoji","title":"kısa başlık","desc":"1-2 cümle açıklama ve neden işe yarar"}]}';
+
+      var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system: 'Sen bir viral içerik stratejistisin. Markaya özel, gerçekçi ve uygulanabilir içerik fikirleri üret. Sadece geçerli JSON dön, başka hiçbir şey yazma.',
+          message: prompt
+        })
+      });
+      var data = await res.json();
+      var raw = (data.answer || '').trim();
+      var match = raw.match(/\{[\s\S]*\}/);
+      if (match) {
+        var parsed = JSON.parse(match[0]);
+        if (parsed.ideas && parsed.ideas.length) {
+          renderIdeaCards(parsed.ideas.slice(0, 4).map(function(i) {
+            return { icon: i.icon || '💡', title: i.title, desc: i.desc, badge: '✨ ' + brandName + ' için' };
+          }));
+          if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; }
+          return;
+        }
+      }
+    } catch(e) {}
+  }
+
+  // AI fail ettiyse veya marka yoksa statik havuz
+  try {
     var creativeRows = [];
     try { creativeRows = brandName ? await sbGet('creative_performance', { brand_name: brandName }) : []; } catch(e) {}
     var bestFormats = {};
@@ -2429,28 +2468,18 @@ async function refreshIdeas() {
       bestFormats[r.hook_type].count++;
       if (r.result === 'viral') bestFormats[r.hook_type].viral++;
     });
-
     var topFormats = Object.keys(bestFormats).sort(function(a,b){
       return (bestFormats[b].viral/bestFormats[b].count) - (bestFormats[a].viral/bestFormats[a].count);
     }).slice(0, 2);
-
     var pool = [];
     topFormats.forEach(function(fmt) {
-      var match = ALL_CREATIVE_IDEAS.filter(function(i){
-        return i.title.toLowerCase().includes(fmt.toLowerCase()) || fmt.toLowerCase().includes(i.title.toLowerCase());
-      });
-      match.forEach(function(m) { pool.push(Object.assign({}, m, { badge: '⭐ Sana özel' })); });
+      ALL_CREATIVE_IDEAS.filter(function(i){ return i.title.toLowerCase().includes(fmt.toLowerCase()); })
+        .forEach(function(m) { pool.push(Object.assign({}, m, { badge: '⭐ Geçmişte tuttu' })); });
     });
-
-    if (brand && brand.ideas && brand.ideas.length > 0) {
-      brand.ideas.forEach(function(i){ pool.push({ icon: i.icon, title: i.title, desc: i.desc }); });
-    }
-
+    if (brand && brand.ideas) brand.ideas.forEach(function(i){ pool.push(i); });
     pool = pool.concat(ALL_CREATIVE_IDEAS);
-    var picked = shuffleArray(pool).slice(0, 4);
-    renderIdeaCards(picked);
+    renderIdeaCards(shuffleArray(pool).slice(0, 4));
   } catch(e) {
-    // Hata olsa bile statik fikirlerle göster
     renderIdeaCards(shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 4));
   }
 
