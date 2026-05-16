@@ -2411,10 +2411,43 @@ async function refreshIdeas() {
   var el = document.getElementById('plan-ideas');
   if (!el) { if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; } return; }
 
-  // Skeleton
-  el.innerHTML = [1,2,3,4].map(function(){
-    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;height:110px;" class="skel"></div>';
-  }).join('');
+  // Animasyonlu loading
+  var loadingMsgs = [
+    '🔍 Marka verisi okunuyor...',
+    '🧠 Hedef kitle analiz ediliyor...',
+    '✍️ Markana özel fikirler üretiliyor...',
+    '🎯 Hook stratejisi oluşturuluyor...',
+    '📊 Performans geçmişi inceleniyor...',
+    '✨ Son dokunuşlar yapılıyor...'
+  ];
+  var msgIdx = 0;
+  el.innerHTML = '<div id="ideas-loading-state" style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px">' +
+    '<div style="display:flex;gap:6px;align-items:center">' +
+      '<div style="width:6px;height:6px;border-radius:50%;background:var(--accent);animation:ideasDot 1.2s ease-in-out infinite"></div>' +
+      '<div style="width:6px;height:6px;border-radius:50%;background:var(--purple);animation:ideasDot 1.2s ease-in-out .2s infinite"></div>' +
+      '<div style="width:6px;height:6px;border-radius:50%;background:var(--accent);animation:ideasDot 1.2s ease-in-out .4s infinite"></div>' +
+    '</div>' +
+    '<div id="ideas-loading-msg" style="font-size:13px;font-weight:600;color:var(--text2);text-align:center;transition:opacity .3s">' + loadingMsgs[0] + '</div>' +
+  '</div>';
+
+  // CSS inject (once)
+  if (!document.getElementById('ideas-dot-style')) {
+    var s = document.createElement('style');
+    s.id = 'ideas-dot-style';
+    s.textContent = '@keyframes ideasDot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}';
+    document.head.appendChild(s);
+  }
+
+  var msgInterval = setInterval(function() {
+    msgIdx = (msgIdx + 1) % loadingMsgs.length;
+    var msgEl = document.getElementById('ideas-loading-msg');
+    if (msgEl) {
+      msgEl.style.opacity = '0';
+      setTimeout(function() {
+        if (msgEl) { msgEl.textContent = loadingMsgs[msgIdx]; msgEl.style.opacity = '1'; }
+      }, 150);
+    }
+  }, 1400);
 
   var brand = S.brand;
   var brandName = brand && brand.brandName ? brand.brandName : '';
@@ -2450,6 +2483,7 @@ async function refreshIdeas() {
           renderIdeaCards(parsed.ideas.slice(0, 4).map(function(i) {
             return { icon: i.icon || '💡', title: i.title, desc: i.desc, badge: '✨ ' + brandName + ' için' };
           }));
+          clearInterval(msgInterval);
           if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; }
           return;
         }
@@ -2483,6 +2517,7 @@ async function refreshIdeas() {
     renderIdeaCards(shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 4));
   }
 
+  clearInterval(msgInterval);
   if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; }
 }
 
