@@ -2250,6 +2250,10 @@ function planShowFallback() {
     return { title: i.title, reason: i.desc, tone: ['blue','mid','low','high'][idx % 4], cta: 'Uygula', nav: 'creative-prompt' };
   });
   planShowResults(actions, 'Bugün üretim günü — en iyi creative\'ler sahaya çıksın.', 'Creative Günü');
+  // Ideas'ı direkt render et — refreshIdeas async fail'ini beklemeden
+  setTimeout(function() {
+    renderIdeaCards(shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 4));
+  }, 100);
 }
 
 async function planRenderMemoryStrip() {
@@ -2404,45 +2408,64 @@ async function refreshIdeas() {
   const btn = document.getElementById('ideas-refresh-btn');
   if (btn) { btn.textContent = '...'; btn.disabled = true; }
 
-  const brand = S.brand;
-  const brandName = brand && brand.brandName ? brand.brandName : '';
+  var el = document.getElementById('plan-ideas');
+  if (!el) { if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; } return; }
 
-  // Creative hafızayı çek
-  var creativeRows = brandName ? await sbGet('creative_performance', { brand_name: brandName }) : [];
-  var bestFormats = {};
-  (creativeRows || []).forEach(function(r) {
-    if (!r.hook_type) return;
-    if (!bestFormats[r.hook_type]) bestFormats[r.hook_type] = { count: 0, viral: 0 };
-    bestFormats[r.hook_type].count++;
-    if (r.result === 'viral') bestFormats[r.hook_type].viral++;
-  });
+  // Skeleton göster
+  el.innerHTML = [1,2,3,4].map(function(){
+    return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;height:110px;" class="skel"></div>';
+  }).join('');
 
-  var topFormats = Object.keys(bestFormats).sort(function(a,b){
-    return (bestFormats[b].viral/bestFormats[b].count) - (bestFormats[a].viral/bestFormats[a].count);
-  }).slice(0, 2);
+  try {
+    const brand = S.brand;
+    const brandName = brand && brand.brandName ? brand.brandName : '';
 
-  var pool = [];
-  topFormats.forEach(function(fmt) {
-    var match = ALL_CREATIVE_IDEAS.filter(function(i){
-      return i.title.toLowerCase().includes(fmt.toLowerCase()) || fmt.toLowerCase().includes(i.title.toLowerCase());
+    var creativeRows = [];
+    try { creativeRows = brandName ? await sbGet('creative_performance', { brand_name: brandName }) : []; } catch(e) {}
+    var bestFormats = {};
+    (creativeRows || []).forEach(function(r) {
+      if (!r.hook_type) return;
+      if (!bestFormats[r.hook_type]) bestFormats[r.hook_type] = { count: 0, viral: 0 };
+      bestFormats[r.hook_type].count++;
+      if (r.result === 'viral') bestFormats[r.hook_type].viral++;
     });
-    match.forEach(function(m) { pool.push(Object.assign({}, m, { badge: '⭐ Sana özel' })); });
-  });
 
-  if (brand && brand.ideas && brand.ideas.length > 0) {
-    brand.ideas.forEach(function(i){ pool.push({ icon: i.icon, title: i.title, desc: i.desc }); });
+    var topFormats = Object.keys(bestFormats).sort(function(a,b){
+      return (bestFormats[b].viral/bestFormats[b].count) - (bestFormats[a].viral/bestFormats[a].count);
+    }).slice(0, 2);
+
+    var pool = [];
+    topFormats.forEach(function(fmt) {
+      var match = ALL_CREATIVE_IDEAS.filter(function(i){
+        return i.title.toLowerCase().includes(fmt.toLowerCase()) || fmt.toLowerCase().includes(i.title.toLowerCase());
+      });
+      match.forEach(function(m) { pool.push(Object.assign({}, m, { badge: '⭐ Sana özel' })); });
+    });
+
+    if (brand && brand.ideas && brand.ideas.length > 0) {
+      brand.ideas.forEach(function(i){ pool.push({ icon: i.icon, title: i.title, desc: i.desc }); });
+    }
+
+    pool = pool.concat(ALL_CREATIVE_IDEAS);
+    var picked = shuffleArray(pool).slice(0, 4);
+    renderIdeaCards(picked);
+  } catch(e) {
+    // Hata olsa bile statik fikirlerle göster
+    renderIdeaCards(shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 4));
   }
 
-  pool = pool.concat(ALL_CREATIVE_IDEAS);
+  if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; }
+}
 
-  var picked = shuffleArray(pool).slice(0, 4);
+function renderIdeaCards(ideas) {
   var el = document.getElementById('plan-ideas');
-  if (el) el.innerHTML = picked.map(function(idea) {
+  if (!el) return;
+  el.innerHTML = ideas.map(function(idea) {
     var safeTitle = (idea.title || '').replace(/'/g, '&#39;');
     return '<div class="idea-card" onclick="nav(\'hook\')">' +
       '<div class="idea-icon">' + (idea.icon || '💡') + '</div>' +
-      '<div class="idea-title">' + escapeHtml(idea.title) + '</div>' +
-      '<div class="idea-desc">' + escapeHtml(idea.desc) + '</div>' +
+      '<div class="idea-title">' + escapeHtml(idea.title || '') + '</div>' +
+      '<div class="idea-desc">' + escapeHtml(idea.desc || '') + '</div>' +
       '<div class="idea-footer">' +
         '<span class="idea-badge">' + escapeHtml(idea.badge || 'İçerik Fikri') + '</span>' +
         '<div class="idea-actions">' +
@@ -2452,8 +2475,6 @@ async function refreshIdeas() {
       '</div>' +
     '</div>';
   }).join('');
-
-  if (btn) { btn.textContent = '↺ Yenile'; btn.disabled = false; }
 }
 
 
