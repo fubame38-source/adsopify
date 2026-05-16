@@ -5268,6 +5268,11 @@ if (typeof showBrandToast !== 'function') {
 // ═══════════════════════════════════════════════
 // KAYDEDİLENLER
 // ═══════════════════════════════════════════════
+function getSavedKey() {
+  var uid = getStored('sb_user_id') || 'anon';
+  return 'adsopify_saved_' + uid;
+}
+
 function saveStrategy() {
   var focusEl = document.getElementById('focus-card');
   if (!focusEl) return;
@@ -5279,10 +5284,11 @@ function saveStrategy() {
   var tagNode = focusEl.querySelector('span[style*="text-transform:uppercase"]');
   var tag = tagNode ? tagNode.textContent.trim() : '';
 
-  var saved = JSON.parse(localStorage.getItem('adsopify_saved_strategies') || '[]');
+  var key = getSavedKey();
+  var saved = JSON.parse(localStorage.getItem(key) || '[]');
   saved.unshift({ id: Date.now(), title: title, desc: desc, tag: tag, brand: (S.brand && S.brand.brandName) || '', date: new Date().toLocaleDateString('tr-TR') });
   if (saved.length > 50) saved = saved.slice(0, 50);
-  localStorage.setItem('adsopify_saved_strategies', JSON.stringify(saved));
+  localStorage.setItem(key, JSON.stringify(saved));
 
   var btn = event && event.target;
   if (btn) { var orig = btn.textContent; btn.textContent = '✓ Kaydedildi!'; btn.style.background = '#22c98a'; setTimeout(function(){ btn.textContent = orig; btn.style.background = ''; }, 1800); }
@@ -5292,7 +5298,7 @@ function saveStrategy() {
 function loadSavedStrategies() {
   var el = document.getElementById('saved-list');
   if (!el) return;
-  var saved = JSON.parse(localStorage.getItem('adsopify_saved_strategies') || '[]');
+  var saved = JSON.parse(localStorage.getItem(getSavedKey()) || '[]');
   if (!saved.length) {
     el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🔖</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">Henüz kaydedilen strateji yok</div><div style="font-size:12px">Günlük Plan\'daki "Koru" butonuna basarak stratejileri buraya ekleyebilirsin.</div></div>';
     return;
@@ -5316,14 +5322,15 @@ function loadSavedStrategies() {
 }
 
 function deleteSavedStrategy(id) {
-  var saved = JSON.parse(localStorage.getItem('adsopify_saved_strategies') || '[]');
-  localStorage.setItem('adsopify_saved_strategies', JSON.stringify(saved.filter(function(s){ return s.id !== id; })));
+  var key = getSavedKey();
+  var saved = JSON.parse(localStorage.getItem(key) || '[]');
+  localStorage.setItem(key, JSON.stringify(saved.filter(function(s){ return s.id !== id; })));
   loadSavedStrategies();
 }
 
 function clearSavedStrategies() {
   if (!confirm('Tüm kaydedilen stratejiler silinecek. Emin misin?')) return;
-  localStorage.removeItem('adsopify_saved_strategies');
+  localStorage.removeItem(getSavedKey());
   loadSavedStrategies();
 }
 
@@ -5435,79 +5442,67 @@ function closeCampPopup(e) {
 
 // ═══════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════
+// GÜVENLİ AUTH FONKSİYONLARI — Edge Function üzerinden
+// access_codes ve profiles tablolarına direkt erişim YOK
+// ═══════════════════════════════════════════════
+const ADSOPIFY_AUTH_FN = 'https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/adsopify-auth';
+
+async function callAuthFn(action, payload) {
+  var token = getStored('sb_token');
+  if (!token) return { error: 'No session' };
+  try {
+    var res = await fetch(ADSOPIFY_AUTH_FN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token   // kullanıcının kendi token'ı
+      },
+      body: JSON.stringify(Object.assign({ action: action }, payload))
+    });
+    return await res.json();
+  } catch(e) {
+    return { error: e.message };
+  }
+}
+
 async function validateAndApplyCode(code, userId) {
   try {
-    // Kodu sorgula
-    const r = await fetch(SB_URL + '/rest/v1/access_codes?code=eq.' + encodeURIComponent(code) + '&select=*', {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-    });
-    const rows = await r.json();
-
-    if (!rows || !rows.length) {
-      showBrandToast('⚠️ Geçersiz erişim kodu. Trial planıyla devam ediliyor.');
-      await setUserPlan(userId, 'trial', null);
-      return;
-    }
-
-    const row = rows[0];
-    if (row.used_count >= row.max_uses) {
+    var result = await callAuthFn('validate_code', { code: code, userId: userId });
+    if (result.ok) {
+      setStored('adsopify_plan', result.plan);
+      setStored('adsopify_code', code);
+      showBrandToast('🎉 ' + code + ' kodu doğrulandı! Erişim aktif.');
+    } else if (result.reason === 'limit_reached') {
       showBrandToast('⚠️ Bu kod kullanım limitine ulaştı. Trial planıyla devam ediliyor.');
-      await setUserPlan(userId, 'trial', null);
-      return;
+      setStored('adsopify_plan', 'trial');
+    } else if (result.reason === 'invalid_code') {
+      showBrandToast('⚠️ Geçersiz erişim kodu. Trial planıyla devam ediliyor.');
+      setStored('adsopify_plan', 'trial');
+    } else {
+      setStored('adsopify_plan', 'trial');
     }
-
-    // Kodu kullan — used_count artır
-    await fetch(SB_URL + '/rest/v1/access_codes?code=eq.' + encodeURIComponent(code), {
-      method: 'PATCH',
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ used_count: row.used_count + 1 })
-    });
-
-    // Kullanıcıya planı yaz
-    await setUserPlan(userId, row.plan || 'mlynr_free', code);
-    setStored('adsopify_plan', row.plan || 'mlynr_free');
-    setStored('adsopify_code', code);
-
-    showBrandToast('🎉 ' + code + ' kodu doğrulandı! MLYNR erişimi aktif.');
-
+    applyPlan(getStored('adsopify_plan') || 'trial');
   } catch(e) {
-    console.error('Code validation error:', e);
-    await setUserPlan(userId, 'trial', null);
+    console.error('validateAndApplyCode error:', e);
+    setStored('adsopify_plan', 'trial');
   }
 }
 
 async function setUserPlan(userId, plan, code) {
-  if (!userId) return;
-  try {
-    await fetch(SB_URL + '/rest/v1/profiles', {
-      method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({ user_id: userId, plan: plan, code_used: code })
-    });
-    setStored('adsopify_plan', plan);
-  } catch(e) { console.error('setUserPlan error:', e); }
+  // Artık sadece Edge Function üzerinden yapılıyor
+  // Bu fonksiyon geriye uyumluluk için kalıyor, doğrudan DB'ye yazmıyor
+  setStored('adsopify_plan', plan);
 }
 
 async function loadUserPlan() {
-  const userId = getStored('sb_user_id');
   const cachedPlan = getStored('adsopify_plan');
   if (cachedPlan) { applyPlan(cachedPlan); return; }
-  if (!userId) return;
-  try {
-    const r = await fetch(SB_URL + '/rest/v1/profiles?user_id=eq.' + encodeURIComponent(userId) + '&select=plan,code_used', {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-    });
-    const rows = await r.json();
-    if (rows && rows.length) {
-      setStored('adsopify_plan', rows[0].plan);
-      applyPlan(rows[0].plan);
-    }
-  } catch(e) { console.error('loadUserPlan error:', e); }
+  var result = await callAuthFn('get_plan', {});
+  if (result && result.plan) {
+    setStored('adsopify_plan', result.plan);
+    applyPlan(result.plan);
+  }
 }
 
 function applyPlan(plan) {
