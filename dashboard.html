@@ -31,7 +31,8 @@
   </div>
 </div>
 
- = function() {
+<script>
+  window.fbAsyncInit = function() {
     FB.init({ appId: '1602280044394114', cookie: true, xfbml: false, version: 'v19.0' });
   };
   (function(d,s,id){ var js,fjs=d.getElementsByTagName(s)[0]; if(d.getElementById(id))return; js=d.createElement(s);js.id=id; js.src='https://connect.facebook.net/tr_TR/sdk.js'; fjs.parentNode.insertBefore(js,fjs); }(document,'script','facebook-jssdk'));
@@ -1817,6 +1818,12 @@ function showTokenErr(msg) {
 
 function fbLogin() {
   const btn = document.getElementById('fb-login-btn');
+
+  if (typeof FB === 'undefined') {
+    showTokenErr('Facebook SDK yüklenemedi. Sayfayı yenile veya manuel token kullan.');
+    return;
+  }
+
   btn.textContent = '⏳ Bağlanıyor...';
   btn.disabled = true;
 
