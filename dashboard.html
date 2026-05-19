@@ -2576,43 +2576,83 @@ async function siteAnalyze() {
 
     if (data.error) throw new Error(data.error);
 
-    // Site skoru
-    var verdictEl = document.getElementById('sa-verdict');
-    var scoresEl  = document.getElementById('sa-scores');
-    var actionsEl = document.getElementById('sa-actions');
+    var verdictEl  = document.getElementById('sa-verdict');
+    var scoresEl   = document.getElementById('sa-scores');
+    var actionsEl  = document.getElementById('sa-actions');
+    var scoreCard  = document.getElementById('sa-score-card');
 
+    // Verdict
     if (verdictEl) verdictEl.textContent = data.verdict || '';
 
-    if (scoresEl && data.siteScore) {
+    // Hero ürün + hedef kitle + hook
+    var heroHtml = '';
+    if (data.heroProduct) {
+      heroHtml += '<div style="background:var(--accent-light);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start">' +
+        '<div style="font-size:22px">🏆</div>' +
+        '<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:4px">Hero Ürün</div>' +
+        '<div style="font-size:13px;font-weight:700;color:var(--text)">' + escapeHtml(data.heroProduct.name||'') + ' — ' + escapeHtml(data.heroProduct.price||'') + '</div>' +
+        '<div style="font-size:12px;color:var(--text2);margin-top:3px">' + escapeHtml(data.heroProduct.opportunity||'') + '</div></div></div>';
+    }
+    if (data.targetAudience) {
+      heroHtml += '<div style="background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start">' +
+        '<div style="font-size:18px">🎯</div>' +
+        '<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">Hedef Kitle</div>' +
+        '<div style="font-size:13px;color:var(--text)">' + escapeHtml(data.targetAudience) + '</div></div></div>';
+    }
+    if (data.bestHook) {
+      heroHtml += '<div style="background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:4px;display:flex;gap:10px;align-items:flex-start">' +
+        '<div style="font-size:18px">🪝</div>' +
+        '<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">En Güçlü Hook</div>' +
+        '<div style="font-size:13px;font-weight:600;color:var(--text);font-style:italic">"' + escapeHtml(data.bestHook) + '"</div></div></div>';
+    }
+
+    // Skorlar
+    var scoreHtml = '';
+    if (data.siteScore) {
       var sc = data.siteScore;
       var scoreColor = function(v) {
         if (!v) return 'var(--text3)';
         v = v.toLowerCase();
-        if (v === 'iyi' || v === 'var' || v === 'net') return 'var(--green)';
-        if (v === 'zayıf' || v === 'yok' || v === 'belirsiz') return 'var(--red)';
+        if (['iyi','var','net','güçlü'].some(x => v.includes(x))) return 'var(--green)';
+        if (['zayıf','yok','belirsiz'].some(x => v.includes(x))) return 'var(--red)';
         return 'var(--yellow)';
       };
-      scoresEl.innerHTML = [
+      var scoreItems = [
         { label: 'Conversion', val: sc.conversion },
         { label: 'Sosyal Kanıt', val: sc.socialProof },
-        { label: 'Fiyat Netliği', val: sc.priceClarity }
-      ].map(function(s) {
-        return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center">' +
-          '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">' + s.label + '</div>' +
-          '<div style="font-size:14px;font-weight:800;color:' + scoreColor(s.val) + '">' + (s.val || '—') + '</div>' +
+        { label: 'Fiyat Netliği', val: sc.priceClarity },
+        { label: 'İçerik Kalitesi', val: sc.contentQuality }
+      ];
+      scoreHtml = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px">' +
+        scoreItems.map(function(s) {
+          return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center">' +
+            '<div style="font-size:10px;color:var(--text3);margin-bottom:6px;font-weight:600">' + s.label + '</div>' +
+            '<div style="font-size:13px;font-weight:800;color:' + scoreColor(s.val) + '">' + (s.val||'—') + '</div>' +
           '</div>';
-      }).join('');
+        }).join('') + '</div>';
     }
 
+    if (scoreCard) scoreCard.innerHTML =
+      '<div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Site Durumu</div>' +
+      heroHtml +
+      '<div style="font-size:13px;color:var(--text2);line-height:1.7">' + escapeHtml(data.verdict||'') + '</div>' +
+      scoreHtml;
+
+    // Aksiyonlar
     if (actionsEl && data.actions) {
-      var toneColors = { blue:'var(--accent)', green:'var(--green)', red:'var(--red)', yellow:'var(--yellow)' };
+      var priorityColors = { kritik:'var(--red)', yüksek:'var(--yellow)', orta:'var(--accent)' };
+      var toneColors = { red:'var(--red)', blue:'var(--accent)', green:'var(--green)', yellow:'var(--yellow)' };
       actionsEl.innerHTML = data.actions.map(function(a) {
-        var c = toneColors[a.tone] || 'var(--accent)';
-        return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:flex-start;gap:12px">' +
-          '<div style="width:8px;height:8px;border-radius:50%;background:' + c + ';margin-top:5px;flex-shrink:0;box-shadow:0 0 6px ' + c + '"></div>' +
+        var c = toneColors[a.tone] || priorityColors[a.priority] || 'var(--accent)';
+        return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:flex-start">' +
+          '<div style="width:8px;height:8px;border-radius:50%;background:' + c + ';margin-top:5px;flex-shrink:0;box-shadow:0 0 8px ' + c + '"></div>' +
           '<div style="flex:1">' +
-            '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">' + escapeHtml(a.title||'') + '</div>' +
-            '<div style="font-size:12px;color:var(--text2);line-height:1.6">' + escapeHtml(a.reason||'') + '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+              '<div style="font-size:13px;font-weight:700;color:var(--text)">' + escapeHtml(a.title||'') + '</div>' +
+              (a.priority ? '<div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:' + (priorityColors[a.priority]||'var(--accent)') + '22;color:' + (priorityColors[a.priority]||'var(--accent)') + '">' + a.priority.toUpperCase() + '</div>' : '') +
+            '</div>' +
+            '<div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:6px">' + escapeHtml(a.reason||'') + '</div>' +
+            (a.impact ? '<div style="font-size:11px;font-weight:700;color:var(--green)">→ ' + escapeHtml(a.impact) + '</div>' : '') +
           '</div>' +
         '</div>';
       }).join('');
