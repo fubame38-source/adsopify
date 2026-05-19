@@ -1734,8 +1734,7 @@ function applyCustomDate(){
   if(S.fbToken&&S.activeAcc) loadCampaigns();
 }
 
-// loadCampaigns'i özel tarih destekleyecek şekilde güncelle
-function dStr(n){var d=new Date();d.setDate(d.getDate()-n);return d.toISOString().split('T')[0]}
+function showDateMenu(){
   var btn=document.getElementById('date-btn'),menu=document.getElementById('date-menu');
   var r=btn.getBoundingClientRect();
   menu.style.top=(r.bottom+4)+'px';menu.style.right=(window.innerWidth-r.right)+'px';menu.style.left='auto';menu.style.display='block';
