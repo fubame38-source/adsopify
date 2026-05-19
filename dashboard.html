@@ -229,6 +229,9 @@ tbody tr:hover td{background:var(--surface2)}
 .adwiz-opt{padding:8px 16px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
 .adwiz-opt:hover{border-color:var(--accent);color:var(--text);background:var(--accent-light)}
 .adwiz-opt.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);font-weight:800}
+.adwiz-chip{padding:14px 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .18s;text-align:center;line-height:1.2}
+.adwiz-chip:hover{border-color:var(--accent);background:var(--accent-light);color:var(--text);transform:translateY(-1px)}
+.adwiz-chip.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
 .opp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
 .opp-text{font-size:12px;color:var(--text2);line-height:1.5}
 
@@ -625,7 +628,21 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 
     <!-- Boş state -->
     <div id="plan-ai-empty" style="padding:4px 0 2px">
-      <div style="background:var(--surface2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">
+      <div id="plan-empty-meta-missing" style="display:none">
+        <div style="background:var(--surface2);border-radius:14px;padding:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">🔗 Meta hesabın bağlı değil</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.55">Meta bağlamadan da başlayabilirsin — site linkini gir, AI sana özel strateji hazırlasın.</div>
+          <div style="display:flex;gap:8px">
+            <input id="plan-site-url" type="url" placeholder="https://sitemiz.com" style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')analyzeWebsite()">
+            <button onclick="analyzeWebsite()" style="padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Analiz Et</button>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;color:var(--text3)">Zaten Meta hesabın var mı?</span>
+            <button onclick="nav('settings')" style="font-size:12px;font-weight:700;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--font)">Hesabı Bağla →</button>
+          </div>
+        </div>
+      </div>
+      <div id="plan-empty-default" style="background:var(--surface2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">
         <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px">🎯</div>
         <div>
           <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">Bugün ne yapmalısın?</div>
@@ -920,54 +937,113 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <!-- REKLAM SİHİRBAZI -->
 <div id="sec-ad-wizard" class="section">
   <!-- HEADER -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-    <div>
-      <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Reklam Hazırla</div>
-      <div style="font-size:13px;color:var(--text2);margin-top:2px">AI tek tıkla komple reklam paketi üretir</div>
+  <div style="margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(29,78,216,.25)">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Reklam Hazırla</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:1px">3 seçim yap, AI komple paket üretsin</div>
+      </div>
     </div>
-    <button class="btn btn-ghost btn-sm" onclick="adWizReset()" id="adwiz-reset-btn" style="display:none">↺ Yenile</button>
+    <button class="btn btn-ghost btn-sm" onclick="adWizReset()" id="adwiz-reset-btn" style="display:none;margin-top:8px">↺ Yeniden Başla</button>
   </div>
 
   <!-- FORMAT SEÇİMİ + ÜRET -->
   <div id="adwiz-input" style="display:block">
 
     <!-- FORMAT -->
-    <div style="margin-bottom:14px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Format</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap" id="adwiz-format-group">
-        <button onclick="adWizSelect('format','video',this)" class="adwiz-opt active" data-val="video">Video / Reels</button>
-        <button onclick="adWizSelect('format','image',this)" class="adwiz-opt" data-val="image">Görsel</button>
-        <button onclick="adWizSelect('format','carousel',this)" class="adwiz-opt" data-val="carousel">Carousel</button>
-        <button onclick="adWizSelect('format','story',this)" class="adwiz-opt" data-val="story">Story</button>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:22px;height:22px;background:var(--accent-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">📱</div>
+        <span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em">Format</span>
+        <span style="font-size:12px;color:var(--text3)">— hangi yerleşimde yayınlanacak?</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="adwiz-format-group">
+        <button onclick="adWizSelect('format','video',this)" class="adwiz-chip active" data-val="video">
+          <span style="font-size:18px;display:block;margin-bottom:4px">🎬</span>
+          <span style="font-size:12px;font-weight:700">Video / Reels</span>
+        </button>
+        <button onclick="adWizSelect('format','image',this)" class="adwiz-chip" data-val="image">
+          <span style="font-size:18px;display:block;margin-bottom:4px">🖼</span>
+          <span style="font-size:12px;font-weight:700">Görsel</span>
+        </button>
+        <button onclick="adWizSelect('format','carousel',this)" class="adwiz-chip" data-val="carousel">
+          <span style="font-size:18px;display:block;margin-bottom:4px">🎠</span>
+          <span style="font-size:12px;font-weight:700">Carousel</span>
+        </button>
+        <button onclick="adWizSelect('format','story',this)" class="adwiz-chip" data-val="story">
+          <span style="font-size:18px;display:block;margin-bottom:4px">⚡</span>
+          <span style="font-size:12px;font-weight:700">Story</span>
+        </button>
       </div>
     </div>
 
     <!-- HEDEF -->
-    <div style="margin-bottom:14px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Hedef</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap" id="adwiz-goal-group">
-        <button onclick="adWizSelect('goal','satis',this)" class="adwiz-opt active" data-val="satis">Satış</button>
-        <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-opt" data-val="trafik">Trafik</button>
-        <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-opt" data-val="etkilesim">Etkileşim</button>
-        <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-opt" data-val="farkindalik">Farkındalık</button>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:22px;height:22px;background:var(--green-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">🎯</div>
+        <span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em">Hedef</span>
+        <span style="font-size:12px;color:var(--text3)">— reklamdan ne bekliyorsun?</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="adwiz-goal-group">
+        <button onclick="adWizSelect('goal','satis',this)" class="adwiz-chip active" data-val="satis">
+          <span style="font-size:18px;display:block;margin-bottom:4px">💰</span>
+          <span style="font-size:12px;font-weight:700">Satış</span>
+        </button>
+        <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-chip" data-val="trafik">
+          <span style="font-size:18px;display:block;margin-bottom:4px">🔗</span>
+          <span style="font-size:12px;font-weight:700">Trafik</span>
+        </button>
+        <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-chip" data-val="etkilesim">
+          <span style="font-size:18px;display:block;margin-bottom:4px">❤️</span>
+          <span style="font-size:12px;font-weight:700">Etkileşim</span>
+        </button>
+        <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-chip" data-val="farkindalik">
+          <span style="font-size:18px;display:block;margin-bottom:4px">📢</span>
+          <span style="font-size:12px;font-weight:700">Farkındalık</span>
+        </button>
       </div>
     </div>
 
     <!-- AÇI -->
-    <div style="margin-bottom:20px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Açı / Ton</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap" id="adwiz-angle-group">
-        <button onclick="adWizSelect('angle','pov',this)" class="adwiz-opt active" data-val="pov">POV Keşif</button>
-        <button onclick="adWizSelect('angle','uzman',this)" class="adwiz-opt" data-val="uzman">Uzman</button>
-        <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-opt" data-val="ugc">UGC</button>
-        <button onclick="adWizSelect('angle','problem',this)" class="adwiz-opt" data-val="problem">Problem–Çözüm</button>
-        <button onclick="adWizSelect('angle','karsilastirma',this)" class="adwiz-opt" data-val="karsilastirma">Karşılaştırma</button>
-        <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-opt" data-val="sosyal">Sosyal Kanıt</button>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:22px;height:22px;background:var(--purple-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">✍️</div>
+        <span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em">Açı / Ton</span>
+        <span style="font-size:12px;color:var(--text3)">— reklamın tonu ne olsun?</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="adwiz-angle-group">
+        <button onclick="adWizSelect('angle','pov',this)" class="adwiz-chip active" data-val="pov">
+          <span style="font-size:18px;display:block;margin-bottom:4px">👀</span>
+          <span style="font-size:12px;font-weight:700">POV Keşif</span>
+        </button>
+        <button onclick="adWizSelect('angle','uzman',this)" class="adwiz-chip" data-val="uzman">
+          <span style="font-size:18px;display:block;margin-bottom:4px">🧠</span>
+          <span style="font-size:12px;font-weight:700">Uzman</span>
+        </button>
+        <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-chip" data-val="ugc">
+          <span style="font-size:18px;display:block;margin-bottom:4px">🤳</span>
+          <span style="font-size:12px;font-weight:700">UGC</span>
+        </button>
+        <button onclick="adWizSelect('angle','problem',this)" class="adwiz-chip" data-val="problem">
+          <span style="font-size:18px;display:block;margin-bottom:4px">💡</span>
+          <span style="font-size:12px;font-weight:700">Problem–Çözüm</span>
+        </button>
+        <button onclick="adWizSelect('angle','karsilastirma',this)" class="adwiz-chip" data-val="karsilastirma">
+          <span style="font-size:18px;display:block;margin-bottom:4px">⚖️</span>
+          <span style="font-size:12px;font-weight:700">Karşılaştırma</span>
+        </button>
+        <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-chip" data-val="sosyal">
+          <span style="font-size:18px;display:block;margin-bottom:4px">⭐</span>
+          <span style="font-size:12px;font-weight:700">Sosyal Kanıt</span>
+        </button>
       </div>
     </div>
 
-    <button onclick="adWizGenerate()" style="width:100%;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .15s" onmouseover="this.style.background='#1e40af';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--accent)';this.style.transform=''">
-      <span id="adwiz-btn-text">Reklam Paketi Üret</span>
+    <button onclick="adWizGenerate()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .2s;box-shadow:0 4px 16px rgba(29,78,216,.3)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(29,78,216,.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(29,78,216,.3)'">
+      <span id="adwiz-btn-text">✨ Reklam Paketi Üret</span>
     </button>
 
     <!-- hidden inputs for compat -->
@@ -1924,10 +2000,22 @@ function loadPlan() {
 }
 
 function loadDailyPlan() {
-  // Loading göster
   var aiEmpty = document.getElementById('plan-ai-empty');
   var aiLoading = document.getElementById('plan-ai-loading');
   var aiResult = document.getElementById('plan-ai-result');
+
+  // Meta bağlı değilse → site analiz ekranı göster
+  if (!S.token || !S.accountId) {
+    var metaMissing = document.getElementById('plan-empty-meta-missing');
+    var defaultEmpty = document.getElementById('plan-empty-default');
+    if (metaMissing) metaMissing.style.display = 'block';
+    if (defaultEmpty) defaultEmpty.style.display = 'none';
+    if (aiEmpty) aiEmpty.style.display = 'block';
+    if (aiResult) aiResult.style.display = 'none';
+    if (aiLoading) aiLoading.style.display = 'none';
+    return;
+  }
+
   if (aiEmpty) aiEmpty.style.display = 'none';
   if (aiResult) aiResult.style.display = 'none';
   if (aiLoading) aiLoading.style.display = 'flex';
@@ -2208,16 +2296,24 @@ async function planFetchAI(cacheKey) {
   const h = new Date().getHours();
   const timeCtx = h < 12 ? 'sabah' : h < 18 ? 'ogleden sonra' : 'aksam';
 
-  // Meta verisi, hafiza ve creative zeka paralel cek
+  // Meta verisi, hafıza, creative ve site analizi paralel çek
   var metaCtx = 'Meta verisi yok.';
   var memCtx = '';
   var creativeCtx = '';
   var savedMetaData = null;
+  var siteAnalysis = null;
 
-  var [metaIns, memData, creativeData] = await Promise.all([
+  var brandUrl = brand && brand.url ? brand.url : '';
+
+  var [metaIns, memData, creativeData, siteData] = await Promise.all([
     S.token && S.accountId ? Promise.race([getTodayInsights(), new Promise(function(r){ setTimeout(function(){ r(null); }, 4000); })]) : Promise.resolve(null),
     brandName ? memoryLoad(brandName) : Promise.resolve(null),
-    brandName ? creativeLoad(brandName) : Promise.resolve(null)
+    brandName ? creativeLoad(brandName) : Promise.resolve(null),
+    brandUrl ? fetch('https://adsopify-api.fubame38.workers.dev/fetch-site', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: brandUrl, metaCtx: '' })
+    }).then(function(r){ return r.json(); }).catch(function(){ return null; }) : Promise.resolve(null)
   ]);
 
   if (metaIns && metaIns.length > 0) {
@@ -2228,43 +2324,72 @@ async function planFetchAI(cacheKey) {
     var avgFreq      = metaIns.reduce(function(s,i){ return s + parseFloat(i.frequency||0); }, 0) / metaIns.length;
     var avgCTR       = metaIns.reduce(function(s,i){ return s + parseFloat(i.ctr||0); }, 0) / metaIns.length;
     var cpa          = totalSales > 0 ? (totalSpend/totalSales) : null;
-    metaCtx = 'Bugunun Meta verisi: Harcama TL' + totalSpend.toFixed(0) +
-      ', Satis ' + totalSales +
-      (roas ? ', ROAS ' + roas.toFixed(2) + 'x' : '') +
-      (cpa ? ', CPA TL' + cpa.toFixed(0) : '') +
-      ', Frekans ' + avgFreq.toFixed(1) +
-      ', CTR %' + avgCTR.toFixed(2) + '.';
+
+    // Her kampanyayı ayrı ayrı AI'ya ver
+    var campDetails = metaIns.map(function(c) {
+      var cSpend = parseFloat(c.spend||0);
+      var cSales = c._purchases||0;
+      var cRev   = c._revenue||0;
+      var cRoas  = cSpend > 0 && cRev > 0 ? (cRev/cSpend).toFixed(2) : null;
+      var cCpa   = cSales > 0 ? (cSpend/cSales).toFixed(0) : null;
+      var cCtr   = parseFloat(c.ctr||0).toFixed(2);
+      var cFreq  = parseFloat(c.frequency||0).toFixed(1);
+      return '- ' + (c.campaign_name||'Kampanya') +
+        ': Harcama ₺' + cSpend.toFixed(0) +
+        ', Satış ' + cSales +
+        (cRoas ? ', ROAS ' + cRoas + 'x' : ', ROAS yok') +
+        (cCpa  ? ', CPA ₺' + cCpa : '') +
+        ', CTR %' + cCtr +
+        ', Frekans ' + cFreq;
+    }).join('\n');
+
+    metaCtx = 'KAMPANYA BAZLI VERİ (son 7 gün):\n' + campDetails +
+      '\n\nTOPLAM: Harcama ₺' + totalSpend.toFixed(0) +
+      ', Satış ' + totalSales +
+      (roas ? ', Genel ROAS ' + roas.toFixed(2) + 'x' : '') +
+      (cpa  ? ', Genel CPA ₺' + cpa.toFixed(0) : '') +
+      ', Ort. Frekans ' + avgFreq.toFixed(1) +
+      ', Ort. CTR %' + avgCTR.toFixed(2) + '.';
+
     savedMetaData = { spend: totalSpend, sales: totalSales, roas: roas ? roas.toFixed(2) : null, cpa: cpa ? cpa.toFixed(0) : null, ctr: avgCTR.toFixed(2), frequency: avgFreq.toFixed(1) };
-    // Hafizaya kaydet — arkaplanda
     if (brandName) memorySave(brandName, savedMetaData);
   } else {
-    metaCtx = 'Meta bagli ama bugun henuz harcama yok.';
+    metaCtx = 'Meta bağlı ama henüz veri yok.';
   }
 
   if (memData) memCtx = memData;
   if (creativeData) creativeCtx = creativeData;
+  if (siteData && !siteData.error) siteAnalysis = siteData;
 
-  const prompt = brandCtx + '\n' +
+  const siteCtx = siteAnalysis ? (
+    'SİTE ANALİZİ (' + brandUrl + '):\n' +
+    'Conversion hazırlığı: ' + (siteAnalysis.siteScore?.conversion || '?') + '\n' +
+    'Sosyal kanıt: ' + (siteAnalysis.siteScore?.socialProof || '?') + '\n' +
+    'Fiyat netliği: ' + (siteAnalysis.siteScore?.priceClarity || '?') + '\n' +
+    'Genel değerlendirme: ' + (siteAnalysis.verdict || '')
+  ) : '';
+
+  const prompt = 'Marka: ' + brandName + '. Ürün: ' + (S.brand && S.brand.product || '') + '.\n\n' +
     metaCtx + '\n' +
-    (memCtx ? 'Gecmis hafiza: ' + memCtx + '\n' : '') +
-    (creativeCtx ? creativeCtx + '\n' : '') +
-    '\nSu an ' + timeCtx + '. Tum bu verilere ve gecmis hafizaya gore bugun ne yapmali?\n\n' +
-    'Somut 4-5 aksiyon uret:\n' +
-    '- Cekilecek video veya reels (spesifik senaryo)\n' +
-    '- Test edilecek hook veya metin\n' +
-    '- Kitle veya segment denemesi\n' +
-    '- Butce veya teklif hamlesi\n\n' +
-    'Gecmis hafizadan ogren: frekans yukseldiyse uyar, ROAS dustuyse neden diye sor, iyi formatlari tekrar oner.\n' +
-    'YAPMA: Meta baglanma, pixel kurulumu, teknik entegrasyon onerme.\n' +
-    'nav: sadece hook, copy, scale, budget kullan.\n\n' +
-    'JSON: {"tagline":"3-4 kelime","verdict":"1 cumle","actions":[{"title":"baslik","reason":"detay","tone":"blue","cta":"Git","nav":"hook"}]}';
+    (siteCtx ? '\n' + siteCtx + '\n' : '') +
+    (memCtx ? 'Geçmiş hafıza: ' + memCtx + '\n' : '') +
+    '\nBugün ' + timeCtx + ' vakti. Kampanya verisine bakarak BUGÜN yapılacak 3-4 somut aksiyon söyle.\n\n' +
+    'KURALLLAR:\n' +
+    '- Her aksiyon gerçek kampanya adına dayansın ("Viral kampanyasına 200TL ekle" gibi)\n' +
+    '- Rakamsal gerekçe ver ("ROAS 5x olduğu için", "3 gündür 0 satış olduğu için")\n' +
+    '- "Video çek" gibi genel tavsiye VERME — eğer creative lazımsa hangi kampanya için, ne tür içerik, hangi hook söyle\n' +
+    '- Frekans 2.5+ ise creative yorgunluğu uyarısı ver\n' +
+    '- ROAS 3x altı kampanya varsa "durdur veya bütçe azalt" de\n' +
+    '- ROAS 4x+ kampanya varsa "bütçeyi şu kadar artır" de\n' +
+    '- Teknik şeyler önerme (pixel, entegrasyon vb)\n\n' +
+    'JSON formatı: {"tagline":"3-4 kelime özet","verdict":"1 cümle genel durum","actions":[{"title":"kısa başlık","reason":"gerekçe + rakam","tone":"blue","cta":"Uygula","nav":"scale"}]}';
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen bir Meta reklam uzmanisisin. Gecmis veri varsa ona gore ogren ve onerileri kisisellelstir. Turkce yanitla. Sadece gecerli JSON dondur.',
+        system: 'Sen bir Meta Ads uzmanısın. Sana kampanya bazlı gerçek veri verilecek. Genel tavsiye değil, veriye dayalı somut aksiyonlar söyle. Her aksiyonda kampanya adı ve rakam olsun. Sadece geçerli JSON döndür, başka hiçbir şey yazma.',
         message: prompt
       })
     });
@@ -2357,6 +2482,61 @@ function planShowResults(actions, verdict, tagline) {
   }
 
   refreshIdeas();
+}
+
+async function analyzeWebsite(urlOverride) {
+  var urlInput = document.getElementById('plan-site-url');
+  var url = urlOverride || (urlInput ? urlInput.value.trim() : '');
+  if (!url) { if(urlInput) urlInput.style.borderColor = 'var(--red)'; return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  var aiEmpty = document.getElementById('plan-ai-empty');
+  var aiLoading = document.getElementById('plan-ai-loading');
+  var aiResult = document.getElementById('plan-ai-result');
+  if (aiEmpty) aiEmpty.style.display = 'none';
+  if (aiResult) aiResult.style.display = 'none';
+  if (aiLoading) {
+    aiLoading.style.display = 'flex';
+    aiLoading.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2.5px"></div><div style="font-size:13px;font-weight:600;color:var(--text2)">Shopify mağazan analiz ediliyor...</div>';
+  }
+
+  // Meta verisi varsa ona da gönder
+  var metaCtx = '';
+  if (S.token && S.accountId) {
+    try {
+      var ins = await Promise.race([getTodayInsights(), new Promise(function(r){ setTimeout(function(){ r(null); }, 4000); })]);
+      if (ins && ins.length > 0) {
+        metaCtx = ins.map(function(c) {
+          var spend = parseFloat(c.spend||0), sales = c._purchases||0, rev = c._revenue||0;
+          var roas = spend > 0 && rev > 0 ? (rev/spend).toFixed(2) : null;
+          return '- ' + (c.campaign_name||'Kampanya') + ': ₺' + spend.toFixed(0) + ' harcama, ' + sales + ' satış' + (roas ? ', ROAS ' + roas + 'x' : '');
+        }).join('\n');
+      }
+    } catch(e) {}
+  }
+
+  try {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/fetch-site', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url, metaCtx: metaCtx })
+    });
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    // siteScore varsa göster
+    var extraVerdict = '';
+    if (data.siteScore) {
+      var sc = data.siteScore;
+      extraVerdict = ' | Conversion: ' + sc.conversion + ' · Sosyal Kanıt: ' + sc.socialProof + ' · Fiyat Netliği: ' + sc.priceClarity;
+    }
+
+    planShowResults(data.actions, (data.verdict||'') + extraVerdict, data.tagline);
+  } catch(e) {
+    if (aiLoading) aiLoading.style.display = 'none';
+    if (aiEmpty) aiEmpty.style.display = 'block';
+    toast('Site analiz edilemedi: ' + e.message);
+  }
 }
 
 function planShowFallback() {
@@ -3384,7 +3564,7 @@ function goWizardStep(step) {
 function adWizSelect(group, val, btn) {
   // Aktif sınıfı gruba göre temizle
   var groupEl = document.getElementById('adwiz-' + group + '-group');
-  if (groupEl) groupEl.querySelectorAll('.adwiz-opt').forEach(function(b){ b.classList.remove('active'); });
+  if (groupEl) groupEl.querySelectorAll('.adwiz-opt, .adwiz-chip').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   // Hidden select güncelle
   var sel = document.getElementById('adwiz-' + group);
