@@ -2168,7 +2168,10 @@ function planShowResults(actions, verdict, tagline) {
   if (aiLoading) aiLoading.style.display = 'none';
   if (aiResult) aiResult.style.display = 'block';
   var btn = document.getElementById('plan-ask-btn');
-  if (btn) btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg> Yenile';
+  if (btn) {
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg> Yenile';
+    btn.setAttribute('onclick', 'planReset()');
+  }
 
   // Hafiza seridini render et
   planRenderMemoryStrip();
@@ -4929,23 +4932,7 @@ async function loadUserPlan() {
 }
 
 function applyPlan(plan) {
-  const isMlynr = plan === 'mlynr_free' || plan === 'mlynr_pro';
-  const isTrial = plan === 'trial' || !plan;
-
-  // MLYNR badge topbar'da göster
-  var badge = document.getElementById('mlynr-plan-badge');
-  if (badge) {
-    if (isMlynr) {
-      badge.style.display = 'flex';
-      badge.textContent = '🎓 MLYNR';
-    } else if (isTrial) {
-      badge.style.display = 'flex';
-      badge.textContent = '🔓 Trial';
-      badge.style.background = 'var(--yellow-light)';
-      badge.style.borderColor = 'rgba(180,83,9,.2)';
-      badge.style.color = 'var(--yellow)';
-    }
-  }
+  // Badge gösterilmiyor
 }
 
 // ?ref=mlynr parametresi ile gelince otomatik kayıt tab'ına geç
