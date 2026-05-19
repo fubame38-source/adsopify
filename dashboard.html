@@ -87,27 +87,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .iBtn:hover{border-color:var(--border2);color:var(--text)}
 
 /* ── SIDEBAR ── */
-#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:100;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding-bottom:24px}
+#sidebar{position:fixed;top:var(--topbar-h);left:0;bottom:0;width:var(--sidebar-w);z-index:100;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:8px 8px 24px}
 #sidebar::-webkit-scrollbar{width:0}
-.sb-brand{padding:14px 14px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);margin-bottom:4px}
-.sb-logo{width:26px;height:26px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-brand{padding:8px 8px 12px;display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.sb-logo{width:28px;height:28px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(29,78,216,.3)}
 .sb-name{font-size:14px;font-weight:800;letter-spacing:-.04em;color:var(--text)}
-.nav-grp{padding:14px 12px 3px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3)}
-.nav-item{display:flex;align-items:center;gap:8px;margin:1px 6px;padding:7px 9px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s}
+.nav-grp{padding:10px 10px 3px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:9px;margin:1px 0;padding:8px 10px;border-radius:10px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s}
 .nav-item:hover{background:var(--surface2);color:var(--text)}
 .nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:600}
 [data-theme=dark] .nav-item.active{color:var(--accent2);background:rgba(79,142,247,.12)}
-.ni-svg{width:15px;height:15px;flex-shrink:0;opacity:.55;transition:opacity .12s;color:currentColor}
+.ni-svg{width:15px;height:15px;flex-shrink:0;opacity:.5;transition:opacity .12s;color:currentColor}
 .nav-item:hover .ni-svg,.nav-item.active .ni-svg{opacity:1}
-.nav-div{height:1px;background:var(--border);margin:5px 10px}
+.nav-div{height:1px;background:var(--border);margin:6px 4px}
 
 /* brand switcher in sidebar */
 .brand-switcher{margin:0;background:transparent;border:none;border-radius:0;overflow:hidden}
-.brand-item{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:7px;cursor:pointer;transition:all .12s;border:none;margin-bottom:1px}
+.brand-item{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:10px;cursor:pointer;transition:all .12s;border:none;margin-bottom:1px}
 .brand-item:last-child{border-bottom:none}
 .brand-item:hover{background:var(--surface2)}
 .brand-item.active-brand{background:var(--accent-light)}
-.brand-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.brand-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .brand-label{font-size:12px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-id{display:none}
 .brand-add{display:none}
@@ -214,7 +214,9 @@ tbody tr:hover td{background:var(--surface2)}
 .opp-badge.urgent{background:var(--red-light);color:var(--red)}
 .opp-badge.scale{background:var(--green-light);color:var(--green)}
 .opp-badge.test{background:var(--yellow-light);color:var(--yellow)}
-.adwiz-opt{padding:8px 14px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.camp-accordion{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .15s}
+.camp-accordion:hover{border-color:var(--border2)}
+.adwiz-opt{padding:8px 16px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
 .adwiz-opt:hover{border-color:var(--accent);color:var(--text);background:var(--accent-light)}
 .adwiz-opt.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);font-weight:800}
 .opp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
@@ -680,7 +682,7 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
 
     <!-- Kampanya listesi -->
-    <div id="plan-camp-list" style="display:none;flex-direction:column;gap:8px"></div>
+    <div id="plan-camp-list" style="display:none;flex-direction:column;gap:4px"></div>
   </div>
 
   <!-- compat hidden -->
@@ -954,42 +956,42 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div id="adwiz-input" style="display:block">
 
     <!-- FORMAT -->
-    <div style="margin-bottom:10px">
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Format</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="adwiz-format-group">
-        <button onclick="adWizSelect('format','video',this)" class="adwiz-opt active" data-val="video">📹 Video / Reels</button>
-        <button onclick="adWizSelect('format','image',this)" class="adwiz-opt" data-val="image">🖼 Görsel</button>
-        <button onclick="adWizSelect('format','carousel',this)" class="adwiz-opt" data-val="carousel">🎠 Carousel</button>
-        <button onclick="adWizSelect('format','story',this)" class="adwiz-opt" data-val="story">📱 Story</button>
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Format</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="adwiz-format-group">
+        <button onclick="adWizSelect('format','video',this)" class="adwiz-opt active" data-val="video">Video / Reels</button>
+        <button onclick="adWizSelect('format','image',this)" class="adwiz-opt" data-val="image">Görsel</button>
+        <button onclick="adWizSelect('format','carousel',this)" class="adwiz-opt" data-val="carousel">Carousel</button>
+        <button onclick="adWizSelect('format','story',this)" class="adwiz-opt" data-val="story">Story</button>
       </div>
     </div>
 
     <!-- HEDEF -->
-    <div style="margin-bottom:10px">
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Hedef</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="adwiz-goal-group">
-        <button onclick="adWizSelect('goal','satis',this)" class="adwiz-opt active" data-val="satis">💰 Satış</button>
-        <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-opt" data-val="trafik">🔗 Trafik</button>
-        <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-opt" data-val="etkilesim">💬 Etkileşim</button>
-        <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-opt" data-val="farkindalik">📢 Farkındalık</button>
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Hedef</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="adwiz-goal-group">
+        <button onclick="adWizSelect('goal','satis',this)" class="adwiz-opt active" data-val="satis">Satış</button>
+        <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-opt" data-val="trafik">Trafik</button>
+        <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-opt" data-val="etkilesim">Etkileşim</button>
+        <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-opt" data-val="farkindalik">Farkındalık</button>
       </div>
     </div>
 
     <!-- AÇI -->
-    <div style="margin-bottom:14px">
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:8px">Açı / Ton</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="adwiz-angle-group">
-        <button onclick="adWizSelect('angle','pov',this)" class="adwiz-opt active" data-val="pov">🎬 POV Keşif</button>
-        <button onclick="adWizSelect('angle','uzman',this)" class="adwiz-opt" data-val="uzman">🩺 Uzman</button>
-        <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-opt" data-val="ugc">😊 UGC</button>
-        <button onclick="adWizSelect('angle','problem',this)" class="adwiz-opt" data-val="problem">😤 Problem-Çözüm</button>
-        <button onclick="adWizSelect('angle','karsilastirma',this)" class="adwiz-opt" data-val="karsilastirma">⚖️ Karşılaştırma</button>
-        <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-opt" data-val="sosyal">📊 Sosyal Kanıt</button>
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Açı / Ton</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="adwiz-angle-group">
+        <button onclick="adWizSelect('angle','pov',this)" class="adwiz-opt active" data-val="pov">POV Keşif</button>
+        <button onclick="adWizSelect('angle','uzman',this)" class="adwiz-opt" data-val="uzman">Uzman</button>
+        <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-opt" data-val="ugc">UGC</button>
+        <button onclick="adWizSelect('angle','problem',this)" class="adwiz-opt" data-val="problem">Problem–Çözüm</button>
+        <button onclick="adWizSelect('angle','karsilastirma',this)" class="adwiz-opt" data-val="karsilastirma">Karşılaştırma</button>
+        <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-opt" data-val="sosyal">Sosyal Kanıt</button>
       </div>
     </div>
 
-    <button onclick="adWizGenerate()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:8px" onmouseover="this.style.opacity='.88';this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1';this.style.transform=''">
-      <span>✨</span> <span id="adwiz-btn-text">Reklam Paketi Üret</span>
+    <button onclick="adWizGenerate()" style="width:100%;padding:13px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .15s" onmouseover="this.style.background='#1e40af';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--accent)';this.style.transform=''">
+      <span id="adwiz-btn-text">Reklam Paketi Üret</span>
     </button>
 
     <!-- hidden inputs for compat -->
@@ -1528,6 +1530,8 @@ function startApp() {
   nav(lastSection);
   if (lastSection === 'plan') loadPlan();
   loadUserPlan();
+  // Sayfa yüklenince Meta verilerini arka planda çek (kampanya kartları için)
+  setTimeout(function() { loadDashboardSilent(); }, 800);
 }
 
 async function loadAllAccounts() {
@@ -1942,11 +1946,39 @@ async function getTodayInsights() {
 }
 
 function refreshData() {
+  // Yenile butonu (topbar ↺)
+  loadDashboardSilent();
   loadPlan();
-  const sec = document.querySelector('.section.active').id.replace('sec-', '');
+  const sec = document.querySelector('.section.active') ? document.querySelector('.section.active').id.replace('sec-', '') : '';
   if (sec === 'dash') loadDashboard();
   if (sec === 'scale') loadScale();
-  if (sec === 'creative') loadCreative();
+}
+
+// Arka planda sessizce Meta verisini çeker — kampanya kartları için
+async function loadDashboardSilent() {
+  if (!S.token || !S.accountId) return;
+  try {
+    var to = new Date().toISOString().split('T')[0];
+    var from = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+    var url = 'https://graph.facebook.com/v19.0/' + S.accountId +
+      '/insights?fields=campaign_name,campaign_id,spend,purchase_roas,actions,impressions,clicks,ctr,cpc,cpm,frequency' +
+      '&time_range={"since":"' + from + '","until":"' + to + '"}' +
+      '&level=campaign&access_token=' + S.token;
+    var r = await fetch(url);
+    var d = await r.json();
+    if (!d.data) return;
+    var insights = d.data.map(function(i) {
+      var purchaseAction = (i.actions || []).find(function(a){ return a.action_type === 'purchase'; });
+      var revenueAction = (i.action_values || []).find(function(a){ return a.action_type === 'purchase'; });
+      var purchases = purchaseAction ? parseFloat(purchaseAction.value) : 0;
+      var revenue = revenueAction ? parseFloat(revenueAction.value) : 0;
+      var spend = parseFloat(i.spend || 0);
+      var roas = revenue > 0 && spend > 0 ? revenue / spend : 0;
+      return Object.assign({}, i, { _purchases: purchases, _revenue: revenue, _roas: roas, _cpa: purchases > 0 ? spend / purchases : 0 });
+    });
+    window._campData = insights;
+    renderPlanCampaigns();
+  } catch(e) { console.log('Silent load error:', e.message); }
 }
 
 // ═══════════════════════════════════════════════
@@ -2015,11 +2047,9 @@ function loadDailyPlan() {
 function renderPlanCampaigns() {
   var listEl = document.getElementById('plan-camp-list');
   var emptyEl = document.getElementById('plan-camp-empty');
-  var loadEl = document.getElementById('plan-camp-loading');
   if (!listEl) return;
 
-  // Mevcut kampanya verisi varsa göster
-  var camps = window._campData || window._lastCampaigns || [];
+  var camps = window._campData || [];
   if (!camps.length) {
     if (emptyEl) emptyEl.style.display = 'block';
     listEl.style.display = 'none';
@@ -2029,42 +2059,73 @@ function renderPlanCampaigns() {
   if (emptyEl) emptyEl.style.display = 'none';
   listEl.style.display = 'flex';
 
-  listEl.innerHTML = camps.map(function(c) {
-    // Trafik ışığı hesapla
-    var roas = parseFloat(c.roas) || 0;
-    var ctr = parseFloat(c.ctr) || 0;
+  listEl.innerHTML = camps.map(function(c, idx) {
+    var roas = c._roas || 0;
+    var ctr  = parseFloat(c.ctr) || 0;
     var freq = parseFloat(c.frequency) || 0;
     var spend = parseFloat(c.spend) || 0;
+    var purchases = c._purchases || 0;
+    var cpc = parseFloat(c.cpc) || 0;
 
-    var status = 'green'; // iyi
-    var statusLabel = 'İyi gidiyor';
-    var statusColor = 'var(--green)';
-    var statusBg = 'var(--green-light)';
-
-    if (roas < 1.5 || freq > 3.5 || ctr < 0.5) {
-      status = 'red';
-      statusLabel = 'Dikkat';
-      statusColor = 'var(--red)';
-      statusBg = 'var(--red-light)';
-    } else if (roas < 2.5 || freq > 2.5) {
-      status = 'yellow';
-      statusLabel = 'Takipte';
-      statusColor = 'var(--yellow)';
-      statusBg = 'var(--yellow-light)';
+    // Renk: ROAS varsa ona bak, yoksa CTR'a bak
+    var dot, label, labelColor, labelBg;
+    if (roas > 0) {
+      if (roas >= 2.5)      { dot='var(--green)';  label='İyi';     labelColor='var(--green)';  labelBg='var(--green-light)'; }
+      else if (roas >= 1.2) { dot='var(--yellow)'; label='Takipte'; labelColor='var(--yellow)'; labelBg='var(--yellow-light)'; }
+      else                  { dot='var(--red)';    label='Dikkat';  labelColor='var(--red)';    labelBg='var(--red-light)'; }
+    } else {
+      if (ctr >= 1.5)      { dot='var(--green)';  label='İyi CTR';  labelColor='var(--green)';  labelBg='var(--green-light)'; }
+      else if (ctr >= 0.7) { dot='var(--yellow)'; label='Takipte';  labelColor='var(--yellow)'; labelBg='var(--yellow-light)'; }
+      else if (spend > 0)  { dot='var(--text3)';  label='Veri az';  labelColor='var(--text3)';  labelBg='var(--surface2)'; }
+      else                 { dot='var(--text3)';  label='—';         labelColor='var(--text3)';  labelBg='var(--surface2)'; }
     }
 
-    var name = c.name || c.campaign_name || 'Kampanya';
-    if (name.length > 40) name = name.substring(0, 40) + '…';
+    var name = (c.campaign_name || 'Kampanya');
+    if (name.length > 42) name = name.substring(0, 42) + '…';
 
-    return '<div onclick="openCampPopup(' + JSON.stringify(c).replace(/"/g, '&quot;') + ')" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--border2)\'" onmouseout="this.style.borderColor=\'var(--border)\'">' +
-      '<div style="width:10px;height:10px;border-radius:50%;background:' + statusColor + ';flex-shrink:0;box-shadow:0 0 6px ' + statusColor + '55"></div>' +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(name) + '</div>' +
-        '<div style="font-size:11px;color:var(--text3);margin-top:2px">₺' + spend.toFixed(0) + ' harcama · ROAS ' + roas.toFixed(1) + 'x · Frekans ' + freq.toFixed(1) + '</div>' +
+    var roasStr = roas > 0 ? roas.toFixed(2) + 'x' : '—';
+    var cpaStr  = c._cpa > 0 ? '₺' + c._cpa.toFixed(0) : '—';
+
+    return '<div class="camp-accordion" id="camp-acc-' + idx + '">' +
+      // Kart başlığı
+      '<div onclick="toggleCampAcc(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .13s;border-radius:14px" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">' +
+        '<div style="width:9px;height:9px;border-radius:50%;background:' + dot + ';flex-shrink:0;box-shadow:0 0 6px ' + dot + '55"></div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(name) + '</div>' +
+          '<div style="font-size:11px;color:var(--text3);margin-top:2px">₺' + spend.toFixed(0) + ' harcama · ROAS ' + roasStr + ' · CTR %' + ctr.toFixed(2) + '</div>' +
+        '</div>' +
+        '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:' + labelBg + ';color:' + labelColor + ';flex-shrink:0;margin-right:6px">' + label + '</span>' +
+        '<svg id="camp-acc-arrow-' + idx + '" width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;transition:transform .2s;color:var(--text3)"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</div>' +
-      '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;background:' + statusBg + ';color:' + statusColor + ';flex-shrink:0">' + statusLabel + '</span>' +
+      // Accordion içerik
+      '<div id="camp-acc-body-' + idx + '" style="display:none;padding:0 16px 14px">' +
+        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">Harcama</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--text)">₺' + spend.toFixed(0) + '</div></div>' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">ROAS</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:' + (roas >= 2.5 ? 'var(--green)' : roas >= 1.2 ? 'var(--yellow)' : roas > 0 ? 'var(--red)' : 'var(--text)') + '">' + roasStr + '</div></div>' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">CTR</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:' + (ctr >= 1.5 ? 'var(--green)' : ctr >= 0.7 ? 'var(--yellow)' : 'var(--red)') + '">%' + ctr.toFixed(2) + '</div></div>' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">CPA</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--text)">' + cpaStr + '</div></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px">' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:8px 12px;flex:1"><span style="font-size:11px;color:var(--text3)">CPC</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--text);margin-left:8px">₺' + cpc.toFixed(2) + '</span></div>' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:8px 12px;flex:1"><span style="font-size:11px;color:var(--text3)">Frekans</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:' + (freq > 3 ? 'var(--red)' : freq > 2 ? 'var(--yellow)' : 'var(--text)') + ';margin-left:8px">' + freq.toFixed(1) + '</span></div>' +
+          '<div style="background:var(--surface2);border-radius:10px;padding:8px 12px;flex:1"><span style="font-size:11px;color:var(--text3)">Satış</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--text);margin-left:8px">' + (purchases > 0 ? purchases.toFixed(0) : '—') + '</span></div>' +
+        '</div>' +
+        // AI yorum butonu
+        '<div style="margin-top:10px">' +
+          '<button onclick="openCampPopup(' + idx + ')" style="background:var(--accent-light);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;font-family:var(--font);transition:all .13s" onmouseover="this.style.background=\'var(--accent)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'var(--accent-light)\';this.style.color=\'var(--accent)\'">AI Yorumu →</button>' +
+        '</div>' +
+      '</div>' +
     '</div>';
   }).join('');
+}
+
+function toggleCampAcc(idx) {
+  var body = document.getElementById('camp-acc-body-' + idx);
+  var arrow = document.getElementById('camp-acc-arrow-' + idx);
+  if (!body) return;
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
 }
 
 // HAFIZA & CREATIVE ZEKA
