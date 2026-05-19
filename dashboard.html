@@ -644,7 +644,7 @@ input::placeholder{color:var(--text3)}
       <div class="ob-q">Markanızın adı nedir?</div>
       <div class="ob-sub">Sana kişiselleştirilmiş analizler ve tavsiyeler sunalım.</div>
       <div class="ob-input-wrap">
-        <input class="ob-text-input" id="ob-brand" type="text" placeholder="örn. AlaTab, Nike, Marka Adı...">
+        <input class="ob-text-input" id="ob-brand" type="text" placeholder="örn. Nike, Zara, Marka Adın...">
       </div>
       <div class="field" style="margin-bottom:28px">
         <label>Aylık Reklam Bütçesi</label>
@@ -1294,13 +1294,48 @@ function loadAccounts(){
     .then(function(d){
       if(d.error){toast('FB: '+d.error.message);document.getElementById('no-fb-banner').style.display='flex';return;}
       S.accounts=d.data||[];
-      if(S.accounts.length){
-        var saved=ls.g('active_acc');
-        var found=saved&&S.accounts.find(function(a){return a.id===saved});
-        selectAcc(found||S.accounts[0]);
-      }
+      if(!S.accounts.length){toast('Reklam hesabı bulunamadı');return;}
+      // Kayıtlı hesap varsa direkt seç
+      var saved=ls.g('active_acc');
+      var found=saved&&S.accounts.find(function(a){return a.id===saved});
+      if(found){selectAcc(found);return;}
+      // Tek hesap varsa direkt seç
+      if(S.accounts.length===1){selectAcc(S.accounts[0]);return;}
+      // Birden fazla hesap varsa seçtir
+      showAccPicker();
     })
     .catch(function(){toast('Hesaplar yüklenemedi');});
+}
+
+function showAccPicker(){
+  var existing=document.getElementById('acc-picker-overlay');
+  if(existing) existing.remove();
+  var overlay=document.createElement('div');
+  overlay.id='acc-picker-overlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:600;background:rgba(26,25,22,0.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px';
+  var html='<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;width:100%;max-width:420px;box-shadow:var(--shadow-lg)">'+
+    '<div style="font-size:18px;font-weight:700;letter-spacing:-.03em;color:var(--text);margin-bottom:6px;font-family:var(--serif);font-style:italic">Reklam Hesabı Seç</div>'+
+    '<div style="font-size:13px;color:var(--text2);margin-bottom:20px">Hangi hesabın verilerini görmek istiyorsun?</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px">'+
+    S.accounts.map(function(a,i){
+      var colors=['#e8500a','#0a7c4e','#b8860b','#2563eb','#7c3aed'];
+      return'<div onclick="selectAccFromPicker(\''+a.id+'\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.background=\'var(--accent-bg)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'\'">'+
+        '<div style="width:8px;height:8px;border-radius:50%;background:'+colors[i%colors.length]+';flex-shrink:0"></div>'+
+        '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+esc(a.name)+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px">'+a.id+'</div></div>'+
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="var(--text3)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+        '</div>';
+    }).join('')+
+    '</div></div>';
+  overlay.innerHTML=html;
+  document.body.appendChild(overlay);
+}
+
+function selectAccFromPicker(id){
+  var acc=S.accounts.find(function(a){return a.id===id});
+  var overlay=document.getElementById('acc-picker-overlay');
+  if(overlay) overlay.remove();
+  if(acc) selectAcc(acc);
 }
 
 function selectAcc(acc){
