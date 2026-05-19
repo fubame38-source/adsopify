@@ -586,29 +586,42 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <div id="sec-plan" class="section active">
 
   <!-- HEADER -->
-  <div style="margin-bottom:20px">
-    <div id="plan-greeting" style="font-size:22px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Merhaba 👋</div>
-    <div style="font-size:13px;color:var(--text2);margin-top:2px" id="plan-date"></div>
+  <div style="margin-bottom:22px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between">
+      <div>
+        <div id="plan-greeting" style="font-size:24px;font-weight:800;letter-spacing:-.06em;color:var(--text);line-height:1.1">Merhaba 👋</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px" id="plan-date"></div>
+      </div>
+    </div>
   </div>
 
   <!-- AI YORUM BLOĞU -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div style="width:28px;height:28px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.4" stroke-linejoin="round"/></svg>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(29,78,216,.25)">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
         </div>
-        <span style="font-size:13px;font-weight:700;color:var(--text)">AI Yorumu</span>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.02em">Günlük Brifing</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:1px">AI reklam danışmanın hazır</div>
+        </div>
       </div>
-      <button onclick="loadDailyPlan()" id="plan-ask-btn" class="btn btn-primary btn-sm" style="gap:5px">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <button onclick="loadDailyPlan()" id="plan-ask-btn" class="btn btn-primary" style="gap:6px;padding:9px 18px;font-size:13px;font-weight:700;border-radius:10px">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
         Bugün ne yapmalıyım?
       </button>
     </div>
 
     <!-- Boş state -->
-    <div id="plan-ai-empty" style="padding:14px 0 6px">
-      <div style="font-size:13px;color:var(--text3);line-height:1.6">Kampanya verilerini analiz edip bugün ne yapman gerektiğini söyleyeceğim. Hazır olduğunda butona bas.</div>
+    <div id="plan-ai-empty" style="padding:4px 0 2px">
+      <div style="background:var(--surface2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">
+        <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px">🎯</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">Bugün ne yapmalısın?</div>
+          <div style="font-size:12px;color:var(--text3);line-height:1.55">Kampanyalarını analiz edip net aksiyonlar söyleyeceğim.</div>
+        </div>
+      </div>
     </div>
 
     <!-- Loading -->
@@ -644,40 +657,44 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     <div id="plan-decision-cards" style="display:none;gap:12px;margin-bottom:12px;grid-template-columns:1fr 1fr">
 
       <!-- BÜYÜT -->
-      <div id="plan-best-card" style="background:linear-gradient(135deg,#001a12,#002d1f);border:1px solid rgba(5,150,105,.25);border-radius:16px;padding:20px;position:relative;overflow:hidden">
-        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(5,150,105,.2),transparent 70%);pointer-events:none"></div>
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
-          <div style="width:7px;height:7px;border-radius:50%;background:#22c98a;box-shadow:0 0 6px rgba(34,201,138,.6)"></div>
-          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#22c98a">Büyüt</span>
+      <div id="plan-best-card" style="background:var(--green-light);border:1.5px solid rgba(5,150,105,.2);border-radius:18px;padding:20px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;background:radial-gradient(circle,var(--green-light),transparent 70%);pointer-events:none"></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px">
+          <div style="width:24px;height:24px;border-radius:7px;background:var(--green);display:flex;align-items:center;justify-content:center">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 13L8 4L13 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--green)">Büyüt</span>
         </div>
-        <div id="plan-best-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.03em;line-height:1.3">—</div>
-        <div id="plan-best-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px"></div>
-        <div id="plan-best-reason" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;line-height:1.5"></div>
-        <button onclick="openCampPopupByName('best')" style="background:rgba(34,201,138,.15);border:1px solid rgba(34,201,138,.3);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#22c98a;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(34,201,138,.25)'" onmouseout="this.style.background='rgba(34,201,138,.15)'">Detay & AI Yorumu →</button>
+        <div id="plan-best-name" style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-.03em;line-height:1.3">—</div>
+        <div id="plan-best-stats" style="font-size:12px;color:var(--text3);margin-bottom:6px"></div>
+        <div id="plan-best-reason" style="font-size:11px;color:var(--text2);margin-bottom:16px;line-height:1.55"></div>
+        <button onclick="openCampPopupByName('best')" style="background:var(--green);border:none;border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);transition:all .15s;opacity:.9" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.9'">Detay & AI Yorumu →</button>
       </div>
 
       <!-- KAPAT -->
-      <div id="plan-worst-card" style="background:linear-gradient(135deg,#1a0505,#2d0a0a);border:1px solid rgba(220,38,38,.25);border-radius:16px;padding:20px;position:relative;overflow:hidden">
-        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(220,38,38,.2),transparent 70%);pointer-events:none"></div>
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
-          <div style="width:7px;height:7px;border-radius:50%;background:#f87171;box-shadow:0 0 6px rgba(248,113,113,.6)"></div>
-          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#f87171">Dikkat / Durdur</span>
+      <div id="plan-worst-card" style="background:var(--red-light);border:1.5px solid rgba(220,38,38,.2);border-radius:18px;padding:20px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-30px;right:-30px;width:130px;height:130px;background:radial-gradient(circle,var(--red-light),transparent 70%);pointer-events:none"></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px">
+          <div style="width:24px;height:24px;border-radius:7px;background:var(--red);display:flex;align-items:center;justify-content:center">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M8 4v5M8 11v1" stroke="white" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </div>
+          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--red)">Dikkat / Durdur</span>
         </div>
-        <div id="plan-worst-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.03em;line-height:1.3">—</div>
-        <div id="plan-worst-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px"></div>
-        <div id="plan-worst-reason" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;line-height:1.5"></div>
-        <button onclick="openCampPopupByName('worst')" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#f87171;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(248,113,113,.22)'" onmouseout="this.style.background='rgba(248,113,113,.12)'">Detay & AI Yorumu →</button>
+        <div id="plan-worst-name" style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-.03em;line-height:1.3">—</div>
+        <div id="plan-worst-stats" style="font-size:12px;color:var(--text3);margin-bottom:6px"></div>
+        <div id="plan-worst-reason" style="font-size:11px;color:var(--text2);margin-bottom:16px;line-height:1.55"></div>
+        <button onclick="openCampPopupByName('worst')" style="background:var(--red);border:none;border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font);transition:all .15s;opacity:.9" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.9'">Detay & AI Yorumu →</button>
       </div>
     </div>
 
     <!-- Tüm kampanyalar — küçük liste -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
         <span style="font-size:12px;font-weight:700;color:var(--text2)">Tüm Kampanyalar</span>
         <span style="font-size:11px;color:var(--text3)" id="plan-camp-period">Son 7 gün</span>
       </div>
       <div id="plan-camp-loading" style="display:none"><div class="loading-row"><div class="spinner"></div> Yükleniyor...</div></div>
-      <div id="plan-camp-empty" style="text-align:center;padding:16px 0 6px"><div style="font-size:13px;color:var(--text3)">Veri yüklendiğinde kampanyalar burada görünür.</div></div>
+      <div id="plan-camp-empty" style="padding:12px 0 6px"><div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px"><div class="spinner" style="width:12px;height:12px;border-width:1.5px"></div>Kampanya verileri yükleniyor...</div></div>
       <div id="plan-camp-list" style="display:none;flex-direction:column;gap:4px"></div>
     </div>
   </div>
@@ -1390,7 +1407,7 @@ function startApp() {
   if (lastSection === 'plan') loadPlan();
   loadUserPlan();
   // Sayfa yüklenince Meta verilerini arka planda çek (kampanya kartları için)
-  setTimeout(function() { loadDashboardSilent(); }, 800);
+  setTimeout(function() { loadDashboardSilent(); }, 200);
 }
 
 async function loadAllAccounts() {
