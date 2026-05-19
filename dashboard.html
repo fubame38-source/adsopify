@@ -1390,8 +1390,6 @@ function switchAccount(id, name) {
   loadPlan();
   const sec = document.querySelector('.section.active').id.replace('sec-', '');
   if (sec === 'dash') loadDashboard();
-  if (sec === 'scale') { document.getElementById('scale-list').innerHTML = ''; loadScale(); }
-  if (sec === 'creative') { document.getElementById('creative-cards').innerHTML = ''; loadCreative(); }
 }
 
 function toggleAccountMenu() {
@@ -1827,8 +1825,6 @@ function nav(name) {
   if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
 
   if (name === 'dash') loadDashboard();
-  if (name === 'scale' && !document.getElementById('scale-list').innerHTML) loadScale();
-  if (name === 'creative' && !document.getElementById('creative-cards').innerHTML) loadCreative();
   if (name === 'settings') loadSettingsPage();
   if (name === 'swipe') initSwipe();
   if (name === 'saved') loadSavedStrategies();
@@ -2689,70 +2685,6 @@ async function loadWeekly() {
 // ═══════════════════════════════════════════════
 // BÜTÇE PLANLAYICI
 // ═══════════════════════════════════════════════
-function calcBudget() {
-  const monthly  = parseFloat(document.getElementById('bp-monthly').value) || 30000;
-  const targetSales = parseFloat(document.getElementById('bp-sales').value) || 50;
-  const targetRoas  = parseFloat(document.getElementById('bp-roas').value) || 3;
-  const numCamps    = parseInt(document.getElementById('bp-camps').value) || 3;
-  const testPct     = parseFloat(document.getElementById('bp-test-pct').value) / 100 || 0.2;
-  const price       = parseFloat(document.getElementById('bp-price').value) || 1799;
-
-  const dailyTotal  = monthly / 30;
-  const testBudget  = monthly * testPct;
-  const scaleBudget = monthly * (1 - testPct);
-  const dailyScale  = scaleBudget / 30;
-  const dailyTest   = testBudget / 30;
-  const targetRevenue = targetSales * price;
-  const impliedSpend  = targetRevenue / targetRoas;
-  const impliedCPA    = impliedSpend / targetSales;
-  const campBudget    = scaleBudget / numCamps;
-  const dailyCampBudget = campBudget / 30;
-
-  document.getElementById('budget-kpis').innerHTML =
-    '<div class="kpi-card accent"><div class="label">Günlük Toplam</div><div class="value">₺' + dailyTotal.toFixed(0) + '</div><div class="sub">₺' + monthly.toFixed(0) + ' / ay</div></div>' +
-    '<div class="kpi-card"><div class="label">Hedef Gelir</div><div class="value">₺' + fmt(Math.round(targetRevenue)) + '</div><div class="sub">' + targetSales + ' satış × ₺' + price.toFixed(0) + '</div></div>' +
-    '<div class="kpi-card"><div class="label">Hedef ROAS</div><div class="value">' + targetRoas.toFixed(1) + 'x</div><div class="sub">₺' + impliedSpend.toFixed(0) + ' reklam bütçesi</div></div>' +
-    '<div class="kpi-card"><div class="label">Maks CPA</div><div class="value">₺' + impliedCPA.toFixed(0) + '</div><div class="sub">Bu üstü zarardır</div></div>';
-
-  const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-  const dayWeights = [0.13, 0.13, 0.14, 0.14, 0.15, 0.16, 0.15];
-  document.getElementById('budget-daily').innerHTML =
-    '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px">' +
-    days.map((d, i) => {
-      const db = dailyTotal * dayWeights[i] * 7;
-      const iw = i >= 5;
-      return '<div style="text-align:center;padding:12px 8px;background:' + (iw ? 'var(--accent-light)' : 'var(--surface2)') + ';border:1px solid var(--border);border-radius:10px">' +
-        '<div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px">' + d + '</div>' +
-        '<div style="font-size:14px;font-weight:600;color:' + (iw ? 'var(--accent)' : 'var(--text)') + '">₺' + db.toFixed(0) + '</div>' +
-        (iw ? '<div style="font-size:10px;color:var(--accent)">↑ hafta sonu</div>' : '') + '</div>';
-    }).join('') + '</div>' +
-    '<div style="font-size:11px;color:var(--text3);margin-top:8px">Hafta sonu dönüşüm oranı genellikle daha yüksektir — bütçeyi ona göre kaydır.</div>';
-
-  document.getElementById('budget-camps').innerHTML =
-    Array.from({ length: numCamps }, (_, i) => {
-      const isMain = i < Math.ceil(numCamps * 0.7);
-      const db = isMain ? dailyCampBudget * 1.2 : dailyCampBudget * 0.6;
-      const label = i === 0 ? 'Ana Kampanya (En iyi performans)' : isMain ? 'Ölçekleme Kampanyası ' + (i + 1) : 'Test Kampanyası ' + (i + 1);
-      return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">' +
-        '<div style="flex:2;font-size:13px;font-weight:500">' + label + '</div>' +
-        '<div style="text-align:right"><div style="font-size:16px;font-weight:600;color:var(--accent)">₺' + db.toFixed(0) + '/gün</div><div style="font-size:11px;color:var(--text3)">₺' + (db * 30).toFixed(0) + '/ay</div></div>' +
-        '<div style="width:120px"><div style="height:6px;background:var(--border);border-radius:99px;overflow:hidden"><div style="height:100%;border-radius:99px;background:var(--accent);width:' + Math.min(100, db / dailyTotal * 100) + '%"></div></div></div>' +
-        '</div>';
-    }).join('') +
-    '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;flex-wrap:wrap">' +
-    '<div style="flex:2;font-size:13px;font-weight:500;color:var(--yellow)">🧪 Test Bütçesi (yeni creative / kitle)</div>' +
-    '<div style="text-align:right"><div style="font-size:16px;font-weight:600;color:var(--yellow)">₺' + dailyTest.toFixed(0) + '/gün</div><div style="font-size:11px;color:var(--text3)">₺' + testBudget.toFixed(0) + '/ay (%' + (testPct * 100).toFixed(0) + ')</div></div>' +
-    '</div>';
-
-  document.getElementById('budget-milestones').innerHTML =
-    '📍 <strong>Hafta 1:</strong> Kampanyaları başlat, günlük ₺' + dailyTotal.toFixed(0) + ' harca. CPA\'yı izle — ₺' + impliedCPA.toFixed(0) + ' altında kalmalı.<br>' +
-    '📍 <strong>Hafta 2:</strong> En iyi ROAS\'lı kampanyaya bütçe kaydır. Zayıf olanı %20 düşür.<br>' +
-    '📍 <strong>Hafta 3:</strong> Kazanan kampanyayı günde %20 artır. Yeni creative testi başlat.<br>' +
-    '📍 <strong>Hafta 4:</strong> Ay sonu analizi — ROAS ' + targetRoas + 'x ulaşıldıysa bir sonraki ay bütçeyi %30 artır.<br><br>' +
-    '🎯 <strong>Hedef:</strong> Ayda ' + targetSales + ' satış → ₺' + fmt(Math.round(targetRevenue)) + ' gelir → ROAS ' + targetRoas + 'x';
-
-  document.getElementById('budget-results').style.display = 'block';
-}
 
 // ═══════════════════════════════════════════════
 // DASHBOARD
@@ -3121,63 +3053,6 @@ var _lastHooks = {};
 
 var _allGeneratedHooks = []; // Tüm üretilen hookları sakla, tekrar olmasın
 
-async function generateHooks() {
-  if (!S.brand || !S.brand.brandName) {
-    document.getElementById('hook-results').innerHTML = '<div style="text-align:center;padding:48px 24px"><div style="font-size:40px;margin-bottom:16px">🎯</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:14px;color:var(--text2);margin-bottom:20px">AI, markana özel viral hooklar üretsin.</div><button class="btn btn-primary" onclick="resetBrand(&quot;hook&quot;)">Markanı Ekle →</button></div>';
-    return;
-  }
-
-  const btn = document.getElementById('hook-gen-btn');
-  btn.textContent = '⏳ Üretiliyor...';
-  btn.disabled = true;
-
-  // Loading skeleton
-  document.getElementById('hook-results').innerHTML = Array(5).fill(0).map((_, i) =>
-    '<div style="background:var(--surface2);border-radius:16px;padding:20px 24px;margin-bottom:10px;animation:pulse 1.5s ease ' + (i*0.1) + 's infinite"><div style="height:20px;background:var(--surface3);border-radius:8px;width:85%;margin-bottom:8px"></div><div style="height:14px;background:var(--surface3);border-radius:6px;width:40%"></div></div>'
-  ).join('');
-
-  const format = document.getElementById('hook-format').value;
-  const audience = document.getElementById('hook-audience').value;
-
-  try {
-    const res = await fetch('https://adsopify-api.fubame38.workers.dev/hooks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        brandName: S.brand.brandName,
-        product: S.brand.product || '',
-        audience: S.brand.audience || '',
-        format,
-        targetAudience: audience,
-        previousHooks: _allGeneratedHooks
-      })
-    });
-
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    const hooks = data.hooks || [];
-    // Üretilen hookları kaydet (tekrar etmesin)
-    hooks.forEach(h => { if (!_allGeneratedHooks.includes(h.text)) _allGeneratedHooks.push(h.text); });
-    if (_allGeneratedHooks.length > 100) _allGeneratedHooks = _allGeneratedHooks.slice(-100);
-
-    renderHookCards(hooks);
-
-  } catch(e) {
-    // Fallback: basit template
-    const fallback = [
-      { text: S.brand.brandName + ' ü gördüğümde "buna gerek yok" dedim. Yanılmışım.', category: 'POV', why: 'Şüphecileri hedefler' },
-      { text: '"' + S.brand.brandName + ' olmadan nasıl yaşadım?" diye soruyorum kendime artık.', category: 'POV', why: 'Duygusal bağ' },
-      { text: S.brand.brandName + ' hakkında kimsenin söylemediği şeyi ben söylüyorum 👇', category: 'Sır', why: 'Merak yaratır' },
-      { text: 'Arkadaşım ' + S.brand.brandName + ' önermeseydi bilmezdim — gerçekten işe yarıyor.', category: 'Kanıt', why: 'Sosyal güven' },
-      { text: S.brand.brandName + ' aldım, 3 gün sonra ailemdeki herkes sipariş verdi.', category: 'UGC', why: 'Organik yayılma' },
-    ];
-    renderHookCards(fallback);
-  }
-
-  btn.textContent = '✨ Yeniden Üret';
-  btn.disabled = false;
-}
 
 // Kategori renkleri
 const categoryColors = {
@@ -3255,63 +3130,6 @@ function copyHook(el) {
 // ═══════════════════════════════════════════════
 var _copyHistory = []; // Tekrar üretme
 
-async function generateCopy() {
-  const input = document.getElementById('copy-input').value.trim();
-  const goal = document.getElementById('copy-goal').value;
-  const tone = document.getElementById('copy-tone').value;
-
-  if (!S.brand || !S.brand.brandName) {
-    document.getElementById('copy-results').innerHTML = '<div style="text-align:center;padding:48px 24px"><div style="font-size:40px;margin-bottom:16px">✍️</div><div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px">Önce markanı tanıt</div><div style="font-size:14px;color:var(--text2);margin-bottom:20px">AI, markana özel reklam metinleri yazsın.</div><button class="btn btn-primary" onclick="resetBrand()">Markanı Ekle →</button></div>';
-    return;
-  }
-
-  const btn = document.querySelector('#sec-copy .btn-primary');
-  if (btn) { btn.textContent = '⏳ Yazılıyor...'; btn.disabled = true; }
-
-  // Loading
-  document.getElementById('copy-results').innerHTML = Array(3).fill(0).map((_, i) =>
-    '<div style="background:var(--surface2);border-radius:16px;padding:24px;margin-bottom:12px;animation:pulse 1.5s ease ' + (i*0.15) + 's infinite"><div style="height:16px;background:var(--surface3);border-radius:6px;width:30%;margin-bottom:16px"></div><div style="height:12px;background:var(--surface3);border-radius:6px;width:90%;margin-bottom:8px"></div><div style="height:12px;background:var(--surface3);border-radius:6px;width:75%;margin-bottom:8px"></div><div style="height:12px;background:var(--surface3);border-radius:6px;width:60%"></div></div>'
-  ).join('');
-
-  const goalLabels = { 'sales': 'Satış/Dönüşüm', 'traffic': 'Trafik/Tıklama', 'awareness': 'Marka Bilinirliği', 'engagement': 'Etkileşim/Yorum' };
-  const toneLabels = { 'warm': 'Sıcak ve samimi', 'urgent': 'Acil/FOMO', 'educational': 'Eğitici', 'humorous': 'Eğlenceli/Mizahi' };
-
-  const prev = _copyHistory.slice(-3).join(' | ');
-
-  try {
-    const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: 'Sen uzman bir Meta reklam copywriter olarak yalnızca JSON döndürürsün. Başka hiçbir şey yazmazsın.',
-        message: `Marka: ${S.brand.brandName}. Ürün: ${S.brand.product || ''}. Hedef kitle: ${S.brand.audience || ''}. URL: ${S.brand.url || ''}.
-
-Hedef: ${goalLabels[goal]}. Ton: ${toneLabels[tone]}.
-${input ? 'Mevcut metin: ' + input : ''}
-${prev ? 'Daha önce yazılanlar (bunlardan FARKLI ol): ' + prev : ''}
-
-Bu markaya özel 3 farklı Türkçe reklam metni yaz. Her biri gerçekten farklı strateji kullansın.
-
-Sadece JSON döndür: {"copies":[{"tag":"versiyon başlığı","text":"reklam metni emoji ve satır atlamayla"},{"tag":"...","text":"..."},{"tag":"...","text":"..."}]}`
-      })
-    });
-    const data = await res.json();
-    const raw = (data.answer || '').replace(/```json|```/g, '').trim();
-    const parsed = extractJsonObject(raw, { copies: [] });
-    const copies = parsed.copies || [];
-
-    copies.forEach(c => { if (!_copyHistory.includes(c.text)) _copyHistory.push(c.text.slice(0, 50)); });
-    if (_copyHistory.length > 20) _copyHistory = _copyHistory.slice(-20);
-
-    renderCopyCards(copies);
-
-  } catch(e) {
-    // Fallback
-    renderCopyCards(buildCopies(goal, tone, input));
-  }
-
-  if (btn) { btn.textContent = '✍️ Analiz Et ve Yaz'; btn.disabled = false; }
-}
 
 function renderCopyCards(copies) {
   const colors = [
@@ -4294,8 +4112,6 @@ function hookAction(action, cardEl) {
   setTimeout(function(){ renderHookCard(); renderSaved(); }, 320);
 }
 
-function swipeCard(dir) { hookAction(dir === 'left' ? 'skip' : dir === 'right' ? 'use' : 'save'); }
-
 function showSwipeToast(msg, color) {
   const t = document.createElement('div');
   t.style.cssText = `position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:${color};color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;z-index:9999;animation:fadeIn 0.2s ease`;
@@ -4448,8 +4264,9 @@ function saveLog() {
 }
 
 function loadLogs() {
-  const logs = JSON.parse(localStorage.getItem('adsopify_logs') || '[]');
   const el = document.getElementById('log-list');
+  if (!el) return; // sec-log kaldırıldı
+  const logs = JSON.parse(localStorage.getItem('adsopify_logs') || '[]');
   if (!logs.length) {
     el.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0">Henüz not yok. İlk notunu ekle!</div>';
     return;
@@ -4457,23 +4274,6 @@ function loadLogs() {
   el.innerHTML = logs.map(l => '<div class="log-entry"><div class="le-date">' + new Date(l.date).toLocaleString('tr-TR') + '</div><div class="le-text">' + formatSafeMultiline(l.text) + '</div></div>').join('');
 }
 
-function analyzeLog() {
-  const logs = JSON.parse(localStorage.getItem('adsopify_logs') || '[]');
-  if (logs.length < 2) { alert('En az 2 not gerekli pattern analizi için!'); return; }
-
-  const all = logs.map(l => l.text).join(' ').toLowerCase();
-  const patterns = [];
-
-  if (all.includes('cpc') && all.split('cpc').length > 2) patterns.push('💡 CPC optimizasyonu sık gündeminde — hedef kitle testi denedin mi?');
-  if (all.includes('düştü') || all.includes('kötü')) patterns.push('⚠️ Performans sorunları not edilmiş — creative rotasyonu gerekebilir.');
-  if (all.includes('iyi') || all.includes('arttı') || all.includes('güzel')) patterns.push('✅ Pozitif dönüşler var — o dönemin stratejisini analiz et.');
-  if (all.includes('ctr')) patterns.push('📊 CTR takibi yapıyorsun — hook testlerini belgelemek faydalı olur.');
-  if (all.includes('creative') || all.includes('video') || all.includes('reel')) patterns.push('🎥 Creative konusu sık geçiyor — içerik takvimi oluşturmayı düşün.');
-  if (patterns.length === 0) patterns.push('Henüz belirgin bir pattern yok. Daha fazla not ekledikçe analiz güçlenir.');
-
-  document.getElementById('log-analysis-content').innerHTML = patterns.map(escapeHtml).join('<br><br>');
-  document.getElementById('log-analysis').style.display = 'block';
-}
 
 // ═══════════════════════════════════════════════
 // UTILS
