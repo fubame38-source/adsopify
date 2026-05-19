@@ -637,25 +637,47 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
   </div>
 
-  <!-- KAMPANYAlar — trafik ışığı -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow)">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <span style="font-size:13px;font-weight:700;color:var(--text)">Kampanyalar</span>
-      <span style="font-size:11px;color:var(--text3)" id="plan-camp-period">Son 7 gün</span>
+  <!-- KAMPANYAlar — karar kartları -->
+  <div id="plan-camps-section" style="margin-top:14px">
+
+    <!-- Karar kartları — veri gelince görünür -->
+    <div id="plan-decision-cards" style="display:none;gap:12px;margin-bottom:12px;grid-template-columns:1fr 1fr">
+
+      <!-- BÜYÜT -->
+      <div id="plan-best-card" style="background:linear-gradient(135deg,#001a12,#002d1f);border:1px solid rgba(5,150,105,.25);border-radius:16px;padding:20px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(5,150,105,.2),transparent 70%);pointer-events:none"></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
+          <div style="width:7px;height:7px;border-radius:50%;background:#22c98a;box-shadow:0 0 6px rgba(34,201,138,.6)"></div>
+          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#22c98a">Büyüt</span>
+        </div>
+        <div id="plan-best-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.03em;line-height:1.3">—</div>
+        <div id="plan-best-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px"></div>
+        <button onclick="openCampPopupByName('best')" style="background:rgba(34,201,138,.15);border:1px solid rgba(34,201,138,.3);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#22c98a;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(34,201,138,.25)'" onmouseout="this.style.background='rgba(34,201,138,.15)'">Detay & AI Yorumu →</button>
+      </div>
+
+      <!-- KAPAT -->
+      <div id="plan-worst-card" style="background:linear-gradient(135deg,#1a0505,#2d0a0a);border:1px solid rgba(220,38,38,.25);border-radius:16px;padding:20px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(220,38,38,.2),transparent 70%);pointer-events:none"></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px">
+          <div style="width:7px;height:7px;border-radius:50%;background:#f87171;box-shadow:0 0 6px rgba(248,113,113,.6)"></div>
+          <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#f87171">Dikkat / Durdur</span>
+        </div>
+        <div id="plan-worst-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.03em;line-height:1.3">—</div>
+        <div id="plan-worst-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px"></div>
+        <button onclick="openCampPopupByName('worst')" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#f87171;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(248,113,113,.22)'" onmouseout="this.style.background='rgba(248,113,113,.12)'">Detay & AI Yorumu →</button>
+      </div>
     </div>
 
-    <!-- Loading -->
-    <div id="plan-camp-loading" style="display:none">
-      <div class="loading-row"><div class="spinner"></div> Yükleniyor...</div>
+    <!-- Tüm kampanyalar — küçük liste -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <span style="font-size:12px;font-weight:700;color:var(--text2)">Tüm Kampanyalar</span>
+        <span style="font-size:11px;color:var(--text3)" id="plan-camp-period">Son 7 gün</span>
+      </div>
+      <div id="plan-camp-loading" style="display:none"><div class="loading-row"><div class="spinner"></div> Yükleniyor...</div></div>
+      <div id="plan-camp-empty" style="text-align:center;padding:16px 0 6px"><div style="font-size:13px;color:var(--text3)">Veri yüklendiğinde kampanyalar burada görünür.</div></div>
+      <div id="plan-camp-list" style="display:none;flex-direction:column;gap:4px"></div>
     </div>
-
-    <!-- Boş state -->
-    <div id="plan-camp-empty" style="text-align:center;padding:20px 0 10px">
-      <div style="font-size:13px;color:var(--text3)">Veri yüklendiğinde kampanyalar burada görünür.</div>
-    </div>
-
-    <!-- Kampanya listesi -->
-    <div id="plan-camp-list" style="display:none;flex-direction:column;gap:4px"></div>
   </div>
 
   <!-- compat hidden -->
@@ -1908,6 +1930,43 @@ function renderPlanCampaigns() {
 
   if (emptyEl) emptyEl.style.display = 'none';
   listEl.style.display = 'flex';
+
+  // En iyi ve en kötü kampanyayı bul
+  var sorted = camps.slice().sort(function(a, b) {
+    // Önce CTR'a göre sırala (ROAS yoksa)
+    var scoreA = a._roas > 0 ? a._roas * 10 : parseFloat(a.ctr || 0);
+    var scoreB = b._roas > 0 ? b._roas * 10 : parseFloat(b.ctr || 0);
+    return scoreB - scoreA;
+  });
+  var best  = sorted[0];
+  var worst = sorted[sorted.length - 1];
+  var bestIdx  = camps.indexOf(best);
+  var worstIdx = camps.indexOf(worst);
+  window._planBestIdx  = bestIdx;
+  window._planWorstIdx = worstIdx;
+
+  var decisionCards = document.getElementById('plan-decision-cards');
+  if (decisionCards && best && worst && best !== worst) {
+    decisionCards.style.display = 'grid';
+
+    var bestSpend = parseFloat(best.spend || 0);
+    var bestCtr   = parseFloat(best.ctr || 0);
+    var bestRoas  = best._roas || 0;
+    document.getElementById('plan-best-name').textContent = (best.campaign_name || '').substring(0, 36) || 'En iyi kampanya';
+    document.getElementById('plan-best-stats').textContent =
+      '₺' + bestSpend.toFixed(0) + ' harcama' +
+      (bestRoas > 0 ? ' · ROAS ' + bestRoas.toFixed(2) + 'x' : '') +
+      ' · CTR %' + bestCtr.toFixed(2);
+
+    var worstSpend = parseFloat(worst.spend || 0);
+    var worstCtr   = parseFloat(worst.ctr || 0);
+    var worstRoas  = worst._roas || 0;
+    document.getElementById('plan-worst-name').textContent = (worst.campaign_name || '').substring(0, 36) || 'En kötü kampanya';
+    document.getElementById('plan-worst-stats').textContent =
+      '₺' + worstSpend.toFixed(0) + ' harcama' +
+      (worstRoas > 0 ? ' · ROAS ' + worstRoas.toFixed(2) + 'x' : '') +
+      ' · CTR %' + worstCtr.toFixed(2);
+  }
 
   listEl.innerHTML = camps.map(function(c, idx) {
     var roas = c._roas || 0;
@@ -4725,6 +4784,12 @@ function clearSavedStrategies() {
 // ═══════════════════════════════════════════════
 // KAMPANYA POPUP
 // ═══════════════════════════════════════════════
+function openCampPopupByName(which) {
+  var idx = which === 'best' ? window._planBestIdx : window._planWorstIdx;
+  if (idx === undefined || idx === null) return;
+  openCampPopup(idx);
+}
+
 function openCampPopup(idx) {
   var i;
   if (typeof idx === 'object' && idx !== null) {
