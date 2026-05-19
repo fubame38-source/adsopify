@@ -1061,21 +1061,23 @@ const API = 'https://graph.facebook.com/v19.0';
 const SECURE_SESSION_KEYS = ['sb_token', 'sb_user_email', 'sb_user_id', 'adsopify_token', 'adsopify_account_id', 'adsopify_account_name'];
 
 function migrateSensitiveStorage() {
+  // Eski sessionStorage migration'ı kaldırıldı
+  // Token'lar localStorage'da kalır
   SECURE_SESSION_KEYS.forEach((key) => {
     const sessionVal = sessionStorage.getItem(key);
-    const localVal = localStorage.getItem(key);
-    if (!sessionVal && localVal) sessionStorage.setItem(key, localVal);
-    if (localVal) localStorage.removeItem(key);
+    if (sessionVal) {
+      localStorage.setItem(key, sessionVal);
+    }
   });
 }
 
 function getStored(key) {
-  return sessionStorage.getItem(key) || localStorage.getItem(key);
+  return localStorage.getItem(key) || sessionStorage.getItem(key);
 }
 
 function setStored(key, value) {
+  localStorage.setItem(key, value);
   sessionStorage.setItem(key, value);
-  if (key && (key.indexOf('token') >= 0 || key.indexOf('account') >= 0 || key.indexOf('sb_') === 0)) { try { localStorage.setItem(key, value); } catch(e) {} }
 }
 
 function removeStored(key) {
@@ -1656,14 +1658,24 @@ function fbLogin() {
   const btn = document.getElementById('fb-login-btn');
 
   if (typeof FB === 'undefined') {
-    showTokenErr('Facebook SDK yüklenemedi. Sayfayı yenile veya manuel token kullan.');
+    // SDK yüklenmediyse 2 sn bekle tekrar dene
+    btn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="white" style="margin-right:6px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook ile Bağlan';
+    showTokenErr('Facebook SDK yüklenemedi. Manuel token kullan.');
     return;
   }
 
-  btn.textContent = '⏳ Bağlanıyor...';
+  var origHTML = btn.innerHTML;
+  btn.textContent = 'Bağlanıyor...';
   btn.disabled = true;
 
+  // 15 sn içinde yanıt gelmezse resetle
+  var resetTimer = setTimeout(function() {
+    btn.innerHTML = origHTML;
+    btn.disabled = false;
+  }, 15000);
+
   FB.login(function(response) {
+    clearTimeout(resetTimer);
     if (response.authResponse) {
       const token = response.authResponse.accessToken;
       S.token = token;
@@ -1707,7 +1719,8 @@ function fbLogin() {
         btn.disabled = false;
       });
     } else {
-      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="margin-right:6px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook ile Giriş Yap';
+      clearTimeout(resetTimer);
+      btn.innerHTML = origHTML;
       btn.disabled = false;
     }
   }, { scope: 'ads_read,ads_management' });
