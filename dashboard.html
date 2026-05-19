@@ -1503,7 +1503,8 @@ function renderPlan(force){
       steps.slice(0,6).map(function(step,i){
         return'<div class="plan-step">'+
           '<div class="plan-num'+(i===0&&urgent?' urgent':'')+'">'+
-            (i===0&&urgent?'!':'')+(i===0&&urgent?'':''+（i+1）+'</div>'.replace('（','(').replace('）',')'))+
+            (i===0&&urgent?'!':(i+1))+
+          '</div>'+
           '<div class="plan-body">'+
             '<div class="plan-title">'+esc(step.title)+'</div>'+
             (step.desc?'<div class="plan-desc">'+esc(step.desc)+'</div>':'')+
