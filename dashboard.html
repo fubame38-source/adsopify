@@ -650,8 +650,9 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
           <div style="width:7px;height:7px;border-radius:50%;background:#22c98a;box-shadow:0 0 6px rgba(34,201,138,.6)"></div>
           <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#22c98a">Büyüt</span>
         </div>
-        <div id="plan-best-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.03em;line-height:1.3">—</div>
-        <div id="plan-best-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px"></div>
+        <div id="plan-best-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.03em;line-height:1.3">—</div>
+        <div id="plan-best-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px"></div>
+        <div id="plan-best-reason" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;line-height:1.5"></div>
         <button onclick="openCampPopupByName('best')" style="background:rgba(34,201,138,.15);border:1px solid rgba(34,201,138,.3);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#22c98a;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(34,201,138,.25)'" onmouseout="this.style.background='rgba(34,201,138,.15)'">Detay & AI Yorumu →</button>
       </div>
 
@@ -662,8 +663,9 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
           <div style="width:7px;height:7px;border-radius:50%;background:#f87171;box-shadow:0 0 6px rgba(248,113,113,.6)"></div>
           <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#f87171">Dikkat / Durdur</span>
         </div>
-        <div id="plan-worst-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.03em;line-height:1.3">—</div>
-        <div id="plan-worst-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px"></div>
+        <div id="plan-worst-name" style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.03em;line-height:1.3">—</div>
+        <div id="plan-worst-stats" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px"></div>
+        <div id="plan-worst-reason" style="font-size:11px;color:rgba(255,255,255,.55);margin-bottom:14px;line-height:1.5"></div>
         <button onclick="openCampPopupByName('worst')" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;color:#f87171;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.background='rgba(248,113,113,.22)'" onmouseout="this.style.background='rgba(248,113,113,.12)'">Detay & AI Yorumu →</button>
       </div>
     </div>
@@ -1916,6 +1918,81 @@ function loadDailyPlan() {
   planFetchAI(cacheKey);
 }
 
+function scoreCampaign(c) {
+  var spend  = parseFloat(c.spend  || 0);
+  var ctr    = parseFloat(c.ctr    || 0);
+  var cpc    = parseFloat(c.cpc    || 0);
+  var freq   = parseFloat(c.frequency || 0);
+  var roas   = c._roas   || 0;
+  var cpa    = c._cpa    || 0;
+  var sales  = c._purchases || 0;
+
+  // Veri yeterliliği — az harcamayla karar verme
+  var dataScore = spend >= 2000 ? 1 : spend >= 500 ? 0.7 : spend >= 100 ? 0.4 : 0.1;
+
+  // ROAS skoru (0-40 puan)
+  var roasScore = 0;
+  if (roas >= 4)       roasScore = 40;
+  else if (roas >= 3)  roasScore = 32;
+  else if (roas >= 2)  roasScore = 22;
+  else if (roas >= 1)  roasScore = 10;
+  else if (roas > 0)   roasScore = 2;
+
+  // CTR skoru (0-25 puan)
+  var ctrScore = 0;
+  if (ctr >= 3)        ctrScore = 25;
+  else if (ctr >= 2)   ctrScore = 20;
+  else if (ctr >= 1.5) ctrScore = 15;
+  else if (ctr >= 0.8) ctrScore = 8;
+  else if (ctr >= 0.5) ctrScore = 3;
+
+  // CPC skoru (0-15 puan) — düşük CPC iyi
+  var cpcScore = 0;
+  if (cpc > 0 && cpc <= 4)       cpcScore = 15;
+  else if (cpc <= 8)  cpcScore = 11;
+  else if (cpc <= 14) cpcScore = 6;
+  else if (cpc > 0)   cpcScore = 2;
+
+  // Frekans cezası — yüksek frekans kötü
+  var freqPenalty = 0;
+  if (freq >= 4)       freqPenalty = 20;
+  else if (freq >= 3)  freqPenalty = 12;
+  else if (freq >= 2.5) freqPenalty = 5;
+
+  // Satış bonusu
+  var salesBonus = sales >= 10 ? 10 : sales >= 5 ? 6 : sales >= 1 ? 3 : 0;
+
+  var rawScore = (roasScore + ctrScore + cpcScore + salesBonus - freqPenalty);
+  var finalScore = rawScore * dataScore;
+
+  // Karar
+  var decision, reason, color, bg, dotColor;
+  if (spend < 100) {
+    decision = 'BEKLE'; color = 'var(--text3)'; bg = 'var(--surface2)'; dotColor = 'var(--text3)';
+    reason = 'Yeterli veri yok, karar için daha fazla harcama gerekli.';
+  } else if (freq >= 4) {
+    decision = 'DURDUR'; color = 'var(--red)'; bg = 'var(--red-light)'; dotColor = 'var(--red)';
+    reason = 'Frekans ' + freq.toFixed(1) + ' — kitle yorulmuş, creative yenile.';
+  } else if (finalScore >= 38) {
+    decision = 'BÜYÜT'; color = 'var(--green)'; bg = 'var(--green-light)'; dotColor = 'var(--green)';
+    reason = roas > 0 ? 'ROAS ' + roas.toFixed(2) + 'x, CTR %' + ctr.toFixed(2) + ' — güçlü sinyal.' : 'CTR %' + ctr.toFixed(2) + ' — trafik kalitesi iyi.';
+  } else if (finalScore >= 22) {
+    decision = 'İZLE'; color = 'var(--yellow)'; bg = 'var(--yellow-light)'; dotColor = 'var(--yellow)';
+    reason = freq > 2.5 ? 'Frekans yükseliyor (' + freq.toFixed(1) + '), creative test et.' : 'Orta performans, optimize etmeye devam.';
+  } else if (roas > 0 && roas < 1) {
+    decision = 'DURDUR'; color = 'var(--red)'; bg = 'var(--red-light)'; dotColor = 'var(--red)';
+    reason = 'ROAS ' + roas.toFixed(2) + 'x — zararda çalışıyor, bütçeyi kes.';
+  } else if (ctr < 0.5 && spend >= 300) {
+    decision = 'DURDUR'; color = 'var(--red)'; bg = 'var(--red-light)'; dotColor = 'var(--red)';
+    reason = 'CTR %' + ctr.toFixed(2) + ' — creative veya hedef kitle yanlış.';
+  } else {
+    decision = 'İZLE'; color = 'var(--yellow)'; bg = 'var(--yellow-light)'; dotColor = 'var(--yellow)';
+    reason = 'Veri biriktirilmeye devam ediyor.';
+  }
+
+  return { score: finalScore, decision: decision, reason: reason, color: color, bg: bg, dotColor: dotColor };
+}
+
 function renderPlanCampaigns() {
   var listEl = document.getElementById('plan-camp-list');
   var emptyEl = document.getElementById('plan-camp-empty');
@@ -1931,73 +2008,64 @@ function renderPlanCampaigns() {
   if (emptyEl) emptyEl.style.display = 'none';
   listEl.style.display = 'flex';
 
-  // En iyi ve en kötü kampanyayı bul
-  var sorted = camps.slice().sort(function(a, b) {
-    // Önce CTR'a göre sırala (ROAS yoksa)
-    var scoreA = a._roas > 0 ? a._roas * 10 : parseFloat(a.ctr || 0);
-    var scoreB = b._roas > 0 ? b._roas * 10 : parseFloat(b.ctr || 0);
-    return scoreB - scoreA;
+  // Her kampanyayı skorla
+  var scored = camps.map(function(c, idx) {
+    return Object.assign({ _idx: idx }, c, scoreCampaign(c));
   });
-  var best  = sorted[0];
-  var worst = sorted[sorted.length - 1];
-  var bestIdx  = camps.indexOf(best);
-  var worstIdx = camps.indexOf(worst);
-  window._planBestIdx  = bestIdx;
-  window._planWorstIdx = worstIdx;
+
+  // En iyi BÜYÜT, en kötü DURDUR/en düşük skor
+  var withSpend = scored.filter(function(c) { return parseFloat(c.spend || 0) >= 100; });
+  var best  = withSpend.slice().sort(function(a,b){ return b.score - a.score; })[0];
+  var worst = withSpend.slice().sort(function(a,b){ return a.score - b.score; })[0];
+  if (best === worst) worst = null;
+
+  window._planBestIdx  = best  ? best._idx  : null;
+  window._planWorstIdx = worst ? worst._idx : null;
 
   var decisionCards = document.getElementById('plan-decision-cards');
-  if (decisionCards && best && worst && best !== worst) {
+  if (decisionCards && best) {
     decisionCards.style.display = 'grid';
 
-    var bestSpend = parseFloat(best.spend || 0);
-    var bestCtr   = parseFloat(best.ctr || 0);
-    var bestRoas  = best._roas || 0;
-    document.getElementById('plan-best-name').textContent = (best.campaign_name || '').substring(0, 36) || 'En iyi kampanya';
+    var bs = parseFloat(best.spend||0), bc = parseFloat(best.ctr||0), br = best._roas||0;
+    document.getElementById('plan-best-name').textContent = (best.campaign_name||'').substring(0,36) || 'En iyi kampanya';
     document.getElementById('plan-best-stats').textContent =
-      '₺' + bestSpend.toFixed(0) + ' harcama' +
-      (bestRoas > 0 ? ' · ROAS ' + bestRoas.toFixed(2) + 'x' : '') +
-      ' · CTR %' + bestCtr.toFixed(2);
+      '₺'+bs.toFixed(0)+' harcama'+(br>0?' · ROAS '+br.toFixed(2)+'x':'')+' · CTR %'+bc.toFixed(2);
+    var bestReasonEl = document.getElementById('plan-best-reason');
+    if (bestReasonEl) bestReasonEl.textContent = best.reason;
 
-    var worstSpend = parseFloat(worst.spend || 0);
-    var worstCtr   = parseFloat(worst.ctr || 0);
-    var worstRoas  = worst._roas || 0;
-    document.getElementById('plan-worst-name').textContent = (worst.campaign_name || '').substring(0, 36) || 'En kötü kampanya';
-    document.getElementById('plan-worst-stats').textContent =
-      '₺' + worstSpend.toFixed(0) + ' harcama' +
-      (worstRoas > 0 ? ' · ROAS ' + worstRoas.toFixed(2) + 'x' : '') +
-      ' · CTR %' + worstCtr.toFixed(2);
+    if (worst) {
+      var ws = parseFloat(worst.spend||0), wc = parseFloat(worst.ctr||0), wr = worst._roas||0;
+      document.getElementById('plan-worst-name').textContent = (worst.campaign_name||'').substring(0,36) || 'En kötü kampanya';
+      document.getElementById('plan-worst-stats').textContent =
+        '₺'+ws.toFixed(0)+' harcama'+(wr>0?' · ROAS '+wr.toFixed(2)+'x':'')+' · CTR %'+wc.toFixed(2);
+      var worstReasonEl = document.getElementById('plan-worst-reason');
+      if (worstReasonEl) worstReasonEl.textContent = worst.reason;
+      var worstCard = document.getElementById('plan-worst-card');
+      if (worstCard) worstCard.style.display = 'block';
+    } else {
+      var wc2 = document.getElementById('plan-worst-card');
+      if (wc2) wc2.style.display = 'none';
+    }
   }
 
-  listEl.innerHTML = camps.map(function(c, idx) {
-    var roas = c._roas || 0;
-    var ctr  = parseFloat(c.ctr) || 0;
-    var freq = parseFloat(c.frequency) || 0;
-    var spend = parseFloat(c.spend) || 0;
+  // Liste — skora göre sıralı
+  scored.sort(function(a,b){ return b.score - a.score; });
+  listEl.innerHTML = scored.map(function(c) {
+    var spend = parseFloat(c.spend||0);
+    var ctr   = parseFloat(c.ctr||0);
+    var roas  = c._roas||0;
+    var name  = (c.campaign_name||'Kampanya');
+    if (name.length > 42) name = name.substring(0,42)+'…';
+    var roasStr = roas > 0 ? 'ROAS '+roas.toFixed(2)+'x' : 'ROAS —';
 
-    var dot, label, labelColor, labelBg;
-    if (roas > 0) {
-      if (roas >= 2.5)      { dot='var(--green)';  label='İyi';     labelColor='var(--green)';  labelBg='var(--green-light)'; }
-      else if (roas >= 1.2) { dot='var(--yellow)'; label='Takipte'; labelColor='var(--yellow)'; labelBg='var(--yellow-light)'; }
-      else                  { dot='var(--red)';    label='Dikkat';  labelColor='var(--red)';    labelBg='var(--red-light)'; }
-    } else {
-      if (ctr >= 1.5)      { dot='var(--green)';  label='İyi CTR';  labelColor='var(--green)';  labelBg='var(--green-light)'; }
-      else if (ctr >= 0.7) { dot='var(--yellow)'; label='Takipte';  labelColor='var(--yellow)'; labelBg='var(--yellow-light)'; }
-      else if (spend > 0)  { dot='var(--text3)';  label='Veri az';  labelColor='var(--text3)';  labelBg='var(--surface3)'; }
-      else                 { dot='var(--text3)';  label='—';         labelColor='var(--text3)';  labelBg='var(--surface3)'; }
-    }
-
-    var name = (c.campaign_name || 'Kampanya');
-    if (name.length > 42) name = name.substring(0, 42) + '…';
-    var roasStr = roas > 0 ? 'ROAS ' + roas.toFixed(2) + 'x' : 'ROAS —';
-
-    return '<div onclick="openCampPopup(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--border2)\';this.style.background=\'var(--surface)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--surface2)\'">' +
-      '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;box-shadow:0 0 5px ' + dot + '55"></div>' +
+    return '<div onclick="openCampPopup('+c._idx+')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--border2)\';this.style.background=\'var(--surface)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--surface2)\'">' +
+      '<div style="width:7px;height:7px;border-radius:50%;background:'+c.dotColor+';flex-shrink:0"></div>' +
       '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(name) + '</div>' +
-        '<div style="font-size:11px;color:var(--text3);margin-top:2px">₺' + spend.toFixed(0) + ' harcama · ' + roasStr + ' · CTR %' + ctr.toFixed(2) + '</div>' +
+        '<div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(name)+'</div>' +
+        '<div style="font-size:11px;color:var(--text3);margin-top:1px">₺'+spend.toFixed(0)+' · '+roasStr+' · CTR %'+ctr.toFixed(2)+'</div>' +
       '</div>' +
-      '<span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:' + labelBg + ';color:' + labelColor + ';flex-shrink:0">' + label + '</span>' +
-      '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;color:var(--text3)"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:'+c.bg+';color:'+c.color+';flex-shrink:0;letter-spacing:.04em">'+c.decision+'</span>' +
+      '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;color:var(--text3)"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
     '</div>';
   }).join('');
 }
