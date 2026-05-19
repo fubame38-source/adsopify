@@ -2664,7 +2664,11 @@ async function siteAnalyze() {
   } catch(e) {
     clearInterval(msgInterval);
     if (loading) loading.style.display = 'none';
-    toast('Site analiz edilemedi: ' + e.message);
+    var errEl = document.createElement('div');
+    errEl.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999';
+    errEl.textContent = 'Site analiz edilemedi — tekrar dene';
+    document.body.appendChild(errEl);
+    setTimeout(function(){ errEl.remove(); }, 3000);
   }
 
   if (btn) btn.disabled = false;
@@ -2721,7 +2725,11 @@ async function analyzeWebsite(urlOverride) {
   } catch(e) {
     if (aiLoading) aiLoading.style.display = 'none';
     if (aiEmpty) aiEmpty.style.display = 'block';
-    toast('Site analiz edilemedi: ' + e.message);
+    var errEl2 = document.createElement('div');
+    errEl2.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999';
+    errEl2.textContent = 'Site analiz edilemedi — tekrar dene';
+    document.body.appendChild(errEl2);
+    setTimeout(function(){ errEl2.remove(); }, 3000);
   }
 }
 
