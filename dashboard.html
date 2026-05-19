@@ -536,7 +536,7 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
       </div>
     </div>
   </div>
-  <div id="mlynr-plan-badge" style="display:none;align-items:center;padding:3px 9px;border-radius:7px;border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:600"></div>
+  <div id="mlynr-plan-badge" style="display:none"></div>
   <div class="iBtn" id="alarm-bell-btn" onclick="nav('alarms')" title="Alarmlar" style="position:relative">
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 0 1 5 5v3l1.5 2h-13L3 10V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     <span id="alarm-badge" style="display:none;position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg)"></span>
@@ -607,10 +607,8 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
 
     <!-- Boş state -->
-    <div id="plan-ai-empty" style="padding:18px 0 6px;text-align:center">
-      <div style="font-size:28px;margin-bottom:8px">🤖</div>
-      <div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px">Hazır olduğunda butona bas</div>
-      <div style="font-size:12px;color:var(--text3)">Kampanya verilerini analiz edip ne yapman gerektiğini söyleyeceğim.</div>
+    <div id="plan-ai-empty" style="padding:14px 0 6px">
+      <div style="font-size:13px;color:var(--text3);line-height:1.6">Kampanya verilerini analiz edip bugün ne yapman gerektiğini söyleyeceğim. Hazır olduğunda butona bas.</div>
     </div>
 
     <!-- Loading -->
@@ -1862,8 +1860,16 @@ function loadPlan() {
   const de = document.getElementById('plan-date');
   if (ge) ge.textContent = greet;
   if (de) de.textContent = dateStr;
-  // Kampanyaları yükle
   renderPlanCampaigns();
+  // Cache varsa otomatik yükle
+  const cacheKey = 'dp_plan_v4_' + today.toISOString().split('T')[0];
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      const c = JSON.parse(cached);
+      planShowResults(c.actions, c.verdict, c.tagline);
+    } catch(e) {}
+  }
 }
 
 function loadDailyPlan() {
@@ -2304,12 +2310,7 @@ function creativeFeedback(hookTitle, hookType, result) {
 function planReset() {
   var cacheKey = 'dp_plan_v4_' + new Date().toISOString().split('T')[0];
   localStorage.removeItem(cacheKey);
-  var aiEmpty = document.getElementById('plan-ai-empty');
-  var aiResult = document.getElementById('plan-ai-result');
-  if (aiEmpty) { aiEmpty.style.display = 'block'; }
-  if (aiResult) aiResult.style.display = 'none';
-  var btn = document.getElementById('plan-ask-btn');
-  if (btn) btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg> Bugün ne yapmalıyım?';
+  loadDailyPlan();
 }
 
 // Compat stubs
