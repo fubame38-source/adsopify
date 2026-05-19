@@ -1297,8 +1297,10 @@ window.addEventListener('DOMContentLoaded', () => {
   (function() {
     var saved = localStorage.getItem('adsopify_theme') || 'light';
     document.documentElement.setAttribute('data-theme', saved);
-    var btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    var moon = document.getElementById('theme-icon-moon');
+    var sun  = document.getElementById('theme-icon-sun');
+    if (moon) moon.style.display = saved === 'dark' ? 'none' : 'block';
+    if (sun)  sun.style.display  = saved === 'dark' ? 'block' : 'none';
   })();
 
   migrateSensitiveStorage();
@@ -3590,11 +3592,10 @@ function applyTheme(theme) {
   var next = theme === 'dark' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('adsopify_theme', next);
-  var btn = document.getElementById('theme-toggle');
-  if (btn) {
-    btn.textContent = next === 'dark' ? '☀️' : '🌙';
-    btn.setAttribute('title', next === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç');
-  }
+  var moon = document.getElementById('theme-icon-moon');
+  var sun  = document.getElementById('theme-icon-sun');
+  if (moon) moon.style.display = next === 'dark' ? 'none' : 'block';
+  if (sun)  sun.style.display  = next === 'dark' ? 'block' : 'none';
 }
 
 function toggleTheme() {
