@@ -1142,11 +1142,21 @@ function doFBLogin(fromFBScreen){
       S.fbToken=r.authResponse.accessToken;
       ls.s('fb_token',S.fbToken);
       toast('✓ Facebook bağlandı');
-      document.getElementById('s-fb').textContent='Bağlı ✓';
-      document.getElementById('s-fb-btn').textContent='Yeniden bağla';
+      var sfb=document.getElementById('s-fb');
+      var sfbb=document.getElementById('s-fb-btn');
+      if(sfb) sfb.textContent='Bağlı ✓';
+      if(sfbb) sfbb.textContent='Yeniden bağla';
       hideFBBanner();
-      loadAccounts();
-      if(fromFBScreen) launchApp();
+      if(fromFBScreen){
+        // launchApp zaten çağrıldıysa sadece hesapları yükle
+        if(document.getElementById('app').style.display==='flex'){
+          loadAccounts();
+        } else {
+          launchApp();
+        }
+      } else {
+        loadAccounts();
+      }
     } else toast('Facebook bağlantısı iptal edildi');
   },{scope:'ads_read,ads_management'});
 }
