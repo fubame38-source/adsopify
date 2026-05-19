@@ -5,612 +5,555 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adsopify</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
-window.fbAsyncInit = function() {
-  FB.init({ appId: '1602280044394114', cookie: true, xfbml: false, version: 'v19.0' });
-};
+window.fbAsyncInit=function(){FB.init({appId:'1602280044394114',cookie:true,xfbml:false,version:'v19.0'})};
 (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src='https://connect.facebook.net/tr_TR/sdk.js';fjs.parentNode.insertBefore(js,fjs)}(document,'script','facebook-jssdk'));
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-:root {
-  --bg: #0a0a0f;
-  --bg2: #0f0f17;
-  --surface: #13131e;
-  --surface2: #1a1a28;
-  --surface3: #22223a;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.12);
-  --text: #f0f0ff;
-  --text2: #8888aa;
-  --text3: #44445a;
-  --accent: #6c63ff;
-  --accent2: #8b85ff;
-  --accent-glow: rgba(108,99,255,0.25);
-  --accent-subtle: rgba(108,99,255,0.08);
-  --green: #00e5a0;
-  --green-glow: rgba(0,229,160,0.15);
-  --green-subtle: rgba(0,229,160,0.06);
-  --yellow: #ffb340;
-  --yellow-subtle: rgba(255,179,64,0.08);
-  --red: #ff5555;
-  --red-subtle: rgba(255,85,85,0.08);
-  --font: 'Inter', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-  --sidebar: 216px;
-  --topbar: 56px;
-  --r: 12px;
-  --r-sm: 8px;
-  --r-lg: 18px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5), 0 32px 64px rgba(0,0,0,0.4);
-  --glow: 0 0 0 1px rgba(108,99,255,0.3), 0 0 24px rgba(108,99,255,0.12);
+:root{
+  --bg:#f8f7f4;
+  --bg2:#f2f1ed;
+  --surface:#ffffff;
+  --surface2:#f5f4f0;
+  --border:#e8e6e0;
+  --border2:#d4d0c8;
+  --text:#1a1916;
+  --text2:#6b6760;
+  --text3:#b0ada6;
+  --accent:#e8500a;
+  --accent2:#ff6b2b;
+  --accent-bg:rgba(232,80,10,0.06);
+  --accent-border:rgba(232,80,10,0.18);
+  --green:#0a7c4e;
+  --green-bg:rgba(10,124,78,0.06);
+  --green-border:rgba(10,124,78,0.16);
+  --yellow:#b8860b;
+  --yellow-bg:rgba(184,134,11,0.06);
+  --red:#c0392b;
+  --red-bg:rgba(192,57,43,0.06);
+  --font:'Instrument Sans',sans-serif;
+  --serif:'Instrument Serif',serif;
+  --mono:'JetBrains Mono',monospace;
+  --r:16px;
+  --r-sm:10px;
+  --r-lg:24px;
+  --sidebar:72px;
+  --topbar:60px;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.08),0 32px 64px rgba(0,0,0,.06);
+  --ease:cubic-bezier(.4,0,.2,1);
 }
 
-html,body{height:100%;-webkit-font-smoothing:antialiased}
-body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow-x:hidden}
+html,body{height:100%;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.55}
 
-/* ── SCREENS ── */
-#auth-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;position:relative}
-#auth-screen.show{display:flex}
-#app-screen{display:none}
-#app-screen.show{display:block}
+/* ─── SCREENS ─── */
+.screen{display:none;opacity:0;transition:opacity .3s var(--ease)}
+.screen.active{display:flex;opacity:1}
 
-/* ── AUTH BG ── */
-.auth-bg{
-  position:fixed;inset:0;z-index:0;
-  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,99,255,0.18) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,229,160,0.08) 0%, transparent 50%),
-              var(--bg);
-}
-.auth-bg-grid{
-  position:fixed;inset:0;z-index:0;
-  background-image: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
-  background-size:48px 48px;
+/* ─── AUTH ─── */
+#auth{
+  min-height:100vh;align-items:center;justify-content:center;
+  padding:20px;flex-direction:column;
+  background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 30% 20%, rgba(232,80,10,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(10,124,78,0.04) 0%, transparent 50%);
 }
 
-/* ── AUTH CARD ── */
-.auth-card{
-  position:relative;z-index:1;
-  width:100%;max-width:380px;
-  background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:var(--r-lg);
-  padding:32px;
-  box-shadow:var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.03);
-}
-
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:40px}
 .auth-logo-mark{
-  width:32px;height:32px;border-radius:9px;
-  background:linear-gradient(135deg,var(--accent),#9f99ff);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 12px var(--accent-glow);
+  width:36px;height:36px;border-radius:10px;
+  background:var(--text);display:flex;align-items:center;justify-content:center;
 }
-.auth-logo-name{font-size:17px;font-weight:800;letter-spacing:-.04em;color:var(--text)}
+.auth-logo-name{font-size:18px;font-weight:700;letter-spacing:-.04em;color:var(--text)}
 
-.auth-headline{font-size:22px;font-weight:800;letter-spacing:-.04em;color:var(--text);margin-bottom:6px}
-.auth-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6}
+.auth-card{
+  width:100%;max-width:400px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:36px;
+  box-shadow:var(--shadow-lg);
+}
+.auth-title{font-size:26px;font-weight:700;letter-spacing:-.05em;color:var(--text);margin-bottom:6px;font-family:var(--serif);font-style:italic}
+.auth-sub{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.6}
 
-.auth-tabs{
-  display:flex;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r-sm);padding:3px;margin-bottom:20px;gap:2px;
-}
-.auth-tab{
-  flex:1;text-align:center;padding:7px;border-radius:6px;
-  font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;
-}
-.auth-tab.active{background:var(--surface2);color:var(--text);font-weight:600}
+.auth-tabs{display:flex;background:var(--bg2);border-radius:var(--r-sm);padding:3px;gap:2px;margin-bottom:22px}
+.auth-tab{flex:1;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s}
+.auth-tab.on{background:var(--surface);color:var(--text);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 
-.field{margin-bottom:14px}
-.field label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:7px;letter-spacing:.03em;text-transform:uppercase}
-.field input{
-  width:100%;padding:10px 13px;
-  border:1px solid var(--border2);border-radius:var(--r-sm);
-  font-family:var(--font);font-size:13px;
-  background:var(--bg2);color:var(--text);outline:none;
-  transition:all .15s;
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase}
+.field input,.field select{
+  width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--r-sm);
+  font-family:var(--font);font-size:14px;background:var(--surface);color:var(--text);outline:none;
+  transition:border-color .15s, box-shadow .15s;-webkit-appearance:none;
 }
-.field input:focus{border-color:var(--accent);box-shadow:var(--glow);background:var(--surface)}
-.field input::placeholder{color:var(--text3)}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  padding:10px 18px;border-radius:var(--r-sm);font-family:var(--font);
-  font-size:13px;font-weight:600;cursor:pointer;border:none;
-  transition:all .15s;white-space:nowrap;
+  padding:12px 20px;border-radius:var(--r-sm);font-family:var(--font);
+  font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;
 }
 .btn:active{transform:scale(.97)}
-.btn-primary{
-  background:var(--accent);color:#fff;
-  box-shadow:0 4px 16px var(--accent-glow);
-}
-.btn-primary:hover{background:var(--accent2);box-shadow:0 6px 24px var(--accent-glow);transform:translateY(-1px)}
-.btn-ghost{
-  background:var(--surface2);color:var(--text2);
-  border:1px solid var(--border2);
-}
-.btn-ghost:hover{background:var(--surface3);color:var(--text)}
+.btn-primary{background:var(--text);color:#fff}
+.btn-primary:hover{background:#2d2b28;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.btn-outline{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--bg2);color:var(--text)}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:0 2px 12px rgba(232,80,10,.25)}
+.btn-accent:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(232,80,10,.3)}
 .btn-w{width:100%}
-.btn-sm{padding:6px 12px;font-size:12px;border-radius:6px}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:8px}
+.btn-lg{padding:14px 28px;font-size:15px}
 
-.or-div{
-  display:flex;align-items:center;gap:10px;margin:16px 0;
-  font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.05em;
+.or-line{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:11px;color:var(--text3);letter-spacing:.05em}
+.or-line::before,.or-line::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.fb-btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:12px 20px;border-radius:var(--r-sm);
+  background:#1877F2;color:#fff;border:none;
+  font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;
+  width:100%;transition:all .15s;
 }
-.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:var(--border)}
+.fb-btn:hover{background:#1464cc;transform:translateY(-1px);box-shadow:0 4px 16px rgba(24,119,242,.3)}
 
-#auth-msg{font-size:12px;text-align:center;margin-top:12px;min-height:18px}
-#auth-msg.error{color:var(--red)}
+#auth-msg{font-size:12px;text-align:center;margin-top:14px;min-height:18px}
+#auth-msg.err{color:var(--red)}
 #auth-msg.ok{color:var(--green)}
 
-.mlynr-banner{
-  background:var(--green-subtle);border:1px solid rgba(0,229,160,0.2);
-  border-radius:var(--r-sm);padding:10px 12px;margin-bottom:20px;
+.mlynr-strip{
+  background:var(--green-bg);border:1px solid var(--green-border);
+  border-radius:var(--r-sm);padding:11px 14px;margin-bottom:20px;
   font-size:12px;color:var(--green);font-weight:500;display:none;
-  align-items:center;gap:8px;
+  align-items:center;gap:8px;line-height:1.5;
 }
 
-/* ── TOPBAR ── */
-#topbar{
-  position:fixed;top:0;left:0;right:0;height:var(--topbar);z-index:200;
-  display:flex;align-items:center;
-  padding:0 16px 0 calc(var(--sidebar) + 1px);
-  gap:8px;
-  background:rgba(10,10,15,0.85);
-  backdrop-filter:blur(20px) saturate(200%);
-  border-bottom:1px solid var(--border);
+/* ─── ONBOARDING ─── */
+#onboarding{
+  min-height:100vh;align-items:center;justify-content:center;
+  padding:20px;flex-direction:column;background:var(--bg);
 }
+.ob-wrap{width:100%;max-width:520px}
+.ob-progress{display:flex;gap:6px;margin-bottom:40px}
+.ob-dot{height:3px;flex:1;background:var(--border);border-radius:2px;transition:background .3s}
+.ob-dot.done{background:var(--text)}
+.ob-dot.active{background:var(--accent)}
 
-.brand-picker{
-  display:flex;align-items:center;gap:7px;padding:5px 10px;
-  border-radius:var(--r-sm);cursor:pointer;transition:all .15s;
-  border:1px solid transparent;
-}
-.brand-picker:hover{background:var(--surface2);border-color:var(--border)}
-.brand-name-text{font-size:13px;font-weight:600;color:var(--text)}
-.brand-indicator{
-  width:7px;height:7px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 8px var(--accent-glow);flex-shrink:0;
-}
+.ob-step{display:none;animation:obIn .3s var(--ease)}
+.ob-step.active{display:block}
+@keyframes obIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
 
-.topbar-spacer{flex:1}
+.ob-q{font-size:28px;font-weight:700;letter-spacing:-.05em;color:var(--text);margin-bottom:8px;font-family:var(--serif);font-style:italic;line-height:1.2}
+.ob-sub{font-size:14px;color:var(--text2);margin-bottom:32px;line-height:1.6}
 
-.date-btn{
-  display:flex;align-items:center;gap:6px;padding:6px 11px;
-  border-radius:var(--r-sm);border:1px solid var(--border2);
-  background:var(--surface);font-size:11px;font-weight:600;
-  color:var(--text2);cursor:pointer;transition:all .15s;
-  font-family:var(--mono);letter-spacing:-.01em;
+.ob-options{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.ob-option{
+  display:flex;align-items:center;gap:16px;padding:18px 20px;
+  background:var(--surface);border:2px solid var(--border);border-radius:var(--r);
+  cursor:pointer;transition:all .15s;
 }
-.date-btn:hover{border-color:var(--accent);color:var(--text)}
+.ob-option:hover{border-color:var(--border2);background:var(--bg2)}
+.ob-option.selected{border-color:var(--accent);background:var(--accent-bg)}
+.ob-option-icon{font-size:24px;flex-shrink:0}
+.ob-option-text{flex:1}
+.ob-option-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.ob-option-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.ob-option-check{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;
+}
+.ob-option.selected .ob-option-check{background:var(--accent);border-color:var(--accent);color:#fff}
 
-.plan-badge{
-  display:flex;align-items:center;gap:5px;padding:4px 10px;
-  border-radius:999px;font-size:11px;font-weight:700;
-  border:1px solid rgba(0,229,160,0.3);
-  background:var(--green-subtle);color:var(--green);
+.ob-input-wrap{margin-bottom:28px}
+.ob-text-input{
+  width:100%;padding:16px 18px;border:2px solid var(--border);border-radius:var(--r);
+  font-family:var(--font);font-size:16px;background:var(--surface);color:var(--text);
+  outline:none;transition:all .15s;
 }
-.pulse-dot{
-  width:5px;height:5px;border-radius:50%;background:var(--green);
-  animation:pulse 2s infinite;
-}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 var(--green)}50%{opacity:.6;box-shadow:0 0 0 3px transparent}}
+.ob-text-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-bg)}
+.ob-text-input::placeholder{color:var(--text3)}
 
-.icon-btn{
-  width:32px;height:32px;border-radius:var(--r-sm);
-  border:1px solid var(--border);background:transparent;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .15s;color:var(--text2);font-size:14px;
+/* ─── FB CONNECT STEP ─── */
+#fb-connect{
+  min-height:100vh;align-items:center;justify-content:center;
+  padding:20px;flex-direction:column;background:var(--bg);
 }
-.icon-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.fbc-card{
+  width:100%;max-width:480px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--r-lg);padding:48px 40px;
+  text-align:center;box-shadow:var(--shadow-lg);
+}
+.fbc-icon{font-size:56px;margin-bottom:24px;display:block}
+.fbc-title{font-size:28px;font-weight:700;letter-spacing:-.05em;color:var(--text);margin-bottom:10px;font-family:var(--serif);font-style:italic}
+.fbc-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:32px}
+.fbc-perms{
+  text-align:left;background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:16px 18px;margin-bottom:28px;
+}
+.fbc-perm{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);padding:4px 0}
+.fbc-perm-check{color:var(--green);font-weight:700;font-size:14px;flex-shrink:0}
+.fbc-skip{font-size:12px;color:var(--text3);margin-top:16px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.fbc-skip:hover{color:var(--text2)}
 
-/* ── SIDEBAR ── */
+/* ─── APP ─── */
+#app{display:none;flex-direction:row;min-height:100vh}
+#app.active{display:flex}
+
+/* SIDEBAR — icon only */
 #sidebar{
-  position:fixed;top:var(--topbar);left:0;bottom:0;width:var(--sidebar);z-index:100;
-  background:var(--bg2);border-right:1px solid var(--border);
-  padding:12px 10px 32px;overflow-y:auto;
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 0 24px;position:fixed;top:0;bottom:0;left:0;z-index:100;
 }
-#sidebar::-webkit-scrollbar{width:0}
-
-.sb-label{
-  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--text3);padding:14px 8px 6px;
+.sb-logo{
+  width:36px;height:36px;border-radius:10px;background:var(--text);
+  display:flex;align-items:center;justify-content:center;margin-bottom:32px;
 }
-
-.nav-item{
-  display:flex;align-items:center;gap:9px;padding:8px 10px;
-  border-radius:var(--r-sm);font-size:13px;font-weight:500;
-  color:var(--text2);cursor:pointer;transition:all .12s;margin-bottom:2px;
+.sb-nav{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.sb-btn{
+  width:44px;height:44px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;transition:all .15s;color:var(--text3);
+  position:relative;
 }
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{
-  background:var(--accent-subtle);color:var(--accent2);font-weight:600;
-  border:1px solid rgba(108,99,255,0.15);
+.sb-btn:hover{background:var(--bg2);color:var(--text2)}
+.sb-btn.on{background:var(--bg2);color:var(--text)}
+.sb-btn.on::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:2px;height:20px;background:var(--accent);border-radius:0 2px 2px 0;
 }
-.nav-item svg{flex-shrink:0;opacity:.5;transition:opacity .12s}
-.nav-item:hover svg,.nav-item.active svg{opacity:1}
-
-.divider{height:1px;background:var(--border);margin:8px 4px}
-
-.brand-row{
-  display:flex;align-items:center;gap:8px;padding:7px 10px;
-  border-radius:var(--r-sm);cursor:pointer;transition:all .12s;margin-bottom:1px;
+.sb-tooltip{
+  position:absolute;left:calc(100% + 8px);background:var(--text);color:#fff;
+  font-size:11px;font-weight:600;padding:5px 9px;border-radius:6px;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;
+  z-index:200;
 }
-.brand-row:hover{background:var(--surface2)}
-.brand-row.active{background:var(--accent-subtle);border:1px solid rgba(108,99,255,0.12)}
-.brand-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.brand-n{font-size:12px;font-weight:500;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-btn:hover .sb-tooltip{opacity:1}
+.sb-spacer{flex:1}
+.sb-user{
+  width:32px;height:32px;border-radius:50%;background:var(--bg2);
+  border:1px solid var(--border);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;font-size:12px;font-weight:700;
+  color:var(--text2);transition:all .15s;
+}
+.sb-user:hover{border-color:var(--border2)}
 
-/* ── MAIN ── */
+/* MAIN */
 #main{
-  margin-left:var(--sidebar);
-  margin-top:var(--topbar);
-  padding:28px 28px 80px;
-  min-height:calc(100vh - var(--topbar));
+  margin-left:var(--sidebar);flex:1;
+  padding:32px 36px 80px;
+  min-height:100vh;
+  background:var(--bg);
 }
 
-.section{display:none}
-.section.active{display:block;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec{display:none}
+.sec.on{display:block;animation:secIn .22s var(--ease)}
+@keyframes secIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ── PAGE HEADER ── */
-.page-hdr{margin-bottom:24px}
-.page-title{
-  font-size:24px;font-weight:800;letter-spacing:-.05em;color:var(--text);
+/* PAGE HEADER */
+.pg-hdr{margin-bottom:28px}
+.pg-eyebrow{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.pg-title{font-size:32px;font-weight:700;letter-spacing:-.06em;color:var(--text);line-height:1.1;font-family:var(--serif);font-style:italic}
+.pg-sub{font-size:14px;color:var(--text2);margin-top:6px;line-height:1.6}
+
+/* TOPBAR for main */
+.main-topbar{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
 }
-.page-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.main-topbar-left{display:flex;align-items:center;gap:12px}
+.brand-chip{
+  display:flex;align-items:center;gap:8px;padding:7px 14px;
+  background:var(--surface);border:1px solid var(--border);border-radius:999px;
+  font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;
+}
+.brand-chip:hover{border-color:var(--border2)}
+.brand-chip-dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.date-chip{
+  display:flex;align-items:center;gap:6px;padding:7px 12px;
+  background:var(--surface);border:1px solid var(--border);border-radius:999px;
+  font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;
+  font-family:var(--mono);transition:all .15s;
+}
+.date-chip:hover{border-color:var(--border2);color:var(--text)}
 
-/* ── STAT CARDS ── */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+/* BIG CARDS */
+.card-grid{display:grid;gap:14px}
+.card-grid-2{grid-template-columns:1fr 1fr}
+.card-grid-3{grid-template-columns:1fr 1fr 1fr}
 
-.stat-card{
+.big-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:18px 20px;
-  position:relative;overflow:hidden;
-  transition:border-color .15s, transform .15s;
-}
-.stat-card:hover{border-color:var(--border2);transform:translateY(-1px)}
-.stat-card::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
-}
-
-.stat-label{
-  font-size:11px;font-weight:600;color:var(--text2);
-  text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;
-}
-.stat-val{
-  font-size:28px;font-weight:800;letter-spacing:-.06em;
-  color:var(--text);font-family:var(--mono);line-height:1;margin-bottom:8px;
-}
-.stat-val.accent{color:var(--accent2)}
-.stat-val.green{color:var(--green)}
-.stat-change{font-size:12px;font-weight:500;display:flex;align-items:center;gap:4px}
-.stat-change.up{color:var(--green)}
-.stat-change.down{color:var(--red)}
-.stat-change.neutral{color:var(--text3)}
-
-/* ── BRIEF CARD ── */
-.brief-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:22px;margin-bottom:16px;
+  border-radius:var(--r);padding:28px;
+  transition:border-color .15s, transform .2s, box-shadow .2s;
   position:relative;overflow:hidden;
 }
-.brief-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg, var(--accent), var(--green), transparent);
-  opacity:.6;
+.big-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.big-card.accent-card{
+  background:var(--text);border-color:var(--text);
 }
-.brief-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.brief-ai-badge{
-  display:flex;align-items:center;gap:6px;padding:4px 10px;
-  background:var(--accent-subtle);border:1px solid rgba(108,99,255,0.2);
-  border-radius:999px;font-size:11px;font-weight:700;color:var(--accent2);
-}
-.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-.brief-time{font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto}
-.brief-text{font-size:13px;color:var(--text2);line-height:1.85}
-.brief-text strong{color:var(--text);font-weight:600}
+.big-card.accent-card *{color:#fff!important}
 
-/* ── CARD ── */
-.card{
+.card-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.card-value{font-size:42px;font-weight:700;letter-spacing:-.07em;color:var(--text);font-family:var(--serif);line-height:1}
+.card-value.mono{font-family:var(--mono);font-size:36px}
+.card-note{font-size:13px;color:var(--text2);margin-top:10px;display:flex;align-items:center;gap:5px}
+.card-note.up{color:var(--green)}
+.card-note.down{color:var(--red)}
+.card-note.warn{color:var(--yellow)}
+
+/* AI CARD */
+.ai-card{
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);
+  border-radius:var(--r);padding:28px;
+  position:relative;overflow:hidden;
 }
-.card-hdr{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 20px;border-bottom:1px solid var(--border);
+.ai-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent 60%);
 }
-.card-title{font-size:13px;font-weight:700;color:var(--text)}
-.card-body{padding:0}
+.ai-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ai-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 11px;
+  background:var(--accent-bg);border:1px solid var(--accent-border);
+  border-radius:999px;font-size:11px;font-weight:700;color:var(--accent);
+}
+.ai-pulse{
+  width:5px;height:5px;border-radius:50%;background:var(--accent);
+  animation:aip 1.8s infinite;
+}
+@keyframes aip{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-time{font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto}
+.ai-text{font-size:14px;color:var(--text2);line-height:1.85}
+.ai-text strong{color:var(--text);font-weight:600}
 
-/* ── TABLE ── */
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{
-  text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--text3);padding:10px 20px;
-  border-bottom:1px solid var(--border);
+/* CAMPAIGN LIST */
+.camp-list{display:flex;flex-direction:column;gap:0}
+.camp-row{
+  display:flex;align-items:center;gap:16px;padding:16px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background .1s;border-radius:0;
 }
-.tbl td{padding:13px 20px;border-bottom:1px solid var(--border);font-size:13px}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr.tbl-row{cursor:pointer;transition:background .1s}
-.tbl tr.tbl-row:hover td{background:rgba(255,255,255,.02)}
-.tbl-name{font-weight:500;color:var(--text);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mono{font-family:var(--mono);font-size:12px}
+.camp-row:last-child{border-bottom:none}
+.camp-row:hover{background:var(--bg2);margin:0 -28px;padding:16px 28px;border-radius:var(--r-sm)}
+.camp-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.camp-name{flex:1;font-size:14px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.camp-spend{font-size:13px;font-weight:600;color:var(--text);font-family:var(--mono);width:70px;text-align:right}
+.camp-roas{font-size:13px;color:var(--text2);font-family:var(--mono);width:60px;text-align:right}
+.camp-sig{display:flex;gap:4px;justify-content:flex-end;width:100px}
 
-/* ── BADGES ── */
-.badge{
-  display:inline-flex;align-items:center;gap:4px;padding:3px 8px;
-  border-radius:999px;font-size:11px;font-weight:700;
+/* SIGNALS */
+.sig{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.sig-g{background:var(--green-bg);color:var(--green)}
+.sig-y{background:var(--yellow-bg);color:var(--yellow)}
+.sig-r{background:var(--red-bg);color:var(--red)}
+
+/* STRATEGY CARDS */
+.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.strat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;cursor:pointer;
+  transition:all .18s;
 }
-.badge-green{background:var(--green-subtle);color:var(--green);border:1px solid rgba(0,229,160,0.2)}
-.badge-yellow{background:var(--yellow-subtle);color:var(--yellow);border:1px solid rgba(255,179,64,0.2)}
-.badge-red{background:var(--red-subtle);color:var(--red);border:1px solid rgba(255,85,85,0.2)}
-.badge-purple{background:var(--accent-subtle);color:var(--accent2);border:1px solid rgba(108,99,255,0.2)}
-.badge-gray{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
-.badge-dot{width:4px;height:4px;border-radius:50%;background:currentColor}
+.strat-card:hover{border-color:var(--accent-border);background:var(--accent-bg);transform:translateY(-2px);box-shadow:var(--shadow)}
+.strat-icon{font-size:24px;margin-bottom:12px}
+.strat-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
+.strat-text{font-size:12px;color:var(--text2);line-height:1.65}
 
-/* ── SIGNALS ── */
-.sig-row{display:flex;flex-wrap:wrap;gap:5px}
-.sig{
-  display:inline-flex;align-items:center;gap:4px;padding:3px 8px;
-  border-radius:6px;font-size:11px;font-weight:600;
+/* METRIC LEARN CARDS */
+.metric-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;
 }
-.sig.good{background:var(--green-subtle);color:var(--green)}
-.sig.warn{background:var(--yellow-subtle);color:var(--yellow)}
-.sig.bad{background:var(--red-subtle);color:var(--red)}
+.metric-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.metric-val-example{font-size:28px;font-weight:700;color:var(--accent);font-family:var(--mono);letter-spacing:-.04em;margin-bottom:8px}
+.metric-explain{font-size:13px;color:var(--text2);line-height:1.65}
+.metric-tip{
+  margin-top:12px;padding:10px 12px;background:var(--bg2);border-radius:8px;
+  font-size:12px;color:var(--text2);border-left:2px solid var(--accent);
+}
 
-/* ── DETAIL PANEL ── */
-#dp-overlay{
+/* DETAIL PANEL */
+#dp-ov{
   position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  background:rgba(26,25,22,0.5);backdrop-filter:blur(6px);
   display:none;justify-content:flex-end;
-  opacity:0;transition:opacity .2s;
+  opacity:0;transition:opacity .22s;
 }
-#dp-overlay.open{display:flex}
-#dp-overlay.visible{opacity:1}
+#dp-ov.open{display:flex}
+#dp-ov.vis{opacity:1}
 #dp-panel{
-  width:440px;height:100%;background:var(--surface);
-  border-left:1px solid var(--border2);overflow-y:auto;
+  width:460px;height:100%;background:var(--surface);
+  border-left:1px solid var(--border);overflow-y:auto;
   transform:translateX(100%);
-  transition:transform .28s cubic-bezier(.32,.72,0,1);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+  box-shadow:-8px 0 32px rgba(0,0,0,.08);
 }
-#dp-overlay.visible #dp-panel{transform:translateX(0)}
+#dp-ov.vis #dp-panel{transform:none}
 .dp-hdr{
-  padding:20px 22px 16px;border-bottom:1px solid var(--border);
-  display:flex;align-items:flex-start;gap:10px;
+  padding:24px 28px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:12px;
   position:sticky;top:0;background:var(--surface);z-index:1;
 }
-.dp-name{font-size:15px;font-weight:700;color:var(--text);flex:1;line-height:1.4;letter-spacing:-.02em}
+.dp-title{font-size:16px;font-weight:700;color:var(--text);flex:1;letter-spacing:-.03em;line-height:1.3}
 .dp-close{
-  width:28px;height:28px;border-radius:6px;display:flex;align-items:center;
-  justify-content:center;cursor:pointer;color:var(--text3);font-size:16px;
-  transition:all .12s;flex-shrink:0;
+  width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;color:var(--text3);font-size:18px;transition:all .12s;
 }
-.dp-close:hover{background:var(--surface2);color:var(--text)}
-.dp-body{padding:20px 22px}
-.dp-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
-.dp-kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px}
-.dp-kpi-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
-.dp-kpi-val{font-size:20px;font-weight:800;font-family:var(--mono);color:var(--text);letter-spacing:-.04em}
-.dp-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:16px 0 10px}
+.dp-close:hover{background:var(--bg2);color:var(--text)}
+.dp-body{padding:24px 28px}
+.dp-kgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px}
+.dp-kpi{background:var(--bg2);border-radius:var(--r-sm);padding:14px}
+.dp-kpi-l{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.dp-kpi-v{font-size:22px;font-weight:700;font-family:var(--mono);color:var(--text);letter-spacing:-.04em}
+.dp-sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:18px 0 10px}
 .dp-ai{
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r-sm);padding:14px;
+  background:var(--bg2);border-radius:var(--r-sm);padding:16px;
   font-size:13px;color:var(--text2);line-height:1.8;
 }
+.dp-sigs{display:flex;flex-wrap:wrap;gap:6px}
 
-/* ── SKELETON ── */
+/* SKELETON */
 .skel{
-  background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);
-  background-size:200% 100%;animation:shimmer 1.4s linear infinite;border-radius:8px;
+  background:linear-gradient(90deg,var(--bg2) 25%,var(--border) 50%,var(--bg2) 75%);
+  background-size:200% 100%;animation:shim 1.4s linear infinite;border-radius:12px;
 }
-@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes shim{from{background-position:200% 0}to{background-position:-200% 0}}
 
-/* ── SPINNER ── */
+/* SPINNER */
 .spin{
-  width:13px;height:13px;border:2px solid var(--surface3);
-  border-top-color:var(--accent);border-radius:50%;animation:rot .6s linear infinite;
-  display:inline-block;flex-shrink:0;
+  width:14px;height:14px;border:2px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:rot .6s linear infinite;display:inline-block;flex-shrink:0;
 }
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* ── TOAST ── */
+/* TOAST */
 #toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);
-  background:var(--surface2);color:var(--text);
-  border:1px solid var(--border2);
-  padding:9px 18px;border-radius:999px;
-  font-size:12px;font-weight:600;z-index:9999;
-  opacity:0;transition:all .22s;white-space:nowrap;
-  box-shadow:var(--shadow);
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--text);color:#fff;padding:10px 20px;border-radius:999px;
+  font-size:12px;font-weight:600;z-index:9999;opacity:0;transition:all .22s;
+  white-space:nowrap;box-shadow:var(--shadow);
 }
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.on{opacity:1;transform:translateX(-50%)}
 
-/* ── EMPTY ── */
-.empty{text-align:center;padding:56px 20px}
-.empty-icon{font-size:40px;margin-bottom:14px;opacity:.3}
-.empty-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
-.empty-sub{font-size:12px;color:var(--text3);line-height:1.6}
+/* DATE MENU */
+#date-menu{
+  display:none;position:fixed;z-index:9000;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-sm);box-shadow:var(--shadow-lg);padding:4px;min-width:150px;
+}
+.dm-opt{
+  padding:9px 14px;font-size:13px;cursor:pointer;border-radius:8px;
+  color:var(--text2);transition:background .1s;font-weight:500;
+}
+.dm-opt:hover{background:var(--bg2);color:var(--text)}
+.dm-opt.on{color:var(--accent);font-weight:600}
 
-/* ── CONNECT ── */
-.connect-wrap{
-  display:flex;align-items:center;justify-content:center;
-  min-height:calc(100vh - var(--topbar));
-  padding:40px;
-}
-.connect-card{
-  background:var(--surface);border:1px solid var(--border2);
-  border-radius:var(--r-lg);padding:40px;text-align:center;max-width:420px;
-  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
-}
-.connect-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
-}
-.connect-glow{
-  position:absolute;top:-40px;left:50%;transform:translateX(-50%);
-  width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  pointer-events:none;
-}
-.connect-icon{font-size:48px;margin-bottom:20px;position:relative;z-index:1}
-.connect-title{font-size:20px;font-weight:800;letter-spacing:-.04em;margin-bottom:10px;position:relative;z-index:1}
-.connect-sub{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;position:relative;z-index:1}
-.connect-perms{
-  text-align:left;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r-sm);padding:14px 16px;margin-bottom:22px;position:relative;z-index:1;
-}
-.perm-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:3px 0}
-.perm-check{color:var(--green);font-weight:700;font-size:13px}
-
-/* ── SETTINGS ── */
-.settings-section{margin-bottom:16px}
-.settings-sec-label{
-  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--text3);padding:0 0 10px;margin-bottom:0;
-  border-bottom:1px solid var(--border);
-}
-.settings-row{
-  display:flex;align-items:center;padding:14px 0;
-  border-bottom:1px solid var(--border);gap:12px;
-}
-.settings-row:last-child{border-bottom:none}
-.settings-info{flex:1}
-.settings-name{font-size:13px;font-weight:500;color:var(--text)}
-.settings-desc{font-size:11px;color:var(--text3);margin-top:2px}
-
-/* ── ALARMS ── */
-.alarm-item{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 0;border-bottom:1px solid var(--border);
-}
-.alarm-item:last-child{border-bottom:none}
-.alarm-emoji{font-size:18px;width:32px;text-align:center}
-.alarm-info{flex:1}
-.alarm-name{font-size:13px;font-weight:500;color:var(--text)}
-.alarm-desc{font-size:11px;color:var(--text3);margin-top:2px}
-.toggle{
-  width:36px;height:20px;border-radius:999px;border:none;cursor:pointer;
-  position:relative;transition:background .2s;background:var(--surface3);flex-shrink:0;
-}
-.toggle.on{background:var(--accent)}
-.toggle::after{
-  content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;
-  border-radius:50%;background:#fff;transition:transform .2s;
-  box-shadow:0 1px 4px rgba(0,0,0,.4);
-}
-.toggle.on::after{transform:translateX(16px)}
-
-/* ── PLAN CARDS ── */
+/* PLAN STEP */
 .plan-step{
-  display:flex;align-items:flex-start;gap:12px;
-  padding:14px 0;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 0;border-bottom:1px solid var(--border);
 }
 .plan-step:last-child{border-bottom:none}
 .plan-num{
-  width:24px;height:24px;border-radius:6px;
-  background:var(--accent-subtle);border:1px solid rgba(108,99,255,0.2);
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  background:var(--bg2);border:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:800;color:var(--accent2);flex-shrink:0;margin-top:1px;
+  font-size:11px;font-weight:800;color:var(--text2);margin-top:1px;
 }
-.plan-text{font-size:13px;color:var(--text2);line-height:1.7}
+.plan-num.urgent{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent)}
+.plan-body{}
+.plan-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.plan-desc{font-size:13px;color:var(--text2);line-height:1.65}
 
-/* ── DATE DROPDOWN ── */
-#date-menu{
-  display:none;position:fixed;z-index:9000;
-  background:var(--surface);border:1px solid var(--border2);
-  border-radius:var(--r-sm);box-shadow:var(--shadow-lg);padding:4px;min-width:150px;
-}
-.date-opt{
-  padding:9px 12px;font-size:12px;font-weight:500;cursor:pointer;
-  border-radius:6px;transition:background .1s;color:var(--text2);
-}
-.date-opt:hover{background:var(--surface2);color:var(--text)}
-.date-opt.active{color:var(--accent2);background:var(--accent-subtle)}
+/* SETTINGS */
+.s-row{display:flex;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);gap:14px}
+.s-row:last-child{border-bottom:none}
+.s-info{flex:1}
+.s-name{font-size:14px;font-weight:500;color:var(--text)}
+.s-desc{font-size:12px;color:var(--text3);margin-top:2px}
 
-/* ── FB BTN ── */
-.fb-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:11px 18px;border-radius:var(--r-sm);
-  background:#1877F2;color:#fff;border:none;
-  font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;
-  transition:all .15s;width:100%;
+/* ALARM TOGGLE */
+.tog{
+  width:38px;height:22px;border-radius:999px;border:none;cursor:pointer;
+  position:relative;transition:background .2s;background:var(--border2);flex-shrink:0;
 }
-.fb-btn:hover{background:#1565d4;transform:translateY(-1px);box-shadow:0 4px 16px rgba(24,119,242,0.35)}
+.tog.on{background:var(--green)}
+.tog::after{
+  content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;
+  border-radius:50%;background:#fff;transition:transform .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.tog.on::after{transform:translateX(16px)}
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:5px;height:5px}
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700}
+.badge-g{background:var(--green-bg);color:var(--green)}
+.badge-y{background:var(--yellow-bg);color:var(--yellow)}
+.badge-r{background:var(--red-bg);color:var(--red)}
+.badge-n{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--border2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px}
+.empty-icon{font-size:44px;margin-bottom:14px;opacity:.3}
+.empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--text3);line-height:1.6}
 
 input::placeholder{color:var(--text3)}
-select{background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:var(--r-sm);padding:9px 12px;font-family:var(--font);font-size:13px;outline:none}
-select:focus{border-color:var(--accent)}
 </style>
 </head>
 <body>
 
-<!-- ── AUTH ── -->
-<div id="auth-screen">
-  <div class="auth-bg"></div>
-  <div class="auth-bg-grid"></div>
+<!-- ══════════════════════════════════════
+     AUTH
+══════════════════════════════════════ -->
+<div id="auth" class="screen">
+  <div class="auth-logo">
+    <div class="auth-logo-mark">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 2L16 14H2L9 2Z" fill="white"/>
+      </svg>
+    </div>
+    <span class="auth-logo-name">Adsopify</span>
+  </div>
+
   <div class="auth-card">
-    <div class="auth-logo">
-      <div class="auth-logo-mark">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 1L14 12H2L8 1Z" fill="white"/>
-        </svg>
-      </div>
-      <span class="auth-logo-name">Adsopify</span>
+    <div id="mlynr-strip" class="mlynr-strip">
+      🎓 MLYNR öğrencisi olarak ücretsiz erişim sağlayabilirsin.
     </div>
-
-    <div id="mlynr-banner" class="mlynr-banner">
-      <span>🎓</span> MLYNR öğrencisi — ücretsiz erişim için kayıt ol
-    </div>
-
-    <div class="auth-headline">Reklamlarını anla</div>
-    <div class="auth-sub">Meta Ads verilerini yapay zeka ile sadeleştir</div>
+    <div class="auth-title">Hoş geldin</div>
+    <div class="auth-sub">Meta reklamlarını anla, optimize et, büyü.</div>
 
     <div class="auth-tabs">
-      <div class="auth-tab active" onclick="switchTab('login')" id="tab-login">Giriş Yap</div>
-      <div class="auth-tab" onclick="switchTab('register')" id="tab-register">Kayıt Ol</div>
+      <div class="auth-tab on" onclick="authTab('login')" id="at-login">Giriş Yap</div>
+      <div class="auth-tab" onclick="authTab('register')" id="at-register">Kayıt Ol</div>
     </div>
 
-    <div id="form-login">
-      <div class="field">
-        <label>E-Posta</label>
-        <input type="email" id="login-email" placeholder="sen@example.com" autocomplete="email">
-      </div>
-      <div class="field">
-        <label>Şifre</label>
-        <input type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password">
-      </div>
-      <button class="btn btn-primary btn-w" onclick="doLogin()" id="login-btn">Giriş Yap</button>
+    <div id="f-login">
+      <div class="field"><label>E-Posta</label><input type="email" id="le" placeholder="sen@example.com" autocomplete="email"></div>
+      <div class="field"><label>Şifre</label><input type="password" id="lp" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="btn btn-primary btn-w" onclick="doLogin()" id="l-btn">Giriş Yap</button>
     </div>
 
-    <div id="form-register" style="display:none">
-      <div class="field">
-        <label>E-Posta</label>
-        <input type="email" id="reg-email" placeholder="sen@example.com">
-      </div>
-      <div class="field">
-        <label>Şifre</label>
-        <input type="password" id="reg-pw" placeholder="En az 6 karakter">
-      </div>
-      <div class="field">
-        <label>Erişim Kodu <span style="color:var(--text3);font-weight:400">(varsa)</span></label>
-        <input type="text" id="reg-code" placeholder="MLYNR-XXXX" style="font-family:var(--mono);letter-spacing:.05em">
-      </div>
-      <button class="btn btn-primary btn-w" onclick="doRegister()" id="reg-btn">Hesap Oluştur</button>
+    <div id="f-register" style="display:none">
+      <div class="field"><label>E-Posta</label><input type="email" id="re" placeholder="sen@example.com"></div>
+      <div class="field"><label>Şifre</label><input type="password" id="rp" placeholder="En az 6 karakter"></div>
+      <div class="field"><label>Erişim Kodu <span style="color:var(--text3);font-weight:400">(varsa)</span></label>
+        <input type="text" id="rc" placeholder="MLYNR-XXXX" style="font-family:var(--mono);letter-spacing:.04em"></div>
+      <button class="btn btn-primary btn-w" onclick="doRegister()" id="r-btn">Hesap Oluştur</button>
     </div>
 
-    <div class="or-div">veya</div>
+    <div class="or-line">veya</div>
     <button class="fb-btn" onclick="doFBLogin()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       Facebook ile Devam Et
@@ -619,253 +562,419 @@ select:focus{border-color:var(--accent)}
   </div>
 </div>
 
-<!-- ── APP ── -->
-<div id="app-screen">
-
-  <!-- TOPBAR -->
-  <div id="topbar">
-    <div class="brand-picker" onclick="void(0)">
-      <div class="brand-indicator" id="tb-dot"></div>
-      <span class="brand-name-text" id="tb-brand">Yükleniyor...</span>
-      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="color:var(--text3);flex-shrink:0">
-        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+<!-- ══════════════════════════════════════
+     ONBOARDING
+══════════════════════════════════════ -->
+<div id="onboarding" class="screen">
+  <div class="ob-wrap">
+    <div class="ob-progress">
+      <div class="ob-dot active" id="ob-d0"></div>
+      <div class="ob-dot" id="ob-d1"></div>
+      <div class="ob-dot" id="ob-d2"></div>
+      <div class="ob-dot" id="ob-d3"></div>
     </div>
 
-    <div class="topbar-spacer"></div>
-
-    <div class="date-btn" onclick="showDateMenu()" id="date-btn">
-      <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-        <rect x="1" y="2" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
-        <path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
-      <span id="date-label">Son 7 gün</span>
+    <!-- Step 0: Seviye -->
+    <div class="ob-step active" id="ob-s0">
+      <div class="ob-q">Meta Ads ile ne kadar deneyiminiz var?</div>
+      <div class="ob-sub">Sana en uygun deneyimi sunabilmemiz için bilmemiz gerekiyor.</div>
+      <div class="ob-options">
+        <div class="ob-option" onclick="obSelect(0,'level','beginner',this)">
+          <div class="ob-option-icon">🌱</div>
+          <div class="ob-option-text">
+            <div class="ob-option-title">Yeni Başlıyorum</div>
+            <div class="ob-option-desc">Meta Ads'e yeni başladım veya henüz çok az deneyimim var</div>
+          </div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(0,'level','intermediate',this)">
+          <div class="ob-option-icon">🚀</div>
+          <div class="ob-option-text">
+            <div class="ob-option-title">Orta Seviye</div>
+            <div class="ob-option-desc">Kampanya yönetiyorum ama optimize etmekte zorlanıyorum</div>
+          </div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(0,'level','advanced',this)">
+          <div class="ob-option-icon">⚡</div>
+          <div class="ob-option-text">
+            <div class="ob-option-title">İleri Seviye</div>
+            <div class="ob-option-desc">Metrikleri iyi biliyorum, daha derinlemesine analiz istiyorum</div>
+          </div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="obNext(0)" style="width:100%">Devam →</button>
     </div>
 
-    <div id="plan-badge" class="plan-badge" style="display:none">
-      <div class="pulse-dot"></div>
-      <span id="plan-text">MLYNR</span>
+    <!-- Step 1: Sektör -->
+    <div class="ob-step" id="ob-s1">
+      <div class="ob-q">Hangi sektörde faaliyet gösteriyorsunuz?</div>
+      <div class="ob-sub">Sektörünüze özel stratejiler ve benchmarklar için.</div>
+      <div class="ob-options">
+        <div class="ob-option" onclick="obSelect(1,'sector','ecommerce',this)">
+          <div class="ob-option-icon">🛍️</div>
+          <div class="ob-option-text"><div class="ob-option-title">E-Ticaret</div><div class="ob-option-desc">Ürün satışı, online mağaza</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(1,'sector','service',this)">
+          <div class="ob-option-icon">💼</div>
+          <div class="ob-option-text"><div class="ob-option-title">Hizmet</div><div class="ob-option-desc">Danışmanlık, ajans, B2B</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(1,'sector','local',this)">
+          <div class="ob-option-icon">📍</div>
+          <div class="ob-option-text"><div class="ob-option-title">Yerel İşletme</div><div class="ob-option-desc">Restoran, mağaza, klinik</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(1,'sector','app',this)">
+          <div class="ob-option-icon">📱</div>
+          <div class="ob-option-text"><div class="ob-option-title">Uygulama / SaaS</div><div class="ob-option-desc">Mobil uygulama, yazılım</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="obBack(1)" style="flex:0 0 auto">← Geri</button>
+        <button class="btn btn-primary btn-w" onclick="obNext(1)">Devam →</button>
+      </div>
     </div>
 
-    <div class="icon-btn" onclick="refreshData()" id="refresh-btn" title="Yenile">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-        <path d="M12 2v4H8M2 12V8h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M2.88 5a5 5 0 0 1 8.73-1M11.12 9a5 5 0 0 1-8.73 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-      </svg>
+    <!-- Step 2: Marka -->
+    <div class="ob-step" id="ob-s2">
+      <div class="ob-q">Markanızın adı nedir?</div>
+      <div class="ob-sub">Sana kişiselleştirilmiş analizler ve tavsiyeler sunalım.</div>
+      <div class="ob-input-wrap">
+        <input class="ob-text-input" id="ob-brand" type="text" placeholder="örn. AlaTab, Nike, Marka Adı...">
+      </div>
+      <div class="field" style="margin-bottom:28px">
+        <label>Aylık Reklam Bütçesi</label>
+        <select id="ob-budget">
+          <option value="">Seç...</option>
+          <option value="lt5k">₺5.000'den az</option>
+          <option value="5k-20k">₺5.000 – ₺20.000</option>
+          <option value="20k-50k">₺20.000 – ₺50.000</option>
+          <option value="50k-100k">₺50.000 – ₺100.000</option>
+          <option value="gt100k">₺100.000+</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="obBack(2)" style="flex:0 0 auto">← Geri</button>
+        <button class="btn btn-primary btn-w" onclick="obNext(2)">Devam →</button>
+      </div>
     </div>
 
-    <div class="icon-btn" onclick="doLogout()" title="Çıkış">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-        <path d="M5 2H2.5A1 1 0 0 0 1.5 3v8a1 1 0 0 0 1 1H5M9.5 10l2.5-3-2.5-3M12 7H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <!-- Step 3: Hedef -->
+    <div class="ob-step" id="ob-s3">
+      <div class="ob-q">Ana hedefiniz ne?</div>
+      <div class="ob-sub">En kritik metriğe odaklanalım.</div>
+      <div class="ob-options">
+        <div class="ob-option" onclick="obSelect(3,'goal','sales',this)">
+          <div class="ob-option-icon">💰</div>
+          <div class="ob-option-text"><div class="ob-option-title">Daha Fazla Satış</div><div class="ob-option-desc">ROAS ve dönüşüm optimizasyonu</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(3,'goal','leads',this)">
+          <div class="ob-option-icon">🎯</div>
+          <div class="ob-option-text"><div class="ob-option-title">Lead Toplama</div><div class="ob-option-desc">CPL ve form dönüşümleri</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ob-option" onclick="obSelect(3,'goal','awareness',this)">
+          <div class="ob-option-icon">📣</div>
+          <div class="ob-option-text"><div class="ob-option-title">Marka Bilinirliği</div><div class="ob-option-desc">Erişim ve görüntülenme</div></div>
+          <div class="ob-option-check"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="obBack(3)" style="flex:0 0 auto">← Geri</button>
+        <button class="btn btn-accent btn-w btn-lg" onclick="obFinish()">Panelimi Aç →</button>
+      </div>
     </div>
+
   </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FB CONNECT
+══════════════════════════════════════ -->
+<div id="fb-connect" class="screen">
+  <div class="fbc-card">
+    <span class="fbc-icon">📡</span>
+    <div class="fbc-title">Meta Hesabını Bağla</div>
+    <div class="fbc-sub">Gerçek kampanya verilerini görmek için Facebook Ads hesabını bağla. İstersen şimdi atlayıp sonra bağlayabilirsin.</div>
+    <div class="fbc-perms">
+      <div class="fbc-perm"><span class="fbc-perm-check">✓</span> Reklam hesabı verileri</div>
+      <div class="fbc-perm"><span class="fbc-perm-check">✓</span> Kampanya performansı</div>
+      <div class="fbc-perm"><span class="fbc-perm-check">✓</span> ROAS, CPC, frekans metrikleri</div>
+    </div>
+    <button class="fb-btn btn-lg" onclick="doFBLogin(true)" style="font-size:15px;padding:14px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook ile Bağlan
+    </button>
+    <div class="fbc-skip" onclick="skipFB()">Şimdilik atla, sonra bağlarım</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     APP
+══════════════════════════════════════ -->
+<div id="app">
 
   <!-- SIDEBAR -->
   <div id="sidebar">
-    <div class="sb-label">Genel</div>
-    <div class="nav-item active" onclick="navTo('overview')" id="nav-overview">
-      <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
-      Genel Bakış
+    <div class="sb-logo">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 2L16 14H2L9 2Z" fill="white"/>
+      </svg>
     </div>
-    <div class="nav-item" onclick="navTo('campaigns')" id="nav-campaigns">
-      <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M1 7h3l2-4 2 8 2-4h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Kampanyalar
+    <div class="sb-nav">
+      <div class="sb-btn on" onclick="nav('overview')" id="nb-overview" title="">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="2" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="10" y="10" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
+        <span class="sb-tooltip">Genel Bakış</span>
+      </div>
+      <div class="sb-btn" onclick="nav('campaigns')" id="nb-campaigns">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9h4l2-5 3 10 2-5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="sb-tooltip">Kampanyalar</span>
+      </div>
+      <div class="sb-btn" onclick="nav('plan')" id="nb-plan">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span class="sb-tooltip">Günlük Plan</span>
+      </div>
+      <div class="sb-btn" onclick="nav('learn')" id="nb-learn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L2 6l7 4 7-4-7-4Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 10l7 4 7-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="sb-tooltip">Öğren</span>
+      </div>
     </div>
-    <div class="nav-item" onclick="navTo('plan')" id="nav-plan">
-      <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3.5l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Günlük Plan
+    <div class="sb-spacer"></div>
+    <div class="sb-btn" onclick="nav('settings')" id="nb-settings">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M9 2v2M9 14v2M2 9h2M14 9h2M3.64 3.64l1.42 1.42M12.94 12.94l1.42 1.42M14.36 3.64l-1.42 1.42M5.06 12.94l-1.42 1.42" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span class="sb-tooltip">Ayarlar</span>
     </div>
-
-    <div class="divider" style="margin-top:6px"></div>
-    <div class="sb-label">Markalar</div>
-    <div id="brand-list">
-      <div style="padding:6px 10px;font-size:11px;color:var(--text3)">Yükleniyor...</div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="nav-item" onclick="navTo('alarms')" id="nav-alarms">
-      <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M7 1.5A4 4 0 0 0 3 5.5V9L2 10h10l-1-1V5.5A4 4 0 0 0 7 1.5Z" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 10.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.2"/></svg>
-      Alarmlar
-    </div>
-    <div class="nav-item" onclick="navTo('settings')" id="nav-settings">
-      <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.96 2.96l1.06 1.06M9.98 9.98l1.06 1.06M11.04 2.96l-1.06 1.06M4.02 9.98l-1.06 1.06" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-      Ayarlar
-    </div>
+    <div class="sb-user" id="sb-user" onclick="nav('settings')" title="Hesap">A</div>
   </div>
 
   <!-- MAIN -->
   <div id="main">
 
-    <!-- OVERVIEW -->
-    <div id="sec-overview" class="section active">
-      <div class="page-hdr">
-        <div class="page-title" id="ov-title">Genel Bakış</div>
-        <div class="page-sub" id="ov-sub">Kampanya performansınız</div>
-      </div>
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card skel" style="height:96px"></div>
-        <div class="stat-card skel" style="height:96px"></div>
-        <div class="stat-card skel" style="height:96px"></div>
-        <div class="stat-card skel" style="height:96px"></div>
-      </div>
-      <div class="brief-card" id="brief-card">
-        <div class="brief-card-hdr">
-          <div class="brief-ai-badge"><div class="ai-dot"></div> AI Özet</div>
-          <div class="brief-time" id="brief-time">—</div>
+    <!-- ── OVERVIEW ── -->
+    <div id="sec-overview" class="sec on">
+      <div class="main-topbar">
+        <div class="main-topbar-left">
+          <div class="brand-chip" id="brand-chip">
+            <div class="brand-chip-dot"></div>
+            <span id="brand-chip-name">Yükleniyor...</span>
+          </div>
+          <div class="date-chip" onclick="showDateMenu()" id="date-btn">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <span id="date-lbl">Son 7 gün</span>
+          </div>
         </div>
-        <div class="brief-text" id="brief-text">
+        <div style="display:flex;gap:8px;align-items:center">
+          <div id="plan-badge" style="display:none;font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green)"></div>
+          <button class="btn btn-outline btn-sm" onclick="refreshData()" id="refresh-btn">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M12 2v4H8M2 12V8h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.88 5a5 5 0 0 1 8.73-1M11.12 9a5 5 0 0 1-8.73 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Yenile
+          </button>
+        </div>
+      </div>
+
+      <!-- No FB warning -->
+      <div id="no-fb-banner" style="display:none;background:var(--yellow-bg);border:1px solid rgba(184,134,11,0.2);border-radius:var(--r-sm);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div style="font-size:13px;color:var(--yellow)">⚡ Meta hesabın bağlı değil. Gerçek verilerini görmek için bağla.</div>
+        <button class="btn btn-sm btn-outline" onclick="showScreen('fb-connect')" style="flex-shrink:0">Bağla</button>
+      </div>
+
+      <!-- KPIs -->
+      <div class="card-grid card-grid-4" id="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+        <div class="big-card skel" style="height:110px"></div>
+        <div class="big-card skel" style="height:110px"></div>
+        <div class="big-card skel" style="height:110px"></div>
+        <div class="big-card skel" style="height:110px"></div>
+      </div>
+
+      <!-- AI Brief -->
+      <div class="ai-card" style="margin-bottom:16px" id="brief-card">
+        <div class="ai-card-hdr">
+          <div class="ai-badge"><div class="ai-pulse"></div> AI Özet</div>
+          <div class="ai-time" id="brief-time">—</div>
+        </div>
+        <div class="ai-text" id="brief-body">
           <span style="display:flex;align-items:center;gap:8px;color:var(--text3)"><span class="spin"></span> Analiz hazırlanıyor...</span>
         </div>
       </div>
-      <div class="card">
-        <div class="card-hdr">
-          <div class="card-title">Aktif Kampanyalar</div>
-          <div class="btn btn-sm btn-ghost" onclick="navTo('campaigns')">Tümünü gör →</div>
+
+      <!-- Campaigns preview -->
+      <div class="big-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Aktif Kampanyalar</div>
+          <button class="btn btn-sm btn-outline" onclick="nav('campaigns')">Tümünü gör →</button>
         </div>
-        <div class="card-body">
-          <table class="tbl">
-            <thead><tr><th>Kampanya</th><th>Harcama</th><th>ROAS</th><th>Sinyal</th></tr></thead>
-            <tbody id="ov-tbody">
-              <tr><td colspan="4"><div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px;padding:16px"><span class="spin"></span> Yükleniyor...</div></td></tr>
-            </tbody>
-          </table>
+        <div class="camp-list" id="ov-camps">
+          <div style="padding:20px 0;display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px">
+            <span class="spin"></span> Yükleniyor...
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- CAMPAIGNS -->
-    <div id="sec-campaigns" class="section">
-      <div class="page-hdr" style="display:flex;align-items:flex-end;gap:12px">
+    <!-- ── CAMPAIGNS ── -->
+    <div id="sec-campaigns" class="sec">
+      <div class="main-topbar">
         <div>
-          <div class="page-title">Kampanyalar</div>
-          <div class="page-sub">Tüm kampanyalar ve metrikler</div>
+          <div class="pg-eyebrow">Performans</div>
+          <div class="pg-title">Kampanyalar</div>
         </div>
-        <div style="margin-left:auto">
-          <input type="text" id="camp-search" placeholder="Ara..." oninput="filterCamps(this.value)"
-            style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--text);width:180px;outline:none">
-        </div>
+        <input type="text" id="camp-search" placeholder="Kampanya ara..." oninput="filterCamps(this.value)"
+          style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 14px;font-size:13px;color:var(--text);outline:none;width:200px;font-family:var(--font)">
       </div>
-      <div class="card">
-        <table class="tbl" id="camp-tbl">
-          <thead><tr><th>Kampanya</th><th>Durum</th><th>Harcama</th><th>ROAS</th><th>CPC</th><th>Frekans</th><th>Sinyal</th></tr></thead>
+      <div class="big-card" style="padding:0">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border)">
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 24px">Kampanya</th>
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 12px">Durum</th>
+              <th style="text-align:right;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 12px">Harcama</th>
+              <th style="text-align:right;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 12px">ROAS</th>
+              <th style="text-align:right;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 12px">CPC</th>
+              <th style="text-align:right;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 12px">Frekans</th>
+              <th style="text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:14px 24px 14px 12px">Sinyal</th>
+            </tr>
+          </thead>
           <tbody id="camp-tbody">
-            <tr><td colspan="7"><div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px;padding:16px"><span class="spin"></span></div></td></tr>
+            <tr><td colspan="7"><div style="padding:20px 24px;display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px"><span class="spin"></span></div></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- PLAN -->
-    <div id="sec-plan" class="section">
-      <div class="page-hdr">
-        <div class="page-title">Günlük Plan</div>
-        <div class="page-sub" id="plan-sub">Bugün ne yapmalısın?</div>
-      </div>
-      <div class="card" id="plan-card">
-        <div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;padding:20px"><span class="spin"></span> Plan hazırlanıyor...</div>
-      </div>
-    </div>
-
-    <!-- ALARMS -->
-    <div id="sec-alarms" class="section">
-      <div class="page-hdr">
-        <div class="page-title">Alarmlar</div>
-        <div class="page-sub">Önemli eşikler aşıldığında bildirim</div>
-      </div>
-      <div class="card" style="padding:0 20px;margin-bottom:12px">
-        <div id="alarm-list"></div>
-      </div>
-      <div class="card" style="padding:20px">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em">Eşik Değerleri</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-          <div>
-            <label style="font-size:10px;color:var(--text3);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Min ROAS</label>
-            <input type="number" id="t-roas" step="0.1" placeholder="2.0" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 10px;color:var(--text);font-family:var(--mono);font-size:12px;width:100%;outline:none">
-          </div>
-          <div>
-            <label style="font-size:10px;color:var(--text3);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Max CPC (₺)</label>
-            <input type="number" id="t-cpc" step="0.5" placeholder="5" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 10px;color:var(--text);font-family:var(--mono);font-size:12px;width:100%;outline:none">
-          </div>
-          <div>
-            <label style="font-size:10px;color:var(--text3);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Max Frekans</label>
-            <input type="number" id="t-freq" step="0.5" placeholder="3" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 10px;color:var(--text);font-family:var(--mono);font-size:12px;width:100%;outline:none">
-          </div>
+    <!-- ── DAILY PLAN ── -->
+    <div id="sec-plan" class="sec">
+      <div class="main-topbar">
+        <div>
+          <div class="pg-eyebrow">Bugün</div>
+          <div class="pg-title" id="plan-title">Günlük Plan</div>
         </div>
-        <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="saveThresholds()">Kaydet</button>
+        <button class="btn btn-outline btn-sm" onclick="renderPlan(true)" id="plan-refresh-btn">Yenile</button>
       </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div id="sec-settings" class="section">
-      <div class="page-hdr">
-        <div class="page-title">Ayarlar</div>
-      </div>
-      <div class="card" style="padding:0 20px;margin-bottom:12px">
-        <div style="padding:14px 0 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Hesap</div>
-        <div class="settings-row">
-          <div class="settings-info">
-            <div class="settings-name" id="s-email">—</div>
-            <div class="settings-desc">E-posta adresi</div>
-          </div>
-        </div>
-        <div class="settings-row">
-          <div class="settings-info">
-            <div class="settings-name">Plan</div>
-            <div class="settings-desc" id="s-plan">Trial</div>
-          </div>
-        </div>
-        <div class="settings-row" style="border-bottom:none">
-          <div class="settings-info">
-            <div class="settings-name">Erişim Kodu</div>
-            <div class="settings-desc">MLYNR koduyla planını yükselt</div>
-          </div>
-          <div style="display:flex;gap:6px;flex-shrink:0">
-            <input type="text" id="s-code" placeholder="MLYNR-XXXX"
-              style="width:130px;font-family:var(--mono);font-size:11px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:7px 10px;color:var(--text);outline:none">
-            <button class="btn btn-sm btn-ghost" onclick="applyCode()">Uygula</button>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="padding:0 20px;margin-bottom:12px">
-        <div style="padding:14px 0 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Facebook</div>
-        <div class="settings-row" style="border-bottom:none">
-          <div class="settings-info">
-            <div class="settings-name" id="s-fb-status">Bağlı değil</div>
-            <div class="settings-desc">Meta Ads verisi için gerekli</div>
-          </div>
-          <button class="btn btn-sm btn-ghost" onclick="doFBLogin()" id="s-fb-btn">Bağla</button>
-        </div>
-      </div>
-      <div class="card" style="padding:0 20px">
-        <div style="padding:14px 0 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Oturum</div>
-        <div class="settings-row" style="border-bottom:none">
-          <div class="settings-info">
-            <div class="settings-name">Çıkış Yap</div>
-            <div class="settings-desc">Oturumu sonlandır</div>
-          </div>
-          <button class="btn btn-sm btn-ghost" onclick="doLogout()">Çıkış</button>
+      <div id="plan-content">
+        <div class="big-card">
+          <div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;padding:8px 0"><span class="spin"></span> Plan hazırlanıyor...</div>
         </div>
       </div>
     </div>
 
-    <!-- CONNECT -->
-    <div id="sec-connect" class="section">
-      <div class="connect-wrap">
-        <div class="connect-card">
-          <div class="connect-glow"></div>
-          <div class="connect-icon">📡</div>
-          <div class="connect-title">Facebook'u Bağla</div>
-          <div class="connect-sub">Meta Ads verilerini görmek için Facebook hesabını bağlamanız gerekiyor.</div>
-          <div class="connect-perms">
-            <div class="perm-row"><span class="perm-check">✓</span> Reklam hesabı performansı</div>
-            <div class="perm-row"><span class="perm-check">✓</span> Kampanya verileri</div>
-            <div class="perm-row"><span class="perm-check">✓</span> Harcama ve ROAS metrikleri</div>
+    <!-- ── LEARN ── -->
+    <div id="sec-learn" class="sec">
+      <div class="main-topbar">
+        <div>
+          <div class="pg-eyebrow">Eğitim</div>
+          <div class="pg-title">Metrikleri Öğren</div>
+        </div>
+      </div>
+
+      <!-- Beginner view -->
+      <div id="learn-beginner">
+        <div style="margin-bottom:20px">
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Meta Ads'in 5 Temel Metriği</div>
+          <div style="font-size:13px;color:var(--text2)">Her birini anlayınca reklamlarını çok daha iyi yönetebilirsin.</div>
+        </div>
+        <div class="card-grid card-grid-2" style="gap:14px;margin-bottom:24px">
+          <div class="metric-card">
+            <div class="metric-name">ROAS — Reklam Harcama Getirisi</div>
+            <div class="metric-val-example">3.2×</div>
+            <div class="metric-explain">Her 1 TL reklam harcamasına karşılık kaç TL gelir elde ettiğini gösterir. <strong>3.2×</strong> demek, 100 TL harcadığında 320 TL satış yaptığın anlamına gelir.</div>
+            <div class="metric-tip">💡 E-ticarette minimum 2× ROAS hedeflemelisin. 4× üzeri mükemmel sayılır.</div>
           </div>
-          <button class="fb-btn" onclick="doFBLogin()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            Facebook ile Bağlan
-          </button>
+          <div class="metric-card">
+            <div class="metric-name">CPC — Tıklama Başına Maliyet</div>
+            <div class="metric-val-example">₺4.80</div>
+            <div class="metric-explain">Biri reklamına her tıkladığında ne kadar ödediğini gösterir. Düşük CPC, reklamının hedef kitleyle uyumlu olduğunu gösterir.</div>
+            <div class="metric-tip">💡 CPC yüksekse görsel veya başlığını değiştir. Düşük CTR yüksek CPC'ye yol açar.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Frekans — Gösterim Sıklığı</div>
+            <div class="metric-val-example">2.8×</div>
+            <div class="metric-explain">Aynı kişiye kaç kez reklam gösterildiğini ifade eder. 3'ü geçmeye başladığında insanlar reklamından sıkılır — buna reklam yorgunluğu denir.</div>
+            <div class="metric-tip">💡 Frekans 3'ü geçince yeni kreatif yükle veya hedef kitleyi genişlet.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">CPM — Bin Gösterim Maliyeti</div>
+            <div class="metric-val-example">₺85</div>
+            <div class="metric-explain">1000 kişiye reklamını göstermek için ne kadar ödediğini gösterir. Yüksek CPM, reklamın pahalı bir kitleye gösterildiği anlamına gelir.</div>
+            <div class="metric-tip">💡 CPM ani yükselirse hedef kitlen çok daralmış olabilir — genişlet.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">CTR — Tıklama Oranı</div>
+            <div class="metric-val-example">%2.4</div>
+            <div class="metric-explain">Reklamı görenlerin yüzde kaçının tıkladığını gösterir. Yüksek CTR, kreatifinizin ve başlığınızın dikkat çektiği anlamına gelir.</div>
+            <div class="metric-tip">💡 %1 altı CTR zayıftır. Görseli veya kopyayı güçlendir.</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">CPA — Edinim Başına Maliyet</div>
+            <div class="metric-val-example">₺210</div>
+            <div class="metric-explain">Bir satış veya lead için ne kadar harcadığını gösterir. Ürünün karlılığıyla kıyaslamalısın — CPA kâr marjının altında olmalı.</div>
+            <div class="metric-tip">💡 CPA, ürün marjından yüksekse ya bütçeyi azalt ya da dönüşüm sayfasını iyileştir.</div>
+          </div>
+        </div>
+
+        <div class="ai-card">
+          <div class="ai-card-hdr">
+            <div class="ai-badge"><div class="ai-pulse"></div> AI Strateji</div>
+          </div>
+          <div id="learn-ai-content">
+            <div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px"><span class="spin"></span> Sana özel stratejiler hazırlanıyor...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced view -->
+      <div id="learn-advanced" style="display:none">
+        <div class="strat-grid" id="strat-grid"></div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div id="sec-settings" class="sec">
+      <div class="pg-hdr">
+        <div class="pg-title">Ayarlar</div>
+      </div>
+      <div style="max-width:560px">
+        <div class="big-card" style="margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Hesap</div>
+          <div class="s-row"><div class="s-info"><div class="s-name" id="s-email">—</div><div class="s-desc">E-posta</div></div></div>
+          <div class="s-row"><div class="s-info"><div class="s-name">Plan</div><div class="s-desc" id="s-plan">Trial</div></div></div>
+          <div class="s-row">
+            <div class="s-info"><div class="s-name">Erişim Kodu</div><div class="s-desc">MLYNR koduyla planını yükselt</div></div>
+            <div style="display:flex;gap:6px">
+              <input type="text" id="s-code" placeholder="MLYNR-XXXX" style="width:120px;font-family:var(--mono);font-size:11px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);outline:none">
+              <button class="btn btn-sm btn-outline" onclick="applyCode()">Uygula</button>
+            </div>
+          </div>
+        </div>
+        <div class="big-card" style="margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Facebook Bağlantısı</div>
+          <div class="s-row">
+            <div class="s-info"><div class="s-name" id="s-fb">Bağlı değil</div><div class="s-desc">Meta Ads verileri için</div></div>
+            <button class="btn btn-sm btn-outline" onclick="doFBLogin(false)" id="s-fb-btn">Bağla</button>
+          </div>
+        </div>
+        <div class="big-card" style="margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Alarmlar</div>
+          <div id="alarm-list"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div><label style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Min ROAS</label>
+              <input type="number" id="t-roas" step="0.1" placeholder="2.0" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none"></div>
+            <div><label style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Max CPC ₺</label>
+              <input type="number" id="t-cpc" step="0.5" placeholder="5" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none"></div>
+            <div><label style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Max Frekans</label>
+              <input type="number" id="t-freq" step="0.5" placeholder="3" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none"></div>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="saveThresholds()">Eşikleri Kaydet</button>
+        </div>
+        <div class="big-card">
+          <div class="s-row" style="border-bottom:none">
+            <div class="s-info"><div class="s-name">Çıkış Yap</div><div class="s-desc">Oturumu kapat</div></div>
+            <button class="btn btn-sm btn-outline" onclick="doLogout()">Çıkış</button>
+          </div>
         </div>
       </div>
     </div>
@@ -874,190 +983,202 @@ select:focus{border-color:var(--accent)}
 </div>
 
 <!-- DETAIL PANEL -->
-<div id="dp-overlay" onclick="closeDP(event)">
+<div id="dp-ov" onclick="closeDP(event)">
   <div id="dp-panel">
     <div class="dp-hdr">
       <div>
-        <div class="dp-name" id="dp-name">Kampanya</div>
+        <div class="dp-title" id="dp-name">Kampanya</div>
         <div style="font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono)" id="dp-period"></div>
       </div>
       <div class="dp-close" onclick="closeDP()">✕</div>
     </div>
     <div class="dp-body">
-      <div class="dp-kpis" id="dp-kpis"></div>
+      <div class="dp-kgrid" id="dp-kpis"></div>
       <div class="dp-sec">Sinyaller</div>
-      <div class="sig-row" id="dp-sigs"></div>
+      <div class="dp-sigs" id="dp-sigs"></div>
       <div class="dp-sec">AI Yorumu</div>
-      <div class="dp-ai">
-        <div id="dp-ai" style="color:var(--text2)"><span class="spin" style="display:inline-block;margin-right:6px"></span>Yükleniyor...</div>
-      </div>
+      <div class="dp-ai" id="dp-ai"><span class="spin" style="display:inline-block"></span></div>
     </div>
   </div>
 </div>
 
 <div id="toast"></div>
 <div id="date-menu">
-  <div class="date-opt" onclick="setRange(1,'Bugün')">Bugün</div>
-  <div class="date-opt active" onclick="setRange(7,'Son 7 gün')">Son 7 gün</div>
-  <div class="date-opt" onclick="setRange(14,'Son 14 gün')">Son 14 gün</div>
-  <div class="date-opt" onclick="setRange(30,'Son 30 gün')">Son 30 gün</div>
+  <div class="dm-opt" onclick="setRange(1,'Bugün')">Bugün</div>
+  <div class="dm-opt on" onclick="setRange(7,'Son 7 gün')">Son 7 gün</div>
+  <div class="dm-opt" onclick="setRange(14,'Son 14 gün')">Son 14 gün</div>
+  <div class="dm-opt" onclick="setRange(30,'Son 30 gün')">Son 30 gün</div>
 </div>
 
 <script>
-// ─── CONSTANTS ───
-const SB_URL = 'https://cvxwhlvjdghiaugzepme.supabase.co';
+// ══════════════════════════
+// CONSTANTS
+// ══════════════════════════
+const SB = 'https://cvxwhlvjdghiaugzepme.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eHdobHZqZGdoaWF1Z3plcG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzgxMzMsImV4cCI6MjA4OTYxNDEzM30.eVMw0H-SgErKma96xa697G_9HxBMfZ1dUU7Ihq5v8FU';
-const AUTH_FN = SB_URL + '/functions/v1/adsopify-auth';
+const AUTH_FN = SB + '/functions/v1/adsopify-auth';
 const CF = 'https://adsopify-api.fubame38.workers.dev/chat';
 
-// ─── STATE ───
+// ══════════════════════════
+// STATE
+// ══════════════════════════
 var S = {
-  user: null, plan: 'trial',
-  fbToken: null, accounts: [], activeAcc: null,
-  campaigns: [], range: 7, rangeLabel: 'Son 7 gün',
-  alarms: {roas:true,cpc:true,freq:true},
-  thresholds: {roas:2,cpc:5,freq:3}
+  user:null, plan:'trial',
+  fbToken:null, accounts:[], activeAcc:null,
+  campaigns:[], range:7, rangeLabel:'Son 7 gün',
+  alarms:{roas:true,cpc:true,freq:true},
+  thresholds:{roas:2,cpc:5,freq:3},
+  profile:{level:'',sector:'',brand:'',budget:'',goal:''},
+  obAnswers:{}
 };
 
-// ─── LS ───
-var ls = {
-  get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
-  set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},
-  del:function(k){try{localStorage.removeItem(k)}catch(e){}}
+var ls={
+  g:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  s:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+  d:function(k){try{localStorage.removeItem(k)}catch(e){}}
 };
 
-// ─── TOAST ───
+// ══════════════════════════
+// TOAST
+// ══════════════════════════
 var _tt;
-function toast(m){
-  var el=document.getElementById('toast');
-  el.textContent=m;el.classList.add('show');
-  clearTimeout(_tt);_tt=setTimeout(function(){el.classList.remove('show')},2800);
-}
+function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){el.classList.remove('on')},2800)}
 
-// ─── ESCAPE ───
 function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 
-// ─── AUTH TABS ───
-function switchTab(t){
-  document.getElementById('form-login').style.display=t==='login'?'block':'none';
-  document.getElementById('form-register').style.display=t==='register'?'block':'none';
-  document.getElementById('tab-login').classList.toggle('active',t==='login');
-  document.getElementById('tab-register').classList.toggle('active',t==='register');
+// ══════════════════════════
+// SCREENS
+// ══════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active');el.style.display='none'});
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.style.display='flex';
+  el.style.flexDirection= id==='app' ? 'row' : 'column';
+  if(id==='app') el.style.display='flex';
+  requestAnimationFrame(function(){el.classList.add('active')});
+}
+
+// ══════════════════════════
+// AUTH TABS
+// ══════════════════════════
+function authTab(t){
+  document.getElementById('f-login').style.display=t==='login'?'block':'none';
+  document.getElementById('f-register').style.display=t==='register'?'block':'none';
+  document.getElementById('at-login').classList.toggle('on',t==='login');
+  document.getElementById('at-register').classList.toggle('on',t==='register');
   document.getElementById('auth-msg').textContent='';
 }
+function authMsg(m,t){var el=document.getElementById('auth-msg');el.textContent=m;el.className=t||''}
 
-function authMsg(m,t){
-  var el=document.getElementById('auth-msg');
-  el.textContent=m;el.className=t||'';
-}
-
-// ─── SUPABASE ───
+// ══════════════════════════
+// SUPABASE
+// ══════════════════════════
 async function sbFetch(path,opts){
   var h=Object.assign({'apikey':SB_KEY,'Content-Type':'application/json'},opts.headers||{});
-  var tok=ls.get('sb_token');
-  if(tok) h['Authorization']='Bearer '+tok;
-  return fetch(SB_URL+path,Object.assign({},opts,{headers:h}));
+  var tok=ls.g('sb_token');if(tok) h['Authorization']='Bearer '+tok;
+  return fetch(SB+path,Object.assign({},opts,{headers:h}));
 }
 
 async function doLogin(){
-  var email=document.getElementById('login-email').value.trim();
-  var pw=document.getElementById('login-pw').value;
-  if(!email||!pw){authMsg('E-posta ve şifre gerekli','error');return;}
-  document.getElementById('login-btn').textContent='Giriş yapılıyor...';
+  var email=document.getElementById('le').value.trim();
+  var pw=document.getElementById('lp').value;
+  if(!email||!pw){authMsg('E-posta ve şifre gerekli','err');return;}
+  document.getElementById('l-btn').textContent='Giriş yapılıyor...';
   try{
-    var r=await sbFetch('/auth/v1/token?grant_type=password',{
-      method:'POST',body:JSON.stringify({email,password:pw})
-    });
+    var r=await sbFetch('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password:pw})});
     var d=await r.json();
     if(d.access_token) onLogin(d);
-    else authMsg('Hatalı e-posta veya şifre','error');
-  }catch(e){authMsg('Bağlantı hatası','error');}
-  document.getElementById('login-btn').textContent='Giriş Yap';
+    else authMsg('Hatalı e-posta veya şifre','err');
+  }catch(e){authMsg('Bağlantı hatası','err');}
+  document.getElementById('l-btn').textContent='Giriş Yap';
 }
 
 async function doRegister(){
-  var email=document.getElementById('reg-email').value.trim();
-  var pw=document.getElementById('reg-pw').value;
-  var code=document.getElementById('reg-code').value.trim();
-  if(!email||!pw){authMsg('E-posta ve şifre gerekli','error');return;}
-  document.getElementById('reg-btn').textContent='Kaydediliyor...';
+  var email=document.getElementById('re').value.trim();
+  var pw=document.getElementById('rp').value;
+  var code=document.getElementById('rc').value.trim();
+  if(!email||!pw){authMsg('E-posta ve şifre gerekli','err');return;}
+  document.getElementById('r-btn').textContent='Kaydediliyor...';
   try{
-    var r=await sbFetch('/auth/v1/signup',{
-      method:'POST',body:JSON.stringify({email,password:pw,data:{email_confirm:true}})
-    });
+    var r=await sbFetch('/auth/v1/signup',{method:'POST',body:JSON.stringify({email,password:pw})});
     var d=await r.json();
     if(d.access_token) onLogin(d,code);
-    else if(d.user && !d.access_token){
-      // email confirm gerekiyor - direkt login dene
-      var r2=await sbFetch('/auth/v1/token?grant_type=password',{
-        method:'POST',body:JSON.stringify({email,password:pw})
-      });
+    else{
+      // email confirm kapalı ama yine de token gelmeyebilir — login dene
+      var r2=await sbFetch('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password:pw})});
       var d2=await r2.json();
       if(d2.access_token) onLogin(d2,code);
-      else authMsg('Hesap oluşturuldu, giriş yap','ok');
+      else authMsg(d.error_description||'Kayıt başarısız. Giriş yapmayı dene.','err');
     }
-    else authMsg(d.error_description||'Kayıt başarısız','error');
-  }catch(e){authMsg('Bağlantı hatası','error');}
-  document.getElementById('reg-btn').textContent='Hesap Oluştur';
+  }catch(e){authMsg('Bağlantı hatası','err');}
+  document.getElementById('r-btn').textContent='Hesap Oluştur';
 }
 
-function onLogin(d, code){
-  ls.set('sb_token',d.access_token);
-  if(d.refresh_token) ls.set('sb_refresh',d.refresh_token);
+function onLogin(d,code){
+  ls.s('sb_token',d.access_token);
+  if(d.refresh_token) ls.s('sb_refresh',d.refresh_token);
   S.user=d.user;
-  if(code) ls.set('pending_code',code);
-  showApp();
+  if(code) ls.s('pending_code',code);
+  // Onboarding tamamlandı mı?
+  var profile=ls.g('ob_profile');
+  if(profile) try{S.profile=JSON.parse(profile);launchApp();}catch(e){startOnboarding();}
+  else startOnboarding();
 }
 
 async function doLogout(){
   try{await sbFetch('/auth/v1/logout',{method:'POST'})}catch(e){}
-  ['sb_token','sb_refresh','fb_token','adsopify_plan','active_acc'].forEach(ls.del);
+  ['sb_token','sb_refresh','fb_token','adsopify_plan','active_acc'].forEach(ls.d);
   location.reload();
 }
 
-// ─── FB ───
-function doFBLogin(){
+// ══════════════════════════
+// FACEBOOK
+// ══════════════════════════
+function doFBLogin(fromFBScreen){
   if(typeof FB==='undefined'){toast('Facebook SDK yükleniyor...');return;}
   FB.login(function(r){
     if(r.authResponse){
       S.fbToken=r.authResponse.accessToken;
-      ls.set('fb_token',S.fbToken);
+      ls.s('fb_token',S.fbToken);
       toast('✓ Facebook bağlandı');
-      document.getElementById('s-fb-status').textContent='Bağlı ✓';
+      document.getElementById('s-fb').textContent='Bağlı ✓';
       document.getElementById('s-fb-btn').textContent='Yeniden bağla';
+      hideFBBanner();
       loadAccounts();
-      if(currentSec==='connect') navTo('overview');
+      if(fromFBScreen) launchApp();
     } else toast('Facebook bağlantısı iptal edildi');
   },{scope:'ads_read,ads_management'});
 }
 
-// ─── PLAN ───
+function skipFB(){
+  launchApp();
+}
+
+function hideFBBanner(){
+  var b=document.getElementById('no-fb-banner');
+  if(b) b.style.display='none';
+}
+
+// ══════════════════════════
+// PLAN
+// ══════════════════════════
 function applyPlan(plan){
-  S.plan=plan; ls.set('adsopify_plan',plan);
+  S.plan=plan; ls.s('adsopify_plan',plan);
   var badge=document.getElementById('plan-badge');
-  var txt=document.getElementById('plan-text');
   if(plan==='mlynr_pro'||plan==='mlynr_free'){
     badge.style.display='flex';
-    txt.textContent=plan==='mlynr_pro'?'MLYNR Pro':'MLYNR';
-  } else if(plan==='trial'){
-    badge.style.display='flex';
-    badge.style.borderColor='rgba(255,179,64,0.3)';
-    badge.style.background='var(--yellow-subtle)';
-    badge.style.color='var(--yellow)';
-    badge.querySelector('.pulse-dot').style.background='var(--yellow)';
-    txt.textContent='Trial';
+    badge.textContent=plan==='mlynr_pro'?'MLYNR Pro':'MLYNR';
   }
   var sp=document.getElementById('s-plan');
   if(sp) sp.textContent=plan==='mlynr_pro'?'MLYNR Pro':plan==='mlynr_free'?'MLYNR Ücretsiz':'Trial';
 }
 
 async function validateCode(code){
-  var tok=ls.get('sb_token');
-  if(!tok) return;
+  var tok=ls.g('sb_token');if(!tok) return;
   try{
     var r=await fetch(AUTH_FN,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},
       body:JSON.stringify({action:'validate_code',code,userId:S.user&&S.user.id})
     });
     var d=await r.json();
@@ -1065,436 +1186,561 @@ async function validateCode(code){
     else toast('⚠️ Geçersiz kod');
   }catch(e){toast('Kod doğrulanamadı');}
 }
+function applyCode(){var c=document.getElementById('s-code').value.trim();if(c) validateCode(c);}
 
-function applyCode(){
-  var c=document.getElementById('s-code').value.trim();
-  if(c) validateCode(c);
+// ══════════════════════════
+// ONBOARDING
+// ══════════════════════════
+function startOnboarding(){showScreen('onboarding');obStep(0);}
+
+function obStep(n){
+  for(var i=0;i<4;i++){
+    document.getElementById('ob-s'+i).classList.toggle('active',i===n);
+    var dot=document.getElementById('ob-d'+i);
+    dot.classList.remove('done','active');
+    if(i<n) dot.classList.add('done');
+    else if(i===n) dot.classList.add('active');
+  }
 }
 
-// ─── APP BOOT ───
-function showAuth(){
-  document.getElementById('auth-screen').classList.add('show');
-  checkRefParam();
+function obSelect(step,key,val,el){
+  S.obAnswers[key]=val;
+  el.closest('.ob-options').querySelectorAll('.ob-option').forEach(function(o){o.classList.remove('selected')});
+  el.classList.add('selected');
 }
 
-function showApp(){
-  document.getElementById('auth-screen').style.display='none';
-  document.getElementById('app-screen').classList.add('show');
-  document.getElementById('app-screen').style.display='block';
+function obNext(step){
+  if(step===0&&!S.obAnswers.level){toast('Lütfen bir seçenek seç');return;}
+  if(step===1&&!S.obAnswers.sector){toast('Lütfen sektörünü seç');return;}
+  if(step===2){
+    var brand=document.getElementById('ob-brand').value.trim();
+    if(!brand){toast('Marka adı girin');return;}
+    S.obAnswers.brand=brand;
+    S.obAnswers.budget=document.getElementById('ob-budget').value;
+  }
+  if(step===3&&!S.obAnswers.goal){toast('Hedef seç');return;}
+  obStep(step+1);
+}
 
+function obBack(step){obStep(step-1);}
+
+function obFinish(){
+  if(!S.obAnswers.goal){toast('Hedef seç');return;}
+  S.profile=Object.assign({},S.obAnswers);
+  ls.s('ob_profile',JSON.stringify(S.profile));
+  var fb=ls.g('fb_token');
+  if(fb){S.fbToken=fb;launchApp();}
+  else showScreen('fb-connect');
+}
+
+// ══════════════════════════
+// LAUNCH APP
+// ══════════════════════════
+function launchApp(){
+  showScreen('app');
+  document.getElementById('app').style.display='flex';
+
+  // user info
   var email=S.user&&S.user.email||'';
   document.getElementById('s-email').textContent=email;
+  if(email) document.getElementById('sb-user').textContent=email[0].toUpperCase();
 
-  applyPlan(ls.get('adsopify_plan')||'trial');
+  // brand chip
+  var brand=S.profile.brand||'Marka';
+  document.getElementById('brand-chip-name').textContent=brand;
 
-  var pc=ls.get('pending_code');
-  if(pc){ls.del('pending_code');validateCode(pc);}
+  // plan
+  applyPlan(ls.g('adsopify_plan')||'trial');
 
+  // pending code
+  var pc=ls.g('pending_code');
+  if(pc){ls.d('pending_code');validateCode(pc);}
+
+  // alarms
   loadAlarmCfg();
+  renderAlarms();
 
-  var fb=ls.get('fb_token');
-  if(fb){
-    S.fbToken=fb;
-    document.getElementById('s-fb-status').textContent='Bağlı ✓';
+  // fb
+  if(S.fbToken){
+    document.getElementById('s-fb').textContent='Bağlı ✓';
     document.getElementById('s-fb-btn').textContent='Yeniden bağla';
+    hideFBBanner();
     loadAccounts();
   } else {
-    navTo('connect');
-    document.getElementById('brand-list').innerHTML='<div style="padding:6px 10px;font-size:11px;color:var(--text3)">Bağlantı gerekli</div>';
+    document.getElementById('no-fb-banner').style.display='flex';
   }
+
+  // learn page
+  renderLearn();
 }
 
-async function init(){
-  var tok=ls.get('sb_token');
-  if(!tok){showAuth();return;}
-  try{
-    var r=await sbFetch('/auth/v1/user',{method:'GET'});
-    if(r.ok){S.user=await r.json();showApp();return;}
-  }catch(e){}
-  var ref=ls.get('sb_refresh');
-  if(ref){
-    try{
-      var r2=await sbFetch('/auth/v1/token?grant_type=refresh_token',{
-        method:'POST',body:JSON.stringify({refresh_token:ref})
-      });
-      if(r2.ok){var d=await r2.json();if(d.access_token){onLogin(d);return;}}
-    }catch(e){}
-  }
-  showAuth();
-}
-
-// ─── ACCOUNTS ───
+// ══════════════════════════
+// ACCOUNTS
+// ══════════════════════════
 function loadAccounts(){
   if(!S.fbToken) return;
   fetch('https://graph.facebook.com/v19.0/me/adaccounts?fields=name,account_id,account_status&access_token='+S.fbToken)
     .then(function(r){return r.json()})
     .then(function(d){
-      if(d.error){toast('FB: '+d.error.message);navTo('connect');return;}
+      if(d.error){toast('FB: '+d.error.message);document.getElementById('no-fb-banner').style.display='flex';return;}
       S.accounts=d.data||[];
-      buildBrandList();
       if(S.accounts.length){
-        var saved=ls.get('active_acc');
+        var saved=ls.g('active_acc');
         var found=saved&&S.accounts.find(function(a){return a.id===saved});
         selectAcc(found||S.accounts[0]);
       }
     })
-    .catch(function(){toast('Hesaplar yüklenemedi');navTo('connect');});
-}
-
-var COLORS=['#6c63ff','#00e5a0','#ffb340','#ff5555','#818cf8','#34d399'];
-function buildBrandList(){
-  var el=document.getElementById('brand-list');
-  if(!S.accounts.length){el.innerHTML='<div style="padding:6px 10px;font-size:11px;color:var(--text3)">Hesap yok</div>';return;}
-  el.innerHTML=S.accounts.map(function(a,i){
-    return '<div class="brand-row" id="br-'+a.id+'" onclick=\'selectAcc('+JSON.stringify(a).replace(/'/g,"\\'")+')\'>' +
-      '<div class="brand-dot" style="background:'+COLORS[i%COLORS.length]+';box-shadow:0 0 6px '+COLORS[i%COLORS.length]+'55"></div>' +
-      '<div class="brand-n">'+esc(a.name)+'</div>' +
-      '</div>';
-  }).join('');
+    .catch(function(){toast('Hesaplar yüklenemedi');});
 }
 
 function selectAcc(acc){
   S.activeAcc=acc;
-  ls.set('active_acc',acc.id);
-  document.getElementById('tb-brand').textContent=acc.name;
-  S.accounts.forEach(function(a){
-    var el=document.getElementById('br-'+a.id);
-    if(el) el.classList.toggle('active',a.id===acc.id);
-  });
-  if(currentSec==='connect') navTo('overview');
+  ls.s('active_acc',acc.id);
+  document.getElementById('brand-chip-name').textContent=S.profile.brand||acc.name;
   loadCampaigns();
 }
 
-// ─── CAMPAIGNS ───
+// ══════════════════════════
+// CAMPAIGNS
+// ══════════════════════════
 function dStr(n){var d=new Date();d.setDate(d.getDate()-n);return d.toISOString().split('T')[0]}
 
 function loadCampaigns(){
   if(!S.fbToken||!S.activeAcc) return;
-  var since=dStr(S.range), until=dStr(0);
+  var since=dStr(S.range),until=dStr(0);
   var fields='name,status,insights.time_range({"since":"'+since+'","until":"'+until+'"}){spend,roas,cpc,frequency,impressions,clicks,actions}';
-  var url='https://graph.facebook.com/v19.0/'+S.activeAcc.id+'/campaigns?fields='+encodeURIComponent(fields)+'&access_token='+S.fbToken+'&limit=30';
-  showLoading();
-  fetch(url)
+  fetch('https://graph.facebook.com/v19.0/'+S.activeAcc.id+'/campaigns?fields='+encodeURIComponent(fields)+'&access_token='+S.fbToken+'&limit=30')
     .then(function(r){return r.json()})
     .then(function(d){
       if(d.error){toast('Meta: '+d.error.message);return;}
       S.campaigns=(d.data||[]).map(parseCamp);
-      renderOverview();
-      renderCampaigns();
-      if(currentSec==='plan') renderPlan();
+      renderOverview();renderCampaigns();
+      if(curSec==='plan') renderPlan(false);
     })
-    .catch(function(e){toast('Veri hatası');console.error(e);});
+    .catch(function(e){toast('Veri hatası');});
 }
 
 function parseCamp(c){
   var ins=c.insights&&c.insights.data&&c.insights.data[0];
   var spend=ins?parseFloat(ins.spend||0):0;
-  var roas=ins&&ins.roas?parseFloat(ins.roas[0]&&ins.roas[0].value||0):0;
+  var roas=ins&&ins.roas?parseFloat((ins.roas[0]&&ins.roas[0].value)||0):0;
   var cpc=ins?parseFloat(ins.cpc||0):0;
   var freq=ins?parseFloat(ins.frequency||0):0;
-  var purchases=0;
-  if(ins&&ins.actions) ins.actions.forEach(function(a){if(a.action_type==='purchase')purchases+=parseInt(a.value||0);});
-  var cpa=purchases>0?spend/purchases:0;
-  return{id:c.id,name:c.name,status:c.status,spend,roas,cpc,freq,purchases,cpa};
+  var pur=0;
+  if(ins&&ins.actions) ins.actions.forEach(function(a){if(a.action_type==='purchase')pur+=parseInt(a.value||0)});
+  var cpa=pur>0?spend/pur:0;
+  return{id:c.id,name:c.name,status:c.status,spend,roas,cpc,freq,purchases:pur,cpa};
 }
 
 function getSigs(c){
-  var t=S.thresholds, sigs=[];
-  if(c.roas>0) sigs.push({t:c.roas>=t.roas?'good':'bad',l:'ROAS '+c.roas.toFixed(2)+'x'});
-  if(c.cpc>0) sigs.push({t:c.cpc<=t.cpc?'good':'warn',l:'CPC ₺'+c.cpc.toFixed(2)});
-  if(c.freq>0) sigs.push({t:c.freq<t.freq?'good':'bad',l:'Frekans '+c.freq.toFixed(1)});
+  var t=S.thresholds,sigs=[];
+  if(c.roas>0) sigs.push({t:c.roas>=t.roas?'g':'r',l:'ROAS '+c.roas.toFixed(2)+'×'});
+  if(c.cpc>0) sigs.push({t:c.cpc<=t.cpc?'g':'y',l:'CPC ₺'+c.cpc.toFixed(2)});
+  if(c.freq>0) sigs.push({t:c.freq<t.freq?'g':'r',l:'Frekans '+c.freq.toFixed(1)});
   return sigs;
 }
-
 function sigHtml(c){
-  var sigs=getSigs(c);
-  if(!sigs.length) return '<span style="font-size:11px;color:var(--text3)">—</span>';
-  return sigs.map(function(s){return'<span class="sig '+s.t+'">'+s.l+'</span>'}).join('');
+  var s=getSigs(c);
+  if(!s.length) return '<span style="font-size:11px;color:var(--text3)">—</span>';
+  return s.map(function(x){return'<span class="sig sig-'+x.t+'">'+x.l+'</span>'}).join('');
 }
 
-// ─── RENDER OVERVIEW ───
-function showLoading(){
-  document.getElementById('ov-tbody').innerHTML='<tr><td colspan="4"><div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px;padding:16px"><span class="spin"></span> Yükleniyor...</div></td></tr>';
-  document.getElementById('camp-tbody').innerHTML='<tr><td colspan="7"><div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px;padding:16px"><span class="spin"></span></div></td></tr>';
-}
-
+// ══════════════════════════
+// RENDER OVERVIEW
+// ══════════════════════════
 function renderOverview(){
+  if(!S.campaigns.length) return;
   var active=S.campaigns.filter(function(c){return c.status==='ACTIVE'});
   var spend=S.campaigns.reduce(function(s,c){return s+c.spend},0);
   var roas=active.length?active.reduce(function(s,c){return s+c.roas},0)/active.length:0;
-  var purch=S.campaigns.reduce(function(s,c){return s+c.purchases},0);
-  var cpa=purch>0?spend/purch:0;
-
-  document.getElementById('ov-sub').textContent=S.rangeLabel+' — '+((S.activeAcc&&S.activeAcc.name)||'');
+  var pur=S.campaigns.reduce(function(s,c){return s+c.purchases},0);
+  var cpa=pur>0?spend/pur:0;
 
   var kpis=[
     {l:'Toplam Harcama',v:'₺'+spend.toFixed(0),n:active.length+' aktif kampanya',nc:'neutral'},
-    {l:'Ortalama ROAS',v:roas>0?roas.toFixed(2)+'x':'—',n:roas>=S.thresholds.roas?'↑ Hedef üstü':'↓ Hedef altı',nc:roas>=S.thresholds.roas?'up':'down',vc:roas>=S.thresholds.roas?'green':''},
-    {l:'Satın Alma',v:purch.toString(),n:cpa>0?'CPA ₺'+cpa.toFixed(0):'—',nc:'neutral'},
-    {l:'Aktif Kampanya',v:active.length.toString(),n:S.campaigns.length+' toplam',nc:'neutral'},
+    {l:'Ort. ROAS',v:roas>0?roas.toFixed(2)+'×':'—',n:roas>0?(roas>=S.thresholds.roas?'↑ Hedef üstünde':'↓ Hedef altında'):'Veri yok',nc:roas>=S.thresholds.roas?'up':'down'},
+    {l:'Satın Alma',v:pur.toString(),n:cpa>0?'CPA ₺'+cpa.toFixed(0):'—',nc:'neutral'},
+    {l:'Kampanya',v:active.length+'/'+S.campaigns.length,n:'aktif / toplam',nc:'neutral'},
   ];
 
-  document.getElementById('stats-grid').innerHTML=kpis.map(function(k){
-    return'<div class="stat-card">' +
-      '<div class="stat-label">'+k.l+'</div>' +
-      '<div class="stat-val '+(k.vc||'')+'">'+k.v+'</div>' +
-      '<div class="stat-change '+k.nc+'">'+k.n+'</div>' +
+  document.getElementById('kpi-grid').innerHTML=kpis.map(function(k){
+    return'<div class="big-card">'+
+      '<div class="card-label">'+k.l+'</div>'+
+      '<div class="card-value mono">'+k.v+'</div>'+
+      '<div class="card-note '+k.nc+'">'+k.n+'</div>'+
       '</div>';
   }).join('');
 
-  var top=S.campaigns.slice(0,5);
-  document.getElementById('ov-tbody').innerHTML=top.length
-    ? top.map(function(c){
-        return'<tr class="tbl-row" onclick="openDP(\''+c.id+'\')">'+
-          '<td class="tbl-name">'+esc(c.name)+'</td>'+
-          '<td class="mono">₺'+c.spend.toFixed(0)+'</td>'+
-          '<td class="mono">'+(c.roas>0?c.roas.toFixed(2)+'x':'—')+'</td>'+
-          '<td><div class="sig-row">'+sigHtml(c)+'</div></td></tr>';
-      }).join('')
-    : '<tr><td colspan="4"><div class="empty" style="padding:32px"><div class="empty-icon">📭</div><div class="empty-title">Kampanya yok</div></div></td></tr>';
-
-  renderBrief();
-}
-
-// ─── BRIEF ───
-function renderBrief(){
+  // brief
   var now=new Date();
-  document.getElementById('brief-time').textContent=
-    now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  document.getElementById('brief-time').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var brand=S.profile.brand||'';
+  var prompt=(brand?'Marka: '+brand+'\n':'')+'Sektör: '+S.profile.sector+'\n'+
+    'Meta Ads ('+S.rangeLabel+'): '+active.length+' aktif kampanya | ₺'+spend.toFixed(0)+' harcama | Ort ROAS: '+roas.toFixed(2)+'×\n\n'+
+    S.campaigns.slice(0,5).map(function(c){return'• '+c.name+': ₺'+c.spend.toFixed(0)+', ROAS '+c.roas.toFixed(2)+'×, CPC ₺'+c.cpc.toFixed(2)+', Frekans '+c.freq.toFixed(1)}).join('\n')+
+    '\n\nBu hesap için 3-4 cümle özet: ne iyi, ne dikkat çekiyor, ne yapılmalı. Türkçe, sade, yorum jargonsuz.';
 
-  var active=S.campaigns.filter(function(c){return c.status==='ACTIVE'});
-  var spend=S.campaigns.reduce(function(s,c){return s+c.spend},0);
-  var roas=active.length?active.reduce(function(s,c){return s+c.roas},0)/active.length:0;
+  document.getElementById('brief-body').innerHTML='<span style="display:flex;align-items:center;gap:8px;color:var(--text3)"><span class="spin"></span> Analiz hazırlanıyor...</span>';
+  callAI('Meta Ads uzmanısın. Kısa, net, Türkçe yorum yap.',prompt,function(t){
+    document.getElementById('brief-body').innerHTML='<span>'+t.replace(/\n/g,'<br>')+'</span>';
+  },function(){
+    document.getElementById('brief-body').innerHTML='<span style="color:var(--text3)">AI şu an yanıt veremiyor.</span>';
+  });
 
-  var prompt='Meta Ads özeti ('+S.rangeLabel+'):\n'+
-    'Aktif: '+active.length+'/'+S.campaigns.length+' kampanya | Harcama: ₺'+spend.toFixed(0)+' | Ort ROAS: '+roas.toFixed(2)+'x\n\n'+
-    S.campaigns.slice(0,5).map(function(c){
-      return'• '+c.name+': ₺'+c.spend.toFixed(0)+' harcama, '+c.roas.toFixed(2)+'x ROAS, ₺'+c.cpc.toFixed(2)+' CPC, '+c.freq.toFixed(1)+' frekans';
-    }).join('\n')+'\n\n3-4 cümle özet: ne iyi, ne dikkat çekiyor, ne yapılmalı. Türkçe, sade.';
-
-  document.getElementById('brief-text').innerHTML='<span style="display:flex;align-items:center;gap:8px;color:var(--text3)"><span class="spin"></span> Analiz hazırlanıyor...</span>';
-
-  fetch(CF,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      system:'Sen bir Meta Ads uzmanısın. Kısa, net, anlaşılır Türkçe yorum yap.',
-      message:prompt
-    })
-  }).then(function(r){return r.json()})
-    .then(function(d){
-      document.getElementById('brief-text').innerHTML='<span>'+esc((d.answer||'').trim()).replace(/\n/g,'<br>')+'</span>';
-    })
-    .catch(function(){
-      document.getElementById('brief-text').innerHTML='<span style="color:var(--text3)">AI şu an yanıt veremiyor.</span>';
-    });
+  // camps preview
+  var top=S.campaigns.filter(function(c){return c.status==='ACTIVE'}).slice(0,6);
+  if(!top.length) top=S.campaigns.slice(0,6);
+  document.getElementById('ov-camps').innerHTML=top.length
+    ?top.map(function(c){
+      var col=c.status==='ACTIVE'?'var(--green)':c.status==='PAUSED'?'var(--yellow)':'var(--text3)';
+      return'<div class="camp-row" onclick="openDP(\''+c.id+'\')">'+
+        '<div class="camp-status" style="background:'+col+'"></div>'+
+        '<div class="camp-name">'+esc(c.name)+'</div>'+
+        '<div class="camp-spend">₺'+c.spend.toFixed(0)+'</div>'+
+        '<div class="camp-roas">'+(c.roas>0?c.roas.toFixed(2)+'×':'—')+'</div>'+
+        '<div class="camp-sig">'+sigHtml(c)+'</div>'+
+        '</div>';
+    }).join('')
+    :'<div class="empty" style="padding:32px 0"><div class="empty-icon">📭</div><div class="empty-title">Kampanya bulunamadı</div></div>';
 }
 
-// ─── CAMPAIGNS RENDER ───
+// ══════════════════════════
+// RENDER CAMPAIGNS
+// ══════════════════════════
 function renderCampaigns(list){
   var camps=list||S.campaigns;
   if(!camps.length){
-    document.getElementById('camp-tbody').innerHTML='<tr><td colspan="7"><div class="empty"><div class="empty-icon">📭</div><div class="empty-title">Kampanya bulunamadı</div></div></td></tr>';
+    document.getElementById('camp-tbody').innerHTML='<tr><td colspan="7"><div class="empty" style="padding:40px"><div class="empty-icon">📭</div><div class="empty-title">Kampanya bulunamadı</div></div></td></tr>';
     return;
   }
   document.getElementById('camp-tbody').innerHTML=camps.map(function(c){
     var sb=c.status==='ACTIVE'
-      ?'<span class="badge badge-green"><span class="badge-dot"></span>Aktif</span>'
+      ?'<span class="badge badge-g">● Aktif</span>'
       :c.status==='PAUSED'
-      ?'<span class="badge badge-yellow">Durduruldu</span>'
-      :'<span class="badge badge-gray">'+esc(c.status)+'</span>';
-    return'<tr class="tbl-row" onclick="openDP(\''+c.id+'\')">'+
-      '<td class="tbl-name">'+esc(c.name)+'</td>'+
-      '<td>'+sb+'</td>'+
-      '<td class="mono">₺'+c.spend.toFixed(0)+'</td>'+
-      '<td class="mono">'+(c.roas>0?c.roas.toFixed(2)+'x':'—')+'</td>'+
-      '<td class="mono">'+(c.cpc>0?'₺'+c.cpc.toFixed(2):'—')+'</td>'+
-      '<td class="mono">'+(c.freq>0?c.freq.toFixed(1):'—')+'</td>'+
-      '<td><div class="sig-row">'+sigHtml(c)+'</div></td></tr>';
+      ?'<span class="badge badge-y">Durduruldu</span>'
+      :'<span class="badge badge-n">'+esc(c.status)+'</span>';
+    return'<tr onclick="openDP(\''+c.id+'\')" style="cursor:pointer;transition:background .1s" onmouseover="this.style.background=\'var(--bg2)\'" onmouseout="this.style.background=\'\'">'+
+      '<td style="padding:14px 24px;font-size:14px;font-weight:500;color:var(--text);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(c.name)+'</td>'+
+      '<td style="padding:14px 12px">'+sb+'</td>'+
+      '<td style="padding:14px 12px;text-align:right;font-family:var(--mono);font-size:13px;color:var(--text)">₺'+c.spend.toFixed(0)+'</td>'+
+      '<td style="padding:14px 12px;text-align:right;font-family:var(--mono);font-size:13px;color:'+(c.roas>=S.thresholds.roas?'var(--green)':'var(--text2)')+'">'+
+        (c.roas>0?c.roas.toFixed(2)+'×':'—')+'</td>'+
+      '<td style="padding:14px 12px;text-align:right;font-family:var(--mono);font-size:13px;color:'+(c.cpc>S.thresholds.cpc?'var(--red)':'var(--text2)')+'">'+
+        (c.cpc>0?'₺'+c.cpc.toFixed(2):'—')+'</td>'+
+      '<td style="padding:14px 12px;text-align:right;font-family:var(--mono);font-size:13px;color:'+(c.freq>=S.thresholds.freq?'var(--red)':'var(--text2)')+'">'+
+        (c.freq>0?c.freq.toFixed(1):'—')+'</td>'+
+      '<td style="padding:14px 24px 14px 12px"><div style="display:flex;gap:4px;flex-wrap:wrap">'+sigHtml(c)+'</div></td>'+
+      '</tr>';
   }).join('');
 }
-
 function filterCamps(q){
   if(!q){renderCampaigns();return;}
   renderCampaigns(S.campaigns.filter(function(c){return c.name.toLowerCase().includes(q.toLowerCase())}));
 }
 
-// ─── PLAN ───
-function renderPlan(){
-  if(!S.campaigns.length){
-    document.getElementById('plan-card').innerHTML='<div style="padding:20px;color:var(--text3);font-size:13px">Önce kampanya verisi yüklenmeli.</div>';
-    return;
-  }
-  document.getElementById('plan-sub').textContent=new Date().toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('plan-card').innerHTML='<div style="display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;padding:20px"><span class="spin"></span> Hazırlanıyor...</div>';
+// ══════════════════════════
+// RENDER PLAN
+// ══════════════════════════
+function renderPlan(force){
+  var brand=S.profile.brand||'';
+  var sector=S.profile.sector||'';
+  var level=S.profile.level||'beginner';
+  var today=new Date().toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('plan-title').textContent=brand?brand+' — Günlük Plan':'Günlük Plan';
 
-  var probs=[];
+  var problems=[];
   S.campaigns.forEach(function(c){
     if(c.status!=='ACTIVE') return;
-    if(c.roas>0&&c.roas<S.thresholds.roas) probs.push(c.name+' ROAS düşük');
-    if(c.cpc>S.thresholds.cpc) probs.push(c.name+' CPC yüksek');
-    if(c.freq>=S.thresholds.freq) probs.push(c.name+' frekans yüksek');
+    if(c.roas>0&&c.roas<S.thresholds.roas) problems.push(c.name+': ROAS '+c.roas.toFixed(2)+'× (düşük)');
+    if(c.cpc>S.thresholds.cpc) problems.push(c.name+': CPC ₺'+c.cpc.toFixed(2)+' (yüksek)');
+    if(c.freq>=S.thresholds.freq) problems.push(c.name+': Frekans '+c.freq.toFixed(1)+' (yüksek)');
   });
 
   var spend=S.campaigns.reduce(function(s,c){return s+c.spend},0);
-  var prompt='Meta Ads hesabı — bugünkü aksiyon listesi:\n'+
-    'Harcama: ₺'+spend.toFixed(0)+' | Dönem: '+S.rangeLabel+'\n'+
-    (probs.length?'Sorunlar:\n'+probs.map(function(p){return'- '+p}).join('\n'):'Belirgin sorun yok')+'\n\n'+
-    'Bugün yapılacak 3-5 madde. Her madde kısa ve uygulanabilir. Önce en kritik. Türkçe.';
+  var active=S.campaigns.filter(function(c){return c.status==='ACTIVE'});
 
-  fetch(CF,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({system:'Meta Ads uzmanı olarak günlük aksiyon listesi yaz. Türkçe, sade.',message:prompt})
-  }).then(function(r){return r.json()})
-    .then(function(d){
-      var lines=(d.answer||'').trim().split('\n').filter(function(l){return l.trim()});
-      var html=lines.map(function(line,i){
-        var clean=line.replace(/^[\d\.\-\*•]+\s*/,'').trim();
-        if(!clean) return'';
-        return'<div class="plan-step">'+
-          '<div class="plan-num">'+(i+1)+'</div>'+
-          '<div class="plan-text">'+esc(clean)+'</div>'+
-          '</div>';
-      }).join('');
-      document.getElementById('plan-card').innerHTML='<div style="padding:4px 20px">'+html+'</div>';
-    })
-    .catch(function(){
-      document.getElementById('plan-card').innerHTML='<div style="padding:20px;color:var(--text3);font-size:13px">Plan yüklenemedi.</div>';
+  var systemPrompt='Sen deneyimli bir Meta Ads uzmanısın. '+
+    (brand?'Şu an '+brand+' markasıyla çalışıyorsun. ':'')+'Sektör: '+(sector||'e-ticaret')+'. '+
+    'Kullanıcı seviyesi: '+(level==='beginner'?'yeni başlayan':'orta/ileri seviye')+'. '+
+    'Tavsiyeler somut, uygulanabilir ve gerçekten işe yarayan bilgiler içermeli. Jargon kullanma ama yüzeysel de olma.';
+
+  var prompt='Tarih: '+today+'\n'+
+    (brand?'Marka: '+brand+'\n':'')+'Sektör: '+sector+'\n'+
+    'Harcama ('+S.rangeLabel+'): ₺'+spend.toFixed(0)+' | Aktif kampanya: '+active.length+'\n\n'+
+    (problems.length?'Tespit edilen sorunlar:\n'+problems.map(function(p){return'- '+p}).join('\n')+'\n\n':'Belirgin sorun yok.\n\n')+
+    'Bugün için 4-6 somut aksiyon maddesi hazırla. Her madde şu formatta olsun:\n'+
+    'BAŞLIK: kısa ve net\nAÇIKLAMA: neden yapılmalı ve nasıl yapılır\n\n'+
+    'En kritik aksiyondan başla. Türkçe.';
+
+  document.getElementById('plan-content').innerHTML='<div class="big-card"><div style="display:flex;align-items:center;gap:8px;color:var(--text2);font-size:13px;padding:8px 0"><span class="spin"></span> '+brand+' için plan hazırlanıyor...</div></div>';
+
+  callAI(systemPrompt,prompt,function(text){
+    var lines=text.trim().split('\n').filter(function(l){return l.trim()});
+    var steps=[]; var cur=null;
+    lines.forEach(function(line){
+      var m=line.match(/^(?:BAŞLIK:|[\d]+[\.\)]\s*\*?\*?|[-•]\s*\*?\*?)(.+)/i);
+      if(m||line.match(/^[A-ZÇŞĞÜÖİ].{3,}:$/)){
+        if(cur) steps.push(cur);
+        cur={title:line.replace(/^(BAŞLIK:|[\d]+[\.\)]\s*|\*\*|[-•]\s*)/,'').replace(/\*\*$/,'').trim(),desc:''};
+      } else if(cur && line.match(/^(AÇIKLAMA:|→|—|•)/)){
+        cur.desc=line.replace(/^(AÇIKLAMA:|→|—|•)\s*/,'').trim();
+      } else if(cur && line.trim() && !cur.desc){
+        cur.desc=line.trim();
+      } else if(cur && line.trim()){
+        cur.desc+=' '+line.trim();
+      } else if(!cur && line.trim()){
+        steps.push({title:line.trim(),desc:''});
+      }
     });
+    if(cur) steps.push(cur);
+
+    if(!steps.length){
+      steps=lines.filter(function(l){return l.trim()}).map(function(l,i){return{title:'Aksiyon '+(i+1),desc:l.trim()}});
+    }
+
+    var urgent=problems.length>0;
+    document.getElementById('plan-content').innerHTML='<div class="big-card"><div style="padding:4px 0">'+
+      steps.slice(0,6).map(function(step,i){
+        return'<div class="plan-step">'+
+          '<div class="plan-num'+(i===0&&urgent?' urgent':'')+'">'+
+            (i===0&&urgent?'!':'')+(i===0&&urgent?'':''+（i+1）+'</div>'.replace('（','(').replace('）',')'))+
+          '<div class="plan-body">'+
+            '<div class="plan-title">'+esc(step.title)+'</div>'+
+            (step.desc?'<div class="plan-desc">'+esc(step.desc)+'</div>':'')+
+          '</div></div>';
+      }).join('')+
+      '</div></div>';
+  },function(){
+    document.getElementById('plan-content').innerHTML='<div class="big-card"><div style="padding:20px;color:var(--text3);font-size:13px">Plan yüklenemedi.</div></div>';
+  });
 }
 
-// ─── DETAIL PANEL ───
+// ══════════════════════════
+// LEARN
+// ══════════════════════════
+function renderLearn(){
+  var level=S.profile.level||'beginner';
+  var isAdv=level==='advanced';
+  document.getElementById('learn-beginner').style.display=isAdv?'none':'block';
+  document.getElementById('learn-advanced').style.display=isAdv?'block':'none';
+
+  // AI strateji kartları (beginner için)
+  if(!isAdv){
+    var brand=S.profile.brand||'';
+    var sector=S.profile.sector||'';
+    var p=(brand?'Marka: '+brand+'. ':'')+'Sektör: '+sector+'. Yeni başlayan biri için '+
+      '3 somut Meta Ads taktiği ver. Her taktik için:\nBAŞLIK (kısa)\nAÇIKLAMA (2-3 cümle, somut)\n\n'+
+      'Gerçekten işe yarayan, spesifik bilgiler. Türkçe.';
+
+    callAI('Meta Ads uzmanısın. Yeni başlayanlar için somut, pratik taktikler ver.',p,function(t){
+      document.getElementById('learn-ai-content').innerHTML='<div style="font-size:13px;color:var(--text2);line-height:1.85;white-space:pre-wrap">'+esc(t)+'</div>';
+    },function(){
+      document.getElementById('learn-ai-content').innerHTML='<div style="color:var(--text3);font-size:13px">Taktikler yüklenemedi.</div>';
+    });
+    return;
+  }
+
+  // Advanced: strateji kartları
+  var brand=S.profile.brand||'';
+  var sector=S.profile.sector||'';
+  var p=(brand?'Marka: '+brand+'. ':'')+'Sektör: '+sector+'. '+
+    'İleri seviye 6 Meta Ads stratejisi. Her biri için:\nBAŞLIK\nİÇERİK\nEMOJİ (tek bir emoji)\n\n'+
+    'Gerçekten ileri düzey, spesifik. Türkçe.';
+
+  document.getElementById('strat-grid').innerHTML='<div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;padding:20px 0"><span class="spin"></span> Stratejiler yükleniyor...</div>';
+
+  callAI('Meta Ads uzmanısın. İleri seviye stratejiler sun.',p,function(t){
+    var lines=t.trim().split('\n').filter(function(l){return l.trim()});
+    var cards=[];var cur=null;
+    lines.forEach(function(line){
+      if(line.match(/^BAŞLIK/) || (cur===null && line.trim())){
+        if(cur&&cur.title) cards.push(cur);
+        cur={title:line.replace(/^BAŞLIK:?\s*/,'').trim(),text:'',icon:'⚡'};
+      } else if(cur&&line.match(/^İÇERİK/)){
+        cur.text=line.replace(/^İÇERİK:?\s*/,'').trim();
+      } else if(cur&&line.match(/^EMOJİ/)){
+        cur.icon=line.replace(/^EMOJİ:?\s*/,'').trim().split(' ')[0]||'⚡';
+      } else if(cur&&line.trim()&&!cur.text){
+        cur.text=line.trim();
+      } else if(cur&&line.trim()){
+        cur.text+=' '+line.trim();
+      }
+    });
+    if(cur&&cur.title) cards.push(cur);
+    if(!cards.length) cards=[{title:'Strateji',text:t,icon:'⚡'}];
+    document.getElementById('strat-grid').innerHTML=cards.slice(0,6).map(function(c){
+      return'<div class="strat-card">'+
+        '<div class="strat-icon">'+c.icon+'</div>'+
+        '<div class="strat-title">'+esc(c.title)+'</div>'+
+        '<div class="strat-text">'+esc(c.text)+'</div>'+
+        '</div>';
+    }).join('');
+  },function(){
+    document.getElementById('strat-grid').innerHTML='<div style="color:var(--text3);font-size:13px;padding:20px 0">Stratejiler yüklenemedi.</div>';
+  });
+}
+
+// ══════════════════════════
+// DETAIL PANEL
+// ══════════════════════════
 function openDP(id){
-  var c=S.campaigns.find(function(x){return x.id===id});
-  if(!c) return;
+  var c=S.campaigns.find(function(x){return x.id===id});if(!c) return;
   document.getElementById('dp-name').textContent=c.name;
   document.getElementById('dp-period').textContent=S.rangeLabel;
-  var kpis=[
-    {l:'Harcama',v:'₺'+c.spend.toFixed(0)},
-    {l:'ROAS',v:c.roas>0?c.roas.toFixed(2)+'x':'—'},
-    {l:'CPC',v:c.cpc>0?'₺'+c.cpc.toFixed(2):'—'},
-    {l:'Frekans',v:c.freq>0?c.freq.toFixed(1):'—'},
-    {l:'Satın Alma',v:c.purchases.toString()},
-    {l:'CPA',v:c.cpa>0?'₺'+c.cpa.toFixed(0):'—'},
-  ];
-  document.getElementById('dp-kpis').innerHTML=kpis.map(function(k){
-    return'<div class="dp-kpi"><div class="dp-kpi-label">'+k.l+'</div><div class="dp-kpi-val">'+k.v+'</div></div>';
-  }).join('');
+  var kpis=[{l:'Harcama',v:'₺'+c.spend.toFixed(0)},{l:'ROAS',v:c.roas>0?c.roas.toFixed(2)+'×':'—'},{l:'CPC',v:c.cpc>0?'₺'+c.cpc.toFixed(2):'—'},{l:'Frekans',v:c.freq>0?c.freq.toFixed(1):'—'},{l:'Satın Alma',v:c.purchases.toString()},{l:'CPA',v:c.cpa>0?'₺'+c.cpa.toFixed(0):'—'}];
+  document.getElementById('dp-kpis').innerHTML=kpis.map(function(k){return'<div class="dp-kpi"><div class="dp-kpi-l">'+k.l+'</div><div class="dp-kpi-v">'+k.v+'</div></div>'}).join('');
   var sigs=getSigs(c);
-  document.getElementById('dp-sigs').innerHTML=sigs.length
-    ?sigs.map(function(s){return'<span class="sig '+s.t+'">'+s.l+'</span>'}).join('')
-    :'<span style="font-size:12px;color:var(--text3)">Sinyal yok</span>';
-  document.getElementById('dp-ai').innerHTML='<span class="spin" style="display:inline-block;margin-right:6px"></span>';
+  document.getElementById('dp-sigs').innerHTML=sigs.length?sigs.map(function(s){return'<span class="sig sig-'+s.t+'">'+s.l+'</span>'}).join(''):'<span style="font-size:12px;color:var(--text3)">—</span>';
+  document.getElementById('dp-ai').innerHTML='<span class="spin" style="display:inline-block"></span>';
 
-  var ov=document.getElementById('dp-overlay');
-  ov.classList.add('open');
-  setTimeout(function(){ov.classList.add('visible')},10);
+  var ov=document.getElementById('dp-ov');
+  ov.classList.add('open');setTimeout(function(){ov.classList.add('vis')},10);
 
-  var p='Kampanya: '+c.name+'\nHarcama: ₺'+c.spend.toFixed(0)+' | ROAS: '+c.roas.toFixed(2)+'x | CPC: ₺'+c.cpc.toFixed(2)+
-    ' | Frekans: '+c.freq.toFixed(1)+' | Satın Alma: '+c.purchases+(c.cpa>0?' | CPA: ₺'+c.cpa.toFixed(0):'')+
-    '\n\nNe iyi, ne kötü, ne yapılmalı? 3-4 cümle. Türkçe, sade.';
-
-  fetch(CF,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({system:'Meta Ads uzmanı. Kısa, net, Türkçe.',message:p})
-  }).then(function(r){return r.json()})
-    .then(function(d){document.getElementById('dp-ai').innerHTML='<span style="white-space:pre-wrap;color:var(--text2)">'+esc((d.answer||'').trim())+'</span>'})
-    .catch(function(){document.getElementById('dp-ai').innerHTML='<span style="color:var(--text3)">AI yanıt veremiyor.</span>';});
+  var brand=S.profile.brand?'Marka: '+S.profile.brand+'\n':'';
+  var p=brand+'Kampanya: '+c.name+'\nHarcama: ₺'+c.spend.toFixed(0)+' | ROAS: '+c.roas.toFixed(2)+'× | CPC: ₺'+c.cpc.toFixed(2)+' | Frekans: '+c.freq.toFixed(1)+' | Satın Alma: '+c.purchases+(c.cpa>0?' | CPA: ₺'+c.cpa.toFixed(0):'')+'\n\nBu kampanya için: ne iyi, ne kötü, bugün ne yapılmalı? 3-4 cümle. Türkçe, somut.';
+  callAI('Meta Ads uzmanısın. Kısa, net, Türkçe kampanya yorumu.',p,function(t){
+    document.getElementById('dp-ai').innerHTML='<span style="white-space:pre-wrap;line-height:1.8">'+esc(t)+'</span>';
+  },function(){
+    document.getElementById('dp-ai').innerHTML='<span style="color:var(--text3)">AI yanıt veremiyor.</span>';
+  });
 }
-
 function closeDP(e){
-  if(e&&e.target!==document.getElementById('dp-overlay')) return;
-  var ov=document.getElementById('dp-overlay');
-  ov.classList.remove('visible');
-  setTimeout(function(){ov.classList.remove('open');},280);
+  if(e&&e.target!==document.getElementById('dp-ov')) return;
+  var ov=document.getElementById('dp-ov');
+  ov.classList.remove('vis');
+  setTimeout(function(){ov.classList.remove('open')},300);
 }
 
-// ─── DATE ───
-function showDateMenu(){
-  var btn=document.getElementById('date-btn');
-  var menu=document.getElementById('date-menu');
-  var r=btn.getBoundingClientRect();
-  menu.style.top=(r.bottom+4)+'px';
-  menu.style.right=(window.innerWidth-r.right)+'px';
-  menu.style.left='auto';
-  menu.style.display='block';
-  setTimeout(function(){document.addEventListener('click',hideDateMenu,{once:true})},10);
+// ══════════════════════════
+// AI CALL
+// ══════════════════════════
+function callAI(system,message,onOk,onErr){
+  fetch(CF,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system,message})})
+    .then(function(r){return r.json()})
+    .then(function(d){var t=(d.answer||'').trim();if(t) onOk(t);else onErr();})
+    .catch(onErr);
 }
-function hideDateMenu(){document.getElementById('date-menu').style.display='none';}
-function setRange(days,label){
-  S.range=days; S.rangeLabel=label;
-  document.getElementById('date-label').textContent=label;
-  document.querySelectorAll('.date-opt').forEach(function(el){el.classList.remove('active')});
-  hideDateMenu();
+
+// ══════════════════════════
+// NAV
+// ══════════════════════════
+var curSec='overview';
+var SECS=['overview','campaigns','plan','learn','settings'];
+function nav(id){
+  SECS.forEach(function(s){
+    var sec=document.getElementById('sec-'+s);
+    var btn=document.getElementById('nb-'+s);
+    if(sec) sec.classList.toggle('on',s===id);
+    if(btn) btn.classList.toggle('on',s===id);
+  });
+  curSec=id;
+  if(id==='plan') renderPlan(false);
+}
+
+// ══════════════════════════
+// DATE
+// ══════════════════════════
+function showDateMenu(){
+  var btn=document.getElementById('date-btn'),menu=document.getElementById('date-menu');
+  var r=btn.getBoundingClientRect();
+  menu.style.top=(r.bottom+4)+'px';menu.style.right=(window.innerWidth-r.right)+'px';menu.style.left='auto';menu.style.display='block';
+  setTimeout(function(){document.addEventListener('click',function h(){document.getElementById('date-menu').style.display='none';document.removeEventListener('click',h)})},10);
+}
+function setRange(d,l){
+  S.range=d;S.rangeLabel=l;
+  document.getElementById('date-lbl').textContent=l;
+  document.querySelectorAll('.dm-opt').forEach(function(el){el.classList.remove('on')});
+  event.target.classList.add('on');
+  document.getElementById('date-menu').style.display='none';
   if(S.fbToken&&S.activeAcc) loadCampaigns();
 }
 
-// ─── ALARMS ───
+// ══════════════════════════
+// ALARMS
+// ══════════════════════════
 function loadAlarmCfg(){
-  var s=ls.get('alarm_cfg');
+  var s=ls.g('alarm_cfg');
   if(s) try{var p=JSON.parse(s);S.alarms=p.a||S.alarms;S.thresholds=p.t||S.thresholds;}catch(e){}
-  renderAlarms();
-  document.getElementById('t-roas').value=S.thresholds.roas;
-  document.getElementById('t-cpc').value=S.thresholds.cpc;
-  document.getElementById('t-freq').value=S.thresholds.freq;
+  var tr=document.getElementById('t-roas'),tc=document.getElementById('t-cpc'),tf=document.getElementById('t-freq');
+  if(tr) tr.value=S.thresholds.roas;
+  if(tc) tc.value=S.thresholds.cpc;
+  if(tf) tf.value=S.thresholds.freq;
 }
 function renderAlarms(){
-  var items=[
-    {k:'roas',e:'📉',n:'ROAS Alarmı',d:'ROAS eşiğin altına düştüğünde'},
-    {k:'cpc',e:'💰',n:'CPC Alarmı',d:'Tıklama maliyeti yükseldiğinde'},
-    {k:'freq',e:'🔄',n:'Frekans Alarmı',d:'Reklam yorgunluğu başladığında'},
-  ];
-  document.getElementById('alarm-list').innerHTML=items.map(function(it){
+  var items=[{k:'roas',e:'📉',n:'ROAS Alarmı',d:'ROAS eşiğin altına düştüğünde uyar'},{k:'cpc',e:'💸',n:'CPC Alarmı',d:'Tıklama maliyeti yükseldiğinde'},{k:'freq',e:'🔁',n:'Frekans Alarmı',d:'Reklam yorgunluğu başladığında'}];
+  var el=document.getElementById('alarm-list');if(!el) return;
+  el.innerHTML=items.map(function(it){
     var on=S.alarms[it.k];
-    return'<div class="alarm-item">'+
-      '<div class="alarm-emoji">'+it.e+'</div>'+
-      '<div class="alarm-info"><div class="alarm-name">'+it.n+'</div><div class="alarm-desc">'+it.d+'</div></div>'+
-      '<button class="toggle'+(on?' on':'')+'" onclick="toggleAlarm(\''+it.k+'\',this)"></button>'+
+    return'<div class="s-row">'+
+      '<div class="s-info"><div class="s-name">'+it.e+' '+it.n+'</div><div class="s-desc">'+it.d+'</div></div>'+
+      '<button class="tog'+(on?' on':'')+'" onclick="toggleAlarm(\''+it.k+'\',this)"></button>'+
       '</div>';
   }).join('');
 }
 function toggleAlarm(k,btn){
-  S.alarms[k]=!S.alarms[k];
-  btn.classList.toggle('on',S.alarms[k]);
-  ls.set('alarm_cfg',JSON.stringify({a:S.alarms,t:S.thresholds}));
+  S.alarms[k]=!S.alarms[k];btn.classList.toggle('on',S.alarms[k]);
+  ls.s('alarm_cfg',JSON.stringify({a:S.alarms,t:S.thresholds}));
 }
 function saveThresholds(){
   S.thresholds.roas=parseFloat(document.getElementById('t-roas').value)||2;
   S.thresholds.cpc=parseFloat(document.getElementById('t-cpc').value)||5;
   S.thresholds.freq=parseFloat(document.getElementById('t-freq').value)||3;
-  ls.set('alarm_cfg',JSON.stringify({a:S.alarms,t:S.thresholds}));
+  ls.s('alarm_cfg',JSON.stringify({a:S.alarms,t:S.thresholds}));
   toast('✓ Kaydedildi');
   if(S.campaigns.length) renderCampaigns();
 }
 
-// ─── NAV ───
-var currentSec='overview';
-var SECS=['overview','campaigns','plan','alarms','settings','connect'];
-function navTo(id){
-  SECS.forEach(function(s){
-    var sec=document.getElementById('sec-'+s);
-    var nav=document.getElementById('nav-'+s);
-    if(sec) sec.classList.toggle('active',s===id);
-    if(nav) nav.classList.toggle('active',s===id);
-  });
-  currentSec=id;
-  if(id==='plan'&&S.campaigns.length) renderPlan();
-}
-
-// ─── REFRESH ───
+// ══════════════════════════
+// REFRESH
+// ══════════════════════════
 function refreshData(){
-  var btn=document.getElementById('refresh-btn');
-  btn.querySelector('svg').style.animation='rot .5s linear infinite';
   if(S.fbToken&&S.activeAcc) loadCampaigns();
   else if(S.fbToken) loadAccounts();
-  setTimeout(function(){btn.querySelector('svg').style.animation=''},1200);
+  toast('Yenileniyor...');
 }
 
-// ─── REF ───
+// ══════════════════════════
+// REF PARAM
+// ══════════════════════════
 function checkRefParam(){
   if(new URLSearchParams(window.location.search).get('ref')==='mlynr'){
-    document.getElementById('mlynr-banner').style.display='flex';
-    switchTab('register');
+    document.getElementById('mlynr-strip').style.display='flex';
+    authTab('register');
   }
 }
 
-// ─── BOOT ───
+// ══════════════════════════
+// INIT
+// ══════════════════════════
+async function init(){
+  checkRefParam();
+  var tok=ls.g('sb_token');
+  if(!tok){showScreen('auth');return;}
+  try{
+    var r=await sbFetch('/auth/v1/user',{method:'GET'});
+    if(r.ok){
+      S.user=await r.json();
+      var profile=ls.g('ob_profile');
+      if(profile){try{S.profile=JSON.parse(profile)}catch(e){}}
+      var fb=ls.g('fb_token');if(fb) S.fbToken=fb;
+      if(S.profile&&S.profile.level) launchApp();
+      else startOnboarding();
+      return;
+    }
+  }catch(e){}
+  var ref=ls.g('sb_refresh');
+  if(ref){
+    try{
+      var r2=await sbFetch('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:ref})});
+      if(r2.ok){var d=await r2.json();if(d.access_token){ls.s('sb_token',d.access_token);S.user=d.user;
+        var profile=ls.g('ob_profile');if(profile){try{S.profile=JSON.parse(profile)}catch(e){}}
+        var fb=ls.g('fb_token');if(fb) S.fbToken=fb;
+        if(S.profile&&S.profile.level) launchApp();else startOnboarding();return;}}
+    }catch(e){}
+  }
+  showScreen('auth');
+}
+
 document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
