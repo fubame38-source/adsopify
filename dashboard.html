@@ -1914,10 +1914,7 @@ function renderPlanCampaigns() {
     var ctr  = parseFloat(c.ctr) || 0;
     var freq = parseFloat(c.frequency) || 0;
     var spend = parseFloat(c.spend) || 0;
-    var purchases = c._purchases || 0;
-    var cpc = parseFloat(c.cpc) || 0;
 
-    // Renk: ROAS varsa ona bak, yoksa CTR'a bak
     var dot, label, labelColor, labelBg;
     if (roas > 0) {
       if (roas >= 2.5)      { dot='var(--green)';  label='İyi';     labelColor='var(--green)';  labelBg='var(--green-light)'; }
@@ -1926,57 +1923,27 @@ function renderPlanCampaigns() {
     } else {
       if (ctr >= 1.5)      { dot='var(--green)';  label='İyi CTR';  labelColor='var(--green)';  labelBg='var(--green-light)'; }
       else if (ctr >= 0.7) { dot='var(--yellow)'; label='Takipte';  labelColor='var(--yellow)'; labelBg='var(--yellow-light)'; }
-      else if (spend > 0)  { dot='var(--text3)';  label='Veri az';  labelColor='var(--text3)';  labelBg='var(--surface2)'; }
-      else                 { dot='var(--text3)';  label='—';         labelColor='var(--text3)';  labelBg='var(--surface2)'; }
+      else if (spend > 0)  { dot='var(--text3)';  label='Veri az';  labelColor='var(--text3)';  labelBg='var(--surface3)'; }
+      else                 { dot='var(--text3)';  label='—';         labelColor='var(--text3)';  labelBg='var(--surface3)'; }
     }
 
     var name = (c.campaign_name || 'Kampanya');
     if (name.length > 42) name = name.substring(0, 42) + '…';
+    var roasStr = roas > 0 ? 'ROAS ' + roas.toFixed(2) + 'x' : 'ROAS —';
 
-    var roasStr = roas > 0 ? roas.toFixed(2) + 'x' : '—';
-    var cpaStr  = c._cpa > 0 ? '₺' + c._cpa.toFixed(0) : '—';
-
-    return '<div class="camp-accordion" id="camp-acc-' + idx + '">' +
-      // Kart başlığı
-      '<div onclick="toggleCampAcc(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .13s;border-radius:14px" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">' +
-        '<div style="width:9px;height:9px;border-radius:50%;background:' + dot + ';flex-shrink:0;box-shadow:0 0 6px ' + dot + '55"></div>' +
-        '<div style="flex:1;min-width:0">' +
-          '<div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(name) + '</div>' +
-          '<div style="font-size:11px;color:var(--text3);margin-top:2px">₺' + spend.toFixed(0) + ' harcama · ROAS ' + roasStr + ' · CTR %' + ctr.toFixed(2) + '</div>' +
-        '</div>' +
-        '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:' + labelBg + ';color:' + labelColor + ';flex-shrink:0;margin-right:6px">' + label + '</span>' +
-        '<svg id="camp-acc-arrow-' + idx + '" width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;transition:transform .2s;color:var(--text3)"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    return '<div onclick="openCampPopup(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--border2)\';this.style.background=\'var(--surface)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--surface2)\'">' +
+      '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;box-shadow:0 0 5px ' + dot + '55"></div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(name) + '</div>' +
+        '<div style="font-size:11px;color:var(--text3);margin-top:2px">₺' + spend.toFixed(0) + ' harcama · ' + roasStr + ' · CTR %' + ctr.toFixed(2) + '</div>' +
       '</div>' +
-      // Accordion içerik
-      '<div id="camp-acc-body-' + idx + '" style="display:none;padding:0 16px 14px">' +
-        '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">Harcama</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--text)">₺' + spend.toFixed(0) + '</div></div>' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">ROAS</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:' + (roas >= 2.5 ? 'var(--green)' : roas >= 1.2 ? 'var(--yellow)' : roas > 0 ? 'var(--red)' : 'var(--text)') + '">' + roasStr + '</div></div>' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">CTR</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:' + (ctr >= 1.5 ? 'var(--green)' : ctr >= 0.7 ? 'var(--yellow)' : 'var(--red)') + '">%' + ctr.toFixed(2) + '</div></div>' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px">CPA</div><div style="font-size:16px;font-weight:800;font-family:var(--mono);color:var(--text)">' + cpaStr + '</div></div>' +
-        '</div>' +
-        '<div style="display:flex;gap:8px">' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:8px 12px;flex:1"><span style="font-size:11px;color:var(--text3)">CPC</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--text);margin-left:8px">₺' + cpc.toFixed(2) + '</span></div>' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:8px 12px;flex:1"><span style="font-size:11px;color:var(--text3)">Frekans</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:' + (freq > 3 ? 'var(--red)' : freq > 2 ? 'var(--yellow)' : 'var(--text)') + ';margin-left:8px">' + freq.toFixed(1) + '</span></div>' +
-          '<div style="background:var(--surface2);border-radius:10px;padding:8px 12px;flex:1"><span style="font-size:11px;color:var(--text3)">Satış</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:var(--text);margin-left:8px">' + (purchases > 0 ? purchases.toFixed(0) : '—') + '</span></div>' +
-        '</div>' +
-        // AI yorum butonu
-        '<div style="margin-top:10px">' +
-          '<button onclick="openCampPopup(' + idx + ')" style="background:var(--accent-light);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;font-family:var(--font);transition:all .13s" onmouseover="this.style.background=\'var(--accent)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'var(--accent-light)\';this.style.color=\'var(--accent)\'">AI Yorumu →</button>' +
-        '</div>' +
-      '</div>' +
+      '<span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:' + labelBg + ';color:' + labelColor + ';flex-shrink:0">' + label + '</span>' +
+      '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;color:var(--text3)"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
     '</div>';
   }).join('');
 }
 
-function toggleCampAcc(idx) {
-  var body = document.getElementById('camp-acc-body-' + idx);
-  var arrow = document.getElementById('camp-acc-arrow-' + idx);
-  if (!body) return;
-  var isOpen = body.style.display !== 'none';
-  body.style.display = isOpen ? 'none' : 'block';
-  if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
-}
+
 
 // HAFIZA & CREATIVE ZEKA
 // ═══════════════════════════════════════════════
