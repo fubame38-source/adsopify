@@ -1005,9 +1005,33 @@ input::placeholder{color:var(--text3)}
 <div id="toast"></div>
 <div id="date-menu">
   <div class="dm-opt" onclick="setRange(1,'Bugün')">Bugün</div>
-  <div class="dm-opt on" onclick="setRange(7,'Son 7 gün')">Son 7 gün</div>
-  <div class="dm-opt" onclick="setRange(14,'Son 14 gün')">Son 14 gün</div>
+  <div class="dm-opt" onclick="setRange(7,'Son 7 gün')">Son 7 gün</div>
+  <div class="dm-opt on" onclick="setRange(14,'Son 14 gün')">Son 14 gün</div>
   <div class="dm-opt" onclick="setRange(30,'Son 30 gün')">Son 30 gün</div>
+  <div class="dm-opt" onclick="setRange(60,'Son 60 gün')">Son 60 gün</div>
+  <div class="dm-opt" onclick="setRange(90,'Son 90 gün')">Son 90 gün</div>
+  <div style="height:1px;background:var(--border);margin:4px 0"></div>
+  <div class="dm-opt" onclick="showCustomDate()">📅 Özel Tarih...</div>
+</div>
+
+<div id="custom-date-overlay" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(26,25,22,0.5);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;width:100%;max-width:360px;box-shadow:var(--shadow-lg)">
+    <div style="font-size:16px;font-weight:700;letter-spacing:-.03em;color:var(--text);margin-bottom:20px">Tarih Aralığı Seç</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:7px">Başlangıç</label>
+        <input type="date" id="custom-start" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:13px;background:var(--surface);color:var(--text);outline:none">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:7px">Bitiş</label>
+        <input type="date" id="custom-end" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:var(--font);font-size:13px;background:var(--surface);color:var(--text);outline:none">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-outline btn-sm" onclick="closeCustomDate()" style="flex:1">İptal</button>
+      <button class="btn btn-primary btn-sm" onclick="applyCustomDate()" style="flex:1">Uygula</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1352,8 +1376,9 @@ function dStr(n){var d=new Date();d.setDate(d.getDate()-n);return d.toISOString(
 
 function loadCampaigns(){
   if(!S.fbToken||!S.activeAcc) return;
-  var since=dStr(S.range),until=dStr(0);
-  var fields='name,status,insights.time_range({"since":"'+since+'","until":"'+until+'"}){spend,roas,cpc,frequency,impressions,clicks,actions}';
+  var since=S.customSince&&S.range===0?S.customSince:dStr(S.range);
+  var until=S.customUntil&&S.range===0?S.customUntil:dStr(0);
+  var fields='name,status,insights.time_range({"since":"'+since+'","until":"'+until+'"}){spend,purchase_roas,cpc,frequency,impressions,clicks,actions}';
   fetch('https://graph.facebook.com/v19.0/'+S.activeAcc.id+'/campaigns?fields='+encodeURIComponent(fields)+'&access_token='+S.fbToken+'&limit=30')
     .then(function(r){return r.json()})
     .then(function(d){
@@ -1368,7 +1393,7 @@ function loadCampaigns(){
 function parseCamp(c){
   var ins=c.insights&&c.insights.data&&c.insights.data[0];
   var spend=ins?parseFloat(ins.spend||0):0;
-  var roas=ins&&ins.roas?parseFloat((ins.roas[0]&&ins.roas[0].value)||0):0;
+  var roas=ins&&ins.purchase_roas?parseFloat((ins.purchase_roas[0]&&ins.purchase_roas[0].value)||0):0;
   var cpc=ins?parseFloat(ins.cpc||0):0;
   var freq=ins?parseFloat(ins.frequency||0):0;
   var pur=0;
@@ -1683,10 +1708,34 @@ function nav(id){
   if(id==='plan') renderPlan(false);
 }
 
-// ══════════════════════════
-// DATE
-// ══════════════════════════
-function showDateMenu(){
+function showCustomDate(){
+  document.getElementById('date-menu').style.display='none';
+  var overlay=document.getElementById('custom-date-overlay');
+  overlay.style.display='flex';
+  // Varsayılan değerler
+  var end=new Date();
+  var start=new Date();start.setDate(start.getDate()-S.range);
+  document.getElementById('custom-end').value=end.toISOString().split('T')[0];
+  document.getElementById('custom-start').value=start.toISOString().split('T')[0];
+}
+function closeCustomDate(){
+  document.getElementById('custom-date-overlay').style.display='none';
+}
+function applyCustomDate(){
+  var start=document.getElementById('custom-start').value;
+  var end=document.getElementById('custom-end').value;
+  if(!start||!end){toast('Tarih seç');return;}
+  if(start>end){toast('Başlangıç tarihi bitiş tarihinden büyük olamaz');return;}
+  S.customSince=start;S.customUntil=end;
+  var label=start+' → '+end;
+  S.rangeLabel=label;S.range=0;
+  document.getElementById('date-lbl').textContent=label;
+  closeCustomDate();
+  if(S.fbToken&&S.activeAcc) loadCampaigns();
+}
+
+// loadCampaigns'i özel tarih destekleyecek şekilde güncelle
+function dStr(n){var d=new Date();d.setDate(d.getDate()-n);return d.toISOString().split('T')[0]}
   var btn=document.getElementById('date-btn'),menu=document.getElementById('date-menu');
   var r=btn.getBoundingClientRect();
   menu.style.top=(r.bottom+4)+'px';menu.style.right=(window.innerWidth-r.right)+'px';menu.style.left='auto';menu.style.display='block';
