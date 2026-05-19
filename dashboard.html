@@ -588,6 +588,7 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div class="nav-item" onclick="nav('alarms')" data-sec="alarms"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 0 1 5 5v3l1.5 2h-13L3 10V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Alarmlar</div>
   <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Reklam Hazırla</div>
   <div class="nav-item" onclick="nav('saved')" data-sec="saved"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 2.5h10v11l-5-3-5 3V2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Kaydedilenler</div>
+  <div class="nav-item" onclick="nav('site-analiz')" data-sec="site-analiz"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 2.5C8 2.5 6 5 6 8s2 5.5 2 5.5M8 2.5C8 2.5 10 5 10 8s-2 5.5-2 5.5M2.5 8h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Site Analizi</div>
   <div class="nav-div"></div>
   <div class="nav-item" onclick="nav('settings')" data-sec="settings"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Ayarlar</div>
 </div>
@@ -1123,6 +1124,64 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <!-- GÜNLİK -->
 
 <!-- KAYDEDİLENLER -->
+<div id="sec-site-analiz" class="section">
+
+  <!-- HEADER -->
+  <div style="margin-bottom:24px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,#0ea5e9,#6366f1);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(14,165,233,.25)">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.4"/><path d="M8 2.5C8 2.5 6 5 6 8s2 5.5 2 5.5M8 2.5C8 2.5 10 5 10 8s-2 5.5-2 5.5M2.5 8h11" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Site Analizi</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:1px">Herhangi bir Shopify sitesini analiz et, reklam stratejisi al</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- URL GİRİŞ -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px">
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Shopify mağaza URL'i</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <input id="sa-url-input" type="url" placeholder="https://magaza.com veya magaza.myshopify.com" style="flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')siteAnalyze()">
+      <button onclick="siteAnalyze()" id="sa-btn" style="padding:11px 20px;background:linear-gradient(135deg,#0ea5e9,#6366f1);border:none;border-radius:12px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all .2s;box-shadow:0 4px 12px rgba(14,165,233,.3)" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+        🔍 Analiz Et
+      </button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span style="font-size:11px;color:var(--text3)">Örnek:</span>
+      <button onclick="document.getElementById('sa-url-input').value='https://alatab.com.tr';siteAnalyze()" style="font-size:11px;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);border-radius:6px;padding:2px 8px;cursor:pointer;font-family:var(--font)">alatab.com.tr</button>
+      <button onclick="document.getElementById('sa-url-input').value='https://rakip.com';siteAnalyze()" style="font-size:11px;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);border-radius:6px;padding:2px 8px;cursor:pointer;font-family:var(--font)">rakip.com</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="sa-loading" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px;box-shadow:var(--shadow);text-align:center">
+    <div class="spinner" style="width:28px;height:28px;border-width:3px;margin:0 auto 14px"></div>
+    <div id="sa-loading-msg" style="font-size:13px;font-weight:600;color:var(--text2)">Shopify mağazası okunuyor...</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px">Ürünler, fiyatlar ve sayfa içeriği analiz ediliyor</div>
+  </div>
+
+  <!-- SONUÇ -->
+  <div id="sa-result" style="display:none">
+
+    <!-- Site Skoru -->
+    <div id="sa-score-card" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Site Durumu</div>
+      <div id="sa-verdict" style="font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:16px"></div>
+      <div id="sa-scores" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
+    </div>
+
+    <!-- Aksiyonlar -->
+    <div id="sa-actions-wrap" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow)">
+      <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Reklam Stratejisi</div>
+      <div id="sa-actions" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+  </div>
+
+</div>
+
 <div id="sec-saved" class="section">
   <div class="ph-row mb-16">
     <div class="ph"><div class="ph-title">Kaydedilenler</div><div class="ph-sub">Sakladığın stratejiler ve fikirler</div></div>
@@ -2482,6 +2541,93 @@ function planShowResults(actions, verdict, tagline) {
   }
 
   refreshIdeas();
+}
+
+async function siteAnalyze() {
+  var input = document.getElementById('sa-url-input');
+  var url = input ? input.value.trim() : '';
+  if (!url) { if(input) { input.style.borderColor='var(--red)'; setTimeout(function(){ input.style.borderColor='var(--border)'; }, 1500); } return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  var loading = document.getElementById('sa-loading');
+  var result  = document.getElementById('sa-result');
+  var btn     = document.getElementById('sa-btn');
+  var loadMsg = document.getElementById('sa-loading-msg');
+
+  if (result)  result.style.display  = 'none';
+  if (loading) loading.style.display = 'block';
+  if (btn)     btn.disabled = true;
+
+  var msgs = ['Shopify mağazası okunuyor...', 'Ürünler ve fiyatlar analiz ediliyor...', 'Reklam stratejisi hazırlanıyor...'];
+  var mi = 0;
+  var msgInterval = setInterval(function() {
+    mi = (mi + 1) % msgs.length;
+    if (loadMsg) loadMsg.textContent = msgs[mi];
+  }, 2000);
+
+  try {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/fetch-site', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url, metaCtx: '' })
+    });
+    var data = await res.json();
+    clearInterval(msgInterval);
+
+    if (data.error) throw new Error(data.error);
+
+    // Site skoru
+    var verdictEl = document.getElementById('sa-verdict');
+    var scoresEl  = document.getElementById('sa-scores');
+    var actionsEl = document.getElementById('sa-actions');
+
+    if (verdictEl) verdictEl.textContent = data.verdict || '';
+
+    if (scoresEl && data.siteScore) {
+      var sc = data.siteScore;
+      var scoreColor = function(v) {
+        if (!v) return 'var(--text3)';
+        v = v.toLowerCase();
+        if (v === 'iyi' || v === 'var' || v === 'net') return 'var(--green)';
+        if (v === 'zayıf' || v === 'yok' || v === 'belirsiz') return 'var(--red)';
+        return 'var(--yellow)';
+      };
+      scoresEl.innerHTML = [
+        { label: 'Conversion', val: sc.conversion },
+        { label: 'Sosyal Kanıt', val: sc.socialProof },
+        { label: 'Fiyat Netliği', val: sc.priceClarity }
+      ].map(function(s) {
+        return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center">' +
+          '<div style="font-size:11px;color:var(--text3);margin-bottom:6px">' + s.label + '</div>' +
+          '<div style="font-size:14px;font-weight:800;color:' + scoreColor(s.val) + '">' + (s.val || '—') + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    if (actionsEl && data.actions) {
+      var toneColors = { blue:'var(--accent)', green:'var(--green)', red:'var(--red)', yellow:'var(--yellow)' };
+      actionsEl.innerHTML = data.actions.map(function(a) {
+        var c = toneColors[a.tone] || 'var(--accent)';
+        return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:flex-start;gap:12px">' +
+          '<div style="width:8px;height:8px;border-radius:50%;background:' + c + ';margin-top:5px;flex-shrink:0;box-shadow:0 0 6px ' + c + '"></div>' +
+          '<div style="flex:1">' +
+            '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">' + escapeHtml(a.title||'') + '</div>' +
+            '<div style="font-size:12px;color:var(--text2);line-height:1.6">' + escapeHtml(a.reason||'') + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    if (loading) loading.style.display = 'none';
+    if (result)  result.style.display  = 'block';
+
+  } catch(e) {
+    clearInterval(msgInterval);
+    if (loading) loading.style.display = 'none';
+    toast('Site analiz edilemedi: ' + e.message);
+  }
+
+  if (btn) btn.disabled = false;
 }
 
 async function analyzeWebsite(urlOverride) {
