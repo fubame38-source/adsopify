@@ -588,7 +588,6 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div class="nav-item" onclick="nav('alarms')" data-sec="alarms"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 0 1 5 5v3l1.5 2h-13L3 10V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Alarmlar</div>
   <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Reklam Hazırla</div>
   <div class="nav-item" onclick="nav('saved')" data-sec="saved"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 2.5h10v11l-5-3-5 3V2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Kaydedilenler</div>
-  <div class="nav-item" onclick="nav('site-analiz')" data-sec="site-analiz"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 2.5C8 2.5 6 5 6 8s2 5.5 2 5.5M8 2.5C8 2.5 10 5 10 8s-2 5.5-2 5.5M2.5 8h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Site Analizi</div>
   <div class="nav-div"></div>
   <div class="nav-item" onclick="nav('settings')" data-sec="settings"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Ayarlar</div>
 </div>
@@ -1124,64 +1123,6 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <!-- GÜNLİK -->
 
 <!-- KAYDEDİLENLER -->
-<div id="sec-site-analiz" class="section">
-
-  <!-- HEADER -->
-  <div style="margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
-      <div style="width:36px;height:36px;background:linear-gradient(135deg,#0ea5e9,#6366f1);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(14,165,233,.25)">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="white" stroke-width="1.4"/><path d="M8 2.5C8 2.5 6 5 6 8s2 5.5 2 5.5M8 2.5C8 2.5 10 5 10 8s-2 5.5-2 5.5M2.5 8h11" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
-      </div>
-      <div>
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Site Analizi</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:1px">Herhangi bir Shopify sitesini analiz et, reklam stratejisi al</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- URL GİRİŞ -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px">
-    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Shopify mağaza URL'i</div>
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <input id="sa-url-input" type="url" placeholder="https://magaza.com veya magaza.myshopify.com" style="flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')siteAnalyze()">
-      <button onclick="siteAnalyze()" id="sa-btn" style="padding:11px 20px;background:linear-gradient(135deg,#0ea5e9,#6366f1);border:none;border-radius:12px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all .2s;box-shadow:0 4px 12px rgba(14,165,233,.3)" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
-        🔍 Analiz Et
-      </button>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <span style="font-size:11px;color:var(--text3)">Örnek:</span>
-      <button onclick="document.getElementById('sa-url-input').value='https://alatab.com.tr';siteAnalyze()" style="font-size:11px;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);border-radius:6px;padding:2px 8px;cursor:pointer;font-family:var(--font)">alatab.com.tr</button>
-      <button onclick="document.getElementById('sa-url-input').value='https://rakip.com';siteAnalyze()" style="font-size:11px;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);border-radius:6px;padding:2px 8px;cursor:pointer;font-family:var(--font)">rakip.com</button>
-    </div>
-  </div>
-
-  <!-- LOADING -->
-  <div id="sa-loading" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px;box-shadow:var(--shadow);text-align:center">
-    <div class="spinner" style="width:28px;height:28px;border-width:3px;margin:0 auto 14px"></div>
-    <div id="sa-loading-msg" style="font-size:13px;font-weight:600;color:var(--text2)">Shopify mağazası okunuyor...</div>
-    <div style="font-size:12px;color:var(--text3);margin-top:6px">Ürünler, fiyatlar ve sayfa içeriği analiz ediliyor</div>
-  </div>
-
-  <!-- SONUÇ -->
-  <div id="sa-result" style="display:none">
-
-    <!-- Site Skoru -->
-    <div id="sa-score-card" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:12px">
-      <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Site Durumu</div>
-      <div id="sa-verdict" style="font-size:14px;color:var(--text2);line-height:1.65;margin-bottom:16px"></div>
-      <div id="sa-scores" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
-    </div>
-
-    <!-- Aksiyonlar -->
-    <div id="sa-actions-wrap" style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow)">
-      <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Reklam Stratejisi</div>
-      <div id="sa-actions" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-
-  </div>
-
-</div>
-
 <div id="sec-saved" class="section">
   <div class="ph-row mb-16">
     <div class="ph"><div class="ph-title">Kaydedilenler</div><div class="ph-sub">Sakladığın stratejiler ve fikirler</div></div>
