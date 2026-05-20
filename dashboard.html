@@ -232,6 +232,9 @@ tbody tr:hover td{background:var(--surface2)}
 .adwiz-chip{padding:14px 10px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .18s;text-align:center;line-height:1.2}
 .adwiz-chip:hover{border-color:var(--accent);background:var(--accent-light);color:var(--text);transform:translateY(-1px)}
 .adwiz-chip.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+.naf-chip{padding:9px 6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;text-align:center}
+.naf-chip:hover{border-color:#6ba0ff;color:#fff}
+.naf-chip.active{border-color:#6ba0ff;background:rgba(107,160,255,.15);color:#fff;font-weight:700}
 .opp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
 .opp-text{font-size:12px;color:var(--text2);line-height:1.5}
 
@@ -507,10 +510,71 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
     <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.5)">
       <div style="text-align:center;margin-bottom:20px"><div style="font-size:32px;margin-bottom:10px">🔗</div><h2 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:5px">Meta Hesabını Bağla</h2><p style="font-size:13px;color:rgba(255,255,255,.35);line-height:1.6">Reklam verilerini çekmek için Meta reklam hesabını bağla.</p></div>
-      <button class="btn w100" id="fb-login-btn" onclick="fbLogin()" style="justify-content:center;background:linear-gradient(135deg,#1877f2,#2d8cf0);color:#fff;border:none;font-size:13px;font-weight:800;padding:13px;margin-bottom:14px;border-radius:10px;box-shadow:0 4px 14px rgba(24,119,242,.35)">
+      <button class="btn w100" id="fb-login-btn" onclick="fbLogin()" style="justify-content:center;background:linear-gradient(135deg,#1877f2,#2d8cf0);color:#fff;border:none;font-size:13px;font-weight:800;padding:13px;margin-bottom:10px;border-radius:10px;box-shadow:0 4px 14px rgba(24,119,242,.35)">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="white" style="margin-right:6px"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         Facebook ile Bağlan
       </button>
+
+      <button onclick="showNoAccountFlow()" style="width:100%;padding:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);margin-bottom:14px;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.09)'" onmouseout="this.style.background='rgba(255,255,255,.05)'">
+        Reklam hesabım yok — Nasıl başlarım?
+      </button>
+
+      <!-- REKLAM YOK AKIŞI -->
+      <div id="no-account-flow" style="display:none">
+        <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:16px;margin-bottom:4px">
+
+          <!-- ADIM 1: Ürün var mı -->
+          <div id="naf-step1">
+            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:14px;text-align:center">Sana özel bir başlangıç planı hazırlayalım 🚀</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:10px">Satmak istediğin bir ürün var mı?</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button onclick="nafSetProduct(true)" class="naf-opt" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='#6ba0ff';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.65)'">✅ Evet, ürünim var</button>
+              <button onclick="nafSetProduct(false)" class="naf-opt" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='#6ba0ff';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.65)'">🤔 Henüz yok</button>
+            </div>
+          </div>
+
+          <!-- ADIM 2: Detaylar -->
+          <div id="naf-step2" style="display:none">
+            <div id="naf-product-row" style="margin-bottom:12px">
+              <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:5px;font-weight:600">Ürün veya site linki <span style="opacity:.5">(opsiyonel)</span></div>
+              <input id="naf-url" type="text" placeholder="https://siten.com veya ürün açıklaması" style="width:100%;padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:9px;color:#fff;font-size:12px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#6ba0ff'" onblur="this.style.borderColor='rgba(255,255,255,.09)'">
+            </div>
+            <div style="margin-bottom:12px">
+              <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:8px;font-weight:600">Günlük reklam bütçen ne kadar olabilir?</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px" id="naf-budget-group">
+                <button onclick="nafSelect('budget','50',this)" class="naf-chip active">50₺</button>
+                <button onclick="nafSelect('budget','100',this)" class="naf-chip">100₺</button>
+                <button onclick="nafSelect('budget','250',this)" class="naf-chip">250₺</button>
+                <button onclick="nafSelect('budget','500',this)" class="naf-chip">500₺+</button>
+              </div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:8px;font-weight:600">Reklamdan ne bekliyorsun?</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="naf-goal-group">
+                <button onclick="nafSelect('goal','satis',this)" class="naf-chip active">💰 Satış</button>
+                <button onclick="nafSelect('goal','trafik',this)" class="naf-chip">🔗 Site trafiği</button>
+                <button onclick="nafSelect('goal','farkindalik',this)" class="naf-chip">📢 Marka bilinirliği</button>
+                <button onclick="nafSelect('goal','musteri',this)" class="naf-chip">👥 Müşteri bulmak</button>
+              </div>
+            </div>
+            <button onclick="nafGenerate()" style="width:100%;padding:12px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(29,78,216,.3)">
+              ✨ Başlangıç Planımı Oluştur
+            </button>
+          </div>
+
+          <!-- ADIM 3: AI Plan Sonucu -->
+          <div id="naf-step3" style="display:none">
+            <div id="naf-loading" style="text-align:center;padding:20px 0">
+              <div class="spinner" style="width:24px;height:24px;border-width:2.5px;margin:0 auto 10px"></div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4)">Senin için plan hazırlanıyor...</div>
+            </div>
+            <div id="naf-result" style="display:none"></div>
+            <button onclick="showNoAccountFlow()" style="margin-top:12px;background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;font-family:var(--font)">← Tekrar doldur</button>
+          </div>
+
+        </div>
+      </div>
+
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div><span style="font-size:10px;color:rgba(255,255,255,.2);font-weight:700;letter-spacing:.05em">VEYA MANUEL TOKEN</span><div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div></div>
       <div id="token-step1">
         <label style="color:rgba(255,255,255,.35)!important;font-size:10px!important">Access Token</label>
@@ -2790,6 +2854,79 @@ function planReset() {
 // Compat stubs
 function loadPlanOffline() { loadPlan(); }
 function reconnectMeta() { localStorage.removeItem('adsopify_token'); localStorage.removeItem('adsopify_account_id'); localStorage.removeItem('adsopify_account_name'); S.token = null; S.accountId = null; location.reload(); }
+
+var nafData = { hasProduct: true, budget: '50', goal: 'satis' };
+
+function showNoAccountFlow() {
+  var flow = document.getElementById('no-account-flow');
+  if (flow) flow.style.display = flow.style.display === 'none' ? 'block' : 'none';
+}
+
+function nafSetProduct(has) {
+  nafData.hasProduct = has;
+  document.getElementById('naf-step1').style.display = 'none';
+  document.getElementById('naf-step2').style.display = 'block';
+  var row = document.getElementById('naf-product-row');
+  if (row) row.style.display = has ? 'block' : 'none';
+}
+
+function nafSelect(type, val, btn) {
+  nafData[type] = val;
+  var group = document.getElementById('naf-' + type + '-group');
+  if (group) group.querySelectorAll('.naf-chip').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+
+async function nafGenerate() {
+  document.getElementById('naf-step2').style.display = 'none';
+  document.getElementById('naf-step3').style.display = 'block';
+  document.getElementById('naf-loading').style.display = 'block';
+  document.getElementById('naf-result').style.display = 'none';
+
+  var urlVal = (document.getElementById('naf-url') || {}).value || '';
+  var goalLabels = { satis:'Satış yapmak', trafik:'Site trafiği', farkindalik:'Marka bilinirliği', musteri:'Müşteri bulmak' };
+
+  var prompt = 'Yeni başlayan bir girişimci için Meta reklam başlangıç planı yaz.\n\n' +
+    'Durum: ' + (nafData.hasProduct ? 'Ürünü var' : 'Henüz ürünü yok') + '\n' +
+    (urlVal ? 'Ürün/site: ' + urlVal + '\n' : '') +
+    'Günlük bütçe: ' + nafData.budget + '₺\n' +
+    'Hedef: ' + (goalLabels[nafData.goal] || nafData.goal) + '\n\n' +
+    'Şunları ver:\n' +
+    '1. Bu bütçe ve hedef için ideal kampanya yapısı\n' +
+    '2. İlk hafta adım adım ne yapmalı (çok somut)\n' +
+    '3. Kaçınması gereken en yaygın 2 hata\n' +
+    '4. Ne zaman sonuç beklemeli\n\n' +
+    'Türkçe, samimi, jargonsuz yaz. Kısa ve net ol.';
+
+  try {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system: 'Sen deneyimli bir Meta reklam danışmanısın. Yeni başlayanlara sade, uygulanabilir tavsiyeler veriyorsun. Türkçe yaz.', message: prompt })
+    });
+    var data = await res.json();
+    var text = (data.answer || '').trim();
+    var html = text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:#fff">$1</strong>')
+      .replace(/^#{1,3}\s+(.+)$/gm,'<div style="font-size:13px;font-weight:800;color:#fff;margin:12px 0 6px">$1</div>')
+      .replace(/^\d+\.\s+(.+)$/gm,'<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:#6ba0ff;font-weight:700;flex-shrink:0">→</span><span>$1</span></div>')
+      .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+
+    document.getElementById('naf-loading').style.display = 'none';
+    document.getElementById('naf-result').style.display = 'block';
+    document.getElementById('naf-result').innerHTML =
+      '<div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.8;max-height:300px;overflow-y:auto;padding-right:4px">' + html + '</div>' +
+      '<div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)">' +
+        '<div style="font-size:11px;color:rgba(255,255,255,.3);margin-bottom:8px">Reklamlarını takip etmeye hazır olunca:</div>' +
+        '<button onclick="document.getElementById(\'no-account-flow\').style.display=\'none\'" style="width:100%;padding:10px;background:rgba(29,78,216,.3);border:1px solid rgba(107,160,255,.3);border-radius:9px;color:#6ba0ff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Meta Hesabımı Bağlamaya Hazırım →</button>' +
+      '</div>';
+  } catch(e) {
+    document.getElementById('naf-loading').style.display = 'none';
+    document.getElementById('naf-result').style.display = 'block';
+    document.getElementById('naf-result').innerHTML = '<div style="color:rgba(255,255,255,.4);font-size:12px">Plan oluşturulamadı, tekrar dene.</div>';
+  }
+}
 async function loadAIActionPlan() {}
 function renderAIActions() {}
 function updatePlanProgress() {}
