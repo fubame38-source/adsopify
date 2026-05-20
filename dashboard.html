@@ -330,8 +330,7 @@ tbody tr:hover td{background:var(--surface2)}
 #acct-menu .acct-item:hover{border-color:var(--accent);background:var(--accent-light)}
 
 /* ── ONBOARDING ── */
-#onboarding-popup{position:fixed;inset:0;background:linear-gradient(135deg,#02040e,#080f1f,#02040e);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px}
-#onboarding-popup input,#onboarding-popup textarea{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.10)!important;color:#fff!important}
+
 
 /* ── İDEA CARDS ── */
 .idea-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .18s var(--ease);position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
@@ -424,34 +423,6 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 </style>
 </head>
 <body>
-
-<!-- ──────── ONBOARDING ──────── -->
-<div id="onboarding-popup" style="display:none">
-  <div id="ob-step1" style="max-width:520px;width:100%;text-align:center">
-    <div style="font-size:42px;margin-bottom:14px">🔍</div>
-    <h2 style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.04em;margin-bottom:8px">Markanı analiz edelim</h2>
-    <p style="font-size:14px;color:rgba(255,255,255,.45);margin-bottom:28px;line-height:1.65">Web siteni gir — AI siteyi okuyup markana özel hook ve reklam fikirleri üretsin.</p>
-    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:22px;margin-bottom:12px">
-      <div style="margin-bottom:12px;text-align:left"><label style="color:rgba(255,255,255,.4)!important;font-size:10px!important">🌐 Web Sitesi URL</label><input type="url" id="brand-url" placeholder="https://markan.com" style="margin-top:5px;font-size:14px;padding:11px 14px" /></div>
-      <div style="text-align:left"><label style="color:rgba(255,255,255,.4)!important;font-size:10px!important">📝 Ek Bilgi <span style="color:rgba(255,255,255,.22);font-weight:400">(opsiyonel)</span></label><textarea id="brand-desc" placeholder="Sitenizde olmayan ek bilgi..." rows="2" style="font-size:13px;padding:11px 14px;resize:none;margin-top:5px"></textarea></div>
-    </div>
-    <button onclick="saveOnboarding()" id="ob-analyze-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);margin-bottom:8px">🔍 Siteyi Analiz Et</button>
-    <button onclick="skipOnboarding()" style="background:none;border:none;color:rgba(255,255,255,.28);font-size:13px;cursor:pointer;font-family:var(--font);padding:8px">Şimdilik atla →</button>
-  </div>
-  <div id="ob-step2" style="display:none;max-width:440px;width:100%;text-align:center">
-    <div style="font-size:48px;margin-bottom:18px;animation:spin 2s linear infinite;display:inline-block">🔍</div>
-    <h2 style="font-size:22px;font-weight:800;color:#fff;margin-bottom:10px">Analiz ediliyor...</h2>
-    <p id="ob-status" style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:24px">Siteniz ziyaret ediliyor</p>
-    <div style="background:rgba(255,255,255,.09);border-radius:99px;height:4px;overflow:hidden;max-width:260px;margin:0 auto"><div id="ob-progress" style="height:100%;background:linear-gradient(90deg,#1d4ed8,#4f46e5);border-radius:99px;width:0%;transition:width .5s ease"></div></div>
-  </div>
-  <div id="ob-step3" style="display:none;max-width:440px;width:100%;text-align:center">
-    <div style="font-size:48px;margin-bottom:16px">🎉</div>
-    <h2 style="font-size:24px;font-weight:800;color:#fff;margin-bottom:6px" id="ob-brand-name">Analiz tamamlandı!</h2>
-    <p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px" id="ob-brand-desc-result"></p>
-    <div id="ob-results" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:16px;margin-bottom:18px;text-align:left"></div>
-    <button onclick="finishOnboarding()" style="width:100%;padding:13px;background:linear-gradient(135deg,#059669,#047857);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font)">🚀 Dashboarda Git →</button>
-  </div>
-</div>
 
 <!-- ──────── AUTH ──────── -->
 <div id="auth-screen" style="display:none">
@@ -1623,7 +1594,7 @@ function closeAccountMenu(e) {
 // ONBOARDING
 // ═══════════════════════════════════════════════
 function skipOnboarding() {
-  document.getElementById("onboarding-popup").style.display = "none";
+  closeOnboarding();
   document.getElementById("ob-step1").style.display = "block";
   document.getElementById("ob-step2").style.display = "none";
   document.getElementById("ob-step3").style.display = "none";
@@ -1719,7 +1690,7 @@ async function saveOnboarding() {
 }
 
 function finishOnboarding() {
-  document.getElementById('onboarding-popup').style.display = 'none';
+  closeOnboarding();
   document.getElementById('ob-step1').style.display = 'block';
   document.getElementById('ob-step2').style.display = 'none';
   document.getElementById('ob-step3').style.display = 'none';
