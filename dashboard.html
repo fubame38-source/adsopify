@@ -2370,7 +2370,7 @@ async function planFetchAI(cacheKey) {
     brandName ? creativeLoad(brandName) : Promise.resolve(null),
     brandUrl ? fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
       body: JSON.stringify({ url: brandUrl, metaCtx: '' })
     }).then(function(r){ return r.json(); }).catch(function(){ return null; }) : Promise.resolve(null)
   ]);
@@ -2568,7 +2568,7 @@ async function siteAnalyze() {
   try {
     var res = await fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
       body: JSON.stringify({ url: url, metaCtx: '' })
     });
     var data = await res.json();
@@ -2708,7 +2708,7 @@ async function analyzeWebsite(urlOverride) {
   try {
     var res = await fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
       body: JSON.stringify({ url: url, metaCtx: metaCtx })
     });
     var data = await res.json();
