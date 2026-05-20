@@ -5082,14 +5082,15 @@ async function submitNewPassword(token) {
 // ═══════════════════════════════════════════════
 const BRAND_COLORS = ['#1d4ed8','#059669','#b45309','#7c3aed','#dc2626','#0891b2'];
 
+function _brandsKey() { return 'adsopify_brands_' + (getStored('sb_user_id')||'default'); }
 function getBrands() {
-  try { return JSON.parse(localStorage.getItem('adsopify_brands') || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(localStorage.getItem(_brandsKey()) || '[]'); } catch(e) { return []; }
 }
 function saveBrands(brands) {
-  localStorage.setItem('adsopify_brands', JSON.stringify(brands));
+  localStorage.setItem(_brandsKey(), JSON.stringify(brands));
 }
 function getActiveBrand() {
-  return localStorage.getItem('adsopify_active_brand') || S.accountId;
+  return localStorage.getItem('adsopify_active_brand_' + (getStored('sb_user_id')||'default')) || S.accountId;
 }
 
 function initBrandSwitcher() {
@@ -5117,7 +5118,7 @@ function renderBrandSwitcher(brands) {
 }
 
 function switchToBrand(id, name) {
-  localStorage.setItem('adsopify_active_brand', id);
+  localStorage.setItem('adsopify_active_brand_' + (getStored('sb_user_id')||'default'), id);
   switchAccount(id, name);
   initBrandSwitcher();
   showBrandToast('Marka değiştirildi: ' + name);
