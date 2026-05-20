@@ -235,6 +235,9 @@ tbody tr:hover td{background:var(--surface2)}
 .naf-chip{padding:9px 6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;text-align:center}
 .naf-chip:hover{border-color:#6ba0ff;color:#fff}
 .naf-chip.active{border-color:#6ba0ff;background:rgba(107,160,255,.15);color:#fff;font-weight:700}
+.ob-chip{padding:10px 6px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;text-align:center}
+.ob-chip:hover{border-color:var(--accent);color:var(--text)}
+.ob-chip.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);font-weight:700}
 .opp-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
 .opp-text{font-size:12px;color:var(--text2);line-height:1.5}
 
@@ -515,66 +518,6 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
         Facebook ile Bağlan
       </button>
 
-      <button onclick="showNoAccountFlow()" style="width:100%;padding:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);margin-bottom:14px;transition:all .15s" onmouseover="this.style.background='rgba(255,255,255,.09)'" onmouseout="this.style.background='rgba(255,255,255,.05)'">
-        Reklam hesabım yok — Nasıl başlarım?
-      </button>
-
-      <!-- REKLAM YOK AKIŞI -->
-      <div id="no-account-flow" style="display:none">
-        <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:16px;margin-bottom:4px">
-
-          <!-- ADIM 1: Ürün var mı -->
-          <div id="naf-step1">
-            <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:14px;text-align:center">Sana özel bir başlangıç planı hazırlayalım 🚀</div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:10px">Satmak istediğin bir ürün var mı?</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <button onclick="nafSetProduct(true)" class="naf-opt" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='#6ba0ff';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.65)'">✅ Evet, ürünim var</button>
-              <button onclick="nafSetProduct(false)" class="naf-opt" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='#6ba0ff';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.65)'">🤔 Henüz yok</button>
-            </div>
-          </div>
-
-          <!-- ADIM 2: Detaylar -->
-          <div id="naf-step2" style="display:none">
-            <div id="naf-product-row" style="margin-bottom:12px">
-              <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:5px;font-weight:600">Ürün veya site linki <span style="opacity:.5">(opsiyonel)</span></div>
-              <input id="naf-url" type="text" placeholder="https://siten.com veya ürün açıklaması" style="width:100%;padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:9px;color:#fff;font-size:12px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#6ba0ff'" onblur="this.style.borderColor='rgba(255,255,255,.09)'">
-            </div>
-            <div style="margin-bottom:12px">
-              <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:8px;font-weight:600">Günlük reklam bütçen ne kadar olabilir?</div>
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px" id="naf-budget-group">
-                <button onclick="nafSelect('budget','50',this)" class="naf-chip active">50₺</button>
-                <button onclick="nafSelect('budget','100',this)" class="naf-chip">100₺</button>
-                <button onclick="nafSelect('budget','250',this)" class="naf-chip">250₺</button>
-                <button onclick="nafSelect('budget','500',this)" class="naf-chip">500₺+</button>
-              </div>
-            </div>
-            <div style="margin-bottom:16px">
-              <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:8px;font-weight:600">Reklamdan ne bekliyorsun?</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="naf-goal-group">
-                <button onclick="nafSelect('goal','satis',this)" class="naf-chip active">💰 Satış</button>
-                <button onclick="nafSelect('goal','trafik',this)" class="naf-chip">🔗 Site trafiği</button>
-                <button onclick="nafSelect('goal','farkindalik',this)" class="naf-chip">📢 Marka bilinirliği</button>
-                <button onclick="nafSelect('goal','musteri',this)" class="naf-chip">👥 Müşteri bulmak</button>
-              </div>
-            </div>
-            <button onclick="nafGenerate()" style="width:100%;padding:12px;background:linear-gradient(135deg,#1d4ed8,#4f46e5);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(29,78,216,.3)">
-              ✨ Başlangıç Planımı Oluştur
-            </button>
-          </div>
-
-          <!-- ADIM 3: AI Plan Sonucu -->
-          <div id="naf-step3" style="display:none">
-            <div id="naf-loading" style="text-align:center;padding:20px 0">
-              <div class="spinner" style="width:24px;height:24px;border-width:2.5px;margin:0 auto 10px"></div>
-              <div style="font-size:12px;color:rgba(255,255,255,.4)">Senin için plan hazırlanıyor...</div>
-            </div>
-            <div id="naf-result" style="display:none"></div>
-            <button onclick="showNoAccountFlow()" style="margin-top:12px;background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;font-family:var(--font)">← Tekrar doldur</button>
-          </div>
-
-        </div>
-      </div>
-
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div><span style="font-size:10px;color:rgba(255,255,255,.2);font-weight:700;letter-spacing:.05em">VEYA MANUEL TOKEN</span><div style="flex:1;height:1px;background:rgba(255,255,255,.07)"></div></div>
       <div id="token-step1">
         <label style="color:rgba(255,255,255,.35)!important;font-size:10px!important">Access Token</label>
@@ -654,6 +597,70 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div class="nav-item" onclick="nav('saved')" data-sec="saved"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 2.5h10v11l-5-3-5 3V2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Kaydedilenler</div>
   <div class="nav-div"></div>
   <div class="nav-item" onclick="nav('settings')" data-sec="settings"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Ayarlar</div>
+  <div id="nav-meta-connect" class="nav-item" onclick="nav('settings')" style="color:var(--accent);display:none"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 1 0 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10 2h4v4M14 2L9 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Meta Hesabını Bağla</div>
+</div>
+
+<!-- ONBOARDING POPUP -->
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:480px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.4);position:relative;max-height:90vh;overflow-y:auto">
+    <button onclick="closeOnboarding()" style="position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:28px;height:28px;cursor:pointer;color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
+
+    <!-- ADIM 1: Ürün var mı -->
+    <div id="ob-step1">
+      <div style="font-size:22px;margin-bottom:6px">👋</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.04em">Hoş geldin!</div>
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6">Sana özel bir başlangıç planı hazırlayalım. Meta hesabını daha sonra bağlayabilirsin.</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Satmak istediğin bir ürün var mı?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button onclick="obSetProduct(true)" style="padding:14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">✅ Evet, ürünüm var</button>
+        <button onclick="obSetProduct(false)" style="padding:14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">🤔 Henüz yok</button>
+      </div>
+    </div>
+
+    <!-- ADIM 2: Detaylar -->
+    <div id="ob-step2" style="display:none">
+      <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:16px;letter-spacing:-.03em">Birkaç soru daha 🎯</div>
+
+      <div id="ob-product-row" style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:6px">Ürün veya site linki <span style="opacity:.6;font-weight:400">(opsiyonel)</span></div>
+        <input id="ob-url" type="text" placeholder="https://siten.com veya ürün açıklaması" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">Günlük reklam bütçen ne kadar olabilir?</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px" id="ob-budget-group">
+          <button onclick="obSelect('budget','500',this)" class="ob-chip active">500₺</button>
+          <button onclick="obSelect('budget','1000',this)" class="ob-chip">1.000₺</button>
+          <button onclick="obSelect('budget','2000',this)" class="ob-chip">2.000₺</button>
+          <button onclick="obSelect('budget','10000',this)" class="ob-chip">10.000₺+</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">Reklamdan ne bekliyorsun?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="ob-goal-group">
+          <button onclick="obSelect('goal','satis',this)" class="ob-chip active">💰 Satış</button>
+          <button onclick="obSelect('goal','trafik',this)" class="ob-chip">🔗 Site trafiği</button>
+          <button onclick="obSelect('goal','farkindalik',this)" class="ob-chip">📢 Marka bilinirliği</button>
+          <button onclick="obSelect('goal','musteri',this)" class="ob-chip">👥 Müşteri bulmak</button>
+        </div>
+      </div>
+
+      <button onclick="obGenerate()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;box-shadow:0 4px 14px rgba(29,78,216,.3)">
+        ✨ Başlangıç Planımı Oluştur
+      </button>
+      <button onclick="document.getElementById('ob-step2').style.display='none';document.getElementById('ob-step1').style.display='block'" style="width:100%;margin-top:8px;background:none;border:none;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--font)">← Geri</button>
+    </div>
+
+    <!-- ADIM 3: Sonuç -->
+    <div id="ob-step3" style="display:none">
+      <div id="ob-loading" style="text-align:center;padding:30px 0">
+        <div class="spinner" style="width:28px;height:28px;border-width:3px;margin:0 auto 12px"></div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2)">Planın hazırlanıyor...</div>
+      </div>
+      <div id="ob-result" style="display:none"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ──────── MAIN ──────── -->
@@ -1556,8 +1563,17 @@ function startApp() {
   nav(lastSection);
   if (lastSection === 'plan') loadPlan();
   loadUserPlan();
-  // Sayfa yüklenince Meta verilerini arka planda çek (kampanya kartları için)
+  // Sayfa yüklenince Meta verilerini arka planda çek
   setTimeout(function() { loadDashboardSilent(); }, 200);
+
+  // Onboarding popup — Meta bağlı değilse ve ilk girişse
+  if (!S.token && !localStorage.getItem('adsopify_ob_done')) {
+    setTimeout(function() { showOnboarding(); }, 800);
+  }
+
+  // Sidebar'da Meta bağla butonunu göster/gizle
+  var navMeta = document.getElementById('nav-meta-connect');
+  if (navMeta) navMeta.style.display = S.token ? 'none' : 'flex';
 }
 
 async function loadAllAccounts() {
@@ -2860,6 +2876,91 @@ var nafData = { hasProduct: true, budget: '50', goal: 'satis' };
 function showNoAccountFlow() {
   var flow = document.getElementById('no-account-flow');
   if (flow) flow.style.display = flow.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── ONBOARDING POPUP ─────────────────────────────
+var obData = { hasProduct: true, budget: '500', goal: 'satis' };
+
+function showOnboarding() {
+  var el = document.getElementById('onboarding-overlay');
+  if (el) { el.style.display = 'flex'; }
+}
+
+function closeOnboarding() {
+  var el = document.getElementById('onboarding-overlay');
+  if (el) el.style.display = 'none';
+  localStorage.setItem('adsopify_ob_done', '1');
+}
+
+function obSetProduct(has) {
+  obData.hasProduct = has;
+  document.getElementById('ob-step1').style.display = 'none';
+  document.getElementById('ob-step2').style.display = 'block';
+  var row = document.getElementById('ob-product-row');
+  if (row) row.style.display = has ? 'block' : 'none';
+}
+
+function obSelect(type, val, btn) {
+  obData[type] = val;
+  var group = document.getElementById('ob-' + type + '-group');
+  if (group) group.querySelectorAll('.ob-chip').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+
+async function obGenerate() {
+  document.getElementById('ob-step2').style.display = 'none';
+  document.getElementById('ob-step3').style.display = 'block';
+  document.getElementById('ob-loading').style.display = 'block';
+  document.getElementById('ob-result').style.display = 'none';
+  localStorage.setItem('adsopify_ob_done', '1');
+
+  var urlVal = (document.getElementById('ob-url') || {}).value || '';
+  var budgetLabels = { '500':'500₺/gün', '1000':'1.000₺/gün', '2000':'2.000₺/gün', '10000':'10.000₺+/gün' };
+  var goalLabels = { satis:'Satış', trafik:'Site trafiği', farkindalik:'Marka bilinirliği', musteri:'Müşteri bulmak' };
+
+  var prompt = 'Yeni başlayan bir girişimci için Meta reklam başlangıç planı hazırla.\n\n' +
+    'Durum: ' + (obData.hasProduct ? 'Ürünü var' : 'Henüz ürünü yok') + '\n' +
+    (urlVal ? 'Ürün/site: ' + urlVal + '\n' : '') +
+    'Günlük bütçe: ' + (budgetLabels[obData.budget] || obData.budget) + '\n' +
+    'Hedef: ' + (goalLabels[obData.goal] || obData.goal) + '\n\n' +
+    'Şunları ver:\n' +
+    '1. Bu bütçe ve hedef için ideal kampanya yapısı\n' +
+    '2. İlk hafta adım adım ne yapmalı (çok somut, 3-4 madde)\n' +
+    '3. En sık yapılan 2 hata ve nasıl kaçınılır\n' +
+    '4. Ne zaman sonuç beklemeli\n\n' +
+    'Samimi ve sade yaz. Jargon kullanma.';
+
+  try {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'Sen deneyimli bir Meta reklam danışmanısın. Yeni başlayanlara sade, uygulanabilir Türkçe tavsiyeler veriyorsun.',
+        message: prompt
+      })
+    });
+    var data = await res.json();
+    var text = (data.answer || '').trim();
+    var html = text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text);font-weight:700">$1</strong>')
+      .replace(/^#{1,3}\s+(.+)$/gm,'<div style="font-size:14px;font-weight:800;color:var(--text);margin:14px 0 6px;letter-spacing:-.03em">$1</div>')
+      .replace(/^\d+\.\s+(.+)$/gm,'<div style="display:flex;gap:8px;margin-bottom:8px;align-items:flex-start"><span style="color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px">→</span><span style="color:var(--text2)">$1</span></div>')
+      .replace(/\n\n/g,'<br>').replace(/\n/g,'<br>');
+
+    document.getElementById('ob-loading').style.display = 'none';
+    document.getElementById('ob-result').style.display = 'block';
+    document.getElementById('ob-result').innerHTML =
+      '<div style="font-size:13px;line-height:1.8;margin-bottom:20px">' + html + '</div>' +
+      '<div style="background:var(--accent-light);border:1px solid var(--border2);border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">' +
+        '<div style="font-size:12px;color:var(--text2)">Reklamlarını takip etmeye hazır olunca Meta hesabını bağla.</div>' +
+        '<button onclick="closeOnboarding();nav(\'settings\')" style="white-space:nowrap;padding:8px 14px;background:var(--accent);border:none;border-radius:9px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Hesabı Bağla →</button>' +
+      '</div>';
+  } catch(e) {
+    document.getElementById('ob-loading').style.display = 'none';
+    document.getElementById('ob-result').style.display = 'block';
+    document.getElementById('ob-result').innerHTML = '<div style="color:var(--text3);font-size:13px">Plan oluşturulamadı, tekrar dene.</div>';
+  }
 }
 
 function nafSetProduct(has) {
