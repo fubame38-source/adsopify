@@ -601,7 +601,7 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 </div>
 
 <!-- ONBOARDING POPUP -->
-<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99999;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:480px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.4);position:relative;max-height:90vh;overflow-y:auto">
     <button onclick="closeOnboarding()" style="position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:28px;height:28px;cursor:pointer;color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
 
@@ -1440,7 +1440,7 @@ async function submitAuth() {
     }
 
     document.getElementById('auth-screen').style.display = 'none';
-    showTokenScreen();
+    startApp();
 
   } catch(e) {
     console.error('Auth hata:', e);
@@ -1550,10 +1550,12 @@ function startApp() {
       .catch(() => {});
   }
 
-  const brandData = localStorage.getItem('adsopify_brand');
+  const _userId = getStored('sb_user_id') || 'default';
+  const _brandKey = 'adsopify_brand_' + _userId;
+  const brandData = localStorage.getItem(_brandKey);
   if (!brandData) {
     // Onboarding göster ama loadPlan'ı BLOKLAMADAN çalıştır
-    document.getElementById('onboarding-popup').style.display = 'flex';
+    // marka yok — devam et
   } else {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
@@ -1670,7 +1672,7 @@ async function saveOnboarding() {
     document.getElementById('ob-progress').style.width = '100%';
     document.getElementById('ob-status').textContent = 'Analiz tamamlandı!';
 
-    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+    localStorage.setItem('adsopify_brand_' + (getStored('sb_user_id')||'default'), JSON.stringify(brand));
     S.brand = brand;
 
     // Step 3: Show results
@@ -1705,7 +1707,7 @@ async function saveOnboarding() {
     } catch(ex) { brandName = 'Markanız'; }
 
     const brand = { url, rawDesc: desc, brandName, hooks: generateBrandHooks(brandName, desc), ideas: generateBrandIdeas(brandName, desc) };
-    localStorage.setItem('adsopify_brand', JSON.stringify(brand));
+    localStorage.setItem('adsopify_brand_' + (getStored('sb_user_id')||'default'), JSON.stringify(brand));
     S.brand = brand;
 
     document.getElementById('ob-step2').style.display = 'none';
@@ -1776,7 +1778,7 @@ function showBrandToast(name) {
 }
 
 function resetBrand(returnTo) {
-  localStorage.removeItem('adsopify_brand');
+  localStorage.removeItem('adsopify_brand_' + (getStored('sb_user_id')||'default'));
   S.brand = null;
   S._returnAfterOnboarding = returnTo || null;
   document.getElementById('brand-url').value = '';
@@ -1785,7 +1787,7 @@ function resetBrand(returnTo) {
   document.getElementById('ob-step2').style.display = 'none';
   document.getElementById('ob-step3').style.display = 'none';
   document.getElementById('ob-progress').style.width = '0%';
-  document.getElementById('onboarding-popup').style.display = 'flex';
+  // marka yok — devam et
 }
 
 function loadSettingsPage() {
