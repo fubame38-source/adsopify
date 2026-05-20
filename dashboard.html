@@ -684,17 +684,12 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     <!-- Boş state -->
     <div id="plan-ai-empty" style="padding:4px 0 2px">
       <div id="plan-empty-meta-missing" style="display:none">
-        <div style="background:var(--surface2);border-radius:14px;padding:20px">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">🔗 Meta hesabın bağlı değil</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:16px;line-height:1.55">Meta bağlamadan da başlayabilirsin — site linkini gir, AI sana özel strateji hazırlasın.</div>
-          <div style="display:flex;gap:8px">
-            <input id="plan-site-url" type="url" placeholder="https://sitemiz.com" style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')analyzeWebsite()">
-            <button onclick="analyzeWebsite()" style="padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Analiz Et</button>
+        <div style="background:var(--surface2);border-radius:14px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">🔗 Meta hesabın bağlı değil</div>
+            <div style="font-size:12px;color:var(--text3);line-height:1.55">Kampanya verilerini görmek ve günlük plan almak için Meta hesabını bağla.</div>
           </div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;color:var(--text3)">Zaten Meta hesabın var mı?</span>
-            <button onclick="nav('settings')" style="font-size:12px;font-weight:700;color:var(--accent);background:none;border:none;cursor:pointer;font-family:var(--font)">Hesabı Bağla →</button>
-          </div>
+          <button onclick="fbLogin()" style="white-space:nowrap;padding:10px 16px;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(24,119,242,.3)">Hesabı Bağla →</button>
         </div>
       </div>
       <div id="plan-empty-default" style="background:var(--surface2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">
@@ -1937,7 +1932,22 @@ async function gql(path, params = {}) {
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   const r = await fetch(url);
   const d = await r.json();
-  if (d.error) throw new Error(d.error.message);
+  if (d.error) {
+    // Token süresi dolduysa kullanıcıya göster
+    if (d.error.code === 190 || d.error.type === 'OAuthException') {
+      S.token = null;
+      localStorage.removeItem('adsopify_token');
+      var navMeta = document.getElementById('nav-meta-connect');
+      if (navMeta) navMeta.style.display = 'flex';
+      // Toast göster
+      var t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:12px 24px;border-radius:999px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 4px 16px rgba(220,38,38,.4)';
+      t.innerHTML = '⚠️ Meta bağlantın koptu — <span onclick="fbLogin()" style="text-decoration:underline;cursor:pointer">yeniden bağlan</span>';
+      document.body.appendChild(t);
+      setTimeout(function(){ t.remove(); }, 6000);
+    }
+    throw new Error(d.error.message);
+  }
   return d;
 }
 
