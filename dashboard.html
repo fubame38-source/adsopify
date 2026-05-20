@@ -2558,7 +2558,7 @@ async function siteAnalyze() {
   if (loading) loading.style.display = 'block';
   if (btn)     btn.disabled = true;
 
-  var msgs = ['Shopify mağazası okunuyor...', 'Ürünler ve fiyatlar analiz ediliyor...', 'Reklam stratejisi hazırlanıyor...'];
+  var msgs = ['Shopify mağazası okunuyor...', 'Ürünler analiz ediliyor...', 'Reklam stratejisi hazırlanıyor...'];
   var mi = 0;
   var msgInterval = setInterval(function() {
     mi = (mi + 1) % msgs.length;
@@ -2566,15 +2566,50 @@ async function siteAnalyze() {
   }, 2000);
 
   try {
-    var res = await fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
+    // ADIM 1: Tarayıcıdan direkt products.json çek
+    var domain = new URL(url).origin;
+    var products = [];
+
+    try {
+      var prodRes = await fetch(domain + '/products.json?limit=6');
+      if (prodRes.ok) {
+        var pd = await prodRes.json();
+        products = (pd.products || []).slice(0, 5).map(function(p) {
+          var v = p.variants || [];
+          var prices = v.map(function(x){ return parseFloat(x.price||0); }).filter(function(x){ return x > 0; });
+          var min = prices.length ? Math.min.apply(null, prices) : null;
+          var cmp = v[0] && v[0].compare_at_price ? parseFloat(v[0].compare_at_price) : null;
+          return {
+            title: p.title,
+            price: min,
+            comparePrice: cmp,
+            discount: cmp && min ? Math.round((1-min/cmp)*100) : null,
+            images: (p.images||[]).length,
+            tags: (p.tags||'').split(',').slice(0,5).map(function(t){ return t.trim(); }).filter(Boolean),
+            desc: (p.body_html||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,250)
+          };
+        });
+      }
+    } catch(e) {}
+
+    if (!products.length) throw new Error('Shopify ürünleri okunamadı — bu bir Shopify sitesi mi?');
+
+    // ADIM 2: Sadece AI analizi için worker'a gönder (products verisiyle)
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
-      body: JSON.stringify({ url: url, metaCtx: '' })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'Sen Meta Ads uzmanısın. Sadece JSON döndür, başka hiçbir şey yazma.',
+        message: 'Bu Shopify mağazasını analiz et:\n' + JSON.stringify(products) + '\n\nHer aksiyon ürünlerin GERÇEK verilerine dayansın (fiyat, ürün adı, görsel sayısı).\n\nJSON: {"tagline":"3-4 kelime","verdict":"2 cümle gerçek verilerle","heroProduct":{"name":"","price":"","opportunity":""},"siteScore":{"conversion":"iyi/orta/zayıf","socialProof":"var/az/yok","priceClarity":"net/belirsiz","contentQuality":"güçlü/orta/zayıf"},"targetAudience":"spesifik kitle","bestHook":"hook metni","actions":[{"title":"","reason":"gerçek veriye dayalı detay","impact":"tahmini etki","priority":"kritik","tone":"red"}]}'
+      })
     });
     var data = await res.json();
     clearInterval(msgInterval);
 
-    if (data.error) throw new Error(data.error);
+    var raw = (data.answer || '').replace(/```json|```/g,'').trim();
+    var match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('AI parse hatası');
+    data = JSON.parse(match[0]);
 
     var verdictEl  = document.getElementById('sa-verdict');
     var scoresEl   = document.getElementById('sa-scores');
