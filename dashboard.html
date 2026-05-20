@@ -601,7 +601,7 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 </div>
 
 <!-- ONBOARDING POPUP -->
-<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:480px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.4);position:relative;max-height:90vh;overflow-y:auto">
     <button onclick="closeOnboarding()" style="position:absolute;top:14px;right:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:28px;height:28px;cursor:pointer;color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
 
@@ -1522,8 +1522,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // Her şey var — direkt dashboard
     startApp();
   } else {
-    // Supabase var ama Meta yok — token screen
-    showTokenScreen();
+    // Supabase var ama Meta yok — direkt dashboard aç, onboarding popup çıkar
+    startApp();
   }
 });
 
