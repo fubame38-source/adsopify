@@ -567,8 +567,8 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Reklam Hazırla</div>
   <div class="nav-item" onclick="nav('saved')" data-sec="saved"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 2.5h10v11l-5-3-5 3V2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Kaydedilenler</div>
   <div class="nav-div"></div>
-  <div class="nav-item" onclick="nav('ai-analiz')" data-sec="ai-analiz" style="background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(29,78,216,.08));border:1px solid rgba(139,92,246,.25);color:var(--text)"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.5 3.8.4-2.8 2.5.9 3.7L8 9.5l-3.1 2.1.9-3.7L3 5.4l3.8-.4L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg><span style="background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700">AI Analiz</span></div>
-  <div class="nav-div">
+  <div class="nav-item" onclick="nav('ai-analiz')" data-sec="ai-analiz"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.5 3.8.4-2.8 2.5.9 3.7L8 9.5l-3.1 2.1.9-3.7L3 5.4l3.8-.4L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>AI Analiz</div>
+  <div class="nav-div"></div>
   <div class="nav-item" onclick="nav('settings')" data-sec="settings"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Ayarlar</div>
   <div id="nav-meta-connect" class="nav-item" onclick="fbLogin()" style="color:var(--accent);display:none;background:var(--accent-light);border-color:rgba(29,78,216,.2)"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 1 0 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10 2h4v4M14 2L9 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Meta Hesabını Bağla</div>
 </div>
@@ -659,11 +659,8 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div style="margin-bottom:22px">
     <div style="display:flex;align-items:flex-end;justify-content:space-between">
       <div>
-        <div id="plan-greeting" style="font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-.06em;color:var(--text);line-height:1.1">Günaydın 👋</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:5px" id="plan-date"></div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div id="plan-meta-badge" style="display:none;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase"></div>
+        <div id="plan-greeting" style="font-size:24px;font-weight:800;letter-spacing:-.06em;color:var(--text);line-height:1.1">Merhaba 👋</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px" id="plan-date"></div>
       </div>
     </div>
   </div>
@@ -697,16 +694,11 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
           <button onclick="fbLogin()" style="white-space:nowrap;padding:10px 16px;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(24,119,242,.3)">Hesabı Bağla →</button>
         </div>
       </div>
-      <div id="plan-empty-default" style="background:linear-gradient(135deg,rgba(29,78,216,.08),rgba(79,70,229,.06));border:1px solid rgba(29,78,216,.18);border-radius:16px;padding:22px;display:flex;align-items:center;gap:18px">
-        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 20px rgba(29,78,216,.3)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2 6 6.5.7-4.7 4.3 1.5 6.2L12 16l-5.3 3.2 1.5-6.2L3.5 8.7l6.5-.7L12 2Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        </div>
-        <div style="flex:1">
-          <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:-.03em">Bugün ne yapmalısın?</div>
-          <div style="font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:14px">AI danışmanın kampanyalarını tarayacak ve sana özel, rakamlarla desteklenmiş aksiyonlar söyleyecek.</div>
-          <button onclick="loadDailyPlan()" style="background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:10px;padding:10px 20px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 14px rgba(29,78,216,.3);transition:all .15s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
-            ✦ Planımı Göster
-          </button>
+      <div id="plan-empty-default" style="background:var(--surface2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">
+        <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px">🎯</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">Bugün ne yapmalısın?</div>
+          <div style="font-size:12px;color:var(--text3);line-height:1.55">Kampanyalarını analiz edip net aksiyonlar söyleyeceğim.</div>
         </div>
       </div>
     </div>
@@ -1211,45 +1203,29 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <!-- BÜTÇE PLANLAYICI -->
 
 <!-- AYARLAR -->
-
-<!-- ══════════════════════════════════════════════════════════
-     AI ANALİZ — Kişiye özel ürün & marka insight kartı
-══════════════════════════════════════════════════════════════ -->
 <div id="sec-ai-analiz" class="section">
   <div style="margin-bottom:24px">
-    <div style="font-size:24px;font-weight:800;letter-spacing:-.06em;color:var(--text);line-height:1.1">AI Analiz <span style="background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">✦</span></div>
-    <div style="font-size:13px;color:var(--text3);margin-top:4px">Markana özel, bugüne özel derin strateji analizi</div>
+    <div style="font-size:24px;font-weight:800;letter-spacing:-.06em;color:var(--text)">AI Analiz</div>
+    <div style="font-size:13px;color:var(--text3);margin-top:4px">Markana özel derin strateji analizi</div>
   </div>
-
-  <!-- HERO KART — analiz başlamadan önce -->
-  <div id="aiz-empty" style="background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(29,78,216,.06));border:1px solid rgba(139,92,246,.2);border-radius:22px;padding:36px;text-align:center;margin-bottom:16px">
-    <div style="width:64px;height:64px;background:linear-gradient(135deg,#a78bfa,#818cf8);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 12px 32px rgba(139,92,246,.3)">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2l2 6 6.5.7-4.7 4.3 1.5 6.2L12 16l-5.3 3.2 1.5-6.2L3.5 8.7l6.5-.7L12 2Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  <div id="aiz-empty">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px;text-align:center">
+      <div style="font-size:32px;margin-bottom:16px">✦</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:10px">Markan için derin analiz</div>
+      <div style="font-size:14px;color:var(--text3);line-height:1.7;margin-bottom:24px">Reklamların neden çalışıyor veya çalışmıyor? Hangi kampanyaya odaklanmalısın? Kişisel AI analizini al.</div>
+      <button onclick="aizStart()" style="background:var(--accent);border:none;border-radius:12px;padding:13px 28px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font)">Analiz Başlat →</button>
     </div>
-    <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.04em;margin-bottom:10px">Markan için derin analiz yap</div>
-    <div style="font-size:14px;color:var(--text3);line-height:1.7;max-width:420px;margin:0 auto 28px">Reklamların neden dönüşüm yapıyor veya yapmıyor? Hangi creative yoruldu? Şimdi sana özel AI analizi al.</div>
-    <button onclick="aizStart()" style="background:linear-gradient(135deg,#a78bfa,#818cf8);border:none;border-radius:14px;padding:14px 32px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 8px 24px rgba(139,92,246,.35);letter-spacing:-.02em;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 14px 32px rgba(139,92,246,.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(139,92,246,.35)'">
-      ✦ Analiz Başlat
-    </button>
   </div>
-
-  <!-- LOADING -->
   <div id="aiz-loading" style="display:none">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:48px;text-align:center">
-      <div id="aiz-loading-icon" style="width:56px;height:56px;background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(29,78,216,.1));border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border:1px solid rgba(139,92,246,.2)">
-        <div class="spinner" style="width:22px;height:22px;border-width:2.5px;border-color:rgba(139,92,246,.2);border-top-color:#a78bfa"></div>
-      </div>
-      <div id="aiz-loading-msg" style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Marka verisi yükleniyor...</div>
-      <div style="font-size:13px;color:var(--text3)">Bu 15-20 saniye sürebilir</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:48px;text-align:center">
+      <div class="spinner" style="width:28px;height:28px;border-width:3px;margin:0 auto 16px"></div>
+      <div id="aiz-msg" style="font-size:14px;font-weight:600;color:var(--text)">Analiz hazırlanıyor...</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px">15-20 saniye sürebilir</div>
     </div>
   </div>
-
-  <!-- SONUÇ -->
   <div id="aiz-result" style="display:none"></div>
-
-  <!-- YENİLE BUTONU -->
   <div id="aiz-refresh" style="display:none;text-align:center;margin-top:16px">
-    <button onclick="aizStart()" style="background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:10px 24px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font);transition:all .15s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text3)';this.style.borderColor='var(--border)'">↺ Yeniden Analiz Et</button>
+    <button onclick="aizStart()" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 20px;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;font-family:var(--font)">↺ Yeniden Analiz Et</button>
   </div>
 </div>
 
@@ -2526,9 +2502,8 @@ async function planFetchAI(cacheKey) {
     (memCtx ? 'Geçmiş hafıza: ' + memCtx + '\n' : '') +
     '\nBugün ' + timeCtx + ' vakti. Kampanya verisine bakarak BUGÜN yapılacak 3-4 somut aksiyon söyle.\n\n' +
     'KURALLLAR:\n' +
-    '- Her aksiyon "[Ne yapmalısın] — çünkü [spesifik rakamsal gerekçe]" formatında olsun\n' +
-    '- Örnek: "Viral kampanyasına bugün 300₺ ekle — çünkü ROAS 5.2x ile hesabının en karlı kampanyası"\n' +
-    '- Başlık kısa (6 kelime max), reason kısmı tam gerekçeli olsun\n' +
+    '- Her aksiyon gerçek kampanya adına dayansın ("Viral kampanyasına 200TL ekle" gibi)\n' +
+    '- Rakamsal gerekçe ver ("ROAS 5x olduğu için", "3 gündür 0 satış olduğu için")\n' +
     '- "Video çek" gibi genel tavsiye VERME — eğer creative lazımsa hangi kampanya için, ne tür içerik, hangi hook söyle\n' +
     '- Frekans 2.5+ ise creative yorgunluğu uyarısı ver\n' +
     '- ROAS 3x altı kampanya varsa "durdur veya bütçe azalt" de\n' +
@@ -5761,16 +5736,11 @@ function showMlynrBanner() {
   authCard.insertBefore(banner, authCard.firstChild);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// AI ANALİZ — Kişiye özel marka & ürün strateji analizi
-// ══════════════════════════════════════════════════════════════════
-
+// ═══ AI ANALİZ ═══
 function aizCheck() {
-  // Eğer daha önce sonuç alındıysa tekrar çekme
   var result = document.getElementById('aiz-result');
-  var empty  = document.getElementById('aiz-empty');
   if (result && result.innerHTML.trim() !== '') {
-    empty.style.display  = 'none';
+    document.getElementById('aiz-empty').style.display = 'none';
     result.style.display = 'block';
     document.getElementById('aiz-refresh').style.display = 'block';
   }
@@ -5778,199 +5748,126 @@ function aizCheck() {
 
 async function aizStart() {
   var brand = S.brand;
-  if (!brand || !brand.brandName) {
-    // Marka yoksa onboarding aç
-    showOnboarding();
-    return;
-  }
+  if (!brand || !brand.brandName) { showOnboarding(); return; }
 
   var empty   = document.getElementById('aiz-empty');
   var loading = document.getElementById('aiz-loading');
   var result  = document.getElementById('aiz-result');
   var refresh = document.getElementById('aiz-refresh');
-  var msgEl   = document.getElementById('aiz-loading-msg');
+  var msgEl   = document.getElementById('aiz-msg');
 
   empty.style.display   = 'none';
   loading.style.display = 'block';
   result.style.display  = 'none';
   refresh.style.display = 'none';
 
-  var msgs = [
-    'Marka verisi analiz ediliyor...',
-    'Kampanya performansı değerlendiriliyor...',
-    'Rakip konumlandırma inceleniyor...',
-    'Kişisel strateji oluşturuluyor...'
-  ];
+  var msgs = ['Marka verisi analiz ediliyor...','Kampanya performansı değerlendiriliyor...','Strateji oluşturuluyor...'];
   var mi = 0;
-  var msgInt = setInterval(function() {
-    mi = (mi + 1) % msgs.length;
-    if (msgEl) msgEl.textContent = msgs[mi];
-  }, 3500);
+  var msgInt = setInterval(function() { mi = (mi+1) % msgs.length; if(msgEl) msgEl.textContent = msgs[mi]; }, 3000);
 
   try {
-    // Meta verisi çek
-    var metaSummary = 'Meta hesabı bağlı değil.';
-    var campaigns   = [];
+    var metaSummary = 'Meta verisi yok.';
     if (S.token && S.accountId) {
       try {
         var ins = await Promise.race([getTodayInsights(), new Promise(function(r){ setTimeout(function(){ r(null); }, 5000); })]);
         if (ins && ins.length > 0) {
           var totalSpend = ins.reduce(function(s,i){ return s+parseFloat(i.spend||0); }, 0);
           var totalSales = ins.reduce(function(s,i){ return s+(i._purchases||0); }, 0);
-          var avgCTR     = ins.reduce(function(s,i){ return s+parseFloat(i.ctr||0); }, 0) / ins.length;
-          var avgFreq    = ins.reduce(function(s,i){ return s+parseFloat(i.frequency||0); }, 0) / ins.length;
-          campaigns = ins.map(function(camp) {
-            return camp.campaign_name + ' (harcama:₺' + parseFloat(camp.spend||0).toFixed(0) + ' CTR:%' + parseFloat(camp.ctr||0).toFixed(2) + ' freq:' + parseFloat(camp.frequency||0).toFixed(1) + ')';
-          });
-          metaSummary = 'Toplam harcama: ₺' + totalSpend.toFixed(0) + ', Satış: ' + totalSales + ', Ort.CTR: %' + avgCTR.toFixed(2) + ', Ort.Frekans: ' + avgFreq.toFixed(1) + '. Kampanyalar: ' + campaigns.join(' | ');
+          var avgCTR = ins.reduce(function(s,i){ return s+parseFloat(i.ctr||0); }, 0) / ins.length;
+          var avgFreq = ins.reduce(function(s,i){ return s+parseFloat(i.frequency||0); }, 0) / ins.length;
+          var camps = ins.map(function(x){ return x.campaign_name+' (harcama:'+parseFloat(x.spend||0).toFixed(0)+'TL CTR:%'+parseFloat(x.ctr||0).toFixed(2)+' freq:'+parseFloat(x.frequency||0).toFixed(1)+')'; }).join(' | ');
+          metaSummary = 'Toplam harcama: '+totalSpend.toFixed(0)+'TL, Satis: '+totalSales+', Ort.CTR: %'+avgCTR.toFixed(2)+', Ort.Frekans: '+avgFreq.toFixed(1)+'. Kampanyalar: '+camps;
         }
       } catch(e) {}
     }
 
-    var brandName = brand.brandName || '';
-    var product   = brand.product || '';
-    var audience  = brand.audience || '';
-    var budget    = brand.budget || '';
-    var goal      = brand.goal || 'satis';
-    var brandUrl  = brand.url || '';
-
-    // Zaman bazlı kişiselleştirme
     var h = new Date().getHours();
-    var timeLabel = h < 12 ? 'sabah' : h < 18 ? 'öğleden sonra' : 'akşam';
-    var dayNames  = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
-    var dayName   = dayNames[new Date().getDay()];
+    var timeLabel = h < 12 ? 'sabah' : h < 18 ? 'ogleden sonra' : 'aksam';
 
-    // Hafıza verisi
-    var memCtx = '';
-    try {
-      var memData = await memoryLoad(brandName);
-      if (memData) memCtx = 'Geçmiş performans hafızası: ' + memData + '.';
-    } catch(e) {}
+    var prompt = 'Marka: ' + (brand.brandName||'') +
+      '\nUrun: ' + (brand.product||'') +
+      '\nHedef kitle: ' + (brand.audience||'') +
+      '\nButce: ' + (brand.budget||'') + 'TL' +
+      '\nMeta durumu: ' + metaSummary +
+      '\n\nBugün ' + timeLabel + '. Bu marka icin derin analiz yap.' +
+      '\n\nJSON formatı:\n{"score":75,"score_label":"Iyi Gidiyor","headline":"CTR guclu ama frekans yukseliyor","summary":"2 cumle genel durum","insights":[{"icon":"fire","title":"Guclu Nokta","body":"rakamla destekli"},{"icon":"alert","title":"Acil Aksiyon","body":"ne yapilmali ve neden"},{"icon":"idea","title":"Firsat","body":"somut oneri"},{"icon":"target","title":"Bu Hafta Odagi","body":"tek oncelik"}],"verdict":"Bu markayi tek cumlede tanimla"}' +
+      '\n\nKURALLAR: Her insightta gercek rakam olsun. Genel tavsiye degil, bu markaya ozel soylemler. Sadece JSON dondur.';
 
-    var goalLabel = { satis: 'Satış artırmak', trafik: 'Site trafiği çekmek', farkindalik: 'Marka bilinirliği', musteri: 'Yeni müşteri bulmak' };
-
-    var prompt = 'Marka: ' + brandName + '\n' +
-      'Ürün/Hizmet: ' + product + '\n' +
-      'Hedef kitle: ' + audience + '\n' +
-      'Günlük bütçe: ₺' + budget + '\n' +
-      'Ana hedef: ' + (goalLabel[goal]||goal) + '\n' +
-      (brandUrl ? 'Web sitesi: ' + brandUrl + '\n' : '') +
-      (memCtx ? '\n' + memCtx + '\n' : '') +
-      '\nMeta Reklam Durumu:\n' + metaSummary + '\n' +
-      '\nBugün ' + dayName + ' ' + timeLabel + '. Bu markanın reklam stratejisini derin analiz et.\n\n' +
-      'Analiz çıktısı JSON olmalı:\n' +
-      '{\n' +
-      '  "score": 78,\n' +
-      '  "score_label": "İyi Gidiyor",\n' +
-      '  "headline": "CTR güçlü ama frekans yorgunluğu başlıyor",\n' +
-      '  "summary": "2-3 cümle özet, neden bu skoru aldı",\n' +
-      '  "insights": [\n' +
-      '    {"icon":"🔥","title":"Güçlü Nokta","body":"rakamla desteklenmiş neden iyi","color":"green"},\n' +
-      '    {"icon":"⚡","title":"Acil Aksiyon","body":"rakamla desteklenmiş ne yapmalı","color":"red"},\n' +
-      '    {"icon":"💡","title":"Fırsat","body":"somut büyüme önerisi","color":"blue"},\n' +
-      '    {"icon":"🎯","title":"Bu Hafta Odağı","body":"tek cümle bu haftanın önceliği","color":"purple"}\n' +
-      '  ],\n' +
-      '  "verdict": "Kısa ve net — bu markayı bir cümlede tanımla ve en kritik mesajı ver"\n' +
-      '}\n\n' +
-      'KURALLAR:\n' +
-      '- Her insight\'ta gerçek rakam veya spesifik detay olsun\n' +
-      '- Genel tavsiye değil, bu markaya özel söyle\n' +
-      '- "Video çek" değil "Viral kampanyası için POV unboxing dene çünkü CTR %3.3" gibi\n' +
-      '- Sadece JSON döndür, başka hiçbir şey yazma';
-
-    var res  = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen dünyaca ünlü bir Meta Ads stratejistisin. Gerçek verilere dayalı, derin ve kişisel analizler yapıyorsun. Her marka için farklı yorum üretiyorsun. Asla genel tavsiye vermiyorsun. Sadece geçerli JSON döndür.',
+        system: 'Sen Meta Ads stratejistisin. Veriye dayali, kisisel analizler yapiyorsun. Sadece gecerli JSON dondur.',
         message: prompt
       })
     });
-    var data   = await res.json();
-    var raw    = (data.answer || '').trim();
-    var match  = raw.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('JSON parse fail');
+    var data = await res.json();
+    var raw = (data.answer || '').trim();
+    var match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('no json');
     var parsed = JSON.parse(match[0]);
 
     clearInterval(msgInt);
-    aizRender(parsed, brandName, metaSummary !== 'Meta hesabı bağlı değil.');
+    aizRender(parsed, brand.brandName);
   } catch(e) {
     clearInterval(msgInt);
     console.error('aizStart error:', e);
     loading.style.display = 'none';
-    empty.style.display   = 'block';
-    empty.querySelector('div').insertAdjacentHTML('afterbegin', '<div style="background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:#f87171;margin-bottom:12px">⚠ Analiz alınamadı. Tekrar dene.</div>');
+    empty.style.display = 'block';
   }
 }
 
-function aizRender(data, brandName, hasMeta) {
-  var loading = document.getElementById('aiz-loading');
-  var result  = document.getElementById('aiz-result');
-  var refresh = document.getElementById('aiz-refresh');
+function aizRender(data, brandName) {
+  document.getElementById('aiz-loading').style.display = 'none';
+  document.getElementById('aiz-refresh').style.display = 'block';
 
-  loading.style.display = 'none';
-  refresh.style.display = 'block';
-
-  var score    = data.score || 70;
+  var score = data.score || 70;
   var scoreColor = score >= 80 ? '#34d399' : score >= 60 ? '#fbbf24' : '#f87171';
-  var scoreLabel = data.score_label || (score >= 80 ? 'Harika' : score >= 60 ? 'İyi Gidiyor' : 'Dikkat Gerekli');
-
+  var iconMap = { fire:'🔥', alert:'⚡', idea:'💡', target:'🎯' };
   var colorMap = {
-    green:  { bg: 'rgba(5,150,105,.1)',   border: 'rgba(5,150,105,.2)',   accent: '#34d399' },
-    red:    { bg: 'rgba(220,38,38,.1)',   border: 'rgba(220,38,38,.2)',   accent: '#f87171' },
-    blue:   { bg: 'rgba(29,78,216,.1)',   border: 'rgba(29,78,216,.2)',   accent: '#818cf8' },
-    purple: { bg: 'rgba(139,92,246,.1)', border: 'rgba(139,92,246,.2)', accent: '#a78bfa' },
-    yellow: { bg: 'rgba(180,83,9,.1)',    border: 'rgba(180,83,9,.2)',    accent: '#fbbf24' }
+    green:  { bg:'rgba(5,150,105,.1)',   border:'rgba(5,150,105,.2)',   tx:'#34d399' },
+    red:    { bg:'rgba(220,38,38,.1)',   border:'rgba(220,38,38,.2)',   tx:'#f87171' },
+    blue:   { bg:'rgba(29,78,216,.1)',   border:'rgba(29,78,216,.2)',   tx:'#818cf8' },
+    purple: { bg:'rgba(139,92,246,.1)', border:'rgba(139,92,246,.2)', tx:'#a78bfa' }
   };
 
-  var insightsHTML = (data.insights || []).map(function(ins) {
-    var col = colorMap[ins.color] || colorMap.blue;
-    return '<div style="background:' + col.bg + ';border:1px solid ' + col.border + ';border-radius:16px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start">' +
-      '<div style="width:38px;height:38px;border-radius:11px;background:' + col.accent + '22;border:1px solid ' + col.border + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">' + (ins.icon||'✦') + '</div>' +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:' + col.accent + ';margin-bottom:5px">' + escapeHtml(ins.title||'') + '</div>' +
-        '<div style="font-size:14px;color:var(--text);line-height:1.65;font-weight:500">' + escapeHtml(ins.body||'') + '</div>' +
-      '</div>' +
+  var insightsHTML = (data.insights || []).map(function(ins, i) {
+    var colors = [colorMap.green, colorMap.red, colorMap.blue, colorMap.purple];
+    var col = colors[i % 4];
+    var icon = iconMap[ins.icon] || '✦';
+    return '<div style="background:'+col.bg+';border:1px solid '+col.border+';border-radius:14px;padding:18px;display:flex;gap:12px;align-items:flex-start">' +
+      '<div style="font-size:22px;flex-shrink:0;margin-top:2px">'+icon+'</div>' +
+      '<div><div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:'+col.tx+';margin-bottom:5px">'+escapeHtml(ins.title||'')+'</div>' +
+      '<div style="font-size:14px;color:var(--text);line-height:1.6">'+escapeHtml(ins.body||'')+'</div></div>' +
     '</div>';
   }).join('');
 
-  // Skor çemberi SVG
-  var circumference = 2 * Math.PI * 36;
-  var offset = circumference * (1 - score / 100);
+  var circ = 2 * Math.PI * 36;
+  var offset = circ * (1 - score / 100);
 
+  var result = document.getElementById('aiz-result');
   result.style.display = 'block';
   result.innerHTML =
-    // Hero skor kartı
-    '<div style="background:linear-gradient(135deg,#0a0a14,#0d0d1f);border:1px solid rgba(139,92,246,.25);border-radius:22px;padding:32px;margin-bottom:14px;position:relative;overflow:hidden">' +
-      '<div style="position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,' + scoreColor + '18,transparent 65%);pointer-events:none"></div>' +
-      '<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">' +
-        // Skor çemberi
-        '<div style="flex-shrink:0;text-align:center">' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:28px;margin-bottom:12px">' +
+      '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px">' +
+        '<div style="text-align:center;flex-shrink:0">' +
           '<svg width="96" height="96" viewBox="0 0 96 96">' +
-            '<circle cx="48" cy="48" r="36" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="7"/>' +
-            '<circle cx="48" cy="48" r="36" fill="none" stroke="' + scoreColor + '" stroke-width="7" stroke-dasharray="' + circumference.toFixed(1) + '" stroke-dashoffset="' + offset.toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 48 48)" style="transition:stroke-dashoffset 1.2s ease"/>' +
-            '<text x="48" y="44" text-anchor="middle" fill="white" font-size="22" font-weight="900" font-family="inherit">' + score + '</text>' +
-            '<text x="48" y="60" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="9" font-weight="700" font-family="inherit">/ 100</text>' +
+            '<circle cx="48" cy="48" r="36" fill="none" stroke="var(--border2)" stroke-width="7"/>' +
+            '<circle cx="48" cy="48" r="36" fill="none" stroke="'+scoreColor+'" stroke-width="7" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+offset.toFixed(1)+'" stroke-linecap="round" transform="rotate(-90 48 48)"/>' +
+            '<text x="48" y="53" text-anchor="middle" fill="currentColor" font-size="22" font-weight="900" font-family="inherit">'+score+'</text>' +
           '</svg>' +
-          '<div style="font-size:11px;font-weight:700;color:' + scoreColor + ';margin-top:2px;letter-spacing:.06em;text-transform:uppercase">' + escapeHtml(scoreLabel) + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:'+scoreColor+';text-transform:uppercase;letter-spacing:.06em;margin-top:2px">'+escapeHtml(data.score_label||'')+'</div>' +
         '</div>' +
-        // Headline + summary
-        '<div style="flex:1;min-width:180px">' +
-          '<div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:8px">✦ ' + escapeHtml(brandName) + ' Analizi</div>' +
-          '<div style="font-size:clamp(16px,2.2vw,22px);font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1.2;margin-bottom:12px">' + escapeHtml(data.headline||'Strateji Analizi') + '</div>' +
-          '<div style="font-size:14px;color:rgba(255,255,255,.55);line-height:1.7">' + escapeHtml(data.summary||'') + '</div>' +
+        '<div style="flex:1;min-width:160px">' +
+          '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">'+escapeHtml(brandName)+' Analizi</div>' +
+          '<div style="font-size:20px;font-weight:900;color:var(--text);letter-spacing:-.04em;line-height:1.2;margin-bottom:10px">'+escapeHtml(data.headline||'')+'</div>' +
+          '<div style="font-size:13px;color:var(--text3);line-height:1.65">'+escapeHtml(data.summary||'')+'</div>' +
         '</div>' +
       '</div>' +
-      // Verdict banner
-      (data.verdict ? '<div style="margin-top:22px;padding:14px 18px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.08);font-size:14px;color:rgba(255,255,255,.7);line-height:1.65;font-style:italic">"' + escapeHtml(data.verdict) + '"</div>' : '') +
-      (!hasMeta ? '<div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:8px;font-size:11px;color:#fbbf24;font-weight:700"><span>⚠</span> Meta bağlı değil — verilerle analiz daha güçlü olacak</div>' : '') +
+      (data.verdict ? '<div style="padding:14px;background:var(--surface2);border-radius:10px;font-size:13px;color:var(--text2);line-height:1.65;font-style:italic">"'+escapeHtml(data.verdict)+'"</div>' : '') +
     '</div>' +
-    // Insight kartları grid
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:14px">' +
-      insightsHTML +
-    '</div>';
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px">'+insightsHTML+'</div>';
 }
-
 
 </script>
 </body>
