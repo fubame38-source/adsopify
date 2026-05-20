@@ -2368,7 +2368,7 @@ async function planFetchAI(cacheKey) {
     S.token && S.accountId ? Promise.race([getTodayInsights(), new Promise(function(r){ setTimeout(function(){ r(null); }, 4000); })]) : Promise.resolve(null),
     brandName ? memoryLoad(brandName) : Promise.resolve(null),
     brandName ? creativeLoad(brandName) : Promise.resolve(null),
-    brandUrl ? fetch('https://adsopify-api.fubame38.workers.dev/fetch-site', {
+    brandUrl ? fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: brandUrl, metaCtx: '' })
@@ -2566,7 +2566,7 @@ async function siteAnalyze() {
   }, 2000);
 
   try {
-    var res = await fetch('https://adsopify-api.fubame38.workers.dev/fetch-site', {
+    var res = await fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: url, metaCtx: '' })
@@ -2706,7 +2706,7 @@ async function analyzeWebsite(urlOverride) {
   }
 
   try {
-    var res = await fetch('https://adsopify-api.fubame38.workers.dev/fetch-site', {
+    var res = await fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: url, metaCtx: metaCtx })
