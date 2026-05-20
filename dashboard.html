@@ -1526,7 +1526,7 @@ function startApp() {
   if (loginNav) loginNav.style.display = 'none';
   document.getElementById('top-acct').style.display = 'flex';
   document.getElementById('top-acct-name').textContent = S.accountName || S.accountId;
-  loadAllAccounts();
+  if (S.token) loadAllAccounts();
   // initTheme DOMContentLoaded'da zaten çalıştı
 
   // Supabase
