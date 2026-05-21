@@ -2955,7 +2955,7 @@ async function planRenderMemoryStrip() {
   if (!brand || !brand.brandName) return;
 
   var rows = await sbGet('ad_memory', { brand_name: brand.brandName });
-  if (!rows || rows.length < 2) return; // En az 2 gun olmadan gosterme
+  if (!rows || !Array.isArray(rows) || rows.length < 2) return;
 
   var last7 = rows.slice(0, 7);
   var avgRoas = last7.filter(function(r){ return r.roas; }).reduce(function(s,r){ return s + parseFloat(r.roas); }, 0) / (last7.filter(function(r){ return r.roas; }).length || 1);
