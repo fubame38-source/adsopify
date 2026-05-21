@@ -1255,7 +1255,42 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 
 <div id="sec-settings" class="section">
   <div class="ph"><div class="ph-title">Ayarlar</div><div class="ph-sub">Marka bilgileri ve hesap ayarları</div></div>
-  <div class="card mb-12"><div class="clabel">🎯 Marka Bilgileri</div><div id="brand-current" style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:2"></div><button class="btn btn-primary btn-sm" onclick="resetBrand()">🔄 Markayı Yeniden Gir</button></div>
+  <div class="card mb-12">
+    <div class="clabel">🎯 Marka Bilgileri</div>
+    <!-- Görüntüleme modu -->
+    <div id="brand-current" style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:2"></div>
+    <div id="brand-view-btns">
+      <button class="btn btn-primary btn-sm" onclick="showBrandForm()">✏️ Marka Bilgisi Gir / Düzenle</button>
+    </div>
+    <!-- Düzenleme formu -->
+    <div id="brand-edit-form" style="display:none;margin-top:14px">
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Marka Adı *</div>
+        <input id="bf-name" type="text" placeholder="Örn: AlaTab" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Web Sitesi / Ürün URL</div>
+        <input id="bf-url" type="text" placeholder="https://siten.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Ürün / Hizmet Açıklaması</div>
+        <textarea id="bf-desc" rows="3" placeholder="Ne satıyorsun? Kime satıyorsun?" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;resize:vertical" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Günlük Bütçe</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="bf-budget-group">
+          <button onclick="bfSelect('budget','500',this)" class="ob-chip active">500₺</button>
+          <button onclick="bfSelect('budget','1000',this)" class="ob-chip">1.000₺</button>
+          <button onclick="bfSelect('budget','2000',this)" class="ob-chip">2.000₺</button>
+          <button onclick="bfSelect('budget','10000',this)" class="ob-chip">10K₺+</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="saveBrandForm()" style="flex:1;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">💾 Kaydet</button>
+        <button onclick="hideBrandForm()" style="padding:11px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">İptal</button>
+      </div>
+    </div>
+  </div>
   <div class="card mb-12" id="settings-meta-card">
     <div class="clabel">📘 Meta Bağlantısı</div>
     <div id="settings-meta-status" style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.8"></div>
@@ -1831,16 +1866,7 @@ function showBrandToast(name) {
 function resetBrand(returnTo) {
   localStorage.removeItem('adsopify_brand_' + (getStored('sb_user_id')||'default'));
   S.brand = null;
-  S._returnAfterOnboarding = returnTo || null;
-  // Onboarding adımlarını sıfırla (varsa)
-  ['ob-step1','ob-step2','ob-step3','ob-url','ob-brand-name'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (id === 'ob-step1') el.style.display = 'block';
-    else if (id.startsWith('ob-step')) el.style.display = 'none';
-    else if (el.tagName === 'INPUT') el.value = '';
-  });
-  showOnboarding();
+  showBrandForm();
 }
 
 function loadSettingsPage() {
@@ -5964,6 +5990,67 @@ function fbReconnect() {
   var b = document.getElementById('token-expired-banner');
   if (b) b.remove();
   fbLogin();
+}
+
+// ═══ INLINE MARKA FORMU ═══
+function showBrandForm() {
+  // Önce settings sayfasına git
+  nav('settings');
+  var form = document.getElementById('brand-edit-form');
+  var btns = document.getElementById('brand-view-btns');
+  if (!form) return;
+  // Mevcut değerleri doldur
+  var brand = S.brand;
+  document.getElementById('bf-name').value  = (brand && brand.brandName) ? brand.brandName : '';
+  document.getElementById('bf-url').value   = (brand && brand.url)       ? brand.url       : '';
+  document.getElementById('bf-desc').value  = (brand && brand.rawDesc)   ? brand.rawDesc   : '';
+  // Bütçe seçimi
+  var budget = (brand && brand.budget) ? brand.budget : '500';
+  document.querySelectorAll('#bf-budget-group .ob-chip').forEach(function(btn) {
+    btn.classList.toggle('active', btn.textContent.replace(/[^0-9K]/g,'').replace('K','000') === budget.replace('K','000') || btn.getAttribute('onclick').includes("'"+budget+"'"));
+  });
+  form.style.display = 'block';
+  if (btns) btns.style.display = 'none';
+  document.getElementById('bf-name').focus();
+}
+
+function hideBrandForm() {
+  var form = document.getElementById('brand-edit-form');
+  var btns = document.getElementById('brand-view-btns');
+  if (form) form.style.display = 'none';
+  if (btns) btns.style.display = 'block';
+}
+
+var _bfData = { budget: '500' };
+function bfSelect(key, val, el) {
+  _bfData[key] = val;
+  var group = el.closest('[id]');
+  if (group) group.querySelectorAll('.ob-chip').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function saveBrandForm() {
+  var name = document.getElementById('bf-name').value.trim();
+  if (!name) { document.getElementById('bf-name').focus(); document.getElementById('bf-name').style.borderColor='#f87171'; return; }
+  var url    = document.getElementById('bf-url').value.trim();
+  var desc   = document.getElementById('bf-desc').value.trim();
+  var budget = _bfData.budget || '500';
+
+  var brandData = {
+    brandName: name,
+    url:       url,
+    rawDesc:   desc,
+    product:   desc || name,
+    audience:  '',
+    budget:    budget,
+    goal:      'satis'
+  };
+  var userId   = getStored('sb_user_id') || 'default';
+  localStorage.setItem('adsopify_brand_' + userId, JSON.stringify(brandData));
+  S.brand = brandData;
+
+  hideBrandForm();
+  loadSettingsPage(); // bilgileri güncelle
 }
 
 </script>
