@@ -1832,8 +1832,10 @@ function resetBrand(returnTo) {
   localStorage.removeItem('adsopify_brand_' + (getStored('sb_user_id')||'default'));
   S.brand = null;
   S._returnAfterOnboarding = returnTo || null;
-  document.getElementById('brand-url').value = '';
-  document.getElementById('brand-desc').value = '';
+  var urlEl = document.getElementById('brand-url') || document.getElementById('ob-url');
+  var descEl = document.getElementById('brand-desc') || document.getElementById('ob-brand-name');
+  if (urlEl) urlEl.value = '';
+  if (descEl) descEl.value = '';
   document.getElementById('ob-step1').style.display = 'block';
   document.getElementById('ob-step2').style.display = 'none';
   document.getElementById('ob-step3').style.display = 'none';
