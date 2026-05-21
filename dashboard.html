@@ -1832,14 +1832,14 @@ function resetBrand(returnTo) {
   localStorage.removeItem('adsopify_brand_' + (getStored('sb_user_id')||'default'));
   S.brand = null;
   S._returnAfterOnboarding = returnTo || null;
-  var urlEl = document.getElementById('brand-url') || document.getElementById('ob-url');
-  var descEl = document.getElementById('brand-desc') || document.getElementById('ob-brand-name');
-  if (urlEl) urlEl.value = '';
-  if (descEl) descEl.value = '';
-  document.getElementById('ob-step1').style.display = 'block';
-  document.getElementById('ob-step2').style.display = 'none';
-  document.getElementById('ob-step3').style.display = 'none';
-  document.getElementById('ob-progress').style.width = '0%';
+  // Onboarding adımlarını sıfırla (varsa)
+  ['ob-step1','ob-step2','ob-step3','ob-url','ob-brand-name'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (id === 'ob-step1') el.style.display = 'block';
+    else if (id.startsWith('ob-step')) el.style.display = 'none';
+    else if (el.tagName === 'INPUT') el.value = '';
+  });
   showOnboarding();
 }
 
