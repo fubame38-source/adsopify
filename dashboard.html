@@ -4085,15 +4085,13 @@ function adWizSelect(group, val, btn) {
 // REKLAM HAZIRLA — TEK TIKLA AI PAKETİ
 // ═══════════════════════════════════════════════
 async function adWizGenerate() {
-  // Günlük limit — reklam üretici için ayrı sayaç
+  // Günlük limit
   var today = new Date().toISOString().split('T')[0];
   var wzKey = 'wiz_usage_' + today;
   var wzCount = parseInt(localStorage.getItem(wzKey) || '0');
   if (wzCount >= 3) {
     var rl = document.getElementById('adwiz-result');
-    var ll = document.getElementById('adwiz-loading');
-    if (ll) ll.style.display = 'none';
-    if (rl) { rl.style.display = 'block'; rl.innerHTML = '<div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:24px;text-align:center"><div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px">Günlük limit doldu</div><div style="font-size:13px;color:var(--text3)">Reklam üreticisini günde 3 kez kullanabilirsin. Yarın yenilenir.</div></div>'; }
+    if (rl && !rl.innerHTML.trim()) { rl.style.display = 'block'; rl.innerHTML = '<div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:24px;text-align:center"><div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px">Günlük limit doldu</div><div style="font-size:13px;color:var(--text3)">Günde 3 kez kullanabilirsin.</div></div>'; }
     return;
   }
   var format = document.getElementById('adwiz-format').value;
@@ -6234,7 +6232,9 @@ async function hookGenerate() {
   var u = hookGetUsage();
   if (u.count >= 3) {
     var resEl2 = document.getElementById('hook-results');
-    if (resEl2) resEl2.innerHTML = '<div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:20px;text-align:center"><div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px">Günlük limit doldu</div><div style="font-size:13px;color:var(--text3)">Her gün 3 kez hook üretebilirsin. Yarın yenilenir.</div></div>';
+    if (resEl2 && !resEl2.innerHTML.trim()) {
+      resEl2.innerHTML = '<div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:20px;text-align:center"><div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px">Günlük limit doldu</div><div style="font-size:13px;color:var(--text3)">Her gün 3 kez hook üretebilirsin.</div></div>';
+    }
     document.getElementById('hook-more-btn').style.display = 'none';
     return;
   }
@@ -6330,8 +6330,14 @@ function hookRenderResults(items) {
 }
 
 function hookSaveThis(btn) {
-  var text  = btn.getAttribute('data-text') || '';
-  var why   = btn.getAttribute('data-why')  || '';
+  // HTML entity decode
+  function decodeHtml(s) {
+    var t = document.createElement('textarea');
+    t.innerHTML = s;
+    return t.value;
+  }
+  var text  = decodeHtml(btn.getAttribute('data-text') || '');
+  var why   = decodeHtml(btn.getAttribute('data-why')  || '');
   var score = parseInt(btn.getAttribute('data-score') || '70');
   saveHook(text, why, score);
   btn.textContent = '✓ Kaydedildi';
@@ -6347,7 +6353,13 @@ function _x9k2mReset() {
   hookShowUsage();
   var el = document.getElementById('wiz-usage-counter');
   if (el) { el.textContent = '3 hak kaldı (günlük)'; el.style.color = 'var(--text3)'; }
-  console.log('Limitler sıfırlandı');
+  // Limit mesajlarını temizle
+  var hr = document.getElementById('hook-results');
+  if (hr && hr.querySelector('[style*="rgba(220,38,38"]')) hr.innerHTML = '';
+  var ar = document.getElementById('adwiz-result');
+  if (ar && ar.querySelector('[style*="rgba(220,38,38"]')) { ar.innerHTML = ''; ar.style.display = 'none'; }
+  document.getElementById('hook-more-btn').style.display = 'none';
+  console.log('✓ Limitler sıfırlandı');
 }
 
 </script>
