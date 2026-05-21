@@ -2381,22 +2381,55 @@ function renderPlanCampaigns() {
 
   // Liste — skora göre sıralı
   scored.sort(function(a,b){ return b.score - a.score; });
+  var maxSpend = Math.max.apply(null, scored.map(function(c){ return parseFloat(c.spend||0); })) || 1;
+  var maxCtr   = Math.max.apply(null, scored.map(function(c){ return parseFloat(c.ctr||0); })) || 1;
+
   listEl.innerHTML = scored.map(function(c) {
     var spend = parseFloat(c.spend||0);
     var ctr   = parseFloat(c.ctr||0);
     var roas  = c._roas||0;
     var name  = (c.campaign_name||'Kampanya');
-    if (name.length > 42) name = name.substring(0,42)+'…';
-    var roasStr = roas > 0 ? 'ROAS '+roas.toFixed(2)+'x' : 'ROAS —';
+    if (name.length > 38) name = name.substring(0,38)+'…';
 
-    return '<div onclick="openCampPopup('+c._idx+')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--border2)\';this.style.background=\'var(--surface)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--surface2)\'">' +
-      '<div style="width:7px;height:7px;border-radius:50%;background:'+c.dotColor+';flex-shrink:0"></div>' +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(name)+'</div>' +
-        '<div style="font-size:11px;color:var(--text3);margin-top:1px">₺'+spend.toFixed(0)+' · '+roasStr+' · CTR %'+ctr.toFixed(2)+'</div>' +
+    var spendPct = Math.round((spend/maxSpend)*100);
+    var ctrPct   = Math.round((ctr/maxCtr)*100);
+    var roasStr  = roas > 0 ? roas.toFixed(2)+'x' : '—';
+
+    // Karar badge rengi
+    var badgeStyle = '';
+    if (c.decision === 'BÜYÜT')  badgeStyle = 'background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)';
+    else if (c.decision === 'DURDUR') badgeStyle = 'background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.25)';
+    else badgeStyle = 'background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)';
+
+    return '<div onclick="openCampPopup('+c._idx+')" style="padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer">' +
+      // Üst satır: isim + karar badge
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
+        '<div style="width:6px;height:6px;border-radius:50%;background:'+c.dotColor+';flex-shrink:0"></div>' +
+        '<div style="flex:1;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(name)+'</div>' +
+        '<span style="font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.05em;'+badgeStyle+'">'+c.decision+'</span>' +
       '</div>' +
-      '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:'+c.bg+';color:'+c.color+';flex-shrink:0;letter-spacing:.04em">'+c.decision+'</span>' +
-      '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;color:var(--text3)"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      // Metrik satırı
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">' +
+        '<div style="min-width:0">' +
+          '<div style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.04em">₺'+spend.toFixed(0)+'</div>' +
+          '<div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Harcama</div>' +
+        '</div>' +
+        '<div style="width:1px;height:28px;background:var(--border);flex-shrink:0"></div>' +
+        '<div style="min-width:0">' +
+          '<div style="font-size:16px;font-weight:800;color:'+(roas>=3?'#34d399':roas>0?'#fbbf24':'var(--text3)')+';letter-spacing:-.04em">'+roasStr+'</div>' +
+          '<div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">ROAS</div>' +
+        '</div>' +
+        '<div style="width:1px;height:28px;background:var(--border);flex-shrink:0"></div>' +
+        '<div style="flex:1;min-width:60px">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
+            '<span style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">CTR</span>' +
+            '<span style="font-size:12px;font-weight:700;color:var(--text)">%'+ctr.toFixed(2)+'</span>' +
+          '</div>' +
+          '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">' +
+            '<div style="height:100%;width:'+ctrPct+'%;background:'+(ctr>=2?'#34d399':ctr>=1?'#fbbf24':'#f87171')+';border-radius:2px;transition:width .6s ease"></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
     '</div>';
   }).join('');
 }
