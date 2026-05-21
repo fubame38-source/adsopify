@@ -2628,57 +2628,44 @@ function planShowResults(actions, verdict, tagline) {
   if (aiEmpty)   aiEmpty.style.display   = 'none';
   if (aiLoading) aiLoading.style.display = 'none';
   if (aiResult)  aiResult.style.display  = 'block';
-
   planRenderMemoryStrip();
 
-  var actions3 = (actions || []).slice(0, 3);
   var focusCard = document.getElementById('focus-card');
   if (!focusCard) return;
 
   var toneMap = {
-    high:   { border:'rgba(248,113,113,.25)',  tag:'#f87171', tagBg:'rgba(248,113,113,.1)',  label:'ACİL'     },
-    mid:    { border:'rgba(251,191,36,.25)',   tag:'#fbbf24', tagBg:'rgba(251,191,36,.1)',   label:'ÖNEMLİ'   },
-    low:    { border:'rgba(52,211,153,.25)',   tag:'#34d399', tagBg:'rgba(52,211,153,.1)',   label:'FIRSAT'   },
-    blue:   { border:'rgba(129,140,248,.2)',   tag:'#818cf8', tagBg:'rgba(129,140,248,.1)',  label:'AKSİYON'  },
-    purple: { border:'rgba(167,139,250,.2)',   tag:'#a78bfa', tagBg:'rgba(167,139,250,.1)', label:'STRATEJİ' }
+    high:   { color:'#f87171', label:'Acil'     },
+    mid:    { color:'#fbbf24', label:'Önemli'   },
+    low:    { color:'#34d399', label:'Fırsat'   },
+    blue:   { color:'var(--accent)', label:'Aksiyon'  },
+    purple: { color:'#a78bfa', label:'Strateji' }
   };
 
-  // Verdict
   var html = '';
+
+  // Verdict — tek satır
   if (verdict) {
-    html += '<div style="margin-bottom:16px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">' +
-      '<div style="font-size:14px;font-weight:600;color:var(--text2);line-height:1.5;flex:1">' + escapeHtml(verdict) + '</div>' +
-      '<button onclick="saveStrategy()" style="flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font)">💾</button>' +
-    '</div>';
+    html += '<div style="font-size:14px;color:var(--text2);margin-bottom:16px;padding:0 2px">' + escapeHtml(verdict) + '</div>';
   }
 
-  // 3 Aksiyon kartı
-  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
-  actions3.forEach(function(a) {
+  // Aksiyonlar — sadece başlık + ince gerekçe
+  html += '<div style="display:flex;flex-direction:column;gap:1px;background:var(--border);border-radius:14px;overflow:hidden">';
+  (actions||[]).forEach(function(a, i) {
     var t = toneMap[a.tone] || toneMap.blue;
     html +=
-      '<div style="background:var(--surface);border:1px solid ' + t.border + ';border-radius:14px;padding:18px 20px">' +
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
-          '<span style="font-size:10px;font-weight:800;letter-spacing:.08em;color:' + t.tag + ';background:' + t.tagBg + ';padding:3px 8px;border-radius:5px">' + t.label + '</span>' +
+      '<div style="background:var(--surface);padding:16px 20px;display:flex;align-items:center;gap:14px">' +
+        '<div style="width:6px;height:6px;border-radius:50%;background:' + t.color + ';flex-shrink:0"></div>' +
+        '<div style="flex:1">' +
+          '<div style="font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.03em">' + escapeHtml(a.title||'') + '</div>' +
+          (a.reason ? '<div style="font-size:12px;color:var(--text3);margin-top:3px">' + escapeHtml(a.reason) + '</div>' : '') +
         '</div>' +
-        '<div style="font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1.2;margin-bottom:6px">' + escapeHtml(a.title || '') + '</div>' +
-        '<div style="font-size:13px;color:var(--text3);line-height:1.55">' + escapeHtml(a.reason || '') + '</div>' +
+        '<span style="font-size:10px;font-weight:700;color:' + t.color + ';text-transform:uppercase;letter-spacing:.06em;flex-shrink:0">' + t.label + '</span>' +
       '</div>';
   });
   html += '</div>';
 
-  // Ekstra aksiyonlar
-  if (actions.length > 3) {
-    html += '<div style="margin-top:8px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px">';
-    actions.slice(3).forEach(function(a) {
-      html += '<div style="display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border)">' +
-        '<span style="font-size:11px;color:var(--text3);flex-shrink:0">·</span>' +
-        '<div><span style="font-size:13px;font-weight:700;color:var(--text)">' + escapeHtml(a.title||'') + '</span>' +
-        (a.reason ? '<span style="font-size:12px;color:var(--text3);margin-left:8px">— ' + escapeHtml(a.reason) + '</span>' : '') + '</div>' +
-      '</div>';
-    });
-    html += '</div>';
-  }
+  // Kaydet
+  html += '<div style="margin-top:12px;text-align:right"><button onclick="saveStrategy()" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font)">💾 Kaydet</button><button onclick="planReset();loadDailyPlan()" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font);margin-left:12px">↺ Yenile</button></div>';
 
   focusCard.style.display = 'block';
   focusCard.innerHTML = html;
