@@ -1578,6 +1578,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   migrateSensitiveStorage();
   S.token = getStored('adsopify_token');
+  // Kullanıcı değişmişse session hookları temizle
+  var _currentUid = getStored('sb_user_id') || '';
+  var _lastUid = sessionStorage.getItem('_last_uid') || '';
+  if (_currentUid !== _lastUid) {
+    Object.keys(sessionStorage).forEach(function(k){ if(k.startsWith('last_hooks')) sessionStorage.removeItem(k); });
+    window._lastHookResults = null;
+    sessionStorage.setItem('_last_uid', _currentUid);
+  }
   S.accountId = getStored('adsopify_account_id');
   S.accountName = getStored('adsopify_account_name');
   const sbToken = getStored('sb_token');
@@ -2047,6 +2055,9 @@ function logout() {
   removeStored('sb_token');
   removeStored('sb_user_email');
   removeStored('sb_user_id');
+  // Session hookları temizle
+  Object.keys(sessionStorage).forEach(function(k){ if(k.startsWith('last_hooks')) sessionStorage.removeItem(k); });
+  window._lastHookResults = null;
   location.reload();
 }
 
@@ -6234,7 +6245,8 @@ function adWizOpenHook() {
   hookShowUsage();
   // Session'dan son hook sonuçlarını geri yükle
   if (!window._lastHookResults) {
-    var stored = sessionStorage.getItem('last_hooks');
+    var _hookUserId2 = getStored('sb_user_id') || 'default';
+    var stored = sessionStorage.getItem('last_hooks_' + _hookUserId2);
     if (stored) {
       try { window._lastHookResults = JSON.parse(stored); } catch(e) {}
     }
@@ -6332,7 +6344,8 @@ async function hookGenerate() {
     scores.sort(function(){ return Math.random() - 0.5; });
     // Sonuçları state'te sakla — sayfa yenilenince kaybolmasın
     window._lastHookResults = hooks.map(function(h, i){ return { text: h.text, why: h.why, score: scores[i] || 70 }; });
-    sessionStorage.setItem('last_hooks', JSON.stringify(window._lastHookResults));
+    var _hookUserId = getStored('sb_user_id') || 'default';
+    sessionStorage.setItem('last_hooks_' + _hookUserId, JSON.stringify(window._lastHookResults));
 
     hookRenderResults(window._lastHookResults);
   } catch(e) {
