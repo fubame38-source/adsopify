@@ -1016,7 +1016,10 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div id="adwiz-reklam-panel" style="display:none">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:12px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <div style="font-size:15px;font-weight:800;color:var(--text)">Reklam Paketi Ayarları</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-size:15px;font-weight:800;color:var(--text)">Reklam Paketi Ayarları</div>
+          <span id="wiz-usage-counter" style="font-size:11px;font-weight:700;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px">3 hak kaldı (günlük)</span>
+        </div>
         <button onclick="adWizCloseReklam()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--font)">✕</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
@@ -1044,7 +1047,10 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div id="adwiz-hook-panel" style="display:none">
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:12px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-        <div style="font-size:15px;font-weight:800;color:var(--text)">Hook Formatı</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-size:15px;font-weight:800;color:var(--text)">Hook Formatı</div>
+          <span id="hook-usage-counter" style="font-size:11px;font-weight:700;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px">3 hak kaldı (günlük)</span>
+        </div>
         <button onclick="adWizCloseHook()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--font)">✕</button>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px" id="hook-format-group">
@@ -4032,6 +4038,17 @@ function adWizSelect(group, val, btn) {
 // REKLAM HAZIRLA — TEK TIKLA AI PAKETİ
 // ═══════════════════════════════════════════════
 async function adWizGenerate() {
+  // Günlük limit — reklam üretici için ayrı sayaç
+  var today = new Date().toISOString().split('T')[0];
+  var wzKey = 'wiz_usage_' + today;
+  var wzCount = parseInt(localStorage.getItem(wzKey) || '0');
+  if (wzCount >= 3) {
+    var rl = document.getElementById('adwiz-result');
+    var ll = document.getElementById('adwiz-loading');
+    if (ll) ll.style.display = 'none';
+    if (rl) { rl.style.display = 'block'; rl.innerHTML = '<div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:24px;text-align:center"><div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px">Günlük limit doldu</div><div style="font-size:13px;color:var(--text3)">Reklam üreticisini günde 3 kez kullanabilirsin. Yarın yenilenir.</div></div>'; }
+    return;
+  }
   var format = document.getElementById('adwiz-format').value;
   var goal   = document.getElementById('adwiz-goal').value;
   var angle  = document.getElementById('adwiz-angle').value;
@@ -4085,6 +4102,12 @@ async function adWizGenerate() {
     document.getElementById('adwiz-brief-text').textContent    = p.brief    || '';
     document.getElementById('adwiz-result').style.display  = 'block';
     document.getElementById('adwiz-reset-btn').style.display = 'inline-flex';
+    // Sayacı artır
+    var _wzD = new Date().toISOString().split('T')[0];
+    var _wzK = 'wiz_usage_' + _wzD;
+    localStorage.setItem(_wzK, String(parseInt(localStorage.getItem(_wzK)||'0') + 1));
+    var _wzEl = document.getElementById('wiz-usage-counter');
+    if (_wzEl) { var _r = 3 - parseInt(localStorage.getItem(_wzK)); _wzEl.textContent = _r + ' hak kaldı (günlük)'; _wzEl.style.color = _r===0?'var(--red)':_r===1?'#fbbf24':'var(--text3)'; }
     document._adwizData = p;
 
   } catch(e) {
@@ -6004,6 +6027,9 @@ function adWizOpenReklam() {
   document.getElementById('adwiz-reklam-panel').style.display = 'block';
   document.getElementById('adwiz-hook-panel').style.display = 'none';
   document.getElementById('adwiz-reklam-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+  var wzC = parseInt(localStorage.getItem('wiz_usage_' + new Date().toISOString().split('T')[0]) || '0');
+  var el = document.getElementById('wiz-usage-counter');
+  if (el) { var r = 3-wzC; el.textContent = r + ' hak kaldı (günlük)'; el.style.color = r===0?'var(--red)':r===1?'#fbbf24':'var(--text3)'; }
 }
 function adWizCloseReklam() {
   document.getElementById('adwiz-reklam-panel').style.display = 'none';
@@ -6012,6 +6038,7 @@ function adWizOpenHook() {
   document.getElementById('adwiz-hook-panel').style.display = 'block';
   document.getElementById('adwiz-reklam-panel').style.display = 'none';
   document.getElementById('adwiz-hook-panel').scrollIntoView({ behavior:'smooth', block:'start' });
+  hookShowUsage();
 }
 function adWizCloseHook() {
   document.getElementById('adwiz-hook-panel').style.display = 'none';
@@ -6025,9 +6052,47 @@ function hookSelect(val, el) {
 }
 
 var _prevHooks = [];
+
+function hookGetUsage() {
+  var today = new Date().toISOString().split('T')[0];
+  var key = 'hook_usage_' + today;
+  return { key: key, count: parseInt(localStorage.getItem(key) || '0') };
+}
+
+function hookUpdateCounter() {
+  var u = hookGetUsage();
+  localStorage.setItem(u.key, u.count + 1);
+  var remaining = 3 - (u.count + 1);
+  var el = document.getElementById('hook-usage-counter');
+  if (el) {
+    el.textContent = remaining > 0 ? remaining + ' hak kaldı' : 'Limit doldu';
+    el.style.color = remaining === 0 ? 'var(--red)' : remaining === 1 ? '#fbbf24' : 'var(--text3)';
+  }
+}
+
+function hookShowUsage() {
+  var u = hookGetUsage();
+  var remaining = 3 - u.count;
+  var el = document.getElementById('hook-usage-counter');
+  if (el) {
+    el.textContent = remaining + ' hak kaldı (günlük)';
+    el.style.color = remaining === 0 ? 'var(--red)' : remaining === 1 ? '#fbbf24' : 'var(--text3)';
+  }
+}
+
 async function hookGenerate() {
   var brand = S.brand;
   if (!brand || !brand.brandName) { alert('Önce Ayarlar bölümünden marka bilgilerini gir.'); return; }
+
+  // Limit kontrolü
+  var u = hookGetUsage();
+  if (u.count >= 3) {
+    var resEl2 = document.getElementById('hook-results');
+    if (resEl2) resEl2.innerHTML = '<div style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:20px;text-align:center"><div style="font-size:15px;font-weight:800;color:var(--red);margin-bottom:6px">Günlük limit doldu</div><div style="font-size:13px;color:var(--text3)">Her gün 3 kez hook üretebilirsin. Yarın yenilenir.</div></div>';
+    document.getElementById('hook-more-btn').style.display = 'none';
+    return;
+  }
+
   var loadEl = document.getElementById('hook-loading');
   var resEl  = document.getElementById('hook-results');
   var moreEl = document.getElementById('hook-more-btn');
@@ -6038,13 +6103,23 @@ async function hookGenerate() {
   try {
     var res = await fetch('https://adsopify-api.fubame38.workers.dev/hooks', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ brandName: brand.brandName, product: brand.product || brand.rawDesc || '', audience: brand.audience || '', format: _hookFormat, previousHooks: _prevHooks })
+      body: JSON.stringify({
+        brandName: brand.brandName,
+        product: brand.product || brand.rawDesc || '',
+        audience: brand.audience || 'yetişkin tüketiciler',
+        url: brand.url || '',
+        budget: brand.budget || '',
+        format: _hookFormat,
+        model: 'claude-sonnet-4-20250514',
+        previousHooks: _prevHooks
+      })
     });
     var data = await res.json();
     var hooks = data.hooks || [];
     _prevHooks = _prevHooks.concat(hooks.map(function(h){ return h.text; })).slice(-20);
 
     loadEl.style.display = 'none';
+    hookUpdateCounter();
     moreEl.style.display = 'block';
 
     var scores = [92, 87, 81, 74, 67];
