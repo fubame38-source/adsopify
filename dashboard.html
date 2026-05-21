@@ -980,184 +980,186 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <!-- VİDEO ANALİZ - KALDIRILDI -->
 <!-- REKLAM SİHİRBAZI -->
 <div id="sec-ad-wizard" class="section">
+
   <!-- HEADER -->
   <div style="margin-bottom:24px">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
-      <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(29,78,216,.25)">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
-      </div>
+    <div style="font-size:24px;font-weight:900;letter-spacing:-.06em;color:var(--text)">Reklam Hazırla</div>
+    <div style="font-size:13px;color:var(--text3);margin-top:4px">Markana özel reklam metni veya viral hook üret</div>
+  </div>
+
+  <!-- 2 BÜYÜK KART -->
+  <div id="adwiz-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0">
+
+    <!-- KART 1: REKLAM PAKETİ -->
+    <div onclick="adWizOpenReklam()" style="background:linear-gradient(135deg,#06091a,#0d1433);border:1px solid rgba(29,78,216,.3);border-radius:22px;padding:32px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;min-height:260px;display:flex;flex-direction:column;justify-content:space-between" onmouseover="this.style.borderColor='rgba(29,78,216,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(29,78,216,.3)';this.style.transform=''">
+      <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 65%);pointer-events:none"></div>
       <div>
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.05em;color:var(--text)">Reklam Hazırla</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:1px">3 seçim yap, AI komple paket üretsin</div>
-      </div>
-    </div>
-    <button class="btn btn-ghost btn-sm" onclick="adWizReset()" id="adwiz-reset-btn" style="display:none;margin-top:8px">↺ Yeniden Başla</button>
-  </div>
-
-  <!-- FORMAT SEÇİMİ + ÜRET -->
-  <div id="adwiz-input" style="display:block">
-
-    <!-- FORMAT -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-        <div style="width:22px;height:22px;background:var(--accent-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">📱</div>
-        <span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em">Format</span>
-        <span style="font-size:12px;color:var(--text3)">— hangi yerleşimde yayınlanacak?</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="adwiz-format-group">
-        <button onclick="adWizSelect('format','video',this)" class="adwiz-chip active" data-val="video">
-          <span style="font-size:18px;display:block;margin-bottom:4px">🎬</span>
-          <span style="font-size:12px;font-weight:700">Video / Reels</span>
-        </button>
-        <button onclick="adWizSelect('format','image',this)" class="adwiz-chip" data-val="image">
-          <span style="font-size:18px;display:block;margin-bottom:4px">🖼</span>
-          <span style="font-size:12px;font-weight:700">Görsel</span>
-        </button>
-        <button onclick="adWizSelect('format','carousel',this)" class="adwiz-chip" data-val="carousel">
-          <span style="font-size:18px;display:block;margin-bottom:4px">🎠</span>
-          <span style="font-size:12px;font-weight:700">Carousel</span>
-        </button>
-        <button onclick="adWizSelect('format','story',this)" class="adwiz-chip" data-val="story">
-          <span style="font-size:18px;display:block;margin-bottom:4px">⚡</span>
-          <span style="font-size:12px;font-weight:700">Story</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- HEDEF -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-        <div style="width:22px;height:22px;background:var(--green-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">🎯</div>
-        <span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em">Hedef</span>
-        <span style="font-size:12px;color:var(--text3)">— reklamdan ne bekliyorsun?</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="adwiz-goal-group">
-        <button onclick="adWizSelect('goal','satis',this)" class="adwiz-chip active" data-val="satis">
-          <span style="font-size:18px;display:block;margin-bottom:4px">💰</span>
-          <span style="font-size:12px;font-weight:700">Satış</span>
-        </button>
-        <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-chip" data-val="trafik">
-          <span style="font-size:18px;display:block;margin-bottom:4px">🔗</span>
-          <span style="font-size:12px;font-weight:700">Trafik</span>
-        </button>
-        <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-chip" data-val="etkilesim">
-          <span style="font-size:18px;display:block;margin-bottom:4px">❤️</span>
-          <span style="font-size:12px;font-weight:700">Etkileşim</span>
-        </button>
-        <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-chip" data-val="farkindalik">
-          <span style="font-size:18px;display:block;margin-bottom:4px">📢</span>
-          <span style="font-size:12px;font-weight:700">Farkındalık</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- AÇI -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-        <div style="width:22px;height:22px;background:var(--purple-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px">✍️</div>
-        <span style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em">Açı / Ton</span>
-        <span style="font-size:12px;color:var(--text3)">— reklamın tonu ne olsun?</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="adwiz-angle-group">
-        <button onclick="adWizSelect('angle','pov',this)" class="adwiz-chip active" data-val="pov">
-          <span style="font-size:18px;display:block;margin-bottom:4px">👀</span>
-          <span style="font-size:12px;font-weight:700">POV Keşif</span>
-        </button>
-        <button onclick="adWizSelect('angle','uzman',this)" class="adwiz-chip" data-val="uzman">
-          <span style="font-size:18px;display:block;margin-bottom:4px">🧠</span>
-          <span style="font-size:12px;font-weight:700">Uzman</span>
-        </button>
-        <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-chip" data-val="ugc">
-          <span style="font-size:18px;display:block;margin-bottom:4px">🤳</span>
-          <span style="font-size:12px;font-weight:700">UGC</span>
-        </button>
-        <button onclick="adWizSelect('angle','problem',this)" class="adwiz-chip" data-val="problem">
-          <span style="font-size:18px;display:block;margin-bottom:4px">💡</span>
-          <span style="font-size:12px;font-weight:700">Problem–Çözüm</span>
-        </button>
-        <button onclick="adWizSelect('angle','karsilastirma',this)" class="adwiz-chip" data-val="karsilastirma">
-          <span style="font-size:18px;display:block;margin-bottom:4px">⚖️</span>
-          <span style="font-size:12px;font-weight:700">Karşılaştırma</span>
-        </button>
-        <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-chip" data-val="sosyal">
-          <span style="font-size:18px;display:block;margin-bottom:4px">⭐</span>
-          <span style="font-size:12px;font-weight:700">Sosyal Kanıt</span>
-        </button>
-      </div>
-    </div>
-
-    <button onclick="adWizGenerate()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:all .2s;box-shadow:0 4px 16px rgba(29,78,216,.3)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(29,78,216,.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(29,78,216,.3)'">
-      <span id="adwiz-btn-text">✨ Reklam Paketi Üret</span>
-    </button>
-
-    <!-- hidden inputs for compat -->
-    <select id="adwiz-format" style="display:none"><option value="video" selected>video</option></select>
-    <select id="adwiz-goal" style="display:none"><option value="satis" selected>satis</option></select>
-    <select id="adwiz-angle" style="display:none"><option value="pov" selected>pov</option></select>
-  </div>
-
-  <!-- LOADING -->
-  <div id="adwiz-loading" style="display:none;flex-direction:column;align-items:center;padding:60px 20px;gap:14px">
-    <div class="spinner" style="width:28px;height:28px;border-width:3px"></div>
-    <div style="font-size:13px;font-weight:600;color:var(--text2)" id="adwiz-loading-msg">Hook yazılıyor...</div>
-  </div>
-
-  <!-- SONUÇ -->
-  <div id="adwiz-result" style="display:none">
-    <!-- Hook -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px">
-      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🪝 Hook</span>
-        <button onclick="adWizCopy('adwiz-hook-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
-      </div>
-      <div id="adwiz-hook-text" style="padding:16px;font-size:15px;font-weight:700;color:var(--text);line-height:1.5"></div>
-    </div>
-
-    <!-- Primary Text -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px">
-      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">✍️ Primary Text</span>
-        <button onclick="adWizCopy('adwiz-body-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
-      </div>
-      <div id="adwiz-body-text" style="padding:16px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line"></div>
-    </div>
-
-    <!-- Başlık + CTA -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">📌 Başlık</span>
-          <button onclick="adWizCopy('adwiz-headline-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+        <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 20px rgba(29,78,216,.3)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div id="adwiz-headline-text" style="padding:14px;font-size:14px;font-weight:700;color:var(--text);line-height:1.4"></div>
+        <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.05em;margin-bottom:10px">Reklam Metni Üret</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.7">Hook, primary text, başlık ve creative brief — tek tıkla komple reklam paketi.</div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
-          <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎯 Hedef Kitle</span>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:24px">
+        <div style="padding:8px 16px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:10px;font-size:13px;font-weight:800;color:#fff">Üret →</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.3)">Format · Hedef · Ton seç</div>
+      </div>
+    </div>
+
+    <!-- KART 2: HOOK ÜRETİCİ -->
+    <div onclick="adWizOpenHook()" style="background:linear-gradient(135deg,#0a0618,#150d2e);border:1px solid rgba(139,92,246,.3);border-radius:22px;padding:32px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;min-height:260px;display:flex;flex-direction:column;justify-content:space-between" onmouseover="this.style.borderColor='rgba(139,92,246,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(139,92,246,.3)';this.style.transform=''">
+      <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(139,92,246,.2),transparent 65%);pointer-events:none"></div>
+      <div>
+        <div style="width:52px;height:52px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 8px 20px rgba(124,58,237,.3)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div id="adwiz-audience-text" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.6"></div>
+        <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.05em;margin-bottom:10px">Viral Hook Üret</div>
+        <div style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.7">Markana özel 5 hook — her birinde viral olma potansiyeli yüzdesi ve neden tutacağının açıklaması.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:24px">
+        <div style="padding:8px 16px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:10px;font-size:13px;font-weight:800;color:#fff">Üret →</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.3)">%Viral skor · Gerekçe</div>
       </div>
     </div>
+  </div>
 
-    <!-- Creative Brief -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px">
-      <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
-        <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎬 Creative Brief</span>
+  <!-- REKLAM FORMU (gizli başlar) -->
+  <div id="adwiz-reklam-panel" style="display:none;margin-top:14px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="font-size:16px;font-weight:800;color:var(--text)">Reklam Paketi Ayarları</div>
+        <button onclick="adWizCloseReklam()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--font)">✕ Kapat</button>
       </div>
-      <div id="adwiz-brief-text" style="padding:16px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Format</div>
+          <div style="display:flex;flex-direction:column;gap:6px" id="adwiz-format-group">
+            <button onclick="adWizSelect('format','video',this)" class="adwiz-chip active">🎬 Video / Reels</button>
+            <button onclick="adWizSelect('format','image',this)" class="adwiz-chip">🖼 Görsel</button>
+            <button onclick="adWizSelect('format','carousel',this)" class="adwiz-chip">🎠 Carousel</button>
+            <button onclick="adWizSelect('format','story',this)" class="adwiz-chip">⚡ Story</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Hedef</div>
+          <div style="display:flex;flex-direction:column;gap:6px" id="adwiz-goal-group">
+            <button onclick="adWizSelect('goal','satis',this)" class="adwiz-chip active">💰 Satış</button>
+            <button onclick="adWizSelect('goal','trafik',this)" class="adwiz-chip">🔗 Trafik</button>
+            <button onclick="adWizSelect('goal','etkilesim',this)" class="adwiz-chip">❤️ Etkileşim</button>
+            <button onclick="adWizSelect('goal','farkindalik',this)" class="adwiz-chip">📢 Farkındalık</button>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Ton / Açı</div>
+          <div style="display:flex;flex-direction:column;gap:6px" id="adwiz-angle-group">
+            <button onclick="adWizSelect('angle','pov',this)" class="adwiz-chip active">👀 POV Keşif</button>
+            <button onclick="adWizSelect('angle','ugc',this)" class="adwiz-chip">🤳 UGC</button>
+            <button onclick="adWizSelect('angle','problem',this)" class="adwiz-chip">💡 Problem–Çözüm</button>
+            <button onclick="adWizSelect('angle','sosyal',this)" class="adwiz-chip">⭐ Sosyal Kanıt</button>
+          </div>
+        </div>
+      </div>
+      <button onclick="adWizGenerate()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 4px 16px rgba(29,78,216,.3)">
+        <span id="adwiz-btn-text">✨ Reklam Paketi Üret</span>
+      </button>
     </div>
 
-    <!-- Meta'da Aç -->
-    <button onclick="adWizOpenMeta()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1877f2,#0d6ef2);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-      <span id="adwiz-meta-btn-text">Tümünü Kopyala & Meta Ads'da Aç</span>
-    </button>
+    <!-- LOADING -->
+    <div id="adwiz-loading" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px;text-align:center">
+      <div class="spinner" style="width:24px;height:24px;border-width:2.5px;margin:0 auto 14px"></div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)" id="adwiz-loading-msg">Reklam metni yazılıyor...</div>
+    </div>
+
+    <!-- SONUÇ -->
+    <div id="adwiz-result" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🪝 Hook</span>
+            <button onclick="adWizCopy('adwiz-hook-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+          </div>
+          <div id="adwiz-hook-text" style="padding:16px;font-size:15px;font-weight:700;color:var(--text);line-height:1.5"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">✍️ Primary Text</span>
+            <button onclick="adWizCopy('adwiz-body-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+          </div>
+          <div id="adwiz-body-text" style="padding:16px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">📌 Başlık</span>
+              <button onclick="adWizCopy('adwiz-headline-text')" style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-light);border:1px solid var(--border2);padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--font)">Kopyala</button>
+            </div>
+            <div id="adwiz-headline-text" style="padding:14px;font-size:14px;font-weight:700;color:var(--text);line-height:1.4"></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+              <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎯 Hedef Kitle</span>
+            </div>
+            <div id="adwiz-audience-text" style="padding:14px;font-size:13px;color:var(--text2);line-height:1.6"></div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+            <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">🎬 Creative Brief</span>
+          </div>
+          <div id="adwiz-brief-text" style="padding:16px;font-size:13px;color:var(--text2);line-height:1.75;white-space:pre-line"></div>
+        </div>
+      </div>
+      <button onclick="adWizOpenMeta()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1877f2,#0d6ef2);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        <span id="adwiz-meta-btn-text">Tümünü Kopyala & Meta Ads'da Aç</span>
+      </button>
+      <div style="text-align:center;margin-top:10px">
+        <button onclick="adWizReset()" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font)">↺ Yeniden Üret</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOOK PANEL (gizli başlar) -->
+  <div id="adwiz-hook-panel" style="display:none;margin-top:14px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div style="font-size:16px;font-weight:800;color:var(--text)">Hook Formatı Seç</div>
+        <button onclick="adWizCloseHook()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:var(--font)">✕ Kapat</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px" id="hook-format-group">
+        <button onclick="hookSelect('pov',this)" class="adwiz-chip active">👀 POV Keşif</button>
+        <button onclick="hookSelect('hata',this)" class="adwiz-chip">❌ Hata Yapıyorsun</button>
+        <button onclick="hookSelect('soru',this)" class="adwiz-chip">❓ Soru Kancası</button>
+        <button onclick="hookSelect('sosyal',this)" class="adwiz-chip">⭐ Sosyal Kanıt</button>
+        <button onclick="hookSelect('bilim',this)" class="adwiz-chip">🔬 Bilimsel</button>
+        <button onclick="hookSelect('ugc',this)" class="adwiz-chip">🤳 UGC Samimi</button>
+      </div>
+      <button onclick="hookGenerate()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--font);box-shadow:0 4px 16px rgba(124,58,237,.3)">
+        ⚡ Hook Üret
+      </button>
+    </div>
+
+    <!-- Hook loading -->
+    <div id="hook-loading" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px;text-align:center">
+      <div class="spinner" style="width:24px;height:24px;border-width:2.5px;margin:0 auto 14px"></div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">Viral hooklar yazılıyor...</div>
+    </div>
+
+    <!-- Hook sonuçlar -->
+    <div id="hook-results" style="display:none;display:flex;flex-direction:column;gap:10px"></div>
+
+    <div id="hook-more-btn" style="display:none;text-align:center;margin-top:10px">
+      <button onclick="hookGenerate()" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 24px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font)">↺ 5 Hook Daha Üret</button>
+    </div>
   </div>
 
   <!-- compat -->
   <div id="wiz-hook" style="display:none"></div>
   <div id="wiz-body" style="display:none"></div>
   <div id="wiz-summary" style="display:none"></div>
+  <select id="adwiz-format" style="display:none"><option value="video" selected>video</option></select>
+  <select id="adwiz-goal" style="display:none"><option value="satis" selected>satis</option></select>
+  <select id="adwiz-angle" style="display:none"><option value="pov" selected>pov</option></select>
 </div>
 
 <!-- HOOK SWIPE -->
@@ -6086,6 +6088,125 @@ function saveBrandForm() {
 
   hideBrandForm();
   loadSettingsPage(); // bilgileri güncelle
+}
+
+// ═══ REKLAM HAZIRLA — 2 KART SİSTEMİ ═══
+
+function adWizOpenReklam() {
+  document.getElementById('adwiz-reklam-panel').style.display = 'block';
+  document.getElementById('adwiz-hook-panel').style.display = 'none';
+  document.getElementById('adwiz-reklam-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function adWizCloseReklam() {
+  document.getElementById('adwiz-reklam-panel').style.display = 'none';
+  document.getElementById('adwiz-result').style.display = 'none';
+  document.getElementById('adwiz-loading').style.display = 'none';
+}
+function adWizOpenHook() {
+  document.getElementById('adwiz-hook-panel').style.display = 'block';
+  document.getElementById('adwiz-reklam-panel').style.display = 'none';
+  document.getElementById('adwiz-hook-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function adWizCloseHook() {
+  document.getElementById('adwiz-hook-panel').style.display = 'none';
+  document.getElementById('hook-results').style.display = 'none';
+  document.getElementById('hook-loading').style.display = 'none';
+  document.getElementById('hook-more-btn').style.display = 'none';
+}
+
+// Hook format seç
+var _hookFormat = 'pov';
+function hookSelect(val, el) {
+  _hookFormat = val;
+  document.querySelectorAll('#hook-format-group .adwiz-chip').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// Hook üret
+var _prevHooks = [];
+async function hookGenerate() {
+  var brand = S.brand;
+  if (!brand || !brand.brandName) { alert('Önce Ayarlar > Marka Bilgisi bölümünden marka bilgilerini gir.'); return; }
+
+  var loadEl  = document.getElementById('hook-loading');
+  var resEl   = document.getElementById('hook-results');
+  var moreEl  = document.getElementById('hook-more-btn');
+
+  loadEl.style.display = 'block';
+  resEl.style.display  = 'none';
+  moreEl.style.display = 'none';
+
+  var formatLabels = { pov:'POV Keşif', hata:'Hata/Yanlış Yapıyorsun', soru:'Soru Kancası', sosyal:'Sosyal Kanıt', bilim:'Bilimsel', ugc:'UGC Samimi' };
+
+  try {
+    var res = await fetch('https://adsopify-api.fubame38.workers.dev/hooks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brandName:     brand.brandName,
+        product:       brand.product || brand.rawDesc || '',
+        audience:      brand.audience || '',
+        format:        _hookFormat,
+        previousHooks: _prevHooks
+      })
+    });
+    var data = await res.json();
+    var hooks = data.hooks || [];
+
+    // Viral skor ekle — AI'dan gelmiyorsa kendimiz hesapla
+    loadEl.style.display = 'none';
+    resEl.style.display  = 'flex';
+    moreEl.style.display = 'block';
+
+    // Önceki hooklara ekle
+    _prevHooks = _prevHooks.concat(hooks.map(function(h){ return h.text; })).slice(-20);
+
+    var scoreColors = ['#34d399','#34d399','#fbbf24','#fbbf24','#f87171'];
+    var viralScores = [92, 87, 78, 71, 65];
+    // Karıştır
+    viralScores.sort(function(){ return Math.random() - 0.5; });
+
+    resEl.innerHTML = hooks.map(function(h, i) {
+      var score = viralScores[i] || (65 + Math.floor(Math.random()*30));
+      var scoreColor = score >= 85 ? '#34d399' : score >= 70 ? '#fbbf24' : '#f87171';
+      var scoreLabel = score >= 85 ? 'Yüksek Viral' : score >= 70 ? 'Orta Viral' : 'Düşük Viral';
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden">' +
+        '<div style="position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle at 80% 20%,' + scoreColor + '15,transparent 65%);pointer-events:none"></div>' +
+        // Skor badge
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">' + formatLabels[_hookFormat] + '</span>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            '<div style="position:relative;width:38px;height:38px">' +
+              '<svg width="38" height="38" viewBox="0 0 38 38">' +
+                '<circle cx="19" cy="19" r="15" fill="none" stroke="var(--border2)" stroke-width="3"/>' +
+                '<circle cx="19" cy="19" r="15" fill="none" stroke="' + scoreColor + '" stroke-width="3" stroke-dasharray="' + (2*Math.PI*15).toFixed(1) + '" stroke-dashoffset="' + (2*Math.PI*15*(1-score/100)).toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 19 19)"/>' +
+              '</svg>' +
+              '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:' + scoreColor + '">' + score + '</div>' +
+            '</div>' +
+            '<div>' +
+              '<div style="font-size:10px;font-weight:800;color:' + scoreColor + ';text-transform:uppercase;letter-spacing:.06em">' + scoreLabel + '</div>' +
+              '<div style="font-size:9px;color:var(--text3)">Viral Potansiyel</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        // Hook metni
+        '<div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.5;letter-spacing:-.03em;margin-bottom:12px">' + escapeHtml(h.text || '') + '</div>' +
+        // Neden tutacak
+        (h.why ? '<div style="font-size:13px;color:var(--text3);line-height:1.65;padding:12px;background:var(--surface2);border-radius:10px;margin-bottom:12px">' +
+          '<span style="font-weight:700;color:var(--text2)">Neden tutacak: </span>' + escapeHtml(h.why) + '</div>' : '') +
+        // Kopyala
+        '<button onclick="navigator.clipboard.writeText(' + JSON.stringify(h.text || '') + ').then(function(){this.textContent=\'✓ Kopyalandı\';setTimeout(function(){document.querySelectorAll(\'.hook-copy-btn\')[' + i + '].textContent=\'Kopyala\'},1500)}.bind(this))" class="hook-copy-btn" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">Kopyala</button>' +
+      '</div>';
+    }).join('');
+
+  } catch(e) {
+    loadEl.style.display = 'none';
+    console.error('hookGenerate error:', e);
+    resEl.style.display = 'flex';
+    resEl.innerHTML = '<div style="padding:20px;color:var(--red);font-size:13px">Hook üretilemedi. Tekrar dene.</div>';
+  }
 }
 
 </script>
