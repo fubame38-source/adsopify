@@ -1538,6 +1538,10 @@ function authLogout() {
   removeStored('sb_user_id');
   removeStored('adsopify_token');
   removeStored('adsopify_account_id');
+  fetch('https://adsopify-api.fubame38.workers.dev/session-clear', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    credentials: 'include', body: JSON.stringify({})
+  }).catch(function(){});
   removeStored('adsopify_account_name');
   location.reload();
 }
@@ -1612,22 +1616,14 @@ function startApp() {
 
   // Token geçerlilik kontrolü + Supabase
   if (S.token) {
-    fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + S.token)
-      .then(r => r.json())
-      .then(me => {
-        if (me && me.error) {
-          // Token geçersiz — temizle ve uyarı göster
-          console.warn('Token expired:', me.error.message);
-          localStorage.removeItem('adsopify_token');
-          localStorage.removeItem('adsopify_account_id');
-          localStorage.removeItem('adsopify_account_name');
-          S.token = null; S.accountId = null;
-          showTokenExpiredBanner();
-        } else if (me && me.id) {
-          sbUpsertUser(me.id, me.name || '', me.email || '');
-        }
-      })
-      .catch(() => {});
+    // Session kontrolü — Workers proxy
+    fetch('https://adsopify-api.fubame38.workers.dev/session-check', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', body: JSON.stringify({})
+    }).then(r => r.json()).then(function(d) {
+      if (d.ok) { sbUpsertUser(d.userId, d.userName || '', ''); }
+      else if (S.token) { showTokenExpiredBanner(); }
+    }).catch(function(){});
   }
 
   const _userId = getStored('sb_user_id') || 'default';
@@ -1934,7 +1930,13 @@ function selectAccount(id, name, token) {
   S.token = token;
   S.accountId = id;
   S.accountName = name;
-  setStored('adsopify_token', token);
+  // Token'ı Workers session cookie'sine kaydet — localStorage'a yazma
+  fetch('https://adsopify-api.fubame38.workers.dev/session-save', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ token: token, accountId: id, accountName: name })
+  }).catch(function(){});
+  localStorage.removeItem('adsopify_token'); // eski token'ı sil
   setStored('adsopify_account_id', id);
   setStored('adsopify_account_name', name);
   startApp();
@@ -2036,6 +2038,10 @@ function logout() {
   if (!confirm('Çıkış yapmak istediğinizden emin misiniz?')) return;
   removeStored('adsopify_token');
   removeStored('adsopify_account_id');
+  fetch('https://adsopify-api.fubame38.workers.dev/session-clear', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    credentials: 'include', body: JSON.stringify({})
+  }).catch(function(){});
   removeStored('adsopify_account_name');
   removeStored('sb_token');
   removeStored('sb_user_email');
@@ -2047,12 +2053,16 @@ function logout() {
 // GRAPH API HELPERS
 // ═══════════════════════════════════════════════
 async function gql(path, params = {}) {
-  const url = new URL(API + path);
-  url.searchParams.set('access_token', S.token);
-  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const r = await fetch(url);
+  // Token artık client'ta yok — Workers proxy üzerinden git
+  const r = await fetch('https://adsopify-api.fubame38.workers.dev/meta', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',  // session cookie gönder
+    body: JSON.stringify({ endpoint: path, params, token: S.token }) // geçiş dönemi fallback
+  });
   const d = await r.json();
-  if (d.error) throw new Error(d.error.message);
+  if (d.error === 'TOKEN_EXPIRED') { showTokenExpiredBanner(); throw new Error('Token süresi doldu'); }
+  if (d.error) throw new Error(d.error);
   return d;
 }
 
@@ -2112,19 +2122,14 @@ async function loadDashboardSilent() {
   try {
     var to = new Date().toISOString().split('T')[0];
     var from = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
-    var url = 'https://graph.facebook.com/v19.0/' + S.accountId +
-      '/insights?fields=campaign_name,campaign_id,spend,purchase_roas,actions,impressions,clicks,ctr,cpc,cpm,frequency' +
-      '&time_range={"since":"' + from + '","until":"' + to + '"}' +
-      '&level=campaign&access_token=' + S.token;
-    var r = await fetch(url);
+    var r = await fetch('https://adsopify-api.fubame38.workers.dev/meta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ endpoint: '/' + S.accountId + '/insights', params: { fields: 'campaign_name,campaign_id,spend,purchase_roas,actions,impressions,clicks,ctr,cpc,cpm,frequency', time_range: JSON.stringify({since:from,until:to}), level: 'campaign', limit: '100' }, token: S.token })
+    });
     var d = await r.json();
-    if (d.error) {
-      localStorage.removeItem('adsopify_token');
-      localStorage.removeItem('adsopify_account_id');
-      S.token = null; S.accountId = null;
-      showTokenExpiredBanner();
-      return;
-    }
+    if (d.error === 'TOKEN_EXPIRED' || d.error) { showTokenExpiredBanner(); return; }
     if (!d.data) return;
     var insights = d.data.map(function(i) {
       var purchaseAction = (i.actions || []).find(function(a){ return a.action_type === 'purchase'; });
@@ -2365,7 +2370,7 @@ function renderPlanCampaigns() {
     var spend = parseFloat(c.spend||0);
     var ctr   = parseFloat(c.ctr||0);
     var roas  = c._roas||0;
-    var name  = (c.campaign_name||'Kampanya');
+    var name  = (escapeHtml(c.campaign_name||'Kampanya'));
     if (name.length > 42) name = name.substring(0,42)+'…';
     var roasStr = roas > 0 ? 'ROAS '+roas.toFixed(2)+'x' : 'ROAS —';
 
@@ -2530,7 +2535,7 @@ async function planFetchAI(cacheKey) {
       var cCpa   = cSales > 0 ? (cSpend/cSales).toFixed(0) : null;
       var cCtr   = parseFloat(c.ctr||0).toFixed(2);
       var cFreq  = parseFloat(c.frequency||0).toFixed(1);
-      return '- ' + (c.campaign_name||'Kampanya') +
+      return '- ' + (escapeHtml(c.campaign_name||'Kampanya')) +
         ': Harcama ₺' + cSpend.toFixed(0) +
         ', Satış ' + cSales +
         (cRoas ? ', ROAS ' + cRoas + 'x' : ', ROAS yok') +
@@ -2896,7 +2901,7 @@ async function analyzeWebsite(urlOverride) {
         metaCtx = ins.map(function(c) {
           var spend = parseFloat(c.spend||0), sales = c._purchases||0, rev = c._revenue||0;
           var roas = spend > 0 && rev > 0 ? (rev/spend).toFixed(2) : null;
-          return '- ' + (c.campaign_name||'Kampanya') + ': ₺' + spend.toFixed(0) + ' harcama, ' + sales + ' satış' + (roas ? ', ROAS ' + roas + 'x' : '');
+          return '- ' + (escapeHtml(c.campaign_name||'Kampanya')) + ': ₺' + spend.toFixed(0) + ' harcama, ' + sales + ' satış' + (roas ? ', ROAS ' + roas + 'x' : '');
         }).join('\n');
       }
     } catch(e) {}
@@ -5307,8 +5312,11 @@ async function loadBrandDetail(id, name, color) {
   try {
     var to = new Date().toISOString().split('T')[0];
     var from = new Date(Date.now() - 7*864e5).toISOString().split('T')[0];
-    var r = await fetch('https://graph.facebook.com/v19.0/' + encodeURIComponent(id) + '/insights?fields=campaign_name,spend,purchase_roas,actions,ctr,cpc&time_range={%22since%22:%22'+from+'%22,%22until%22:%22'+to+'%22}&level=campaign&access_token=' + S.token);
-    if (r.status === 400 || r.status === 401) { var errD = await r.json().catch(()=>({})); if (errD && errD.error) { localStorage.removeItem('adsopify_token'); S.token = null; showTokenExpiredBanner(); } return []; }
+    var r = await fetch('https://adsopify-api.fubame38.workers.dev/meta', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+      body: JSON.stringify({ endpoint: '/' + encodeURIComponent(id) + '/insights', params: { fields: 'campaign_name,spend,purchase_roas,actions,ctr,cpc', time_range: JSON.stringify({since:from,until:to}), level: 'campaign' }, token: S.token })
+    });
+    if (r.status === 401) { showTokenExpiredBanner(); return []; }
     var d = await r.json();
     if (!d.data || !d.data.length) { document.getElementById('brand-detail-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">Bu hesap için veri bulunamadı.</td></tr>'; return; }
     document.getElementById('brand-detail-tbody').innerHTML = d.data.map(function(i) {
@@ -5316,7 +5324,7 @@ async function loadBrandDetail(id, name, color) {
       var sales = (i.actions||[]).find(function(a){return a.action_type==='purchase';});
       var spend = parseFloat(i.spend||0);
       return '<tr>' +
-        '<td style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(i.campaign_name||'—') + '</td>' +
+        '<td style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(escapeHtml(i.campaign_name||'—')) + '</td>' +
         '<td style="font-family:var(--mono)">₺' + spend.toFixed(0) + '</td>' +
         '<td>' + (sales ? sales.value : '0') + '</td>' +
         '<td><span class="badge ' + (parseFloat(roas)>=2?'green':parseFloat(roas)>=1?'yellow':'red') + '">' + roas + 'x</span></td>' +
