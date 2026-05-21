@@ -2589,16 +2589,13 @@ async function planFetchAI(cacheKey) {
     metaCtx + '\n' +
     (siteCtx ? '\n' + siteCtx + '\n' : '') +
     (memCtx ? 'Geçmiş hafıza: ' + memCtx + '\n' : '') +
-    '\nBugün ' + timeCtx + ' vakti. Kampanya verisine bakarak BUGÜN yapılacak 3-4 somut aksiyon söyle.\n\n' +
-    'KURALLLAR:\n' +
-    '- Her aksiyon gerçek kampanya adına dayansın ("Viral kampanyasına 200TL ekle" gibi)\n' +
-    '- Rakamsal gerekçe ver ("ROAS 5x olduğu için", "3 gündür 0 satış olduğu için")\n' +
-    '- "Video çek" gibi genel tavsiye VERME — eğer creative lazımsa hangi kampanya için, ne tür içerik, hangi hook söyle\n' +
-    '- Frekans 2.5+ ise creative yorgunluğu uyarısı ver\n' +
-    '- ROAS 3x altı kampanya varsa "durdur veya bütçe azalt" de\n' +
-    '- ROAS 4x+ kampanya varsa "bütçeyi şu kadar artır" de\n' +
-    '- Teknik şeyler önerme (pixel, entegrasyon vb)\n\n' +
-    'JSON formatı: {"tagline":"3-4 kelime özet","verdict":"1 cümle genel durum","actions":[{"title":"kısa başlık","reason":"gerekçe + rakam","tone":"blue","cta":"Uygula","nav":"scale"}]}';
+    '\nBugün ' + timeCtx + '. Kampanya verisine bakarak BUGÜN yapılacak 3 aksiyon söyle.\n\n' +
+    'KURALLAR:\n' +
+    '- title: MAX 4 KELIME — örn: "Viral bütçeyi artır", "AB Testi durdur"\n' +
+    '- reason: TEK CÜMLE — rakam içersin, örn: "ROAS 5.2x ile en karlı kampanyan"\n' +
+    '- Teknik önerme (pixel vb), genel tavsiye verme\n' +
+    '- tone: high=acil, mid=önemli, low=fırsat, blue=normal\n\n' +
+    'JSON: {"tagline":"max 3 kelime","verdict":"1 kısa cümle","actions":[{"title":"max 4 kelime","reason":"tek cümle rakamla","tone":"high"}]}';
 
   try {
     const res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
@@ -2634,81 +2631,58 @@ function planShowResults(actions, verdict, tagline) {
 
   planRenderMemoryStrip();
 
-  var allActions = actions || [];
-  var focusCard  = document.getElementById('focus-card');
+  var actions3 = (actions || []).slice(0, 3);
+  var focusCard = document.getElementById('focus-card');
   if (!focusCard) return;
 
-  // ── Renk haritası ──
   var toneMap = {
-    high:   { bg:'rgba(220,38,38,.07)',   border:'rgba(220,38,38,.18)',   accent:'#f87171', label:'Acil'     },
-    mid:    { bg:'rgba(180,83,9,.07)',    border:'rgba(180,83,9,.18)',    accent:'#fbbf24', label:'Önemli'   },
-    low:    { bg:'rgba(5,150,105,.07)',   border:'rgba(5,150,105,.18)',   accent:'#34d399', label:'Fırsat'   },
-    blue:   { bg:'rgba(29,78,216,.07)',   border:'rgba(29,78,216,.18)',   accent:'#818cf8', label:'Aksiyon'  },
-    purple: { bg:'rgba(139,92,246,.07)', border:'rgba(139,92,246,.18)', accent:'#a78bfa', label:'Strateji' }
+    high:   { border:'rgba(248,113,113,.25)',  tag:'#f87171', tagBg:'rgba(248,113,113,.1)',  label:'ACİL'     },
+    mid:    { border:'rgba(251,191,36,.25)',   tag:'#fbbf24', tagBg:'rgba(251,191,36,.1)',   label:'ÖNEMLİ'   },
+    low:    { border:'rgba(52,211,153,.25)',   tag:'#34d399', tagBg:'rgba(52,211,153,.1)',   label:'FIRSAT'   },
+    blue:   { border:'rgba(129,140,248,.2)',   tag:'#818cf8', tagBg:'rgba(129,140,248,.1)',  label:'AKSİYON'  },
+    purple: { border:'rgba(167,139,250,.2)',   tag:'#a78bfa', tagBg:'rgba(167,139,250,.1)', label:'STRATEJİ' }
   };
 
-  var icons = { high:'⚡', mid:'🎯', low:'💡', blue:'📌', purple:'✦' };
-
-  // ── Verdict banner ──
-  var verdictHTML = '';
+  // Verdict
+  var html = '';
   if (verdict) {
-    verdictHTML =
-      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:12px">' +
-        '<div style="display:flex;align-items:flex-start;gap:14px">' +
-          '<div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(29,78,216,.25)">' +
-            '<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>' +
-          '</div>' +
-          '<div style="flex:1">' +
-            (tagline ? '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:6px">' + escapeHtml(tagline) + '</div>' : '') +
-            '<div style="font-size:15px;font-weight:700;color:var(--text);line-height:1.6">' + escapeHtml(verdict) + '</div>' +
-          '</div>' +
-          '<button onclick="saveStrategy()" style="flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font)">💾 Kaydet</button>' +
-        '</div>' +
-      '</div>';
+    html += '<div style="margin-bottom:16px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">' +
+      '<div style="font-size:14px;font-weight:600;color:var(--text2);line-height:1.5;flex:1">' + escapeHtml(verdict) + '</div>' +
+      '<button onclick="saveStrategy()" style="flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font)">💾</button>' +
+    '</div>';
   }
 
-  // ── 3 Aksiyon kartı ──
-  var cardsHTML = allActions.slice(0, 3).map(function(a, i) {
-    var t   = toneMap[a.tone] || toneMap.blue;
-    var ico = icons[a.tone]   || icons.blue;
-    return '<div style="background:' + t.bg + ';border:1px solid ' + t.border + ';border-radius:16px;padding:20px 22px">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
-        '<div style="display:flex;align-items:center;gap:8px">' +
-          '<div style="width:30px;height:30px;border-radius:9px;background:' + t.accent + '22;border:1px solid ' + t.accent + '44;display:flex;align-items:center;justify-content:center;font-size:14px">' + ico + '</div>' +
-          '<span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:' + t.accent + '">' + t.label + '</span>' +
+  // 3 Aksiyon kartı
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
+  actions3.forEach(function(a) {
+    var t = toneMap[a.tone] || toneMap.blue;
+    html +=
+      '<div style="background:var(--surface);border:1px solid ' + t.border + ';border-radius:14px;padding:18px 20px">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
+          '<span style="font-size:10px;font-weight:800;letter-spacing:.08em;color:' + t.tag + ';background:' + t.tagBg + ';padding:3px 8px;border-radius:5px">' + t.label + '</span>' +
         '</div>' +
-        '<span style="font-size:11px;font-weight:700;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 8px">' + (i+1) + '/3</span>' +
-      '</div>' +
-      '<div style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1.3;margin-bottom:8px">' + escapeHtml(a.title || '—') + '</div>' +
-      '<div style="font-size:13px;color:var(--text3);line-height:1.65">' + escapeHtml(a.reason || '') + '</div>' +
-      (a.cta && a.nav ?
-        '<button onclick="nav(\'' + escapeAttr(a.nav) + '\')" style="margin-top:14px;background:' + t.accent + ';border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:700;color:#000;cursor:pointer;font-family:var(--font)">' + escapeHtml(a.cta) + ' →</button>' : '') +
-    '</div>';
-  }).join('');
+        '<div style="font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.04em;line-height:1.2;margin-bottom:6px">' + escapeHtml(a.title || '') + '</div>' +
+        '<div style="font-size:13px;color:var(--text3);line-height:1.55">' + escapeHtml(a.reason || '') + '</div>' +
+      '</div>';
+  });
+  html += '</div>';
 
-  // Daha fazla aksiyon (3'ten fazlaysa)
-  var moreHTML = '';
-  if (allActions.length > 3) {
-    moreHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:10px">' +
-      '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:12px">Diğer Aksiyonlar</div>' +
-      '<div style="display:flex;flex-direction:column;gap:8px">' +
-      allActions.slice(3).map(function(a) {
-        var t = toneMap[a.tone] || toneMap.blue;
-        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">' +
-          '<div style="width:6px;height:6px;border-radius:50%;background:' + t.accent + ';flex-shrink:0;margin-top:6px"></div>' +
-          '<div><div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:3px">' + escapeHtml(a.title||'') + '</div>' +
-          '<div style="font-size:12px;color:var(--text3);line-height:1.55">' + escapeHtml(a.reason||'') + '</div></div>' +
-        '</div>';
-      }).join('') +
-      '</div></div>';
+  // Ekstra aksiyonlar
+  if (actions.length > 3) {
+    html += '<div style="margin-top:8px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px">';
+    actions.slice(3).forEach(function(a) {
+      html += '<div style="display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border)">' +
+        '<span style="font-size:11px;color:var(--text3);flex-shrink:0">·</span>' +
+        '<div><span style="font-size:13px;font-weight:700;color:var(--text)">' + escapeHtml(a.title||'') + '</span>' +
+        (a.reason ? '<span style="font-size:12px;color:var(--text3);margin-left:8px">— ' + escapeHtml(a.reason) + '</span>' : '') + '</div>' +
+      '</div>';
+    });
+    html += '</div>';
   }
 
   focusCard.style.display = 'block';
-  focusCard.innerHTML = verdictHTML +
-    '<div style="display:flex;flex-direction:column;gap:10px">' + cardsHTML + '</div>' +
-    moreHTML;
+  focusCard.innerHTML = html;
 
-  // tasks-card gizle
   var tasksCard = document.getElementById('tasks-card');
   if (tasksCard) tasksCard.style.display = 'none';
 
