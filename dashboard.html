@@ -1581,11 +1581,23 @@ function startApp() {
   if (S.token) loadAllAccounts();
   // initTheme DOMContentLoaded'da zaten çalıştı
 
-  // Supabase
+  // Token geçerlilik kontrolü + Supabase
   if (S.token) {
     fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + S.token)
       .then(r => r.json())
-      .then(me => { if (me && me.id) sbUpsertUser(me.id, me.name || '', me.email || ''); })
+      .then(me => {
+        if (me && me.error) {
+          // Token geçersiz — temizle ve uyarı göster
+          console.warn('Token expired:', me.error.message);
+          localStorage.removeItem('adsopify_token');
+          localStorage.removeItem('adsopify_account_id');
+          localStorage.removeItem('adsopify_account_name');
+          S.token = null; S.accountId = null;
+          showTokenExpiredBanner();
+        } else if (me && me.id) {
+          sbUpsertUser(me.id, me.name || '', me.email || '');
+        }
+      })
       .catch(() => {});
   }
 
@@ -2084,6 +2096,13 @@ async function loadDashboardSilent() {
       '&level=campaign&access_token=' + S.token;
     var r = await fetch(url);
     var d = await r.json();
+    if (d.error) {
+      localStorage.removeItem('adsopify_token');
+      localStorage.removeItem('adsopify_account_id');
+      S.token = null; S.accountId = null;
+      showTokenExpiredBanner();
+      return;
+    }
     if (!d.data) return;
     var insights = d.data.map(function(i) {
       var purchaseAction = (i.actions || []).find(function(a){ return a.action_type === 'purchase'; });
@@ -5238,6 +5257,7 @@ async function loadBrandDetail(id, name, color) {
     var to = new Date().toISOString().split('T')[0];
     var from = new Date(Date.now() - 7*864e5).toISOString().split('T')[0];
     var r = await fetch('https://graph.facebook.com/v19.0/' + encodeURIComponent(id) + '/insights?fields=campaign_name,spend,purchase_roas,actions,ctr,cpc&time_range={%22since%22:%22'+from+'%22,%22until%22:%22'+to+'%22}&level=campaign&access_token=' + S.token);
+    if (r.status === 400 || r.status === 401) { var errD = await r.json().catch(()=>({})); if (errD && errD.error) { localStorage.removeItem('adsopify_token'); S.token = null; showTokenExpiredBanner(); } return []; }
     var d = await r.json();
     if (!d.data || !d.data.length) { document.getElementById('brand-detail-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">Bu hesap için veri bulunamadı.</td></tr>'; return; }
     document.getElementById('brand-detail-tbody').innerHTML = d.data.map(function(i) {
@@ -5923,6 +5943,25 @@ function aizRender(data, brandName) {
       '</div>' +
       '<button onclick="aizStart()" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font);white-space:nowrap">↺ Yenile</button>' +
     '</div>';
+}
+
+function showTokenExpiredBanner() {
+  // Mevcut banner varsa gösterme
+  if (document.getElementById('token-expired-banner')) return;
+  var banner = document.createElement('div');
+  banner.id = 'token-expired-banner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#7f1d1d;color:#fca5a5;padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:13px;font-weight:700;font-family:var(--font)';
+  banner.innerHTML = '<span>⚠ Meta bağlantısı koptu — token süresi doldu</span><button onclick="fbReconnect()" style="background:#dc2626;border:none;border-radius:8px;padding:7px 16px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Yeniden Bağlan</button><button onclick="document.getElementById(\'token-expired-banner\').remove()" style="background:transparent;border:none;color:#fca5a5;font-size:18px;cursor:pointer;padding:0 4px">×</button>';
+  document.body.prepend(banner);
+  // Sidebar bağlantı durumunu güncelle
+  var badge = document.getElementById('top-acct-name');
+  if (badge) badge.textContent = 'Bağlantı kesildi';
+}
+
+function fbReconnect() {
+  var b = document.getElementById('token-expired-banner');
+  if (b) b.remove();
+  fbLogin();
 }
 
 </script>
