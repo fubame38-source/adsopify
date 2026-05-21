@@ -4108,11 +4108,11 @@ async function adWizGenerate() {
   var goalMap   = {satis:'Satis/Donusum',trafik:'Trafik',etkilesim:'Etkilesim',farkindalik:'Farkindalik'};
   var angleMap  = {pov:'POV Kesif (kisisel deneyim)',uzman:'Uzman/Bilimsel kanit',ugc:'UGC samimi',problem:'Problem-Cozum',karsilastirma:'Karsilastirma (once-sonra)',sosyal:'Sosyal kanit/yorum'};
 
-  document.getElementById('adwiz-input').style.display   = 'none';
+  // adwiz-input artık yok — adwiz-reklam-panel kullanılıyor
   document.getElementById('adwiz-result').style.display  = 'none';
   var loadEl  = document.getElementById('adwiz-loading');
   var msgEl   = document.getElementById('adwiz-loading-msg');
-  loadEl.style.display = 'flex';
+  loadEl.style.display = 'block';
   var msgs = ['Hook yaziliyor...','Primary text hazirlaniyor...','Creative brief olusturuluyor...','Son dokunuslar...'];
   var mi = 0; if(msgEl) msgEl.textContent = msgs[0];
   var ticker = setInterval(function(){ mi=(mi+1)%msgs.length; if(msgEl) msgEl.textContent=msgs[mi]; }, 1200);
@@ -4495,7 +4495,7 @@ async function vaExtractAndAnalyze(file) {
   document.getElementById('va-upload-area').style.display = 'none';
   document.getElementById('va-result').style.display = 'none';
   var loadEl = document.getElementById('va-loading');
-  loadEl.style.display = 'flex';
+  loadEl.style.display = 'block';
   vaSetProgress(10, 'Video okunuyor...', '');
 
   try {
@@ -6338,6 +6338,16 @@ function hookSaveThis(btn) {
   btn.style.background = 'rgba(34,201,138,.12)';
   btn.style.color = '#22c98a';
   btn.style.borderColor = 'rgba(34,201,138,.3)';
+}
+
+function _x9k2mReset() {
+  var today = new Date().toISOString().split('T')[0];
+  localStorage.removeItem('hook_usage_' + today);
+  localStorage.removeItem('wiz_usage_' + today);
+  hookShowUsage();
+  var el = document.getElementById('wiz-usage-counter');
+  if (el) { el.textContent = '3 hak kaldı (günlük)'; el.style.color = 'var(--text3)'; }
+  console.log('Limitler sıfırlandı');
 }
 
 </script>
