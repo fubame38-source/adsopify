@@ -1295,7 +1295,7 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
   <div class="card mb-12" id="settings-meta-card">
     <div class="clabel">📘 Meta Bağlantısı</div>
     <div id="settings-meta-status" style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.8"></div>
-    <button id="fb-login-btn" onclick="fbLogin()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(24,119,242,.3)">
+    <button id="fb-login-btn-settings" onclick="fbLogin()" style="display:flex;align-items:center;gap:8px;padding:11px 18px;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(24,119,242,.3)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
       Facebook ile Bağlan
     </button>
@@ -1627,22 +1627,14 @@ function startApp() {
 
   // Token geçerlilik kontrolü + Supabase
   if (S.token) {
-    fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + S.token)
-      .then(r => r.json())
+    fetch('https://adsopify-api.fubame38.workers.dev/meta', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpoint: '/me', params: { fields: 'id,name,email' }, token: S.token })
+    }).then(r => r.json())
       .then(me => {
-        if (me && me.error) {
-          // Token geçersiz — temizle ve uyarı göster
-          console.warn('Token expired:', me.error.message);
-          localStorage.removeItem('adsopify_token');
-          localStorage.removeItem('adsopify_account_id');
-          localStorage.removeItem('adsopify_account_name');
-          S.token = null; S.accountId = null;
-          showTokenExpiredBanner();
-        } else if (me && me.id) {
-          sbUpsertUser(me.id, me.name || '', me.email || '');
-        }
-      })
-      .catch(() => {});
+        if (me && me.error === 'TOKEN_EXPIRED') { showTokenExpiredBanner(); }
+        else if (me && me.id) { sbUpsertUser(me.id, me.name || '', me.email || ''); }
+      }).catch(() => {});
   }
 
   const _userId = getStored('sb_user_id') || 'default';
@@ -1984,8 +1976,10 @@ function fbLogin() {
       S.token = token;
 
       // FB kullanıcı bilgisini al → Supabase'e kaydet
-      fetch('https://graph.facebook.com/v19.0/me?fields=id,name,email&access_token=' + token)
-        .then(r => r.json())
+      fetch('https://adsopify-api.fubame38.workers.dev/meta', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: '/me', params: { fields: 'id,name,email' }, token: token })
+      }).then(r => r.json())
         .then(me => { if (me && me.id) sbUpsertUser(me.id, me.name || '', me.email || ''); })
         .catch(() => {});
 
@@ -5340,8 +5334,11 @@ async function loadBrandDetail(id, name, color) {
   try {
     var to = new Date().toISOString().split('T')[0];
     var from = new Date(Date.now() - 7*864e5).toISOString().split('T')[0];
-    var r = await fetch('https://graph.facebook.com/v19.0/' + encodeURIComponent(id) + '/insights?fields=campaign_name,spend,purchase_roas,actions,ctr,cpc&time_range={%22since%22:%22'+from+'%22,%22until%22:%22'+to+'%22}&level=campaign&access_token=' + S.token);
-    if (r.status === 400 || r.status === 401) { var errD = await r.json().catch(()=>({})); if (errD && errD.error) { localStorage.removeItem('adsopify_token'); S.token = null; showTokenExpiredBanner(); } return []; }
+    var r = await fetch('https://adsopify-api.fubame38.workers.dev/meta', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpoint: '/' + encodeURIComponent(id) + '/insights', params: { fields: 'campaign_name,spend,purchase_roas,actions,ctr,cpc', time_range: JSON.stringify({since:from,until:to}), level: 'campaign' }, token: S.token })
+    });
+    if (r.status === 401) { showTokenExpiredBanner(); return []; }
     var d = await r.json();
     if (!d.data || !d.data.length) { document.getElementById('brand-detail-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">Bu hesap için veri bulunamadı.</td></tr>'; return; }
     document.getElementById('brand-detail-tbody').innerHTML = d.data.map(function(i) {
