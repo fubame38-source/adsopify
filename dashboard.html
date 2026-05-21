@@ -1216,35 +1216,80 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
     <!-- Düzenleme formu -->
     <div id="brand-edit-form" style="display:none;margin-top:14px">
-      <div style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Marka Adı *</div>
-        <input id="bf-name" type="text" placeholder="Örn: Markan" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+
+      <!-- ADIM 1: Marka adı + URL -->
+      <div id="bf-step1">
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Marka Adı *</div>
+          <input id="bf-name" type="text" placeholder="Markanın adı" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Ne Satıyorsun? *</div>
+          <input id="bf-product-short" type="text" placeholder="Örn: Ahşap tuvalet basamağı, el çantası, protein tozu..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <button onclick="bfNextStep()" style="width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Devam →</button>
       </div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Web Sitesi / Ürün URL</div>
-        <input id="bf-url" type="text" placeholder="https://siten.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-      </div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Ürün / Hizmet Açıklaması</div>
-        <textarea id="bf-desc" rows="2" placeholder="Ne satıyorsun?" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;resize:vertical" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-      </div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Hedef Kitle *</div>
-        <input id="bf-audience" type="text" placeholder="Örn: 25-55 yaş yetişkinler, ev sahipleri" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-      </div>
-      <div style="margin-bottom:16px">
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Günlük Bütçe</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap" id="bf-budget-group">
-          <button onclick="bfSelect('budget','500',this)" class="ob-chip active">500₺</button>
-          <button onclick="bfSelect('budget','1000',this)" class="ob-chip">1.000₺</button>
-          <button onclick="bfSelect('budget','2000',this)" class="ob-chip">2.000₺</button>
-          <button onclick="bfSelect('budget','10000',this)" class="ob-chip">10K₺+</button>
+
+      <!-- ADIM 2: 3 hızlı soru -->
+      <div id="bf-step2" style="display:none">
+        <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:16px;letter-spacing:-.03em">Birkaç hızlı soru 👇</div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">Kim alıyor?</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="bf-gender-group">
+            <button onclick="bfPick('gender','Kadınlar',this)" class="ob-chip">👩 Kadınlar</button>
+            <button onclick="bfPick('gender','Erkekler',this)" class="ob-chip">👨 Erkekler</button>
+            <button onclick="bfPick('gender','Herkes',this)" class="ob-chip active">👥 Herkes</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">Yaş aralığı?</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="bf-age-group">
+            <button onclick="bfPick('age','18-25',this)" class="ob-chip">18-25</button>
+            <button onclick="bfPick('age','25-40',this)" class="ob-chip active">25-40</button>
+            <button onclick="bfPick('age','40-60',this)" class="ob-chip">40-60</button>
+            <button onclick="bfPick('age','60+',this)" class="ob-chip">60+</button>
+            <button onclick="bfPick('age','Her yaş',this)" class="ob-chip">Her yaş</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">Neden alıyor?</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="bf-reason-group">
+            <button onclick="bfPick('reason','Sağlık için',this)" class="ob-chip">💊 Sağlık</button>
+            <button onclick="bfPick('reason','Konfor için',this)" class="ob-chip">😌 Konfor</button>
+            <button onclick="bfPick('reason','Estetik için',this)" class="ob-chip">✨ Estetik</button>
+            <button onclick="bfPick('reason','Pratiklik için',this)" class="ob-chip">⚡ Pratiklik</button>
+            <button onclick="bfPick('reason','Hediye için',this)" class="ob-chip">🎁 Hediye</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Günlük Bütçe</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="bf-budget-group">
+            <button onclick="bfPick('budget','500',this)" class="ob-chip active">500₺</button>
+            <button onclick="bfPick('budget','1000',this)" class="ob-chip">1.000₺</button>
+            <button onclick="bfPick('budget','2000',this)" class="ob-chip">2.000₺</button>
+            <button onclick="bfPick('budget','10000',this)" class="ob-chip">10K₺+</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Web Sitesi (opsiyonel)</div>
+          <input id="bf-url" type="text" placeholder="https://siten.com" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <!-- Gizli alanlar — backward compat -->
+        <input id="bf-desc" type="hidden">
+        <input id="bf-audience" type="hidden">
+
+        <div style="display:flex;gap:8px">
+          <button onclick="bfSaveSmartForm()" id="bf-save-btn" style="flex:1;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">💾 Kaydet</button>
+          <button onclick="hideBrandForm()" style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:13px;cursor:pointer;font-family:var(--font)">İptal</button>
         </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="saveBrandForm()" style="flex:1;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">💾 Kaydet</button>
-        <button onclick="hideBrandForm()" style="padding:11px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)">İptal</button>
-      </div>
+
     </div>
   </div>
   <div class="card mb-12" id="settings-meta-card">
@@ -6111,6 +6156,21 @@ function showBrandForm() {
   });
   form.style.display = 'block';
   if (btns) btns.style.display = 'none';
+  // Marka varsa step2'ye git, yoksa step1'den başla
+  var s1 = document.getElementById('bf-step1');
+  var s2 = document.getElementById('bf-step2');
+  var ps = document.getElementById('bf-product-short');
+  if (s1 && s2) {
+    if (S.brand && S.brand.brandName) {
+      // Düzenleme modu — step2'yi göster
+      s1.style.display = 'none';
+      s2.style.display = 'block';
+      if (ps) ps.value = S.brand.product || '';
+    } else {
+      s1.style.display = 'block';
+      s2.style.display = 'none';
+    }
+  }
   document.getElementById('bf-name').focus();
 }
 
@@ -6360,6 +6420,62 @@ function _x9k2mReset() {
   if (ar && ar.querySelector('[style*="rgba(220,38,38"]')) { ar.innerHTML = ''; ar.style.display = 'none'; }
   document.getElementById('hook-more-btn').style.display = 'none';
   console.log('✓ Limitler sıfırlandı');
+}
+
+// ═══ SMART MARKA FORMU ═══
+var _bfPicks = { gender: 'Herkes', age: '25-40', reason: 'Konfor için', budget: '500' };
+
+function bfPick(key, val, el) {
+  _bfPicks[key] = val;
+  var groupId = 'bf-' + key + '-group';
+  var group = document.getElementById(groupId);
+  if (group) group.querySelectorAll('.ob-chip').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function bfNextStep() {
+  var name = document.getElementById('bf-name').value.trim();
+  var product = document.getElementById('bf-product-short').value.trim();
+  if (!name) { document.getElementById('bf-name').focus(); document.getElementById('bf-name').style.borderColor='#f87171'; return; }
+  if (!product) { document.getElementById('bf-product-short').focus(); document.getElementById('bf-product-short').style.borderColor='#f87171'; return; }
+  document.getElementById('bf-step1').style.display = 'none';
+  document.getElementById('bf-step2').style.display = 'block';
+}
+
+function bfSaveSmartForm() {
+  var btn = document.getElementById('bf-save-btn');
+  if (btn) { btn.textContent = '⏳ Kaydediliyor...'; btn.disabled = true; }
+
+  var name    = (document.getElementById('bf-name').value || '').trim();
+  var product = (document.getElementById('bf-product-short').value || '').trim();
+  var url     = (document.getElementById('bf-url').value || '').trim();
+  var gender  = _bfPicks.gender  || 'Herkes';
+  var age     = _bfPicks.age     || '25-40';
+  var reason  = _bfPicks.reason  || 'Konfor için';
+  var budget  = _bfPicks.budget  || '500';
+
+  // Hedef kitle ve ürün açıklamasını birleştir
+  var audience = age + ' yaş ' + gender.toLowerCase() + ', ' + reason.toLowerCase() + ' alanlar';
+  var desc     = product + '. ' + gender + ', ' + age + ' yaş. ' + reason + '.';
+
+  var brandData = {
+    brandName: name,
+    url:       url,
+    rawDesc:   desc,
+    product:   product,
+    audience:  audience,
+    budget:    budget,
+    goal:      'satis'
+  };
+
+  var userId = getStored('sb_user_id') || 'default';
+  localStorage.setItem('adsopify_brand_' + userId, JSON.stringify(brandData));
+  S.brand = brandData;
+
+  hideBrandForm();
+  loadSettingsPage();
+
+  if (btn) { btn.textContent = '💾 Kaydet'; btn.disabled = false; }
 }
 
 </script>
