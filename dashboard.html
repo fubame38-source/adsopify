@@ -1226,7 +1226,11 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
       </div>
       <div style="margin-bottom:12px">
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Ürün / Hizmet Açıklaması</div>
-        <textarea id="bf-desc" rows="3" placeholder="Ne satıyorsun? Kime satıyorsun?" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;resize:vertical" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        <textarea id="bf-desc" rows="2" placeholder="Ne satıyorsun?" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box;resize:vertical" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Hedef Kitle *</div>
+        <input id="bf-audience" type="text" placeholder="Örn: 25-55 yaş yetişkinler, ev sahipleri" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;box-sizing:border-box" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
       </div>
       <div style="margin-bottom:16px">
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Günlük Bütçe</div>
@@ -6101,6 +6105,7 @@ function showBrandForm() {
   document.getElementById('bf-name').value  = (brand && brand.brandName) ? brand.brandName : '';
   document.getElementById('bf-url').value   = (brand && brand.url)       ? brand.url       : '';
   document.getElementById('bf-desc').value  = (brand && brand.rawDesc)   ? brand.rawDesc   : '';
+  var bfAud = document.getElementById('bf-audience'); if (bfAud) bfAud.value = (brand && brand.audience) ? brand.audience : '';
   // Bütçe seçimi
   var budget = (brand && brand.budget) ? brand.budget : '500';
   document.querySelectorAll('#bf-budget-group .ob-chip').forEach(function(btn) {
@@ -6133,12 +6138,14 @@ function saveBrandForm() {
   var desc   = document.getElementById('bf-desc').value.trim();
   var budget = _bfData.budget || '500';
 
+  var audienceEl = document.getElementById('bf-audience');
+  var audience = audienceEl ? audienceEl.value.trim() : '';
   var brandData = {
     brandName: name,
     url:       url,
     rawDesc:   desc,
     product:   desc || name,
-    audience:  '',
+    audience:  audience,
     budget:    budget,
     goal:      'satis'
   };
@@ -6167,6 +6174,17 @@ function adWizOpenHook() {
   document.getElementById('adwiz-reklam-panel').style.display = 'none';
   document.getElementById('adwiz-hook-panel').scrollIntoView({ behavior:'smooth', block:'start' });
   hookShowUsage();
+  // Session'dan son hook sonuçlarını geri yükle
+  if (!window._lastHookResults) {
+    var stored = sessionStorage.getItem('last_hooks');
+    if (stored) {
+      try { window._lastHookResults = JSON.parse(stored); } catch(e) {}
+    }
+  }
+  if (window._lastHookResults && window._lastHookResults.length) {
+    hookRenderResults(window._lastHookResults);
+    document.getElementById('hook-more-btn').style.display = 'block';
+  }
 }
 function adWizCloseHook() {
   document.getElementById('adwiz-hook-panel').style.display = 'none';
@@ -6252,29 +6270,11 @@ async function hookGenerate() {
 
     var scores = [92, 87, 81, 74, 67];
     scores.sort(function(){ return Math.random() - 0.5; });
+    // Sonuçları state'te sakla — sayfa yenilenince kaybolmasın
+    window._lastHookResults = hooks.map(function(h, i){ return { text: h.text, why: h.why, score: scores[i] || 70 }; });
+    sessionStorage.setItem('last_hooks', JSON.stringify(window._lastHookResults));
 
-    resEl.innerHTML = hooks.map(function(h, i) {
-      var score = scores[i] || 70;
-      var sc = score >= 85 ? '#34d399' : score >= 70 ? '#fbbf24' : '#f87171';
-      var sl = score >= 85 ? 'Yüksek Viral' : score >= 70 ? 'Orta Viral' : 'Düşük Viral';
-      var circ = (2 * Math.PI * 15).toFixed(1);
-      var off  = (2 * Math.PI * 15 * (1 - score/100)).toFixed(1);
-      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
-          '<span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">' + _hookFormat.toUpperCase() + '</span>' +
-          '<div style="display:flex;align-items:center;gap:8px">' +
-            '<svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="15" fill="none" stroke="var(--border2)" stroke-width="3"/><circle cx="19" cy="19" r="15" fill="none" stroke="' + sc + '" stroke-width="3" stroke-dasharray="' + circ + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 19 19)"/><text x="19" y="23" text-anchor="middle" fill="' + sc + '" font-size="9" font-weight="900" font-family="inherit">' + score + '</text></svg>' +
-            '<div><div style="font-size:10px;font-weight:800;color:' + sc + ';text-transform:uppercase;letter-spacing:.06em">' + sl + '</div><div style="font-size:9px;color:var(--text3)">Viral Potansiyel</div></div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.5;letter-spacing:-.03em;margin-bottom:10px">' + escapeHtml(h.text || '') + '</div>' +
-        (h.why ? '<div style="font-size:13px;color:var(--text3);line-height:1.65;padding:10px 12px;background:var(--surface2);border-radius:9px;margin-bottom:12px"><span style="font-weight:700;color:var(--text2)">Neden tutacak: </span>' + escapeHtml(h.why) + '</div>' : '') +
-        '<div style="display:flex;gap:8px">' +
-        '<button onclick="navigator.clipboard.writeText(this.dataset.text)" data-text="' + escapeAttr(h.text || '') + '" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">Kopyala</button>' +
-        '<button onclick="saveHook(' + JSON.stringify(h.text||'') + ',' + JSON.stringify(h.why||'') + ',' + score + ');this.textContent=\'✓ Kaydedildi\';this.style.background=\'rgba(34,201,138,.15)\';this.style.color=\'#22c98a\'" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">💾 Kaydet</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
+    hookRenderResults(window._lastHookResults);
   } catch(e) {
     loadEl.style.display = 'none';
     resEl.innerHTML = '<div style="padding:16px;color:var(--red);font-size:13px">Hook üretilemedi. Tekrar dene.</div>';
@@ -6295,6 +6295,49 @@ function copyText(btn) {
   var orig = btn.textContent;
   btn.textContent = '✓';
   setTimeout(function(){ btn.textContent = orig; }, 1500);
+}
+
+function hookRenderResults(items) {
+  var resEl = document.getElementById('hook-results');
+  if (!resEl || !items || !items.length) return;
+  resEl.innerHTML = items.map(function(item) {
+    var score = item.score || 70;
+    var text  = item.text  || '';
+    var why   = item.why   || '';
+    var sc = score >= 85 ? '#34d399' : score >= 70 ? '#fbbf24' : '#f87171';
+    var sl = score >= 85 ? 'Yüksek Viral' : score >= 70 ? 'Orta Viral' : 'Düşük Viral';
+    var circ = (2 * Math.PI * 15).toFixed(1);
+    var off  = (2 * Math.PI * 15 * (1 - score / 100)).toFixed(1);
+    // Güvenli data attribute olarak sakla
+    var safeText = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    var safeWhy  = why.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
+        '<span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">' + (_hookFormat||'hook').toUpperCase() + '</span>' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="15" fill="none" stroke="var(--border2)" stroke-width="3"/><circle cx="19" cy="19" r="15" fill="none" stroke="' + sc + '" stroke-width="3" stroke-dasharray="' + circ + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 19 19)"/><text x="19" y="23" text-anchor="middle" fill="' + sc + '" font-size="9" font-weight="900" font-family="inherit">' + score + '</text></svg>' +
+          '<div><div style="font-size:10px;font-weight:800;color:' + sc + ';text-transform:uppercase;letter-spacing:.06em">' + sl + '</div><div style="font-size:9px;color:var(--text3)">Viral Potansiyel</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.5;letter-spacing:-.03em;margin-bottom:10px">' + escapeHtml(text) + '</div>' +
+      (why ? '<div style="font-size:13px;color:var(--text3);line-height:1.65;padding:10px 12px;background:var(--surface2);border-radius:9px;margin-bottom:12px"><span style="font-weight:700;color:var(--text2)">Neden tutacak: </span>' + escapeHtml(why) + '</div>' : '') +
+      '<div style="display:flex;gap:8px">' +
+        '<button onclick="copyText(this)" data-t="' + safeText + '" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">Kopyala</button>' +
+        '<button onclick="hookSaveThis(this)" data-text="' + safeText + '" data-why="' + safeWhy + '" data-score="' + score + '" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">💾 Kaydet</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function hookSaveThis(btn) {
+  var text  = btn.getAttribute('data-text') || '';
+  var why   = btn.getAttribute('data-why')  || '';
+  var score = parseInt(btn.getAttribute('data-score') || '70');
+  saveHook(text, why, score);
+  btn.textContent = '✓ Kaydedildi';
+  btn.style.background = 'rgba(34,201,138,.12)';
+  btn.style.color = '#22c98a';
+  btn.style.borderColor = 'rgba(34,201,138,.3)';
 }
 
 </script>
