@@ -665,64 +665,56 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
     </div>
   </div>
 
-  <!-- AI YORUM BLOĞU -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(29,78,216,.25)">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        </div>
-        <div>
-          <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.02em">Günlük Brifing</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:1px">AI reklam danışmanın hazır</div>
-        </div>
-      </div>
-      <button onclick="loadDailyPlan()" id="plan-ask-btn" class="btn btn-primary" style="gap:6px;padding:9px 18px;font-size:13px;font-weight:700;border-radius:10px">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        Bugün ne yapmalıyım?
-      </button>
-    </div>
+  <!-- AI BRIFING BLOĞU -->
+  <div style="margin-bottom:14px">
 
-    <!-- Boş state -->
-    <div id="plan-ai-empty" style="padding:4px 0 2px">
+    <!-- Boş / loading state -->
+    <div id="plan-ai-empty">
       <div id="plan-empty-meta-missing" style="display:none">
-        <div style="background:var(--surface2);border-radius:14px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px">
           <div>
             <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">🔗 Meta hesabın bağlı değil</div>
-            <div style="font-size:12px;color:var(--text3);line-height:1.55">Kampanya verilerini görmek ve günlük plan almak için Meta hesabını bağla.</div>
+            <div style="font-size:12px;color:var(--text3);line-height:1.55">Kampanya verilerini görmek için Meta hesabını bağla.</div>
           </div>
-          <button onclick="fbLogin()" style="white-space:nowrap;padding:10px 16px;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 12px rgba(24,119,242,.3)">Hesabı Bağla →</button>
+          <button onclick="fbLogin()" style="white-space:nowrap;padding:10px 16px;background:linear-gradient(135deg,#1877f2,#2d8cf0);border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">Hesabı Bağla →</button>
         </div>
       </div>
-      <div id="plan-empty-default" style="background:var(--surface2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px">
-        <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px">🎯</div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">Bugün ne yapmalısın?</div>
-          <div style="font-size:12px;color:var(--text3);line-height:1.55">Kampanyalarını analiz edip net aksiyonlar söyleyeceğim.</div>
+      <div id="plan-empty-default" style="background:linear-gradient(135deg,rgba(29,78,216,.07),rgba(79,70,229,.05));border:1px solid rgba(29,78,216,.15);border-radius:18px;padding:28px;display:flex;align-items:center;gap:20px">
+        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 20px rgba(29,78,216,.25)">
+          <svg width="22" height="22" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.03em">Bugün ne yapmalısın?</div>
+          <div style="font-size:13px;color:var(--text3);line-height:1.65;margin-bottom:16px">AI danışmanın kampanyalarını tarayıp sana özel, rakamlarla desteklenmiş plan oluşturuyor.</div>
+          <button onclick="loadDailyPlan()" id="plan-ask-btn" style="background:linear-gradient(135deg,var(--accent),#4f46e5);border:none;border-radius:11px;padding:11px 22px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 4px 14px rgba(29,78,216,.3);transition:all .15s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+            ✦ Planımı Göster
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Loading -->
-    <div id="plan-ai-loading" style="display:none;padding:12px 0 6px">
-      <div class="loading-row" style="justify-content:center"><div class="spinner"></div> Kampanyaların analiz ediliyor...</div>
+    <div id="plan-ai-loading" style="display:none">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:32px;text-align:center">
+        <div class="spinner" style="width:24px;height:24px;border-width:2.5px;margin:0 auto 14px"></div>
+        <div style="font-size:14px;font-weight:700;color:var(--text)" id="plan-loading-msg">Kampanyaların analiz ediliyor...</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">10-15 saniye sürebilir</div>
+      </div>
     </div>
 
     <!-- Sonuç -->
     <div id="plan-ai-result" style="display:none">
-      <!-- Focus card -->
       <div id="focus-card" style="margin-bottom:12px"></div>
-      <!-- Aksiyonlar -->
       <div id="tasks-card" style="display:none">
-        <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Bugünün Aksiyonları</span>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Diğer Aksiyonlar</span>
             <span style="font-size:12px;font-weight:700;color:var(--text3)" id="checklist-count"></span>
           </div>
-          <div id="ai-checklist-items" style="display:flex;flex-direction:column;gap:6px"></div>
-          <div id="tasks-more-wrap" style="display:none;margin-top:6px">
-            <button onclick="toggleMoreTasks()" id="tasks-more-btn" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;font-family:var(--font);padding:4px 0">+ Daha fazla</button>
-            <div id="tasks-more-items" style="display:none;flex-direction:column;gap:6px;margin-top:6px"></div>
+          <div id="ai-checklist-items" style="display:flex;flex-direction:column;gap:8px"></div>
+          <div id="tasks-more-wrap" style="display:none;margin-top:8px">
+            <button onclick="toggleMoreTasks()" id="tasks-more-btn" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer;font-family:var(--font);padding:4px 0">+ Tümünü Göster</button>
+            <div id="tasks-more-items" style="display:none;flex-direction:column;gap:8px;margin-top:8px"></div>
           </div>
         </div>
       </div>
@@ -2216,7 +2208,11 @@ function loadDailyPlan() {
 
   if (aiEmpty) aiEmpty.style.display = 'none';
   if (aiResult) aiResult.style.display = 'none';
-  if (aiLoading) aiLoading.style.display = 'flex';
+  if (aiLoading) aiLoading.style.display = 'block';
+  var _lmsgs = ['Kampanyaların analiz ediliyor...','Veriler karşılaştırılıyor...','Strateji oluşturuluyor...','Aksiyonlar hazırlanıyor...'];
+  var _lmi = 0;
+  var _lmEl = document.getElementById('plan-loading-msg');
+  window._planLoadInt = setInterval(function(){ _lmi=(_lmi+1)%_lmsgs.length; if(_lmEl) _lmEl.textContent=_lmsgs[_lmi]; }, 3000);
 
   const today = new Date();
   const cacheKey = 'dp_plan_v4_' + today.toISOString().split('T')[0];
@@ -2597,8 +2593,10 @@ async function planFetchAI(cacheKey) {
     if (!match) throw new Error('JSON yok');
     const parsed = safeJsonParse(match[0], { tagline: 'Bugunun Plani', verdict: '', actions: [] });
     if (cacheKey) localStorage.setItem(cacheKey, JSON.stringify(parsed));
+    if(window._planLoadInt) clearInterval(window._planLoadInt);
     planShowResults(parsed.actions, parsed.verdict, parsed.tagline);
   } catch(e) {
+    clearInterval(_lmInt);
     console.error('planFetchAI error:', e);
     planShowFallback();
   }
@@ -2621,22 +2619,45 @@ function planShowResults(actions, verdict, tagline) {
   planRenderMemoryStrip();
 
   var focusCard = document.getElementById('focus-card');
-  var hero = (actions || [])[0];
-  if (focusCard && hero) {
-    var toneGrad = { high:'linear-gradient(135deg,#1a0a0a,#2d1010)', mid:'linear-gradient(135deg,#1a1400,#2d2200)', low:'linear-gradient(135deg,#001a12,#002d1f)', blue:'linear-gradient(135deg,#06091a,#0d1433)' };
+  if (focusCard) {
+    var toneGrad   = { high:'linear-gradient(135deg,#1a0a0a,#2d1010)', mid:'linear-gradient(135deg,#1a1400,#2d2200)', low:'linear-gradient(135deg,#001a12,#002d1f)', blue:'linear-gradient(135deg,#06091a,#0d1433)' };
     var toneBorder = { high:'rgba(220,38,38,.3)', mid:'rgba(180,83,9,.3)', low:'rgba(5,150,105,.3)', blue:'rgba(29,78,216,.3)' };
     var toneAccent = { high:'#f87171', mid:'#fbbf24', low:'#34d399', blue:'#818cf8' };
-    var t = hero.tone || 'blue';
-    var heroNavAttr = hero.nav ? 'onclick="nav(\'' + escapeAttr(hero.nav) + '\')"}' : '';
+
+    // Tüm aksiyonları focus card içinde göster
+    var allActions = actions || [];
+    var t = (allActions[0] && allActions[0].tone) || 'blue';
+    var acc = toneAccent[t] || toneAccent.blue;
+
+    var actionsHTML = allActions.map(function(a, i) {
+      var at = a.tone || 'blue';
+      var ac = toneAccent[at] || toneAccent.blue;
+      return '<div style="display:flex;gap:14px;align-items:flex-start;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px">' +
+        '<div style="width:28px;height:28px;border-radius:8px;background:' + ac + '22;border:1px solid ' + ac + '44;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:900;color:' + ac + '">' + (i+1) + '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:14px;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:5px;line-height:1.3">' + escapeHtml(a.title||'—') + '</div>' +
+          '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.65">' + escapeHtml(a.reason||'') + '</div>' +
+        '</div>' +
+        '<div style="flex-shrink:0;padding:5px 10px;background:' + ac + '18;border:1px solid ' + ac + '33;border-radius:8px;font-size:10px;font-weight:800;color:' + ac + ';text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">' + escapeHtml(a.tone==='high'?'Acil':a.tone==='mid'?'Önemli':a.tone==='low'?'Fırsat':'Aksiyon') + '</div>' +
+      '</div>';
+    }).join('');
+
     focusCard.style.display = 'block';
     focusCard.innerHTML =
-      '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:20px;padding:26px 30px;position:relative;overflow:hidden">' +
-      '<div style="position:absolute;top:0;right:0;width:240px;height:240px;background:radial-gradient(circle at 70% 30%,' + (toneAccent[t]||toneAccent.blue) + '18,transparent 65%);pointer-events:none"></div>' +
-      (tagline ? '<div style="margin-bottom:14px"><span style="background:' + (toneAccent[t]||toneAccent.blue) + '22;color:' + (toneAccent[t]||toneAccent.blue) + ';padding:5px 12px;border-radius:7px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 ' + escapeHtml(tagline) + '</span></div>' : '') +
-      (verdict ? '<div style="font-size:14px;color:rgba(255,255,255,.6);line-height:1.65;margin-bottom:18px;max-width:60ch">' + escapeHtml(verdict) + '</div>' : '') +
-      '<div style="font-size:clamp(19px,2.5vw,27px);font-weight:900;letter-spacing:-.05em;color:#fff;line-height:1.1;margin-bottom:10px">' + escapeHtml(hero.title||'—') + '</div>' +
-      '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:18px;max-width:58ch">' + escapeHtml(hero.reason||'') + '</div>' +
-      (hero.cta && hero.nav ? '<button onclick="saveStrategy()" style="background:' + (toneAccent[t]||toneAccent.blue) + ';color:#000;border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);letter-spacing:-.02em;transition:opacity .15s" onmouseover="this.style.opacity=\'.85\'" onmouseout="this.style.opacity=\'1\'">Koru →</button>' : '') +
+      '<div style="background:' + (toneGrad[t]||toneGrad.blue) + ';border:1px solid ' + (toneBorder[t]||toneBorder.blue) + ';border-radius:22px;padding:28px;position:relative;overflow:hidden">' +
+        '<div style="position:absolute;top:0;right:0;width:300px;height:300px;background:radial-gradient(circle at 70% 20%,' + acc + '15,transparent 60%);pointer-events:none"></div>' +
+        // Tagline badge
+        (tagline ? '<div style="margin-bottom:16px"><span style="background:' + acc + '20;color:' + acc + ';padding:5px 12px;border-radius:8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em">🎯 ' + escapeHtml(tagline) + '</span></div>' : '') +
+        // Verdict — ana mesaj
+        (verdict ? '<div style="font-size:clamp(16px,2vw,20px);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1.3;margin-bottom:8px">' + escapeHtml(verdict) + '</div>' : '') +
+        '<div style="height:1px;background:rgba(255,255,255,.08);margin:18px 0"></div>' +
+        // Aksiyonlar
+        '<div style="display:flex;flex-direction:column;gap:10px">' + actionsHTML + '</div>' +
+        // Alt kaydet butonu
+        '<div style="margin-top:18px;display:flex;gap:10px">' +
+          '<button onclick="saveStrategy()" style="padding:9px 18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">💾 Kaydet</button>' +
+          '<button onclick="planReset();loadDailyPlan()" style="padding:9px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;color:rgba(255,255,255,.4);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">↺ Yenile</button>' +
+        '</div>' +
       '</div>';
   }
 
@@ -2648,7 +2669,7 @@ function planShowResults(actions, verdict, tagline) {
   var moreItems = document.getElementById('tasks-more-items');
 
   if (tasksCard && rest.length > 0) {
-    tasksCard.style.display = 'block';
+    tasksCard.style.display = 'none'; // aksiyonlar artık focus card'da
     var todayStr = new Date().toISOString().split('T')[0];
     var storageKey = 'adsopify_checklist_' + todayStr;
     var completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -5858,23 +5879,37 @@ async function aizStart() {
       } catch(e) {}
     }
 
-    var h = new Date().getHours();
-    var timeLabel = h < 12 ? 'sabah' : h < 18 ? 'ogleden sonra' : 'aksam';
+    var now = new Date();
+    var h = now.getHours();
+    var timeLabel = h < 12 ? 'sabah' : h < 18 ? 'öğleden sonra' : 'akşam';
+    var todayStr = now.toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' });
 
-    var prompt = 'Marka: ' + (brand.brandName||'') +
-      '\nUrun: ' + (brand.product||'') +
-      '\nHedef kitle: ' + (brand.audience||'') +
-      '\nButce: ' + (brand.budget||'') + 'TL' +
-      '\nMeta durumu: ' + metaSummary +
-      '\n\nBugün ' + timeLabel + '. Bu marka icin derin analiz yap.' +
-      '\n\nJSON formatı:\n{"score":75,"score_label":"Iyi Gidiyor","headline":"CTR guclu ama frekans yukseliyor","summary":"2 cumle genel durum","insights":[{"icon":"fire","title":"Guclu Nokta","body":"rakamla destekli"},{"icon":"alert","title":"Acil Aksiyon","body":"ne yapilmali ve neden"},{"icon":"idea","title":"Firsat","body":"somut oneri"},{"icon":"target","title":"Bu Hafta Odagi","body":"tek oncelik"}],"verdict":"Bu markayi tek cumlede tanimla"}' +
-      '\n\nKURALLAR: Her insightta gercek rakam olsun. Genel tavsiye degil, bu markaya ozel soylemler. Sadece JSON dondur.';
+    var systemPrompt = 'Sen dünyanın en iyi Meta Ads stratejistlerinden birisin. Türkiye pazarında e-ticaret ve D2C markalar konusunda uzmansin. Verdiğin analizler her zaman: (1) Gerçek ve doğrulanabilir bilgilere dayanır — YIL veya istatistik uydurmaz, emin olmadığın rakamı kesinlikle yazmazsın, (2) Bu markaya 100% özgüdür — genel tavsiye vermezsin, (3) Türkiye pazar koşullarını, TL bazlı bütçeleri ve Türk tüketici davranışını bilirsin. Sadece geçerli JSON döndürürsün, başka hiçbir şey yazmazsın.';
+
+    var prompt = 'Bugün: ' + todayStr + ', ' + timeLabel + '\n' +
+      '\n== MARKA BİLGİLERİ ==' +
+      '\nMarka adı: ' + (brand.brandName||'') +
+      '\nÜrün/hizmet: ' + (brand.product||brand.rawDesc||'') +
+      '\nHedef kitle: ' + (brand.audience||'belirtilmemiş') +
+      '\nGünlük bütçe: ' + (brand.budget||'?') + ' TL' +
+      '\nURL: ' + (brand.url||'belirtilmemiş') +
+      '\n\n== META REKLAM VERİSİ ==' +
+      '\n' + metaSummary +
+      '\n\n== GÖREV ==' +
+      '\nBu marka için kapsamlı bir Meta reklam strateji analizi yap. Aşağıdaki kurallara kesinlikle uy:' +
+      '\n- Tarih veya yıl uydurmayacaksın. Yil + te/da gibi ifadeler kullanma, tarihsiz konuş.' +
+      '\n- Rakam verirken sadece: (a) kullanıcının paylaştığı Meta verisi veya (b) genel bilinen gerçekleri kullan. Tahmin ediyorsan "yaklaşık" de.' +
+      '\n- Her insight minimum 3 cümle, somut ve uygulanabilir olsun.' +
+      '\n- Bu markaya özel konuş. "Genel olarak markalar..." diye başlama.' +
+      '\n\nJSON formatı (sadece bunu döndür):' +
+      '\n{"score":75,"score_label":"İyi Gidiyor","headline":"6 kelimelik keskin başlık","summary":"2-3 cümle: şu an durumu ve en kritik mesaj","insights":[{"icon":"alert","title":"Acil Aksiyon","body":"Ne yapmalısın ve tam olarak neden — spesifik rakam veya gerekçe ile"},{"icon":"fire","title":"Güçlü Nokta","body":"Ne iyi gidiyor ve bunu nasıl büyütebilirsin"},{"icon":"idea","title":"Fırsat","body":"Henüz kullanılmayan büyüme kanalı veya segment"},{"icon":"target","title":"Bu Hafta Odağı","body":"Bu hafta yapılacak tek en önemli şey ve net adımlar"}],"verdict":"Bu markayı ve durumunu tek güçlü cümlede özetle"}';
 
     var res = await fetch('https://adsopify-api.fubame38.workers.dev/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system: 'Sen Meta Ads stratejistisin. Veriye dayali, kisisel analizler yapiyorsun. Sadece gecerli JSON dondur.',
+        model: 'claude-sonnet-4-20250514',
+        system: systemPrompt,
         message: prompt
       })
     });
