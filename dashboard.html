@@ -1085,11 +1085,54 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 
 <!-- KAYDEDİLENLER -->
 <div id="sec-saved" class="section">
-  <div class="ph-row mb-16">
-    <div class="ph"><div class="ph-title">Kaydedilenler</div><div class="ph-sub">Sakladığın stratejiler ve fikirler</div></div>
-    <button class="btn btn-ghost btn-sm" onclick="clearSavedStrategies()" style="color:var(--red);border-color:rgba(248,113,113,.3)">🗑 Tümünü Sil</button>
+  <div style="margin-bottom:24px">
+    <div style="font-size:24px;font-weight:900;letter-spacing:-.06em;color:var(--text)">Kaydedilenler</div>
+    <div style="font-size:13px;color:var(--text3);margin-top:4px">Sakladığın stratejiler ve hooklar</div>
   </div>
-  <div id="saved-list"></div>
+
+  <!-- 2 BÜYÜK KART -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+    <!-- Stratejiler -->
+    <div onclick="savedShowTab('strategies')" id="saved-tab-strategies" style="background:linear-gradient(135deg,#06091a,#0d1433);border:2px solid rgba(29,78,216,.5);border-radius:22px;padding:28px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s">
+      <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 65%);pointer-events:none"></div>
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 6px 16px rgba(29,78,216,.3)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-.04em;margin-bottom:6px">Reklam Stratejileri</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6">Günlük plandan ve AI analizden kaydettiğin stratejiler</div>
+      <div style="margin-top:14px;font-size:11px;font-weight:700;color:rgba(29,78,216,.8);background:rgba(29,78,216,.15);border-radius:6px;padding:4px 10px;display:inline-block" id="saved-strat-count">0 kayıt</div>
+    </div>
+    <!-- Hooklar -->
+    <div onclick="savedShowTab('hooks')" id="saved-tab-hooks" style="background:linear-gradient(135deg,#0a0618,#150d2e);border:2px solid rgba(139,92,246,.25);border-radius:22px;padding:28px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s">
+      <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(139,92,246,.2),transparent 65%);pointer-events:none"></div>
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 6px 16px rgba(124,58,237,.3)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-.04em;margin-bottom:6px">Kayıtlı Hooklar</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.6">Hook üreticisinden beğenip kaydettiğin viral hooklar</div>
+      <div style="margin-top:14px;font-size:11px;font-weight:700;color:rgba(139,92,246,.8);background:rgba(139,92,246,.15);border-radius:6px;padding:4px 10px;display:inline-block" id="saved-hook-count">0 kayıt</div>
+    </div>
+  </div>
+
+  <!-- İÇERİK ALANI -->
+  <div id="saved-content-area">
+    <!-- Stratejiler listesi -->
+    <div id="saved-strategies-panel" style="display:block">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Reklam Stratejileri</div>
+        <button onclick="clearSavedStrategies()" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--red);cursor:pointer;font-family:var(--font)">🗑 Tümünü Sil</button>
+      </div>
+      <div id="saved-list"></div>
+    </div>
+    <!-- Hooklar listesi -->
+    <div id="saved-hooks-panel" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Kayıtlı Hooklar</div>
+        <button onclick="clearSavedHooks()" style="background:none;border:none;font-size:12px;font-weight:700;color:var(--red);cursor:pointer;font-family:var(--font)">🗑 Tümünü Sil</button>
+      </div>
+      <div id="saved-hooks-list"></div>
+    </div>
+  </div>
 </div>
 
 
@@ -2070,7 +2113,7 @@ function nav(name) {
   if (name === 'dash') loadDashboard();
   if (name === 'settings') loadSettingsPage();
   if (name === 'swipe') initSwipe();
-  if (name === 'saved') loadSavedStrategies();
+  if (name === 'saved') { loadSavedStrategies(); loadSavedHooks(); }
   if (name === 'ai-analiz') aizCheck();
 }
 
@@ -5500,30 +5543,115 @@ function saveStrategy() {
   setTimeout(function(){ nav('saved'); }, 400);
 }
 
+// ─── TAB SİSTEMİ ────────────────────────────────────────────
+function savedShowTab(tab) {
+  var isStrat = tab === 'strategies';
+  document.getElementById('saved-strategies-panel').style.display = isStrat ? 'block' : 'none';
+  document.getElementById('saved-hooks-panel').style.display      = isStrat ? 'none'  : 'block';
+  // Kart border güncelle
+  var ts = document.getElementById('saved-tab-strategies');
+  var th = document.getElementById('saved-tab-hooks');
+  if (ts) ts.style.borderColor = isStrat ? 'rgba(29,78,216,.7)' : 'rgba(29,78,216,.25)';
+  if (th) th.style.borderColor = isStrat ? 'rgba(139,92,246,.25)' : 'rgba(139,92,246,.7)';
+}
+
 function loadSavedStrategies() {
   var el = document.getElementById('saved-list');
   if (!el) return;
   var saved = JSON.parse(localStorage.getItem(getSavedKey()) || '[]');
+  // Sayaç güncelle
+  var cnt = document.getElementById('saved-strat-count');
+  if (cnt) cnt.textContent = saved.length + ' kayıt';
+
   if (!saved.length) {
-    el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🔖</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">Henüz kaydedilen strateji yok</div><div style="font-size:12px">Günlük Plan\'daki "Koru" butonuna basarak stratejileri buraya ekleyebilirsin.</div></div>';
+    el.innerHTML = '<div style="text-align:center;padding:48px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">🔖</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">Henüz strateji kaydedilmedi</div><div style="font-size:12px">Günlük Plan veya AI Analiz\'den kaydet butonuna bas.</div></div>';
     return;
   }
   el.innerHTML = saved.map(function(s) {
-    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:10px;transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--border2)\'" onmouseout="this.style.borderColor=\'var(--border)\'">' +
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px">' +
-        '<div>' +
-          (s.tag ? '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:5px">' + escapeHtml(s.tag) + '</div>' : '') +
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:10px">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px">' +
+        '<div style="flex:1">' +
+          (s.tag ? '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px">' + escapeHtml(s.tag) + '</div>' : '') +
           '<div style="font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.3">' + escapeHtml(s.title) + '</div>' +
         '</div>' +
-        '<button onclick="deleteSavedStrategy(' + s.id + ')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:2px;flex-shrink:0;transition:color .12s" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text3)\'">×</button>' +
+        '<button onclick="deleteSavedStrategy(' + s.id + ')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;padding:0;flex-shrink:0">×</button>' +
       '</div>' +
-      (s.desc ? '<div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:10px">' + escapeHtml(s.desc) + '</div>' : '') +
+      (s.desc ? '<div style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:12px">' + escapeHtml(s.desc) + '</div>' : '') +
       '<div style="display:flex;align-items:center;gap:8px">' +
-        (s.brand ? '<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:5px;border:1px solid var(--border)">' + escapeHtml(s.brand) + '</span>' : '') +
+        (s.brand ? '<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--surface2);padding:3px 8px;border-radius:5px;border:1px solid var(--border)">' + escapeHtml(s.brand) + '</span>' : '') +
         '<span style="font-size:10px;color:var(--text3)">' + escapeHtml(s.date) + '</span>' +
       '</div>' +
     '</div>';
   }).join('');
+  // Hook listesini de yükle
+  loadSavedHooks();
+}
+
+// ─── HOOK KAYDETME ───────────────────────────────────────────
+function getSavedHooksKey() {
+  return 'adsopify_saved_hooks_' + ((S.brand && S.brand.brandName) || 'default');
+}
+
+function saveHook(text, why, score) {
+  var key = getSavedHooksKey();
+  var saved = JSON.parse(localStorage.getItem(key) || '[]');
+  // Duplicate kontrolü
+  if (saved.some(function(h){ return h.text === text; })) {
+    alert('Bu hook zaten kayıtlı.');
+    return;
+  }
+  saved.unshift({ id: Date.now(), text: text, why: why || '', score: score || 0, brand: (S.brand && S.brand.brandName) || '', date: new Date().toLocaleDateString('tr-TR') });
+  if (saved.length > 100) saved = saved.slice(0, 100);
+  localStorage.setItem(key, JSON.stringify(saved));
+  // Sayaç güncelle
+  var cnt = document.getElementById('saved-hook-count');
+  if (cnt) cnt.textContent = saved.length + ' kayıt';
+}
+
+function loadSavedHooks() {
+  var el = document.getElementById('saved-hooks-list');
+  if (!el) return;
+  var saved = JSON.parse(localStorage.getItem(getSavedHooksKey()) || '[]');
+  var cnt = document.getElementById('saved-hook-count');
+  if (cnt) cnt.textContent = saved.length + ' kayıt';
+
+  if (!saved.length) {
+    el.innerHTML = '<div style="text-align:center;padding:48px 20px;color:var(--text3)"><div style="font-size:32px;margin-bottom:12px">⚡</div><div style="font-size:14px;font-weight:600;margin-bottom:6px">Henüz hook kaydedilmedi</div><div style="font-size:12px">Reklam Hazırla \'Hook Üret\' bölümünden beğendiğin hookları kaydet.</div></div>';
+    return;
+  }
+  el.innerHTML = saved.map(function(h) {
+    var sc = h.score >= 85 ? '#34d399' : h.score >= 70 ? '#fbbf24' : '#f87171';
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:10px">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px">' +
+        '<div style="flex:1">' +
+          (h.score ? '<div style="font-size:10px;font-weight:800;color:' + sc + ';margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">%' + h.score + ' Viral Potansiyel</div>' : '') +
+          '<div style="font-size:15px;font-weight:800;color:var(--text);line-height:1.5;letter-spacing:-.02em">' + escapeHtml(h.text) + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+          '<button onclick="copyText(this)" data-t="' + escapeAttr(h.text) + '" style="background:var(--accent-light);border:1px solid var(--border2);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--accent);cursor:pointer;font-family:var(--font)">Kopyala</button>' +
+          '<button onclick="deleteSavedHook(' + h.id + ')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;padding:0">×</button>' +
+        '</div>' +
+      '</div>' +
+      (h.why ? '<div style="font-size:12px;color:var(--text3);line-height:1.6;padding:10px;background:var(--surface2);border-radius:8px;margin-bottom:10px"><span style="font-weight:700;color:var(--text2)">Neden tutacak: </span>' + escapeHtml(h.why) + '</div>' : '') +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        (h.brand ? '<span style="font-size:10px;font-weight:700;color:var(--text3);background:var(--surface2);padding:3px 8px;border-radius:5px;border:1px solid var(--border)">' + escapeHtml(h.brand) + '</span>' : '') +
+        '<span style="font-size:10px;color:var(--text3)">' + escapeHtml(h.date) + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function deleteSavedHook(id) {
+  var key = getSavedHooksKey();
+  var saved = JSON.parse(localStorage.getItem(key) || '[]').filter(function(h){ return h.id !== id; });
+  localStorage.setItem(key, JSON.stringify(saved));
+  loadSavedHooks();
+}
+
+function clearSavedHooks() {
+  if (!confirm('Tüm kayıtlı hooklar silinecek. Emin misin?')) return;
+  localStorage.removeItem(getSavedHooksKey());
+  loadSavedHooks();
 }
 
 function deleteSavedStrategy(id) {
@@ -6141,7 +6269,10 @@ async function hookGenerate() {
         '</div>' +
         '<div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.5;letter-spacing:-.03em;margin-bottom:10px">' + escapeHtml(h.text || '') + '</div>' +
         (h.why ? '<div style="font-size:13px;color:var(--text3);line-height:1.65;padding:10px 12px;background:var(--surface2);border-radius:9px;margin-bottom:12px"><span style="font-weight:700;color:var(--text2)">Neden tutacak: </span>' + escapeHtml(h.why) + '</div>' : '') +
-        '<button onclick="navigator.clipboard.writeText(this.dataset.text).then(function(){},function(){})" data-text="' + escapeAttr(h.text || '') + '" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">Kopyala</button>' +
+        '<div style="display:flex;gap:8px">' +
+        '<button onclick="navigator.clipboard.writeText(this.dataset.text)" data-text="' + escapeAttr(h.text || '') + '" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">Kopyala</button>' +
+        '<button onclick="saveHook(' + JSON.stringify(h.text||'') + ',' + JSON.stringify(h.why||'') + ',' + score + ');this.textContent=\'✓ Kaydedildi\';this.style.background=\'rgba(34,201,138,.15)\';this.style.color=\'#22c98a\'" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font)">💾 Kaydet</button>' +
+        '</div>' +
       '</div>';
     }).join('');
   } catch(e) {
@@ -6156,6 +6287,14 @@ function bfBudget(val, el) {
   _bfBudget = val;
   document.querySelectorAll('#bf-budget-group .ob-chip').forEach(function(b){ b.classList.remove('active'); });
   el.classList.add('active');
+}
+
+function copyText(btn) {
+  var t = btn.getAttribute('data-t') || btn.getAttribute('data-text') || '';
+  navigator.clipboard.writeText(t).catch(function(){});
+  var orig = btn.textContent;
+  btn.textContent = '✓';
+  setTimeout(function(){ btn.textContent = orig; }, 1500);
 }
 
 </script>
