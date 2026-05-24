@@ -3131,6 +3131,12 @@ function planReset() {
     if (error) error.style.display = state === 'error' ? 'flex' : 'none';
   }
 
+  function cleanText(str) {
+    if (!str) return '';
+    // AI citation taglarını temizle
+    return str.replace(/<cite[^>]*>|<\/cite>/gi, '').replace(/\s+/g, ' ').trim();
+  }
+
   function renderResult(data) {
     var konuEl = document.getElementById('strateji-konu');
     var ozetEl = document.getElementById('strateji-ozet');
@@ -3138,8 +3144,8 @@ function planReset() {
     var kaynakEl = document.getElementById('strateji-kaynaklar');
     var badge2 = document.getElementById('strateji-date-badge2');
 
-    if (konuEl) konuEl.textContent = data.konu || '';
-    if (ozetEl) ozetEl.textContent = data.ozet || '';
+    if (konuEl) konuEl.textContent = cleanText(data.konu);
+    if (ozetEl) ozetEl.textContent = cleanText(data.ozet);
     if (badge2) { var d2=new Date(),m2=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']; badge2.textContent=d2.getDate()+' '+m2[d2.getMonth()]; }
 
     // Taktik kartları — her biri yeşil tonlu gradient
@@ -3159,12 +3165,12 @@ function planReset() {
         return '<div style="background:'+g+';border:1.5px solid '+b+';border-radius:14px;padding:16px 18px">' +
           '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
             '<span style="font-size:18px;line-height:1">'+(t.emoji||'✦')+'</span>' +
-            '<div style="font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.02em">'+ escapeHtml(t.baslik||'') +'</div>' +
+            '<div style="font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.02em">'+ escapeHtml(cleanText(t.baslik)) +'</div>' +
           '</div>' +
-          '<div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:12px">'+ escapeHtml(t.aciklama||'') +'</div>' +
+          '<div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:12px">'+ escapeHtml(cleanText(t.aciklama)) +'</div>' +
           (t.aksiyon ? '<div style="background:'+a+';border-radius:8px;padding:8px 13px;display:inline-flex;align-items:center;gap:6px">' +
             '<svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-            '<span style="font-size:11px;font-weight:700;color:#fff;letter-spacing:-.01em">'+ escapeHtml(t.aksiyon) +'</span>' +
+            '<span style="font-size:11px;font-weight:700;color:#fff;letter-spacing:-.01em">'+ escapeHtml(cleanText(t.aksiyon)) +'</span>' +
           '</div>' : '') +
         '</div>';
       }).join('');
