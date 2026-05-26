@@ -538,8 +538,8 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <div class="nf-av" id="nf-av">MA</div>
   <div>
     <div class="nf-name" id="nf-name">Mehmet A.</div>
-    <div class="nf-act" id="nf-act">az once kaydoldu</div>
-    <div class="nf-time" id="nf-time">2 dakika once</div>
+    <div class="nf-act" id="nf-act">az önce kaydoldu</div>
+    <div class="nf-time" id="nf-time">2 dakika önce</div>
   </div>
   <div class="nf-x" onclick="document.getElementById('notif').classList.remove('show')">x</div>
 </div>
@@ -557,10 +557,10 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <span class="nav-wordmark">Adsopify</span>
 </a>
   <ul class="nav-links">
-    <li><a href="#features">Ozellikler</a></li>
-    <li><a href="#how">Nasil Calisir</a></li>
+    <li><a href="#features">Özellikler</a></li>
+    <li><a href="#how">Nasıl Çalışır</a></li>
     <li><a href="#pricing">Fiyat</a></li>
-    <li><a href="https://adsopify.com/dashboard.html" class="nav-cta">Ucretsiz Dene</a></li>
+    <li><a href="https://adsopify.com/dashboard.html" class="nav-cta">Ücretsiz Dene</a></li>
   </ul>
 </nav>
 
@@ -570,30 +570,76 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <div class="blob blob2"></div>
   <div class="blob blob3"></div>
   <div class="hero-eyebrow"><span class="eyebrow-dot"></span>AI destekli Meta Reklam Platformu</div>
-  <h1>Meta reklamlarini<br>kontrol et.</h1>
-  <p class="hero-sub">Hangi kampanya para yakiyor, hangisi buyumeye hazir. Adsopify gercek verini alir, ne yapman gerektigini soyler.</p>
-  <!-- MLYNR KURSIYER GIRISI -->
-  <div style="display:flex;justify-content:center;margin-bottom:20px;position:relative;z-index:1">
-    <a href="https://adsopify.com/dashboard.html?ref=mlynr" class="mlynr-pill" style="display:inline-flex;align-items:center;gap:8px;background:#1D1D1F;border-radius:999px;padding:7px 16px 7px 7px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.15);transition:all .2s var(--ease);overflow:hidden;position:relative">
-      <span class="mlynr-badge" style="background:#0071E3;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.02em;white-space:nowrap;transition:transform .25s var(--ease),opacity .2s">MLYNR</span>
-      <span style="font-size:13px;color:rgba(255,255,255,.75);font-weight:500;white-space:nowrap">Kursiyerler için özel erişim</span>
-      <span class="mlynr-arrow" style="font-size:13px;color:rgba(255,255,255,.4);transition:transform .2s var(--ease),color .2s">→</span>
-    </a>
+  <h1>Meta reklamlarını<br>kontrol et.</h1>
+  <p class="hero-sub">Hangi kampanya para yakıyor, hangisi büyümeye hazır. Adsopify gerçek verini alır, ne yapman gerektiğini söyler.</p>
+  <!-- ÖN KAYIT - küçük üst buton -->
+  <div style="display:flex;justify-content:center;margin-bottom:24px;position:relative;z-index:1">
+    <button onclick="document.getElementById('onkayit-modal').style.display='flex'" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(0,113,227,0.35);color:var(--blue);font-size:13px;font-weight:500;padding:7px 18px;border-radius:980px;cursor:pointer;transition:all .2s var(--ease);letter-spacing:-.01em">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;animation:livePulse 2s infinite"></span>
+      Ağustos için Ön Kayıt
+    </button>
   </div>
-  <style>
-    .mlynr-pill:hover { transform:translateY(-1px); background:#2d2d2f !important; box-shadow:0 6px 20px rgba(0,0,0,.22) !important; }
-    .mlynr-pill:hover .mlynr-badge { transform:translateX(4px); opacity:.85; }
-    .mlynr-pill:hover .mlynr-arrow { transform:translateX(3px); color:rgba(255,255,255,.7); }
-    .mlynr-pill:active .mlynr-badge { transform:translateX(120px); opacity:0; transition:transform .18s ease-in,opacity .15s; }
-    .mlynr-pill:active .mlynr-arrow { transform:translateX(3px); }
-    .mlynr-pill:active { transform:scale(.97); }
-  </style>
 
+  <!-- MLYNR ÜYELERİ GİRİŞİ - büyük alt buton -->
   <div class="hero-btns">
-    <a href="https://adsopify.com/dashboard.html" class="btn-p">Ucretsiz Basla</a>
+    <a href="https://adsopify.com/dashboard.html?ref=mlynr" class="mlynr-pill-big" style="display:inline-flex;align-items:center;gap:10px;background:#1D1D1F;border-radius:999px;padding:12px 24px 12px 10px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:all .25s var(--ease);overflow:hidden;position:relative">
+      <span class="mlynr-badge-big" style="background:#0071E3;color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;letter-spacing:.02em;white-space:nowrap;transition:transform .25s var(--ease),opacity .2s">MLYNR</span>
+      <span style="font-size:16px;color:rgba(255,255,255,.85);font-weight:500;white-space:nowrap">MLYNR Üyelerine Özel</span>
+      <span class="mlynr-arrow-big" style="font-size:16px;color:rgba(255,255,255,.4);transition:transform .2s var(--ease),color .2s">→</span>
+    </a>
     <a href="#features" class="btn-g">Daha fazla bilgi ›</a>
   </div>
-  <p class="hero-note">14 gun ucretsiz · Kredi karti gerekmez</p>
+  <p class="hero-note">Haziran 1 itibariyle başlıyor · Şimdi ön kayıt ol</p>
+
+  <style>
+    .mlynr-pill-big:hover { transform:translateY(-2px); background:#2d2d2f !important; box-shadow:0 8px 24px rgba(0,0,0,.25) !important; }
+    .mlynr-pill-big:hover .mlynr-badge-big { transform:translateX(4px); opacity:.85; }
+    .mlynr-pill-big:hover .mlynr-arrow-big { transform:translateX(4px); color:rgba(255,255,255,.7); }
+    .mlynr-pill-big:active { transform:scale(.97); }
+  </style>
+
+  <!-- ÖN KAYIT MODAL -->
+  <div id="onkayit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:20px;padding:40px 36px;max-width:420px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.2);position:relative;animation:fadeUp .35s var(--ease)">
+      <button onclick="document.getElementById('onkayit-modal').style.display='none'" style="position:absolute;top:16px;right:16px;background:var(--bg2);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;color:var(--t2);display:flex;align-items:center;justify-content:center">×</button>
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="width:48px;height:48px;background:rgba(0,113,227,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px">🚀</div>
+        <h3 style="font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px">Ağustos için Ön Kayıt</h3>
+        <p style="font-size:14px;color:var(--t2);line-height:1.5">Adsopify Ağustos'ta açılıyor. Erken erişim için kaydol, ilk haberdar olan sen ol.</p>
+      </div>
+      <div id="onkayit-form">
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Adın Soyadın</label>
+          <input id="ok-isim" type="text" placeholder="Mehmet Yılmaz" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
+        </div>
+        <div style="margin-bottom:22px">
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">E-posta Adresi</label>
+          <input id="ok-email" type="email" placeholder="mehmet@email.com" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
+        </div>
+        <button onclick="onkayitGonder()" style="width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:980px;font-size:16px;font-weight:500;cursor:pointer;transition:all .25s var(--ease);letter-spacing:-.02em">Ön Kaydımı Yap →</button>
+        <p style="text-align:center;font-size:12px;color:var(--t3);margin-top:12px">Spam yok. İstediğin zaman çıkabilirsin.</p>
+      </div>
+      <div id="onkayit-success" style="display:none;text-align:center;padding:20px 0">
+        <div style="font-size:48px;margin-bottom:16px">🎉</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:8px">Kaydın alındı!</h3>
+        <p style="font-size:14px;color:var(--t2)">Ağustos'ta açılışta seni haberdar edeceğiz.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+  function onkayitGonder() {
+    var isim = document.getElementById('ok-isim').value.trim();
+    var email = document.getElementById('ok-email').value.trim();
+    if (!isim || !email) { alert('Lütfen tüm alanları doldur.'); return; }
+    if (!email.includes('@')) { alert('Geçerli bir e-posta gir.'); return; }
+    // Burada Supabase'e kayıt eklenebilir
+    document.getElementById('onkayit-form').style.display = 'none';
+    document.getElementById('onkayit-success').style.display = 'block';
+  }
+  document.getElementById('onkayit-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+  </script>
   <div class="hero-visual">
     <div class="dash">
       <div class="dash-bar">
@@ -604,7 +650,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         <div class="dash-side">
           <div class="dn on">📊 Dashboard</div>
           <div class="dn">📋 Gunluk Plan</div>
-          <div class="dn">🚀 Olcekleme</div>
+          <div class="dn">🚀 Ölçekleme</div>
           <div class="dn">🎨 Creative</div>
           <div class="dn">🤖 AI Hoca</div>
           <div class="dn">🃏 Hook Swipe</div>
@@ -618,9 +664,9 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
           </div>
           <div class="camp">
             <div class="camp-h"><span>Kampanya</span><span>ROAS</span><span>Harcama</span><span>Karar</span></div>
-            <div class="camp-r"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span>₺420</span><span><div class="pill g">Olcekle</div></span></div>
-            <div class="camp-r"><span>2 Gorsel</span><span style="color:var(--amber)">2.1x</span><span>₺380</span><span><div class="pill y">Izle</div></span></div>
-            <div class="camp-r"><span>Dogru Aci</span><span style="color:var(--red)">0.6x</span><span>₺295</span><span><div class="pill r">Kapat</div></span></div>
+            <div class="camp-r"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span>₺420</span><span><div class="pill g">Ölçekle</div></span></div>
+            <div class="camp-r"><span>2 Görsel</span><span style="color:var(--amber)">2.1x</span><span>₺380</span><span><div class="pill y">İzle</div></span></div>
+            <div class="camp-r"><span>Doğru Açı</span><span style="color:var(--red)">0.6x</span><span>₺295</span><span><div class="pill r">Kapat</div></span></div>
           </div>
         </div>
       </div>
@@ -632,42 +678,42 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 <!-- STATS -->
 <div class="stats-wrap sr">
   <div class="stats-row">
-    <div class="stat sr d1"><div class="stat-n" data-target="30" data-suffix="sn">30sn</div><div class="stat-l">Ilk kurulum suresi</div></div>
-    <div class="stat sr d2"><div class="stat-n" data-target="47" data-suffix="%">%47</div><div class="stat-l">Ortalama CPA dususu</div></div>
-    <div class="stat sr d3"><div class="stat-n">7/24</div><div class="stat-l">AI karar destegi</div></div>
+    <div class="stat sr d1"><div class="stat-n" data-target="30" data-suffix="sn">30sn</div><div class="stat-l">İlk kurulum süresi</div></div>
+    <div class="stat sr d2"><div class="stat-n" data-target="47" data-suffix="%">%47</div><div class="stat-l">Ortalama CPA düşüşü</div></div>
+    <div class="stat sr d3"><div class="stat-n">7/24</div><div class="stat-l">AI karar desteği</div></div>
   </div>
 </div>
 
 <!-- FEATURES -->
 <div class="feat-intro sr" id="features">
-  <p class="s-eye">Ozellikler</p>
+  <p class="s-eye">Özellikler</p>
   <h2 class="s-title gradient">Her sey tek yerde.</h2>
-  <p class="s-desc">Manuel analiz bitti. Gercek veriye dayali, anlik kararlar. Meta hesabini bagla — geri kalani Adsopify halleder.</p>
+  <p class="s-desc">Manuel analiz bitti. Gerçek veriye dayalı, anlık kararlar. Meta hesabını bağla — geri kalanı Adsopify halleder.</p>
 </div>
 <div class="bento">
   <div class="bc wide sr" data-bars>
     <div class="bc-icon">📊</div>
-    <div class="bc-title">Gercek ROAS & Satis Analizi</div>
-    <p class="bc-desc">Meta Pixel'den satis verisi ceker. Hangi kampanya kar ediyor, hangisi zararda — saniyeler icinde gorursunuz.</p>
+    <div class="bc-title">Gerçek ROAS & Satış Analizi</div>
+    <p class="bc-desc">Meta Pixel'den satış verisi çeker. Hangi kampanya kar ediyor, hangisi zararda — saniyeler içinde görürsünüz.</p>
     <div class="mini-bars">
       <div class="mb-row"><span class="mb-lbl">Viral Reel</span><div class="mb-track"><div class="mb-fill" style="width:85%;background:var(--green)"></div></div><span class="mb-val" style="color:var(--green)">7.8x</span></div>
-      <div class="mb-row"><span class="mb-lbl">2 Gorsel</span><div class="mb-track"><div class="mb-fill" style="width:27%;background:var(--amber)"></div></div><span class="mb-val" style="color:var(--amber)">2.1x</span></div>
-      <div class="mb-row"><span class="mb-lbl">Dogru Aci</span><div class="mb-track"><div class="mb-fill" style="width:7%;background:var(--red)"></div></div><span class="mb-val" style="color:var(--red)">0.6x</span></div>
+      <div class="mb-row"><span class="mb-lbl">2 Görsel</span><div class="mb-track"><div class="mb-fill" style="width:27%;background:var(--amber)"></div></div><span class="mb-val" style="color:var(--amber)">2.1x</span></div>
+      <div class="mb-row"><span class="mb-lbl">Doğru Açı</span><div class="mb-track"><div class="mb-fill" style="width:7%;background:var(--red)"></div></div><span class="mb-val" style="color:var(--red)">0.6x</span></div>
     </div>
   </div>
-  <div class="bc sr d1"><div class="bc-icon">🤖</div><div class="bc-title">AI Hoca</div><p class="bc-desc">Kampanya verini bilen gercek yapay zeka. Data bazli, spesifik aksiyon onerileri. Tahmin degil, analiz.</p></div>
-  <div class="bc sr d2"><div class="bc-icon">🚀</div><div class="bc-title">Akilli Olcekleme</div><p class="bc-desc">Olcekle / Izle / Kapat karari ROAS + frekans + CPA ile otomatik verilir.</p></div>
-  <div class="bc sr"><div class="bc-icon">🃏</div><div class="bc-title">Hook Swipe</div><p class="bc-desc">Tinder tarzinda hook testi. Markana ozel AI hooklari — 25 hook, sonsuz fikir.</p></div>
-  <div class="bc sr d1"><div class="bc-icon">⚡</div><div class="bc-title">Creative Yorgunluk Alarmi</div><p class="bc-desc">Frekans 3u gecince otomatik uyari. Creative degisim zamanini asla kacirmazsin.</p></div>
-  <div class="bc sr d2"><div class="bc-icon">🎨</div><div class="bc-title">Gorsel Prompt Uretici</div><p class="bc-desc">Urun gorselini yukle — Midjourney, Gemini ve DALL-E icin profesyonel promptlar uretir.</p></div>
+  <div class="bc sr d1"><div class="bc-icon">🤖</div><div class="bc-title">AI Hoca</div><p class="bc-desc">Kampanya verini bilen gerçek yapay zeka. Data bazlı, spesifik aksiyon önerileri. Tahmin değil, analiz.</p></div>
+  <div class="bc sr d2"><div class="bc-icon">🚀</div><div class="bc-title">Akıllı Ölçekleme</div><p class="bc-desc">Ölçekle / İzle / Kapat kararı ROAS + frekans + CPA ile otomatik verilir.</p></div>
+  <div class="bc sr"><div class="bc-icon">🃏</div><div class="bc-title">Hook Swipe</div><p class="bc-desc">Tinder tarzında hook testi. Markana özel AI hookları — 25 hook, sonsuz fikir.</p></div>
+  <div class="bc sr d1"><div class="bc-icon">⚡</div><div class="bc-title">Creative Yorgunluk Alarmı</div><p class="bc-desc">Frekans 3'ü geçince otomatik uyarı. Creative değişim zamanını asla kaçırmazsın.</p></div>
+  <div class="bc sr d2"><div class="bc-icon">🎨</div><div class="bc-title">Görsel Prompt Üretici</div><p class="bc-desc">Ürün görselini yükle — Midjourney, Gemini ve DALL-E için profesyonel promptlar üretir.</p></div>
 </div>
 
 
 <!-- ANIMATED DEMO -->
 <div class="demo-section sr">
   <p class="s-eye" style="margin-bottom:12px">Canli Demo</p>
-  <h2 class="s-title gradient" style="margin-bottom:16px">Gercekte nasil gorunuyor.</h2>
-  <p class="s-desc" style="margin:0 auto 48px">Kampanyalarini bagla — Adsopify saniyeler icinde ne yapman gerektigini soyler.</p>
+  <h2 class="s-title gradient" style="margin-bottom:16px">Gerçekte nasıl görünüyor.</h2>
+  <p class="s-desc" style="margin:0 auto 48px">Kampanyalarını bağla — Adsopify saniyeler içinde ne yapman gerektiğini söyler.</p>
 
   <div class="demo-frame">
     <!-- Top bar -->
@@ -703,9 +749,9 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
       </div>
       <div class="demo-rows">
         <div class="demo-row-h"><span>Kampanya</span><span>ROAS</span><span>Karar</span></div>
-        <div class="demo-row" id="dr1" style="opacity:0"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span><div class="pill g">Olcekle</div></span></div>
-        <div class="demo-row" id="dr2" style="opacity:0"><span>2 Gorsel</span><span style="color:var(--amber)">2.1x</span><span><div class="pill y">Izle</div></span></div>
-        <div class="demo-row" id="dr3" style="opacity:0"><span>Dogru Aci</span><span style="color:var(--red)">0.6x</span><span><div class="pill r">Kapat</div></span></div>
+        <div class="demo-row" id="dr1" style="opacity:0"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span><div class="pill g">Ölçekle</div></span></div>
+        <div class="demo-row" id="dr2" style="opacity:0"><span>2 Görsel</span><span style="color:var(--amber)">2.1x</span><span><div class="pill y">İzle</div></span></div>
+        <div class="demo-row" id="dr3" style="opacity:0"><span>Doğru Açı</span><span style="color:var(--red)">0.6x</span><span><div class="pill r">Kapat</div></span></div>
       </div>
     </div>
 
@@ -714,11 +760,11 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
       <div class="ai-demo-body">
         <div class="ai-msg" id="ai-m1" style="opacity:0;transform:translateY(10px)">
           <div class="chat-role">Sen</div>
-          <div class="bubble user">Viral Reel kampanyami olcekleyebilir miyim?</div>
+          <div class="bubble user">Viral Reel kampanyamı ölçekleyebilir miyim?</div>
         </div>
         <div class="ai-msg" id="ai-m2" style="opacity:0;transform:translateY(10px)">
           <div class="chat-role">AI Hoca</div>
-          <div class="bubble ai">Evet — <span class="hi">Viral Reel olceklemeye hazir.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL. Butceyi <span class="hi">%30 artir</span>, 3 gun izle.</div>
+          <div class="bubble ai">Evet — <span class="hi">Viral Reel ölçeklemeye hazır.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL. Butceyi <span class="hi">%30 artir</span>, 3 gun izle.</div>
         </div>
         <div class="ai-msg" id="ai-m3" style="opacity:0;transform:translateY(10px)">
           <div class="chat-role">AI Hoca yazıyor</div>
@@ -732,7 +778,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
       <div class="hook-demo">
         <div class="hook-card" id="hc1">
           <div class="hook-tag">Hook #7 — Merak</div>
-          <div class="hook-text">"Turk girisimcilerinin yuzde 73u Meta reklamlarinda bu hatayı yapiyor."</div>
+          <div class="hook-text">"Türk girişimcilerinin yüzde 73'ü Meta reklamlarında bu hatayı yapıyor."</div>
           <div class="hook-btns">
             <div class="hook-btn skip">✕ Atla</div>
             <div class="hook-btn use">✓ Kullan</div>
@@ -740,7 +786,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         </div>
         <div class="hook-card" id="hc2" style="display:none">
           <div class="hook-tag">Hook #8 — Sonuc</div>
-          <div class="hook-text">"ROAS 1.2x'ten 7.8x'e nasil ciktim — 3 adimda."</div>
+          <div class="hook-text">"ROAS 1.2x'ten 7.8x'e nasıl çıktım — 3 adımda."</div>
           <div class="hook-btns">
             <div class="hook-btn skip">✕ Atla</div>
             <div class="hook-btn use">✓ Kullan</div>
@@ -761,20 +807,20 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 <section class="how" id="how">
   <div class="how-inner">
     <div class="how-l">
-      <p class="s-eye sr">Nasil Calisir</p>
-      <h2 class="s-title sr gradient">3 adimda basla.</h2>
+      <p class="s-eye sr">Nasıl Çalışır</p>
+      <h2 class="s-title sr gradient">3 adımda başla.</h2>
       <div class="steps">
         <div class="step" id="step1">
           <span class="step-n">01</span>
-          <div><div class="step-title">Facebook ile baglan</div><p class="step-desc">Meta reklam hesabini OAuth ile bagla. Tek tikla, 30 saniye. Token veya sifre gerekmez.</p></div>
+          <div><div class="step-title">Facebook ile bağlan</div><p class="step-desc">Meta reklam hesabını OAuth ile bağla. Tek tıkla, 30 saniye. Token veya şifre gerekmez.</p></div>
         </div>
         <div class="step" id="step2">
           <span class="step-n">02</span>
-          <div><div class="step-title">Markani tanit</div><p class="step-desc">Site URL'ni gir — AI markani analiz eder, sana ozel hook, creative ve reklam metni uretir.</p></div>
+          <div><div class="step-title">Markanı tanıt</div><p class="step-desc">Site URL'ni gir — AI markanı analiz eder, sana özel hook, creative ve reklam metni üretir.</p></div>
         </div>
         <div class="step" id="step3">
           <span class="step-n">03</span>
-          <div><div class="step-title">Karar ver, buyuu</div><p class="step-desc">Hangisi olceklenir, hangisi kapatilir — gercek veriyle net gorursun.</p></div>
+          <div><div class="step-title">Karar ver, büyü</div><p class="step-desc">Hangisi ölçeklenir, hangisi kapatılır — gerçek veriyle net görürsün.</p></div>
         </div>
       </div>
     </div>
@@ -785,14 +831,14 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         <div class="live"></div>
       </div>
       <div class="chat-body">
-        <div><div class="chat-role">Sen</div><div class="bubble user">Viral Reel kampanyami olcekleyebilir miyim?</div></div>
-        <div><div class="chat-role">AI Hoca</div><div class="bubble ai">Evet — <span class="hi">Viral Reel olceklemeye hazir.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL (ortalamanin yuzde 40 altinda).<br><br>Oneri: Butceyi <span class="hi">yuzde 30 artir</span>, 3 gun izle.</div></div>
+        <div><div class="chat-role">Sen</div><div class="bubble user">Viral Reel kampanyamı ölçekleyebilir miyim?</div></div>
+        <div><div class="chat-role">AI Hoca</div><div class="bubble ai">Evet — <span class="hi">Viral Reel ölçeklemeye hazır.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL (ortalamanın yüzde 40 altında).<br><br>Öneri: Bütçeyi <span class="hi">yüzde 30 artır</span>, 3 gün izle.</div></div>
         <div><div class="chat-role">AI Hoca</div><div class="bubble ai typing"><span></span><span></span><span></span></div></div>
       </div>
       <div class="chips">
-        <div class="chip">Butce optimizasyonu</div>
+        <div class="chip">Bütçe optimizasyonu</div>
         <div class="chip">Creative fikri</div>
-        <div class="chip">Rapor gonder</div>
+        <div class="chip">Rapor gönder</div>
       </div>
     </div>
   </div>
@@ -802,44 +848,44 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 <!-- COMPARISON -->
 <div class="comp-wrap">
   <div class="comp-inner sr">
-    <p class="s-eye">Karsilastirma</p>
+    <p class="s-eye">Karşılaştırma</p>
     <h2 class="s-title gradient">Neden Adsopify?</h2>
-    <p class="s-desc">Manuel analize, reklam ajansina ve genel araclara gore farki goruntuleyin.</p>
+    <p class="s-desc">Manuel analize, reklam ajansına ve genel araçlara göre farkı görüntüleyin.</p>
     <div class="comp-grid">
       <!-- Header -->
       <div class="cg-head">
         <div class="cg-feat-col"></div>
-        <div class="cg-col hl-col"><span class="cg-col-name">Adsopify</span><span class="hl-badge">Onerilen</span></div>
+        <div class="cg-col hl-col"><span class="cg-col-name">Adsopify</span><span class="hl-badge">Önerilen</span></div>
         <div class="cg-col"><span class="cg-col-name">Reklam Ajansi</span></div>
       </div>
       <!-- Rows -->
       <div class="cg-row">
-        <div class="cg-feat">Gercek zamanli ROAS</div>
+        <div class="cg-feat">Gerçek zamanlı ROAS</div>
         <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
         <div class="cg-val"><span class="ico-yes">✓</span></div>
       </div>
       <div class="cg-row">
-        <div class="cg-feat">Otomatik Olcekle/Kapat</div>
+        <div class="cg-feat">Otomatik Ölçekle/Kapat</div>
         <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
         <div class="cg-val"><span class="ico-no">—</span></div>
       </div>
       <div class="cg-row">
-        <div class="cg-feat">AI Hook & Creative uretici</div>
+        <div class="cg-feat">AI Hook & Creative üretici</div>
         <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
         <div class="cg-val"><span class="ico-no">—</span></div>
       </div>
       <div class="cg-row">
-        <div class="cg-feat">Creative yorgunluk alarmi</div>
+        <div class="cg-feat">Creative yorgunluk alarmı</div>
         <div class="cg-val hl-col"><span class="ico-yes">✓</span></div>
         <div class="cg-val"><span class="ico-yes">✓</span></div>
       </div>
       <div class="cg-row">
-        <div class="cg-feat">Kurulum suresi</div>
+        <div class="cg-feat">Kurulum süresi</div>
         <div class="cg-val hl-col" style="color:var(--green);font-weight:600;font-size:13px">30 saniye</div>
         <div class="cg-val" style="color:var(--t2);font-size:13px">Haftalar</div>
       </div>
       <div class="cg-row" style="border-bottom:none">
-        <div class="cg-feat">Aylik maliyet</div>
+        <div class="cg-feat">Aylık maliyet</div>
         <div class="cg-val hl-col" style="color:var(--green);font-weight:700;font-size:14px">$29.99</div>
         <div class="cg-val" style="color:var(--red);font-weight:700;font-size:14px">$1.000+</div>
       </div>
@@ -850,51 +896,51 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 <!-- REVIEWS -->
 <div class="reviews-wrap">
   <div class="reviews-head sr">
-    <p class="s-eye">Kullanicilar</p>
-    <h2 class="s-title gradient">Kullanicilar ne diyor.</h2>
+    <p class="s-eye">Kullanıcılar</p>
+    <h2 class="s-title gradient">Kullanıcılar ne diyor.</h2>
   </div>
   <div class="reviews-grid">
-    <div class="rc sr"><div class="rc-stars">★★★★★</div><p class="rc-text">"Hangi kampanyamin zararda oldugunu ilk kez bu kadar net gordum. ROAS bazli karar sistemi inanilmaz ise yariyor. Haftada 3 saatimi kurtariyor."</p><div class="rc-author"><div class="ava">MA</div><div><div class="ava-name">Mehmet A.</div><div class="ava-role">E-ticaret girisimcisi, Istanbul</div></div></div></div>
-    <div class="rc sr d1"><div class="rc-stars">★★★★★</div><p class="rc-text">"Gorsel prompt ozelligi beni carpti. Urun fotografini yukledim, Midjourney icin hazir prompt geldi. Reklam gorsellerim cok daha iyi performans gosteriyor."</p><div class="rc-author"><div class="ava">AK</div><div><div class="ava-name">Ayse K.</div><div class="ava-role">Dropshipping girisimcisi, Ankara</div></div></div></div>
-    <div class="rc sr d2"><div class="rc-stars">★★★★★</div><p class="rc-text">"Creative yorgunluk alarmi hayat kurtardi. Frekansi takip etmeden aylarca para yakiyormusum. Simdi CPA'm yuzde 35 dustu."</p><div class="rc-author"><div class="ava">CD</div><div><div class="ava-name">Can D.</div><div class="ava-role">Dijital pazarlama uzmani, Izmir</div></div></div></div>
+    <div class="rc sr"><div class="rc-stars">★★★★★</div><p class="rc-text">"Hangi kampanyamın zararda olduğunu ilk kez bu kadar net gördüm. ROAS bazlı karar sistemi inanılmaz işe yarıyor. Haftada 3 saatimi kurtarıyor."</p><div class="rc-author"><div class="ava">MA</div><div><div class="ava-name">Mehmet A.</div><div class="ava-role">E-ticaret girişimcisi, Istanbul</div></div></div></div>
+    <div class="rc sr d1"><div class="rc-stars">★★★★★</div><p class="rc-text">"Görsel prompt özelliği beni çarptı. Ürün fotoğrafını yükledim, Midjourney için hazır prompt geldi. Reklam görsellerim çok daha iyi performans gösteriyor."</p><div class="rc-author"><div class="ava">AK</div><div><div class="ava-name">Ayse K.</div><div class="ava-role">Dropshipping girişimcisi, Ankara</div></div></div></div>
+    <div class="rc sr d2"><div class="rc-stars">★★★★★</div><p class="rc-text">"Creative yorgunluk alarmı hayat kurtardı. Frekansı takip etmeden aylarca para yakıyormuşum. Şimdi CPA'm yüzde 35 düştü."</p><div class="rc-author"><div class="ava">CD</div><div><div class="ava-name">Can D.</div><div class="ava-role">Dijital pazarlama uzmanı, Izmir</div></div></div></div>
   </div>
 </div>
 
 <!-- FAQ -->
 <div class="faq-wrap">
-  <p class="s-eye sr">Sik Sorulan Sorular</p>
-  <h2 class="s-title sr gradient">Aklindaki sorular.</h2>
-  <div class="faq-item"><div class="faq-q"><span class="faq-qt">Meta reklam hesabimi nasil bagliyorum?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Facebook OAuth ile tek tikla baglaniyorsun. Sifre veya token gerekmez. Baglanti 30 saniye icinde tamamlaniyor.</p></div></div>
-  <div class="faq-item"><div class="faq-q"><span class="faq-qt">14 gunluk deneme bittikten sonra ne oluyor?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">14 gun boyunca tum ozellikleri ucretsiz kullanirsin. Sure bittiginde $29.99/ay plan baslar. Istedigin zaman iptal edebilirsin.</p></div></div>
-  <div class="faq-item"><div class="faq-q"><span class="faq-qt">Birden fazla reklam hesabi yonetebilir miyim?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Evet, Pro Plan ile birden fazla marka/hesap ekleyebilirsin. Dashboard arasinda kolayca gecis yapabilirsin.</p></div></div>
-  <div class="faq-item"><div class="faq-q"><span class="faq-qt">AI Hoca gercekten hesabimin verilerini biliyor mu?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Evet. AI Hoca, bagladigin Meta hesabindan gelen gercek kampanya verilerini bilerek cevap veriyor. Genel tavsiye degil, sana ozel analiz.</p></div></div>
-  <div class="faq-item"><div class="faq-q"><span class="faq-qt">Verilerimin guvenligi nasil saglanıyor?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Meta OAuth baglantisi sadece okuma izni kullanir. Reklam butcene dokunulamaz. Veriler sifreli olarak saklanir.</p></div></div>
+  <p class="s-eye sr">Sık Sorulan Sorular</p>
+  <h2 class="s-title sr gradient">Aklındaki sorular.</h2>
+  <div class="faq-item"><div class="faq-q"><span class="faq-qt">Meta reklam hesabımı nasıl bağlıyorum?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Facebook OAuth ile tek tıkla bağlanıyorsun. Şifre veya token gerekmez. Bağlantı 30 saniye içinde tamamlanıyor.</p></div></div>
+  <div class="faq-item"><div class="faq-q"><span class="faq-qt">14 günlük deneme bittikten sonra ne oluyor?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">14 gün boyunca tüm özellikleri ücretsiz kullanırsın. Süre bittiğinde $29.99/ay plan başlar. İstediğin zaman iptal edebilirsin.</p></div></div>
+  <div class="faq-item"><div class="faq-q"><span class="faq-qt">Birden fazla reklam hesabı yönetebilir miyim?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Evet, Pro Plan ile birden fazla marka/hesap ekleyebilirsin. Dashboard arasında kolayca geçiş yapabilirsin.</p></div></div>
+  <div class="faq-item"><div class="faq-q"><span class="faq-qt">AI Hoca gerçekten hesabımın verilerini biliyor mu?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Evet. AI Hoca, bağladığın Meta hesabından gelen gerçek kampanya verilerini bilerek cevap veriyor. Genel tavsiye değil, sana özel analiz.</p></div></div>
+  <div class="faq-item"><div class="faq-q"><span class="faq-qt">Verilerimin güvenliği nasıl sağlanıyor?</span><div class="faq-ico">+</div></div><div class="faq-a"><p class="faq-at">Meta OAuth bağlantısı sadece okuma izni kullanır. Reklam bütçene dokunulamaz. Veriler şifreli olarak saklanır.</p></div></div>
 </div>
 
 <!-- PRICING -->
 <div class="pricing-bg" id="pricing">
   <div class="pricing-inner">
-    <p class="s-eye sr">Fiyatlandirma</p>
-    <h2 class="s-title sr gradient">Basit. Seffaf.</h2>
-    <p class="s-desc sr" style="margin:0 auto 56px">Deneme suresiyle basla, sonra devam edip etmemeye karar ver.</p>
+    <p class="s-eye sr">Fiyatlandırma</p>
+    <h2 class="s-title sr gradient">Basit. Şeffaf.</h2>
+    <p class="s-desc sr" style="margin:0 auto 56px">Deneme süresiyle başla, sonra devam edip etmemeye karar ver.</p>
     <div class="price-card sr">
       <div class="price-head">
         <div class="price-plan">Pro Plan</div>
         <div class="price-amount"><span class="price-cur">$</span><span class="price-num">29</span><span class="price-per">.99 / ay</span></div>
-        <p class="price-trial">14 gun ucretsiz dene, sonra devam et</p>
+        <p class="price-trial">14 gün ücretsiz dene, sonra devam et</p>
       </div>
       <ul class="price-feats">
-        <li>Dashboard & Gercek ROAS / CPA Analizi</li>
-        <li>AI Marka Analizi & Hook Uretici</li>
+        <li>Dashboard & Gerçek ROAS / CPA Analizi</li>
+        <li>AI Marka Analizi & Hook Üretici</li>
         <li>Tinder Tarzli Hook Swipe — 25 Hook</li>
-        <li>Gorsel ile AI Prompt Uretici</li>
-        <li>Haftalik Karsilastirma & Aksiyon</li>
-        <li>Creative Yorgunluk Alarmi</li>
+        <li>Görsel ile AI Prompt Üretici</li>
+        <li>Haftalık Karşılaştırma & Aksiyon</li>
+        <li>Creative Yorgunluk Alarmı</li>
         <li>AI Hoca — Veriye Dayali Chat</li>
       </ul>
       <div class="price-cta">
-        <a href="https://adsopify.com/dashboard.html" class="btn-buy">Facebook ile Ucretsiz Basla</a>
-        <p class="price-note">Kredi karti gerekmez · Istedigin zaman iptal et</p>
+        <button onclick="document.getElementById('onkayit-modal').style.display='flex'" class="btn-buy">Ağustos için Ön Kayıt →</button>
+        <p class="price-note">Kredi kartı gerekmez · İstediğin zaman iptal et</p>
       </div>
     </div>
   </div>
@@ -902,10 +948,10 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 
 <!-- CTA -->
 <section class="cta">
-  <h2 class="s-title sr gradient">Bugun basla.<br>Hemen fark gor.</h2>
-  <p class="s-desc sr">Meta hesabini bagla, dashboardu ac, ilk karari dakikalar icinde ver.</p>
-  <a href="https://adsopify.com/dashboard.html" class="btn-p sr">Ucretsiz Basla</a>
-  <p class="cta-note sr">14 gun ucretsiz · Kredi karti gerekmez · 30 saniyede kur</p>
+  <h2 class="s-title sr gradient">Bugün başla.<br>Hemen fark gör.</h2>
+  <p class="s-desc sr">Meta hesabını bağla, dashboardu aç, ilk kararı dakikalar içinde ver.</p>
+  <button onclick="document.getElementById('onkayit-modal').style.display='flex'" class="btn-p sr" style="border:none;cursor:pointer">Ağustos için Ön Kayıt →</button>
+  <p class="cta-note sr">Haziran 1 itibariyle başlıyor · Şimdi ön kayıt ol · 30 saniyede kur</p>
 </section>
 
 <!-- FOOTER -->
@@ -914,10 +960,10 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
     <a href="#" class="foot-logo">Adsopify</a>
     <ul class="foot-links">
       <li><a href="https://adsopify.com/privacy.html">Gizlilik</a></li>
-      <li><a href="#">Iletisim</a></li>
+      <li><a href="#">İletişim</a></li>
     </ul>
   </div>
-  <div class="foot-bot"><p>Copyright 2026 Adsopify. Tum haklari saklidir.</p></div>
+  <div class="foot-bot"><p>Copyright 2026 Adsopify. Tüm hakları saklıdır.</p></div>
 </footer>
 
 <script>
@@ -1067,11 +1113,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // FLOATING NOTIFICATIONS
   var notifs = [
-    { av: 'MA', name: 'Mehmet A.', act: 'az once kaydoldu', time: '2 dakika once' },
-    { av: 'AK', name: 'Ayse K.', act: 'ilk dashboardini kurdu', time: '5 dakika once' },
-    { av: 'CD', name: 'Can D.', act: 'Pro Plana gecti', time: '8 dakika once' },
-    { av: 'EY', name: 'Emre Y.', act: 'kampanyasini olcekledi', time: '12 dakika once' },
-    { av: 'SB', name: 'Selin B.', act: 'CPA dususu yasadi', time: '15 dakika once' }
+    { av: 'MA', name: 'Mehmet A.', act: 'az önce kaydoldu', time: '2 dakika önce' },
+    { av: 'AK', name: 'Ayse K.', act: 'ilk dashboardını kurdu', time: '5 dakika önce' },
+    { av: 'CD', name: 'Can D.', act: 'Pro Plan'a geçti', time: '8 dakika önce' },
+    { av: 'EY', name: 'Emre Y.', act: 'kampanyasını ölçekledi', time: '12 dakika önce' },
+    { av: 'SB', name: 'Selin B.', act: 'CPA düşüşü yaşadı', time: '15 dakika önce' }
   ];
   var nIdx = 0;
   var notifEl = document.getElementById('notif');
