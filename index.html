@@ -627,36 +627,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
       </div>
     </div>
   </div>
-  <script>
-  var SUPA_URL='https://cvxwhlvjdghiaugzepme.supabase.co';
-  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eHdobHZqZGdoaWF1Z3plcG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzgxMzMsImV4cCI6MjA4OTYxNDEzM30.eVMw0H-SgErKma96xa697G_9HxBMfZ1dUU7Ihq5v8FU';
-  async function onkayitGonder(e){
-    var btn=e.target;
-    var isim=document.getElementById('ok-isim').value.trim();
-    var email=document.getElementById('ok-email').value.trim();
-    var telefon=document.getElementById('ok-telefon').value.trim();
-    if(!isim||!email){alert('Lütfen adın ve e-posta alanlarını doldur.');return;}
-    if(!email.includes('@')){alert('Geçerli bir e-posta gir.');return;}
-    btn.textContent='Kaydediliyor...';btn.disabled=true;
-    try{
-      var res=await fetch(SUPA_URL+'/rest/v1/onkayit',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=minimal'},
-        body:JSON.stringify({isim:isim,email:email,telefon:telefon||null})
-      });
-      if(res.ok){
-        document.getElementById('onkayit-form').style.display='none';
-        document.getElementById('onkayit-success').style.display='block';
-      } else {
-        var err=await res.json();
-        if(err.code==='23505'){alert('Bu e-posta zaten kayıtlı!');}
-        else{alert('Bir hata oluştu, tekrar dene.');}
-        btn.textContent='Ön Kaydımı Yap →';btn.disabled=false;
-      }
-    }catch(ex){alert('Bağlantı hatası.');btn.textContent='Ön Kaydımı Yap →';btn.disabled=false;}
-  }
-  document.getElementById('onkayit-modal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
-  </script>
+
   <div class="hero-visual">
     <div class="dash">
       <div class="dash-bar">
@@ -1304,5 +1275,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+  <script>
+  var SUPA_URL='https://cvxwhlvjdghiaugzepme.supabase.co';
+  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eHdobHZqZGdoaWF1Z3plcG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzgxMzMsImV4cCI6MjA4OTYxNDEzM30.eVMw0H-SgErKma96xa697G_9HxBMfZ1dUU7Ihq5v8FU';
+  async function onkayitGonder(e){
+    var btn=e.target;
+    var isim=document.getElementById('ok-isim').value.trim();
+    var email=document.getElementById('ok-email').value.trim();
+    var telefon=document.getElementById('ok-telefon').value.trim();
+    if(!isim||!email){alert('Lütfen adın ve e-posta alanlarını doldur.');return;}
+    if(!email.includes('@')){alert('Geçerli bir e-posta gir.');return;}
+    btn.textContent='Kaydediliyor...';btn.disabled=true;
+    try{
+      var res=await fetch(SUPA_URL+'/rest/v1/onkayit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=minimal'},
+        body:JSON.stringify({isim:isim,email:email,telefon:telefon||null})
+      });
+      if(res.ok){
+        document.getElementById('onkayit-form').style.display='none';
+        document.getElementById('onkayit-success').style.display='block';
+      } else {
+        var err=await res.json();
+        if(err.code==='23505'){alert('Bu e-posta zaten kayıtlı!');}
+        else{alert('Bir hata oluştu, tekrar dene.');}
+        btn.textContent='Ön Kaydımı Yap →';btn.disabled=false;
+      }
+    }catch(ex){alert('Bağlantı hatası.');btn.textContent='Ön Kaydımı Yap →';btn.disabled=false;}
+  }
+  document.getElementById('onkayit-modal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
+  </script>
 </body>
 </html>
