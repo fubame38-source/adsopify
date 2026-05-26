@@ -627,18 +627,69 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
     </div>
   </div>
   <script>
-  function onkayitGonder() {
+  var SUPA_URL = 'https://cvxwhlvjdghiaugzepme.supabase.co';
+  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eHdobHZqZGdoaWF1Z3plcG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzgxMzMsImV4cCI6MjA4OTYxNDEzM30.eVMw0H-SgErKma96xa697G_9HxBMfZ1dUU7Ihq5v8FU';
+
+  async function onkayitGonder() {
     var isim = document.getElementById('ok-isim').value.trim();
     var email = document.getElementById('ok-email').value.trim();
     if (!isim || !email) { alert('Lütfen tüm alanları doldur.'); return; }
     if (!email.includes('@')) { alert('Geçerli bir e-posta gir.'); return; }
-    // Burada Supabase'e kayıt eklenebilir
-    document.getElementById('onkayit-form').style.display = 'none';
-    document.getElementById('onkayit-success').style.display = 'block';
+
+    var btn = event.target;
+    btn.textContent = 'Kaydediliyor...';
+    btn.disabled = true;
+
+    try {
+      var res = await fetch(SUPA_URL + '/rest/v1/onkayit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ isim: isim, email: email })
+      });
+
+      if (res.ok) {
+        document.getElementById('onkayit-form').style.display = 'none';
+        document.getElementById('onkayit-success').style.display = 'block';
+      } else {
+        var err = await res.json();
+        // Duplicate email kontrolü
+        if (err.code === '23505') {
+          alert('Bu e-posta zaten kayıtlı! Seni haberdar edeceğiz.');
+        } else {
+          alert('Bir hata oluştu, tekrar dene.');
+        }
+        btn.textContent = 'Ön Kaydımı Yap →';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      alert('Bağlantı hatası, tekrar dene.');
+      btn.textContent = 'Ön Kaydımı Yap →';
+      btn.disabled = false;
+    }
   }
+
   document.getElementById('onkayit-modal').addEventListener('click', function(e) {
     if (e.target === this) this.style.display = 'none';
   });
+
+  // Modal her açıldığında formu sıfırla
+  var origOpen = document.getElementById('onkayit-modal');
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      if (m.target.style.display === 'flex') {
+        document.getElementById('onkayit-form').style.display = 'block';
+        document.getElementById('onkayit-success').style.display = 'none';
+        document.getElementById('ok-isim').value = '';
+        document.getElementById('ok-email').value = '';
+      }
+    });
+  });
+  observer.observe(origOpen, { attributes: true, attributeFilter: ['style'] });
   </script>
   <div class="hero-visual">
     <div class="dash">
