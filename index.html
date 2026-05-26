@@ -580,22 +580,19 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
     </button>
   </div>
 
-  <!-- MLYNR ÜYELERİ GİRİŞİ - büyük alt buton -->
+  <!-- MLYNR ÜYELERİ - büyük buton -->
   <div class="hero-btns">
-    <a href="https://adsopify.com/dashboard.html?ref=mlynr" class="mlynr-pill-big" style="display:inline-flex;align-items:center;gap:10px;background:#1D1D1F;border-radius:999px;padding:12px 24px 12px 10px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:all .25s var(--ease);overflow:hidden;position:relative">
-      <span class="mlynr-badge-big" style="background:#0071E3;color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;letter-spacing:.02em;white-space:nowrap;transition:transform .25s var(--ease),opacity .2s">MLYNR</span>
+    <a href="https://adsopify.com/dashboard.html?ref=mlynr" class="mlynr-pill-big" style="display:inline-flex;align-items:center;gap:10px;background:#1D1D1F;border-radius:999px;padding:12px 24px 12px 10px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:all .25s var(--ease)">
+      <span style="background:#0071E3;color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;letter-spacing:.02em;white-space:nowrap">MLYNR</span>
       <span style="font-size:16px;color:rgba(255,255,255,.85);font-weight:500;white-space:nowrap">MLYNR Üyelerine Özel</span>
-      <span class="mlynr-arrow-big" style="font-size:16px;color:rgba(255,255,255,.4);transition:transform .2s var(--ease),color .2s">→</span>
+      <span style="font-size:16px;color:rgba(255,255,255,.4)">→</span>
     </a>
     <a href="#features" class="btn-g">Daha fazla bilgi ›</a>
   </div>
   <p class="hero-note">Haziran 1 itibariyle başlıyor · Şimdi ön kayıt ol</p>
-
   <style>
-    .mlynr-pill-big:hover { transform:translateY(-2px); background:#2d2d2f !important; box-shadow:0 8px 24px rgba(0,0,0,.25) !important; }
-    .mlynr-pill-big:hover .mlynr-badge-big { transform:translateX(4px); opacity:.85; }
-    .mlynr-pill-big:hover .mlynr-arrow-big { transform:translateX(4px); color:rgba(255,255,255,.7); }
-    .mlynr-pill-big:active { transform:scale(.97); }
+    .mlynr-pill-big:hover{transform:translateY(-2px);background:#2d2d2f!important;box-shadow:0 8px 24px rgba(0,0,0,.25)!important}
+    .mlynr-pill-big:active{transform:scale(.97)}
   </style>
 
   <!-- ÖN KAYIT MODAL -->
@@ -617,10 +614,10 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
           <input id="ok-email" type="email" placeholder="mehmet@email.com" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
         </div>
         <div style="margin-bottom:22px">
-          <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Telefon Numarası <span style="color:var(--t3);font-weight:400">(isteğe bağlı)</span></label>
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Telefon <span style="color:var(--t3);font-weight:400">(isteğe bağlı)</span></label>
           <input id="ok-telefon" type="tel" placeholder="05xx xxx xx xx" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
         </div>
-        <button onclick="onkayitGonder()" style="width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:980px;font-size:16px;font-weight:500;cursor:pointer;transition:all .25s var(--ease);letter-spacing:-.02em">Ön Kaydımı Yap →</button>
+        <button onclick="onkayitGonder(event)" style="width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:980px;font-size:16px;font-weight:500;cursor:pointer;transition:all .25s var(--ease);letter-spacing:-.02em">Ön Kaydımı Yap →</button>
         <p style="text-align:center;font-size:12px;color:var(--t3);margin-top:12px">Spam yok. İstediğin zaman çıkabilirsin.</p>
       </div>
       <div id="onkayit-success" style="display:none;text-align:center;padding:20px 0">
@@ -631,70 +628,34 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
     </div>
   </div>
   <script>
-  var SUPA_URL = 'https://cvxwhlvjdghiaugzepme.supabase.co';
-  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eHdobHZqZGdoaWF1Z3plcG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzgxMzMsImV4cCI6MjA4OTYxNDEzM30.eVMw0H-SgErKma96xa697G_9HxBMfZ1dUU7Ihq5v8FU';
-
-  async function onkayitGonder() {
-    var isim = document.getElementById('ok-isim').value.trim();
-    var email = document.getElementById('ok-email').value.trim();
-    if (!isim || !email) { alert('Lütfen tüm alanları doldur.'); return; }
-    if (!email.includes('@')) { alert('Geçerli bir e-posta gir.'); return; }
-
-    var btn = event.target;
-    btn.textContent = 'Kaydediliyor...';
-    btn.disabled = true;
-
-    try {
-      var res = await fetch(SUPA_URL + '/rest/v1/onkayit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPA_KEY,
-          'Authorization': 'Bearer ' + SUPA_KEY,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ isim: isim, email: email, telefon: (function(){ var t = document.getElementById('ok-telefon').value.trim(); return t || null; })() })
+  var SUPA_URL='https://cvxwhlvjdghiaugzepme.supabase.co';
+  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2eHdobHZqZGdoaWF1Z3plcG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzgxMzMsImV4cCI6MjA4OTYxNDEzM30.eVMw0H-SgErKma96xa697G_9HxBMfZ1dUU7Ihq5v8FU';
+  async function onkayitGonder(e){
+    var btn=e.target;
+    var isim=document.getElementById('ok-isim').value.trim();
+    var email=document.getElementById('ok-email').value.trim();
+    var telefon=document.getElementById('ok-telefon').value.trim();
+    if(!isim||!email){alert('Lütfen adın ve e-posta alanlarını doldur.');return;}
+    if(!email.includes('@')){alert('Geçerli bir e-posta gir.');return;}
+    btn.textContent='Kaydediliyor...';btn.disabled=true;
+    try{
+      var res=await fetch(SUPA_URL+'/rest/v1/onkayit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Prefer':'return=minimal'},
+        body:JSON.stringify({isim:isim,email:email,telefon:telefon||null})
       });
-
-      if (res.ok) {
-        document.getElementById('onkayit-form').style.display = 'none';
-        document.getElementById('onkayit-success').style.display = 'block';
+      if(res.ok){
+        document.getElementById('onkayit-form').style.display='none';
+        document.getElementById('onkayit-success').style.display='block';
       } else {
-        var err = await res.json();
-        // Duplicate email kontrolü
-        if (err.code === '23505') {
-          alert('Bu e-posta zaten kayıtlı! Seni haberdar edeceğiz.');
-        } else {
-          alert('Bir hata oluştu, tekrar dene.');
-        }
-        btn.textContent = 'Ön Kaydımı Yap →';
-        btn.disabled = false;
+        var err=await res.json();
+        if(err.code==='23505'){alert('Bu e-posta zaten kayıtlı!');}
+        else{alert('Bir hata oluştu, tekrar dene.');}
+        btn.textContent='Ön Kaydımı Yap →';btn.disabled=false;
       }
-    } catch(e) {
-      alert('Bağlantı hatası, tekrar dene.');
-      btn.textContent = 'Ön Kaydımı Yap →';
-      btn.disabled = false;
-    }
+    }catch(ex){alert('Bağlantı hatası.');btn.textContent='Ön Kaydımı Yap →';btn.disabled=false;}
   }
-
-  document.getElementById('onkayit-modal').addEventListener('click', function(e) {
-    if (e.target === this) this.style.display = 'none';
-  });
-
-  // Modal her açıldığında formu sıfırla
-  var origOpen = document.getElementById('onkayit-modal');
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(m) {
-      if (m.target.style.display === 'flex') {
-        document.getElementById('onkayit-form').style.display = 'block';
-        document.getElementById('onkayit-success').style.display = 'none';
-        document.getElementById('ok-isim').value = '';
-        document.getElementById('ok-email').value = '';
-        document.getElementById('ok-telefon').value = '';
-      }
-    });
-  });
-  observer.observe(origOpen, { attributes: true, attributeFilter: ['style'] });
+  document.getElementById('onkayit-modal').addEventListener('click',function(e){if(e.target===this)this.style.display='none';});
   </script>
   <div class="hero-visual">
     <div class="dash">
@@ -705,7 +666,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
       <div class="dash-body">
         <div class="dash-side">
           <div class="dn on">📊 Dashboard</div>
-          <div class="dn">📋 Gunluk Plan</div>
+          <div class="dn">📋 Günlük Plan</div>
           <div class="dn">🚀 Ölçekleme</div>
           <div class="dn">🎨 Creative</div>
           <div class="dn">🤖 AI Hoca</div>
@@ -716,12 +677,12 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
             <div class="kpi"><div class="kpi-l">ROAS</div><div class="kpi-v g">6.31x</div><div class="kpi-s">↑ +0.8x bu hafta</div></div>
             <div class="kpi"><div class="kpi-l">Harcama</div><div class="kpi-v b">₺1,095</div></div>
             <div class="kpi"><div class="kpi-l">CPA</div><div class="kpi-v">₺91</div></div>
-            <div class="kpi"><div class="kpi-l">Satis</div><div class="kpi-v g">12</div><div class="kpi-s">↑ +3 dun</div></div>
+            <div class="kpi"><div class="kpi-l">Satış</div><div class="kpi-v g">12</div><div class="kpi-s">↑ +3 dün</div></div>
           </div>
           <div class="camp">
             <div class="camp-h"><span>Kampanya</span><span>ROAS</span><span>Harcama</span><span>Karar</span></div>
             <div class="camp-r"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span>₺420</span><span><div class="pill g">Ölçekle</div></span></div>
-            <div class="camp-r"><span>2 Görsel</span><span style="color:var(--amber)">2.1x</span><span>₺380</span><span><div class="pill y">İzle</div></span></div>
+            <div class="camp-r"><span>2 Görsel</span><span style="color:var(--amber)">2.1x</span><span>₺380</span><span><div class="pill y">Izle</div></span></div>
             <div class="camp-r"><span>Doğru Açı</span><span style="color:var(--red)">0.6x</span><span>₺295</span><span><div class="pill r">Kapat</div></span></div>
           </div>
         </div>
@@ -743,8 +704,8 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
 <!-- FEATURES -->
 <div class="feat-intro sr" id="features">
   <p class="s-eye">Özellikler</p>
-  <h2 class="s-title gradient">Her sey tek yerde.</h2>
-  <p class="s-desc">Manuel analiz bitti. Gerçek veriye dayalı, anlık kararlar. Meta hesabını bağla — geri kalanı Adsopify halleder.</p>
+  <h2 class="s-title gradient">Her şey tek yerde.</h2>
+  <p class="s-desc">Manuel analiz bitti. Gercek veriye dayali, anlik kararlar. Meta hesabini bagla — geri kalani Adsopify halleder.</p>
 </div>
 <div class="bento">
   <div class="bc wide sr" data-bars>
@@ -789,7 +750,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         <div class="demo-kpi"><div class="dk-l">ROAS</div><div class="dk-v g" id="dk-roas">0.00x</div><div class="dk-s" id="dk-roas-s"></div></div>
         <div class="demo-kpi"><div class="dk-l">Harcama</div><div class="dk-v b" id="dk-spend">₺0</div></div>
         <div class="demo-kpi"><div class="dk-l">CPA</div><div class="dk-v" id="dk-cpa">₺0</div></div>
-        <div class="demo-kpi"><div class="dk-l">Satis</div><div class="dk-v g" id="dk-sales">0</div></div>
+        <div class="demo-kpi"><div class="dk-l">Satış</div><div class="dk-v g" id="dk-sales">0</div></div>
       </div>
       <div class="demo-chart">
         <svg id="demo-svg" viewBox="0 0 600 120" preserveAspectRatio="none" style="width:100%;height:100%">
@@ -806,7 +767,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
       <div class="demo-rows">
         <div class="demo-row-h"><span>Kampanya</span><span>ROAS</span><span>Karar</span></div>
         <div class="demo-row" id="dr1" style="opacity:0"><span>Viral Reel</span><span style="color:var(--green)">7.8x</span><span><div class="pill g">Ölçekle</div></span></div>
-        <div class="demo-row" id="dr2" style="opacity:0"><span>2 Görsel</span><span style="color:var(--amber)">2.1x</span><span><div class="pill y">İzle</div></span></div>
+        <div class="demo-row" id="dr2" style="opacity:0"><span>2 Görsel</span><span style="color:var(--amber)">2.1x</span><span><div class="pill y">Izle</div></span></div>
         <div class="demo-row" id="dr3" style="opacity:0"><span>Doğru Açı</span><span style="color:var(--red)">0.6x</span><span><div class="pill r">Kapat</div></span></div>
       </div>
     </div>
@@ -820,7 +781,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         </div>
         <div class="ai-msg" id="ai-m2" style="opacity:0;transform:translateY(10px)">
           <div class="chat-role">AI Hoca</div>
-          <div class="bubble ai">Evet — <span class="hi">Viral Reel ölçeklemeye hazır.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL. Butceyi <span class="hi">%30 artir</span>, 3 gun izle.</div>
+          <div class="bubble ai">Evet — <span class="hi">Viral Reel olceklemeye hazir.</span> ROAS 7.8x, frekans 1.4, CPA 54 TL. Butceyi <span class="hi">%30 artir</span>, 3 gun izle.</div>
         </div>
         <div class="ai-msg" id="ai-m3" style="opacity:0;transform:translateY(10px)">
           <div class="chat-role">AI Hoca yazıyor</div>
@@ -958,7 +919,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <div class="reviews-grid">
     <div class="rc sr"><div class="rc-stars">★★★★★</div><p class="rc-text">"Hangi kampanyamın zararda olduğunu ilk kez bu kadar net gördüm. ROAS bazlı karar sistemi inanılmaz işe yarıyor. Haftada 3 saatimi kurtarıyor."</p><div class="rc-author"><div class="ava">MA</div><div><div class="ava-name">Mehmet A.</div><div class="ava-role">E-ticaret girişimcisi, Istanbul</div></div></div></div>
     <div class="rc sr d1"><div class="rc-stars">★★★★★</div><p class="rc-text">"Görsel prompt özelliği beni çarptı. Ürün fotoğrafını yükledim, Midjourney için hazır prompt geldi. Reklam görsellerim çok daha iyi performans gösteriyor."</p><div class="rc-author"><div class="ava">AK</div><div><div class="ava-name">Ayse K.</div><div class="ava-role">Dropshipping girişimcisi, Ankara</div></div></div></div>
-    <div class="rc sr d2"><div class="rc-stars">★★★★★</div><p class="rc-text">"Creative yorgunluk alarmı hayat kurtardı. Frekansı takip etmeden aylarca para yakıyormuşum. Şimdi CPA'm yüzde 35 düştü."</p><div class="rc-author"><div class="ava">CD</div><div><div class="ava-name">Can D.</div><div class="ava-role">Dijital pazarlama uzmanı, Izmir</div></div></div></div>
+    <div class="rc sr d2"><div class="rc-stars">★★★★★</div><p class="rc-text">"Creative yorgunluk alarmı hayat kurtardi. Frekansi takip etmeden aylarca para yakiyormusum. Simdi CPA'm yuzde 35 dustu."</p><div class="rc-author"><div class="ava">CD</div><div><div class="ava-name">Can D.</div><div class="ava-role">Dijital pazarlama uzmanı, Izmir</div></div></div></div>
   </div>
 </div>
 
@@ -990,12 +951,12 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         <li>AI Marka Analizi & Hook Üretici</li>
         <li>Tinder Tarzli Hook Swipe — 25 Hook</li>
         <li>Görsel ile AI Prompt Üretici</li>
-        <li>Haftalık Karşılaştırma & Aksiyon</li>
+        <li>Haftalik Karşılaştırma & Aksiyon</li>
         <li>Creative Yorgunluk Alarmı</li>
         <li>AI Hoca — Veriye Dayali Chat</li>
       </ul>
       <div class="price-cta">
-        <button onclick="document.getElementById('onkayit-modal').style.display='flex'" class="btn-buy">Ağustos için Ön Kayıt →</button>
+        <button onclick="document.getElementById('onkayit-modal').style.display='flex'" class="btn-buy" style="border:none;cursor:pointer">Ağustos için Ön Kayıt →</button>
         <p class="price-note">Kredi kartı gerekmez · İstediğin zaman iptal et</p>
       </div>
     </div>
@@ -1007,7 +968,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
   <h2 class="s-title sr gradient">Bugün başla.<br>Hemen fark gör.</h2>
   <p class="s-desc sr">Meta hesabını bağla, dashboardu aç, ilk kararı dakikalar içinde ver.</p>
   <button onclick="document.getElementById('onkayit-modal').style.display='flex'" class="btn-p sr" style="border:none;cursor:pointer">Ağustos için Ön Kayıt →</button>
-  <p class="cta-note sr">Haziran 1 itibariyle başlıyor · Şimdi ön kayıt ol · 30 saniyede kur</p>
+  <p class="cta-note sr">14 gun ucretsiz · Kredi karti gerekmez · 30 saniyede kur</p>
 </section>
 
 <!-- FOOTER -->
