@@ -612,9 +612,13 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
           <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Adın Soyadın</label>
           <input id="ok-isim" type="text" placeholder="Mehmet Yılmaz" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
         </div>
-        <div style="margin-bottom:22px">
+        <div style="margin-bottom:14px">
           <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">E-posta Adresi</label>
           <input id="ok-email" type="email" placeholder="mehmet@email.com" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
+        </div>
+        <div style="margin-bottom:22px">
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--t2);margin-bottom:6px">Telefon Numarası <span style="color:var(--t3);font-weight:400">(isteğe bağlı)</span></label>
+          <input id="ok-telefon" type="tel" placeholder="05xx xxx xx xx" style="width:100%;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;font-size:15px;font-family:inherit;outline:none;transition:border .2s;background:#fff" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line2)'">
         </div>
         <button onclick="onkayitGonder()" style="width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:980px;font-size:16px;font-weight:500;cursor:pointer;transition:all .25s var(--ease);letter-spacing:-.02em">Ön Kaydımı Yap →</button>
         <p style="text-align:center;font-size:12px;color:var(--t3);margin-top:12px">Spam yok. İstediğin zaman çıkabilirsin.</p>
@@ -649,7 +653,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
           'Authorization': 'Bearer ' + SUPA_KEY,
           'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({ isim: isim, email: email })
+        body: JSON.stringify({ isim: isim, email: email, telefon: (function(){ var t = document.getElementById('ok-telefon').value.trim(); return t || null; })() })
       });
 
       if (res.ok) {
@@ -686,6 +690,7 @@ footer{border-top:0.5px solid var(--line);background:var(--bg2);padding:0 5vw}
         document.getElementById('onkayit-success').style.display = 'none';
         document.getElementById('ok-isim').value = '';
         document.getElementById('ok-email').value = '';
+        document.getElementById('ok-telefon').value = '';
       }
     });
   });
