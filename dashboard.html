@@ -4,43 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adsopify — AI Growth Operator</title>
-<!-- ──────── KAMPANYA POPUP ──────── -->
-<div id="camp-popup-overlay" onclick="closeCampPopup(event)">
-  <div id="camp-popup">
-    <div class="cp-header">
-      <div>
-        <div id="cp-camp-name" class="cp-name">Kampanya</div>
-        <div id="cp-camp-period" style="font-size:12px;color:var(--text3);margin-top:3px;font-family:var(--mono)"></div>
-      </div>
-      <div class="cp-close" onclick="closeCampPopup()">✕</div>
-    </div>
-    <div class="cp-body">
-      <!-- KPI grid -->
-      <div class="cp-kpi-row" id="cp-kpis"></div>
-      <!-- Sinyal okuma -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-        <div style="width:26px;height:26px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 12L5.5 7.5L8.5 9.5L12.5 4" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <span style="font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em">Sinyal Okuma</span>
-      </div>
-      <div id="cp-signals" style="margin-bottom:20px"></div>
-      <!-- AI yorum -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-        <div style="width:26px;height:26px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        </div>
-        <span style="font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em">AI Uzman Yorumu</span>
-      </div>
-      <div class="cp-ai-box">
-        <div id="cp-ai-content">
-          <div class="cp-ai-loading"><div class="spinner"></div> Analiz hazırlanıyor...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
   window.fbAsyncInit = function() {
     FB.init({ appId: '1602280044394114', cookie: true, xfbml: false, version: 'v19.0' });
@@ -423,6 +386,43 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 </style>
 </head>
 <body>
+
+<!-- ──────── KAMPANYA POPUP ──────── -->
+<div id="camp-popup-overlay" onclick="closeCampPopup(event)">
+  <div id="camp-popup">
+    <div class="cp-header">
+      <div>
+        <div id="cp-camp-name" class="cp-name">Kampanya</div>
+        <div id="cp-camp-period" style="font-size:12px;color:var(--text3);margin-top:3px;font-family:var(--mono)"></div>
+      </div>
+      <div class="cp-close" onclick="closeCampPopup()">✕</div>
+    </div>
+    <div class="cp-body">
+      <!-- KPI grid -->
+      <div class="cp-kpi-row" id="cp-kpis"></div>
+      <!-- Sinyal okuma -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:26px;height:26px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M2 12L5.5 7.5L8.5 9.5L12.5 4" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em">Sinyal Okuma</span>
+      </div>
+      <div id="cp-signals" style="margin-bottom:20px"></div>
+      <!-- AI yorum -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:26px;height:26px;background:linear-gradient(135deg,var(--accent),#4f46e5);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em">AI Uzman Yorumu</span>
+      </div>
+      <div class="cp-ai-box">
+        <div id="cp-ai-content">
+          <div class="cp-ai-loading"><div class="spinner"></div> Analiz hazırlanıyor...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ──────── AUTH ──────── -->
 <div id="auth-screen" style="display:none">
