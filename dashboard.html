@@ -1503,7 +1503,59 @@ async function sbUpsertUser(fbId, fbName, email) {
     console.log('Supabase güncelleme:', e.message);
   }
 }
+// ═══════════════════════════════════════════════
+// BRAND — Supabase kaydet / yükle
+// ═══════════════════════════════════════════════
+async function saveBrandToSupabase(brandData) {
+  try {
+    const userId = getStored('sb_user_id');
+    const token = getStored('sb_token');
+    if (!userId || !token) return false;
+    const res = await fetch(SB_URL + '/rest/v1/brands', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + token,
+        'Prefer': 'resolution=merge-duplicates,return=minimal',
+        'on-conflict': 'user_id'
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        brand_name: brandData.brandName || '',
+        url: brandData.url || '',
+        product: brandData.product || '',
+        audience: brandData.audience || '',
+        budget: brandData.budget || '',
+        goal: brandData.goal || '',
+        raw_desc: brandData.rawDesc || '',
+        hooks: brandData.hooks || [],
+        ideas: brandData.ideas || [],
+        updated_at: new Date().toISOString()
+      })
+    });
+    return res.ok;
+  } catch(e) { return false; }
+}
 
+async function loadBrandFromSupabase() {
+  try {
+    const userId = getStored('sb_user_id');
+    const token = getStored('sb_token');
+    if (!userId || !token) return null;
+    const res = await fetch(SB_URL + '/rest/v1/brands?user_id=eq.' + userId + '&limit=1', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token }
+    });
+    const data = await res.json();
+    if (!data || !data.length) return null;
+    const r = data[0];
+    return {
+      brandName: r.brand_name, url: r.url, product: r.product,
+      audience: r.audience, budget: r.budget, goal: r.goal,
+      rawDesc: r.raw_desc, hooks: r.hooks || [], ideas: r.ideas || []
+    };
+  } catch(e) { return null; }
+}
 // ═══════════════════════════════════════════════
 // SUPABASE AUTH — Kayıt / Giriş
 // ═══════════════════════════════════════════════
@@ -1717,14 +1769,17 @@ function startApp() {
 
   const _userId = getStored('sb_user_id') || 'default';
   const _brandKey = 'adsopify_brand_' + _userId;
-  const brandData = localStorage.getItem(_brandKey);
-  if (!brandData) {
-    // Onboarding göster ama loadPlan'ı BLOKLAMADAN çalıştır
+ const brandData = localStorage.getItem(_brandKey);
+const sbBrand = await loadBrandFromSupabase();
+if (sbBrand) {
+    S.brand = sbBrand;
+    localStorage.setItem(_brandKey, JSON.stringify(sbBrand));
+} else if (!brandData) {
     // marka yok — devam et
-  } else {
+} else {
     const parsed = JSON.parse(brandData);
     S.brand = parsed.skipped ? null : parsed;
-  }
+}
   // loadPlan her zaman çalışsın — onboarding üstünde overlay olarak açılır
   var lastSection = localStorage.getItem('adsopify_last_section') || 'plan';
   nav(lastSection);
@@ -1837,7 +1892,8 @@ async function saveOnboarding() {
     document.getElementById('ob-progress').style.width = '100%';
     document.getElementById('ob-status').textContent = 'Analiz tamamlandı!';
 
-    localStorage.setItem('adsopify_brand_' + (getStored('sb_user_id')||'default'), JSON.stringify(brand));
+localStorage.setItem('adsopify_brand_' + (getStored('sb_user_id')||'default'), JSON.stringify(brand));
+saveBrandToSupabase(brand);
     S.brand = brand;
 
     // Step 3: Show results
@@ -1872,7 +1928,8 @@ async function saveOnboarding() {
     } catch(ex) { brandName = 'Markanız'; }
 
     const brand = { url, rawDesc: desc, brandName, hooks: generateBrandHooks(brandName, desc), ideas: generateBrandIdeas(brandName, desc) };
-    localStorage.setItem('adsopify_brand_' + (getStored('sb_user_id')||'default'), JSON.stringify(brand));
+   localStorage.setItem('adsopify_brand_' + (getStored('sb_user_id')||'default'), JSON.stringify(brand));
+saveBrandToSupabase(brand);
     S.brand = brand;
 
     document.getElementById('ob-step2').style.display = 'none';
