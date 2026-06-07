@@ -544,10 +544,8 @@ tbody tr.camp-row:hover td{background:var(--accent-light)!important}
 <!-- ──────── SIDEBAR ──────── -->
 <div id="sidebar">
   <div class="sb-brand">
-    <div class="sb-logo">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11L4.5 5L7 11" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 9H5.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/><circle cx="10.5" cy="4.5" r="1.5" fill="white" opacity=".9"/><path d="M10.5 7V11" stroke="white" stroke-width="1.4" stroke-linecap="round"/></svg>
-    </div>
-    <span class="sb-name">Adsopify</span>
+    <div class="sb-logo" style="font-size:11px;font-weight:900;letter-spacing:.04em;color:#fff;font-family:var(--font)">ADS</div>
+    <span class="sb-name">ADS</span>
   </div>
 
   <!-- Brand Switcher — compact -->
@@ -1746,7 +1744,7 @@ function setDefaultDates() {
   document.getElementById('dash-to').value = today;
 }
 
-function startApp() {
+async function startApp() {
   document.getElementById('token-screen').style.display = 'none';
   var loginNav = document.getElementById('login-nav');
   if (loginNav) loginNav.style.display = 'none';
