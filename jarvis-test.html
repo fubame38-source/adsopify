@@ -8,7 +8,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#02040e;
+  --bg:#02040e; 
   --surface:#070d1c;
   --border:rgba(0,200,255,0.12);
   --accent:#00c8ff;
@@ -182,7 +182,7 @@ Türkçe konuş. Kısa ve net cevaplar ver — maksimum 2-3 cümle. Samimi ve pr
 Reklam, pazarlama ve e-ticaret konularında uzmansın.`;
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
