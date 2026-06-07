@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adsopify — Jarvis</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#02040e;--surface:#070d1c;--border:rgba(0,200,255,0.12);
+  --accent:#00c8ff;--accent2:#0a4a7a;--text:#c8e8ff;--text2:#4a7a9a;
+  --green:#00ffaa;--red:#ff2244;--gold:#ffd060;
+  --font:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;overflow:hidden}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:560px}
+.hdr{text-align:center;margin-bottom:32px}
+.hdr-title{font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;font-family:var(--mono)}
+.hdr-sub{font-size:12px;color:var(--text2)}
+#orb-wrap{position:relative;width:220px;height:220px;margin-bottom:28px;flex-shrink:0}
+#orb-canvas{position:absolute;inset:0;width:100%;height:100%}
+#status-text{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text2);margin-bottom:20px;text-align:center;min-height:18px;transition:color .3s}
+#status-text.listening{color:var(--green)}
+#status-text.speaking{color:var(--accent)}
+#status-text.thinking{color:var(--gold)}
+#status-text.error{color:var(--red)}
+#status-text.connecting{color:var(--gold)}
+#log{width:100%;height:180px;overflow-y:auto;background:rgba(3,12,30,0.8);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+#log::-webkit-scrollbar{width:3px}
+#log::-webkit-scrollbar-thumb{background:var(--accent2);border-radius:99px}
+.msg{font-size:13px;line-height:1.6;padding:8px 12px;border-radius:9px}
+.msg.user{background:rgba(0,200,255,0.08);color:var(--text);border-left:2px solid var(--accent);align-self:flex-end}
+.msg.ai{background:rgba(0,255,170,0.06);color:var(--text);border-left:2px solid var(--green)}
+.msg.sys{color:var(--text2);font-size:11px;font-family:var(--mono);padding:4px 0}
+#mic-btn{width:72px;height:72px;border-radius:50%;background:transparent;border:2px solid var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;outline:none}
+#mic-btn:hover{border-color:var(--green);box-shadow:0 0 24px rgba(0,255,170,0.2)}
+#mic-btn.active{border-color:var(--red);box-shadow:0 0 32px rgba(255,34,68,0.35);animation:pulse-ring 1.2s ease-in-out infinite}
+#mic-btn.connecting{border-color:var(--gold);animation:pulse-ring-gold 1s ease-in-out infinite}
+#mic-btn svg{width:28px;height:28px;color:var(--accent);transition:color .2s}
+#mic-btn.active svg{color:var(--red)}
+#mic-btn.connecting svg{color:var(--gold)}
+@keyframes pulse-ring{0%,100%{box-shadow:0 0 32px rgba(255,34,68,0.35)}50%{box-shadow:0 0 48px rgba(255,34,68,0.6)}}
+@keyframes pulse-ring-gold{0%,100%{box-shadow:0 0 24px rgba(255,208,96,0.3)}50%{box-shadow:0 0 40px rgba(255,208,96,0.6)}}
+#mic-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-top:10px;text-align:center}
+#end-btn{margin-top:14px;background:transparent;border:1px solid rgba(255,34,68,0.3);border-radius:8px;padding:8px 20px;color:var(--red);font-family:var(--mono);font-size:10px;letter-spacing:.1em;cursor:pointer;display:none;transition:all .2s}
+#end-btn:hover{background:rgba(255,34,68,0.1)}
+#end-btn.visible{display:block}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="content">
+  <div class="hdr">
+    <div class="hdr-title">◈ Jarvis — Adsopify AI ◈</div>
+    <div class="hdr-sub">Mikrofona bas ve konuş — Türkçe sesli asistan</div>
+  </div>
+  <div id="orb-wrap">
+    <canvas id="orb-canvas" width="220" height="220"></canvas>
+  </div>
+  <div id="status-text">Hazır · Başlamak için mikrofona bas</div>
+  <div id="log">
+    <div class="msg sys">◈ SYS: Jarvis hazır. Mikrofona bas ve konuşmaya başla.</div>
+  </div>
+  <button id="mic-btn" onclick="toggleSession()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <rect x="9" y="2" width="6" height="12" rx="3"/>
+      <path d="M5 10a7 7 0 0 0 14 0"/>
+      <line x1="12" y1="19" x2="12" y2="22"/>
+      <line x1="9" y1="22" x2="15" y2="22"/>
+    </svg>
+  </button>
+  <div id="mic-label">Mikrofon kapalı</div>
+  <button id="end-btn" onclick="endSession()">◈ Oturumu Kapat</button>
+</div>
+
+<script>
+const TOKEN_URL = 'https://adsopifyjarvis.fubame38.workers.dev/token';
+const GEMINI_MODEL = 'gemini-2.0-flash-live-001';
+const SYSTEM_PROMPT = `Sen Adsopify'ın AI asistanı Jarvis'sin. Adsopify bir Meta Ads yönetim platformu. Kullanıcının reklam kampanyaları, ROAS, CTR, bütçe optimizasyonu konularında yardımcı oluyorsun. Türkçe konuş. Kısa ve net cevaplar ver, maksimum 3 cümle.`;
+
+let STATE = 'idle';
+let ws = null;
+let mediaStream = null;
+let audioContext = null;
+let processor = null;
+let isSessionActive = false;
+let audioQueue = [];
+let isPlaying = false;
+let aiTextBuffer = '';
+let orbTick = 0;
+let orbScale = 0.85, orbTargetScale = 0.85;
+let orbHalo = 40, orbTargetHalo = 40;
+
+function addLog(type, text) {
+  const log = document.getElementById('log');
+  const div = document.createElement('div');
+  div.className = 'msg ' + type;
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function setStatus(state, text) {
+  STATE = state;
+  const el = document.getElementById('status-text');
+  el.className = state; el.textContent = text;
+  if (state==='listening')       { orbTargetScale=1.18; orbTargetHalo=200; }
+  else if (state==='thinking')   { orbTargetScale=0.9;  orbTargetHalo=120; }
+  else if (state==='speaking')   { orbTargetScale=1.10; orbTargetHalo=180; }
+  else if (state==='connecting') { orbTargetScale=0.95; orbTargetHalo=80;  }
+  else                           { orbTargetScale=0.85; orbTargetHalo=40;  }
+}
+
+async function toggleSession() {
+  if (isSessionActive) endSession();
+  else await startSession();
+}
+
+async function startSession() {
+  const btn = document.getElementById('mic-btn');
+  btn.classList.add('connecting');
+  setStatus('connecting', 'Bağlanıyor...');
+
+  // Mikrofon al
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      audio: { sampleRate: 16000, channelCount: 1, echoCancellation: true, noiseSuppression: true }
+    });
+  } catch(e) {
+    addLog('sys', '⚠ Mikrofon izni verilmedi.');
+    setStatus('error', 'Mikrofon hatası');
+    btn.classList.remove('connecting');
+    return;
+  }
+
+  // Token al
+  let apiKey;
+  try {
+    const res = await fetch(TOKEN_URL);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    apiKey = data.key;
+  } catch(e) {
+    addLog('sys', '⚠ Token alınamadı: ' + e.message);
+    setStatus('error', 'Token hatası');
+    btn.classList.remove('connecting');
+    return;
+  }
+
+  // Gemini Live WebSocket — direkt bağlan
+  const wsUrl = `wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${apiKey}`;
+  
+  ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    // Setup mesajı gönder
+    ws.send(JSON.stringify({
+      setup: {
+        model: `models/${GEMINI_MODEL}`,
+        generation_config: {
+          response_modalities: ['AUDIO'],
+          speech_config: {
+            voice_config: {
+              prebuilt_voice_config: { voice_name: 'Aoede' }
+            }
+          }
+        },
+        system_instruction: {
+          parts: [{ text: SYSTEM_PROMPT }]
+        }
+      }
+    }));
+  };
+
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+
+      if (data.setupComplete) {
+        isSessionActive = true;
+        btn.classList.remove('connecting');
+        btn.classList.add('active');
+        document.getElementById('mic-label').textContent = 'Dinliyor...';
+        document.getElementById('end-btn').classList.add('visible');
+        setStatus('listening', 'Dinliyor... Konuş');
+        addLog('sys', '◈ Jarvis bağlandı. Konuşabilirsin.');
+        startAudioCapture();
+        return;
+      }
+
+      if (data.serverContent) {
+        const sc = data.serverContent;
+        if (sc.interrupted) { stopAudioPlayback(); setStatus('listening', 'Dinliyor... Konuş'); return; }
+        if (sc.turnComplete) {
+          if (aiTextBuffer) { addLog('ai', '◈ ' + aiTextBuffer); aiTextBuffer = ''; }
+          if (STATE !== 'speaking') setStatus('listening', 'Dinliyor... Konuş');
+          return;
+        }
+        if (sc.modelTurn?.parts) {
+          for (const part of sc.modelTurn.parts) {
+            if (part.inlineData?.mimeType?.startsWith('audio/')) {
+              setStatus('speaking', 'Konuşuyor...');
+              playAudioChunk(part.inlineData.data);
+            }
+            if (part.text) aiTextBuffer += part.text;
+          }
+        }
+      }
+    } catch(e) {}
+  };
+
+  ws.onerror = (e) => {
+    addLog('sys', '⚠ WebSocket hatası.');
+    setStatus('error', 'Bağlantı hatası');
+    endSession();
+  };
+
+  ws.onclose = (e) => {
+    if (isSessionActive) {
+      addLog('sys', `◈ Bağlantı kesildi. (${e.code}: ${e.reason || 'bilinmiyor'})`);
+      endSession();
+    }
+  };
+}
+
+function startAudioCapture() {
+  audioContext = new AudioContext({ sampleRate: 16000 });
+  const source = audioContext.createMediaStreamSource(mediaStream);
+  processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+  processor.onaudioprocess = (e) => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    const inputData = e.inputBuffer.getChannelData(0);
+    const pcm16 = new Int16Array(inputData.length);
+    for (let i = 0; i < inputData.length; i++) {
+      pcm16[i] = Math.max(-32768, Math.min(32767, inputData[i] * 32768));
+    }
+    const bytes = new Uint8Array(pcm16.buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    ws.send(JSON.stringify({
+      realtime_input: { media_chunks: [{ mime_type: 'audio/pcm', data: btoa(binary) }] }
+    }));
+  };
+
+  source.connect(processor);
+  processor.connect(audioContext.destination);
+}
+
+async function playAudioChunk(b64) {
+  audioQueue.push(b64);
+  if (!isPlaying) processAudioQueue();
+}
+
+async function processAudioQueue() {
+  if (!audioQueue.length) { isPlaying = false; if (STATE==='speaking') setStatus('listening','Dinliyor... Konuş'); return; }
+  isPlaying = true;
+  const b64 = audioQueue.shift();
+  try {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+    const ctx = audioContext || new AudioContext();
+    const samples = new Int16Array(bytes.buffer);
+    const f32 = new Float32Array(samples.length);
+    for (let i=0;i<samples.length;i++) f32[i]=samples[i]/32768;
+    const buf = ctx.createBuffer(1, f32.length, 24000);
+    buf.getChannelData(0).set(f32);
+    const src = ctx.createBufferSource();
+    src.buffer = buf; src.connect(ctx.destination);
+    src.onended = () => processAudioQueue();
+    src.start();
+  } catch(e) { processAudioQueue(); }
+}
+
+function stopAudioPlayback() { audioQueue = []; isPlaying = false; }
+
+function endSession() {
+  isSessionActive = false;
+  if (processor) { try{processor.disconnect();}catch(e){} processor=null; }
+  if (audioContext) { try{audioContext.close();}catch(e){} audioContext=null; }
+  if (mediaStream) { mediaStream.getTracks().forEach(t=>t.stop()); mediaStream=null; }
+  if (ws) { try{ws.close();}catch(e){} ws=null; }
+  stopAudioPlayback();
+  const btn = document.getElementById('mic-btn');
+  btn.classList.remove('active','connecting');
+  document.getElementById('mic-label').textContent = 'Mikrofon kapalı';
+  document.getElementById('end-btn').classList.remove('visible');
+  setStatus('idle','Hazır · Başlamak için mikrofona bas');
+}
+
+// ── Orb ────────────────────────────────────────────────────────────────────
+const orbCanvas=document.getElementById('orb-canvas');
+const orbCtx=orbCanvas.getContext('2d');
+const ORB_COLORS={idle:[0,200,255],listening:[255,34,68],thinking:[255,208,96],speaking:[0,255,170],connecting:[255,208,96],error:[255,34,68]};
+const orbParticles=Array.from({length:80},()=>({angle:Math.random()*Math.PI*2,orbit:Math.random()*.9+.1,speed:(Math.random()-.5)*.04,size:Math.random()*2.5+.5,phase:Math.random()*Math.PI*2}));
+const shellParticles=Array.from({length:50},()=>({angle:Math.random()*Math.PI*2,speed:(Math.random()-.5)*.025,size:Math.random()*3+1,phase:Math.random()*Math.PI*2,glow:Math.random()}));
+let ringSpins=[0,45,90,200];
+function hexRgb(r,g,b,a){return `rgba(${r},${g},${b},${Math.max(0,Math.min(1,a/255))})`}
+function drawOrb(){
+  const c=orbCtx,W=220,H=220,cx=110,cy=110;
+  c.clearRect(0,0,W,H);
+  const [R,G,B]=ORB_COLORS[STATE]||ORB_COLORS.idle;
+  const fieldR=80*orbScale,innerR=56*orbScale;
+  for(let i=6;i>0;i--){c.beginPath();c.arc(cx,cy,fieldR+i*6,0,Math.PI*2);c.fillStyle=hexRgb(R,G,B,orbHalo*.06*i);c.fill()}
+  [[1.0,2,.35],[.88,1.5,.22],[.74,1,.14]].forEach(([f,w,am])=>{c.beginPath();c.arc(cx,cy,fieldR*f,0,Math.PI*2);c.strokeStyle=hexRgb(R,G,B,orbHalo*am);c.lineWidth=w;c.stroke()});
+  shellParticles.forEach(p=>{const a2=p.angle+orbTick*p.speed;const x=cx+Math.cos(a2)*fieldR*.94,y=cy+Math.sin(a2)*fieldR*.94;const al=(70+120*p.glow)*(STATE==='idle'?.4:.8);c.beginPath();c.arc(x,y,p.size,0,Math.PI*2);c.fillStyle=hexRgb(R,G,B,al);c.fill()});
+  ringSpins[0]=(ringSpins[0]+(STATE==='speaking'?2.5:STATE==='listening'?3.5:.8))%360;
+  ringSpins[2]=(ringSpins[2]+(STATE==='speaking'?1.8:STATE==='listening'?2.5:.5))%360;
+  [[ringSpins[0],55,80,3],[(ringSpins[0]+140)%360,28,80,2],[ringSpins[2],70,80,3],[(ringSpins[2]+200)%360,22,80,2]].forEach(([start,extent,bR,w])=>{const r=bR*orbScale*(w===3?1:.82);c.beginPath();c.arc(cx,cy,r,start*Math.PI/180,(start+extent)*Math.PI/180);c.strokeStyle=hexRgb(R,G,B,orbHalo*(w===3?1.2:.7));c.lineWidth=w;c.stroke()});
+  const activity=STATE==='idle'?.25:STATE==='thinking'?.65:1.0;
+  orbParticles.forEach(p=>{const a2=p.angle+orbTick*p.speed*(STATE==='speaking'?3:STATE==='listening'?2.5:1.2);const wobble=1+.25*Math.sin(orbTick*.05+p.phase);const r=innerR*p.orbit*wobble;const x=cx+Math.cos(a2)*r,y=cy+Math.sin(a2)*r*.65;const al=(20+160*p.orbit)*(.3+activity*.8);c.beginPath();c.arc(x,y,p.size,0,Math.PI*2);c.fillStyle=hexRgb(R,G,B,al);c.fill()});
+  c.beginPath();c.arc(cx,cy,innerR*.15,0,Math.PI*2);c.fillStyle='#02040e';c.fill();
+  orbTick++;orbScale+=(orbTargetScale-orbScale)*.15;orbHalo+=(orbTargetHalo-orbHalo)*.15;
+}
+const bgCanvas=document.getElementById('bg-canvas');
+const bgCtx=bgCanvas.getContext('2d');
+let bgParticles=[];
+function initBg(){bgCanvas.width=window.innerWidth;bgCanvas.height=window.innerHeight;bgParticles=Array.from({length:30},()=>({x:Math.random()*bgCanvas.width,y:Math.random()*bgCanvas.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.5+.3,a:Math.random()*50+10}))}
+function drawBg(){bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);bgParticles.forEach(p=>{p.x=(p.x+p.vx+bgCanvas.width)%bgCanvas.width;p.y=(p.y+p.vy+bgCanvas.height)%bgCanvas.height;bgCtx.beginPath();bgCtx.arc(p.x,p.y,p.r,0,Math.PI*2);bgCtx.fillStyle=`rgba(0,200,255,${p.a/255})`;bgCtx.fill()})}
+window.addEventListener('resize',initBg);initBg();
+function loop(){drawOrb();drawBg();requestAnimationFrame(loop)}
+loop();
+</script>
+</body>
+</html>
