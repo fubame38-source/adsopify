@@ -3322,7 +3322,7 @@ function planReset() {
 
 // Compat stubs
 function loadPlanOffline() { loadPlan(); }
-function reconnectMeta() { localStorage.removeItem('adsopify_token'); localStorage.removeItem('adsopify_account_id'); localStorage.removeItem('adsopify_account_name'); S.token = null; S.accountId = null; location.reload(); }
+function reconnectMeta() { localStorage.removeItem('adsopify_token'); localStorage.removeItem('adsopify_account_id'); localStorage.removeItem('adsopify_account_name'); S.token = null; S.accountId = null; showTokenScreen(); }
 
 var nafData = { hasProduct: true, budget: '50', goal: 'satis' };
 
