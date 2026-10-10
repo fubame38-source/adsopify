@@ -616,6 +616,79 @@ thead th{font-size:12px!important;font-weight:500!important}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
+
+/* ══════════ v28 — Apple "Özet" ekranı ══════════ */
+:root{
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue','Inter','Geist',system-ui,sans-serif;
+  --mono:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue','Inter',system-ui,sans-serif;
+  --bg:#f2f2f7;--surface2:#f2f2f7;
+  --sys-orange:#ff9500;--sys-green:#34c759;--sys-blue:#007aff;--sys-purple:#af52de;--sys-red:#ff3b30;--sys-gray:#8e8e93;
+  --t-orange:#c93400;--t-green:#248a3d;--t-blue:#0066cc;--t-purple:#8944ab;
+  --sep:rgba(60,60,67,0.12);
+}
+[data-theme=dark]{--bg:#000;--sep:rgba(84,84,88,0.5);--t-orange:#ff9f0a;--t-green:#30d158;--t-blue:#0a84ff;--t-purple:#bf5af2}
+body{font-family:var(--font);background-image:none!important;-webkit-font-smoothing:antialiased}
+#topbar{background:rgba(242,242,247,0.8)!important;border-bottom:none!important}
+[data-theme=dark] #topbar{background:rgba(0,0,0,0.8)!important}
+#sidebar{background:rgba(242,242,247,0.6)!important;border-right:1px solid var(--sep)!important}
+[data-theme=dark] #sidebar{background:rgba(28,28,30,0.9)!important}
+
+/* başlık */
+#sec-plan > div:first-child{margin-bottom:22px!important;align-items:flex-end!important}
+#plan-date{order:-1;font-size:13px!important;font-weight:600!important;color:var(--text3)!important;text-transform:uppercase;letter-spacing:.02em!important;margin:0 0 2px!important}
+#sec-plan > div:first-child > div:first-child{display:flex;flex-direction:column}
+#plan-greeting{font-size:clamp(30px,3.6vw,38px)!important;font-weight:700!important;letter-spacing:-.025em!important;line-height:1.1!important}
+
+/* metrik widget'ları */
+#plan-kpi-strip{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px!important;align-items:stretch!important;background:none!important;border:none!important;padding:0!important;margin-bottom:34px!important;box-shadow:none!important;overflow:visible!important}
+.w-card{background:var(--surface);border-radius:16px;padding:14px 16px 14px;display:flex;flex-direction:column;cursor:pointer;transition:transform .12s ease-out}
+.w-card:active{transform:scale(.98)}
+.w-head{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.w-head svg{flex-shrink:0}
+.w-head .w-meta{margin-left:auto;font-size:13px;font-weight:400;color:var(--text3);display:flex;align-items:center;gap:4px}
+.w-val{font-size:30px;font-weight:600;letter-spacing:-.02em;color:var(--text);margin-top:14px;line-height:1;font-variant-numeric:tabular-nums}
+.w-val small{font-size:15px;font-weight:500;color:var(--text3);margin-left:3px;letter-spacing:0}
+.w-sub{font-size:13px;color:var(--text3);margin-top:6px}
+.w-bars{display:flex;align-items:flex-end;gap:4px;height:34px;margin-top:14px}
+.w-bars i{flex:1;border-radius:3px;min-height:3px;opacity:.9}
+.w-bars i.dim{opacity:.28}
+.w-cta{margin-top:14px;font-size:13px;font-weight:600;color:var(--t-blue)}
+
+/* gruplanmış liste (iOS) */
+.g-title{display:flex;align-items:baseline;justify-content:space-between;margin:0 4px 8px}
+.g-title h3{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin:0}
+.g-title span{font-size:15px;color:var(--text3)}
+.g-title a{font-size:15px;color:var(--t-blue);cursor:pointer;text-decoration:none}
+.g-list{background:var(--surface);border-radius:14px;overflow:hidden}
+.g-row{display:flex;align-items:center;gap:14px;padding:12px 16px;cursor:pointer;position:relative;transition:background .1s}
+.g-row:active,.g-row:hover{background:rgba(0,0,0,0.035)}
+[data-theme=dark] .g-row:hover{background:rgba(255,255,255,0.05)}
+.g-row + .g-row::before{content:'';position:absolute;top:0;right:0;left:60px;height:1px;background:var(--sep)}
+.g-row.noicon + .g-row.noicon::before{left:16px}
+.g-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-main{flex:1;min-width:0}
+.g-t{font-size:15px;font-weight:500;color:var(--text);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-s{font-size:13px;color:var(--text3);margin-top:2px;line-height:1.35}
+.g-trail{display:flex;align-items:center;gap:10px;flex-shrink:0;text-align:right}
+.g-num{font-size:15px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+.g-num small{display:block;font-size:12px;font-weight:400;color:var(--text3)}
+.g-chev{color:rgba(60,60,67,0.3)}
+.g-pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px}
+.g-pill.scale{background:rgba(52,199,89,0.14);color:var(--t-green)}
+.g-pill.pause{background:rgba(255,59,48,0.12);color:#d70015}
+.g-pill.watch{background:rgba(142,142,147,0.14);color:var(--text2)}
+.g-foot{font-size:13px;color:var(--text3);margin:8px 16px 0;line-height:1.4}
+
+#sec-plan > div:first-child > button{display:none!important}
+#plan-ai-result #focus-card{margin-bottom:34px!important}
+#plan-camps-section > div[style]{background:none!important;border:none!important;box-shadow:none!important;padding:0!important}
+#plan-camps-section > div[style] > div:first-child{display:none!important}
+#plan-camp-list{display:block!important}
+#plan-ai-loading > div{background:var(--surface)!important;border:none!important;border-radius:14px!important}
+
+@media(max-width:900px){#plan-kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.w-val{font-size:26px}.g-row{padding:11px 14px}}
+
 </style>
 </head>
 <body>
@@ -2659,6 +2732,7 @@ async function loadDashboardSilent() {
     var _ts = document.getElementById('top-spend-val'); if (_ts) _ts.textContent = '₺' + Math.round(insights.reduce(function(a,i){ return a + parseFloat(i.spend||0); }, 0)).toLocaleString('tr-TR');
     checkFatigueAlert(insights);
     if (typeof checkAlarms === 'function') checkAlarms();
+    loadDailySeries();
   } catch (e) {
     if (e.code === 190 || /session has expired|access token/i.test(e.message || '')) {
       removeStored('adsopify_token');
@@ -2712,7 +2786,7 @@ function loadPlan() {
   if (de) de.textContent = dateStr;
   renderPlanCampaigns();
   // Cache varsa otomatik yükle, yoksa otomatik başlat
-  const cacheKey = 'dp_plan_v4_' + localDate(today);
+  const cacheKey = 'dp_plan_v5_' + localDate(today);
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
@@ -2751,7 +2825,7 @@ function loadDailyPlan() {
   window._planLoadInt = setInterval(function(){ _lmi=(_lmi+1)%_lmsgs.length; if(_lmEl) _lmEl.textContent=_lmsgs[_lmi]; }, 3000);
 
   const today = new Date();
-  const cacheKey = 'dp_plan_v4_' + localDate(today);
+  const cacheKey = 'dp_plan_v5_' + localDate(today);
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
@@ -3042,7 +3116,7 @@ async function planFetchAI(cacheKey) {
   var brandUrl = brand && brand.url ? brand.url : '';
 
   var [metaIns, memData, creativeData, siteData] = await Promise.all([
-    S.token && S.accountId ? Promise.race([getInsights(daysAgo(6), localDate()), new Promise(function(r){ setTimeout(function(){ r(null); }, 8000); })]) : Promise.resolve(null),
+    (window._campData && window._campData.length) ? Promise.resolve(window._campData) : S.token && S.accountId ? Promise.race([getInsights(daysAgo(6), localDate()), new Promise(function(r){ setTimeout(function(){ r(null); }, 8000); })]) : Promise.resolve(null),
     brandName ? memoryLoad(brandName) : Promise.resolve(null),
     brandName ? creativeLoad(brandName) : Promise.resolve(null),
     brandUrl ? fetch('https://cvxwhlvjdghiaugzepme.supabase.co/functions/v1/site-analiz', {
@@ -3106,6 +3180,7 @@ async function planFetchAI(cacheKey) {
     'Genel değerlendirme: ' + (siteAnalysis.verdict || '')
   ) : '';
 
+  if (!savedMetaData) { planShowFallback(); return; }
   const prompt = 'Marka: ' + brandName + '. Ürün: ' + (S.brand && S.brand.product || '') + '.\n\n' +
     metaCtx + '\n' +
     (siteCtx ? '\n' + siteCtx + '\n' : '') +
@@ -3114,7 +3189,7 @@ async function planFetchAI(cacheKey) {
     'KURALLAR:\n' +
     '- title: MAX 4 KELIME — örn: "Viral bütçeyi artır", "AB Testi durdur"\n' +
     '- reason: TEK CÜMLE — rakam içersin, örn: "ROAS 5.2x ile en karlı kampanyan"\n' +
-    '- Teknik önerme (pixel vb), genel tavsiye verme\n' +
+    '- Teknik önerme (pixel vb), genel tavsiye verme. Sektör ortalaması ya da veride olmayan rakam UYDURMA.\n- Her aksiyon bir kampanya adı içersin.\n' +
     '- tone: high=acil, mid=önemli, low=fırsat, blue=normal\n\n' +
     'JSON: {"tagline":"max 3 kelime","verdict":"1 kısa cümle","actions":[{"title":"max 4 kelime","reason":"tek cümle rakamla","tone":"high"}]}';
 
@@ -3132,7 +3207,7 @@ async function planFetchAI(cacheKey) {
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('JSON yok');
     const parsed = safeJsonParse(match[0], { tagline: 'Bugunun Plani', verdict: '', actions: [] });
-    if (cacheKey) localStorage.setItem(cacheKey, JSON.stringify(parsed));
+    if (cacheKey && parsed.actions && parsed.actions.length) localStorage.setItem(cacheKey, JSON.stringify(parsed));
     if(window._planLoadInt) clearInterval(window._planLoadInt);
     planShowResults(parsed.actions, parsed.verdict, parsed.tagline);
   } catch(e) {
@@ -3496,7 +3571,7 @@ function creativeFeedback(hookTitle, hookType, result) {
 }
 
 function planReset() {
-  var cacheKey = 'dp_plan_v4_' + localDate();
+  var cacheKey = 'dp_plan_v5_' + localDate();
   localStorage.removeItem(cacheKey);
   loadDailyPlan();
 }
@@ -7573,6 +7648,142 @@ nav = function(name) {
   if (name === 'assistant') asstInit();
   document.body.classList.toggle('on-assistant', name === 'assistant');
 };
+
+// ═══════════════════════════════════════════════
+// v28 — Apple "Özet" ana ekranı
+// ═══════════════════════════════════════════════
+var G_CHEV = '<svg class="g-chev" width="8" height="13" viewBox="0 0 8 13" aria-hidden="true"><path d="M1.5 1.5l5 5-5 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var W_ICON = {
+  spend:  '<svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#ff9500"/><path d="M6 6.5h6M6 9h6M7.2 6.5v6M7.2 12.5c2.4 0 4-1.4 4-3.2" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>',
+  sales:  '<svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#34c759"/><path d="M5.5 7.2h7l-.6 5H6.1l-.6-5ZM7.2 7.2V6.4a1.8 1.8 0 0 1 3.6 0v.8" stroke="#fff" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>',
+  roas:   '<svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#007aff"/><path d="M5 11.5l2.6-2.6 2 2L13 7.5M10.6 7.5H13v2.4" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  profit: '<svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#af52de"/><path d="M9 5v8M6.5 10.5L9 13l2.5-2.5" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 9 9)"/></svg>'
+};
+var G_ICON = {
+  high: ['#ff3b30', '<svg width="14" height="14" viewBox="0 0 14 14"><rect x="3.5" y="3" width="2.2" height="8" rx=".8" fill="#fff"/><rect x="8.3" y="3" width="2.2" height="8" rx=".8" fill="#fff"/></svg>'],
+  mid:  ['#ff9500', '<svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 3.2v4.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="10.6" r="1.15" fill="#fff"/></svg>'],
+  low:  ['#34c759', '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 8.8L7 4.8l4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'],
+  blue: ['#007aff', '<svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="3.6" r="1.15" fill="#fff"/><path d="M7 6.4v4.6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>']
+};
+G_ICON.purple = G_ICON.blue;
+
+function wMoney(n) { return '₺' + Math.round(n || 0).toLocaleString('tr-TR'); }
+function wBars(vals, color) {
+  if (!vals || vals.length < 2) return '';
+  var max = Math.max.apply(null, vals.map(function(v){ return Math.max(0, v); })) || 1;
+  return '<div class="w-bars">' + vals.map(function(v, i) {
+    var h = Math.max(3, Math.round(Math.max(0, v) / max * 34));
+    return '<i style="height:' + h + 'px;background:' + color + '"' + (i === vals.length - 1 ? ' class="dim" title="Bugün (devam ediyor)"' : '') + '></i>';
+  }).join('') + '</div>';
+}
+
+async function loadDailySeries() {
+  if (!S.token || !S.accountId) return;
+  try {
+    var d = await gql('/' + S.accountId + '/insights', {
+      fields: 'spend,actions,action_values', level: 'account', time_increment: 1,
+      time_range: JSON.stringify({ since: daysAgo(6), until: localDate() }), limit: 31
+    });
+    window._dailyData = (d.data || []).map(function(r){ xParse(r); return { spend: r._spend, purchases: r._purchases, revenue: r._revenue }; });
+    planUpdateKpiStrip(window._campData || []);
+  } catch (e) { console.log('daily series:', e.message); }
+}
+
+function planUpdateKpiStrip(insights) {
+  var strip = document.getElementById('plan-kpi-strip');
+  if (!strip) return;
+  if (!insights || !insights.length) { strip.style.display = 'none'; return; }
+  var spend = insights.reduce(function(s,i){ return s + parseFloat(i.spend||0); }, 0);
+  var sales = insights.reduce(function(s,i){ return s + (i._purchases||0); }, 0);
+  var rev   = insights.reduce(function(s,i){ return s + (i._revenue||0); }, 0);
+  var roas  = spend > 0 && rev > 0 ? rev / spend : 0;
+  var unit  = getUnitCost();
+  var net   = rev - spend - sales * unit;
+  var day = window._dailyData || [];
+  var dS = day.map(function(d){ return d.spend; });
+  var dP = day.map(function(d){ return d.purchases; });
+  var dR = day.map(function(d){ return d.spend > 0 ? d.revenue / d.spend : 0; });
+  var dN = day.map(function(d){ return d.revenue - d.spend - d.purchases * unit; });
+  var meta = '<span class="w-meta">7 gün ' + G_CHEV + '</span>';
+  var card = function(key, label, color, valueHtml, sub, bars, onclick) {
+    return '<div class="w-card" onclick="' + onclick + '">' +
+      '<div class="w-head" style="color:' + color + '">' + W_ICON[key] + label + meta + '</div>' +
+      '<div class="w-val">' + valueHtml + '</div>' +
+      (sub ? '<div class="w-sub">' + sub + '</div>' : '') + bars + '</div>';
+  };
+  var html =
+    card('spend', 'Harcama', 'var(--t-orange)', wMoney(spend), insights.length + ' kampanya', wBars(dS, 'var(--sys-orange)'), "nav('dash')") +
+    card('sales', 'Satış', 'var(--t-green)', String(sales), sales > 0 ? 'Satış başı ' + wMoney(spend / sales) : 'Henüz satış yok', wBars(dP, 'var(--sys-green)'), "nav('dash')") +
+    card('roas', 'ROAS', 'var(--t-blue)', roas > 0 ? roas.toFixed(2) + '<small>x</small>' : '—', 'Gelir ' + wMoney(rev), wBars(dR, 'var(--sys-blue)'), "nav('weekly');loadWeekly()");
+  if (unit) {
+    html += card('profit', 'Net Kâr', 'var(--t-purple)', (net < 0 ? '−' : '') + wMoney(Math.abs(net)), 'Ürün ve kargo düşüldü', wBars(dN, 'var(--sys-purple)'), 'showBrandForm()');
+  } else {
+    html += '<div class="w-card" onclick="showBrandForm()"><div class="w-head" style="color:var(--t-purple)">' + W_ICON.profit + 'Net Kâr' + meta + '</div>' +
+      '<div class="w-val" style="color:var(--text3)">—</div><div class="w-sub">ROAS kâr demek değil.</div><div class="w-cta">Ürün maliyetini ekle</div></div>';
+  }
+  strip.style.display = 'grid';
+  strip.innerHTML = html;
+}
+
+function planShowResults(actions, verdict, tagline) {
+  if (window._planLoadInt) clearInterval(window._planLoadInt);
+  var aiEmpty = document.getElementById('plan-ai-empty'), aiLoading = document.getElementById('plan-ai-loading'), aiResult = document.getElementById('plan-ai-result');
+  if (aiEmpty) aiEmpty.style.display = 'none';
+  if (aiLoading) aiLoading.style.display = 'none';
+  if (aiResult) aiResult.style.display = 'block';
+  var fc = document.getElementById('focus-card');
+  if (!fc) return;
+  var camps = window._campData || [];
+  window._planActs = actions || [];
+  var rows = (actions || []).map(function(a, i) {
+    var ic = G_ICON[a.tone] || G_ICON.blue;
+    return '<div class="g-row" onclick="planActOpen(' + i + ')">' +
+      '<div class="g-ic" style="background:' + ic[0] + '">' + ic[1] + '</div>' +
+      '<div class="g-main"><div class="g-t">' + escapeHtml(a.title || '') + '</div>' + (a.reason ? '<div class="g-s">' + escapeHtml(a.reason) + '</div>' : '') + '</div>' +
+      '<div class="g-trail">' + G_CHEV + '</div></div>';
+  }).join('');
+  fc.style.display = 'block';
+  fc.innerHTML = '<div class="g-title"><h3>Bugün</h3><a onclick="planReset()">Yenile</a></div>' +
+    '<div class="g-list">' + rows + '</div>' +
+    (verdict ? '<div class="g-foot">' + escapeHtml(verdict) + '</div>' : '');
+  var tc = document.getElementById('tasks-card'); if (tc) tc.style.display = 'none';
+}
+
+function planActOpen(i) {
+  var a = (window._planActs || [])[i]; if (!a) return;
+  var camps = window._campData || [];
+  var t = (a.title + ' ' + (a.reason || '')).toLocaleLowerCase('tr-TR');
+  for (var k = 0; k < camps.length; k++) {
+    var n = (camps[k].campaign_name || '').toLocaleLowerCase('tr-TR');
+    if (n && t.indexOf(n) !== -1) { openCampPopup(k); return; }
+  }
+  nav('otopilot');
+}
+
+function renderPlanCampaigns() {
+  var listEl = document.getElementById('plan-camp-list');
+  var emptyEl = document.getElementById('plan-camp-empty');
+  if (!listEl) return;
+  var camps = window._campData || [];
+  if (!camps.length) { if (emptyEl) emptyEl.style.display = 'block'; listEl.innerHTML = ''; return; }
+  if (emptyEl) emptyEl.style.display = 'none';
+  var sum = camps.reduce(function(a,c){ return a + parseFloat(c.spend||0); }, 0);
+  var ts = document.getElementById('top-spend-val'); if (ts) ts.textContent = wMoney(sum);
+  planUpdateKpiStrip(camps);
+  var scored = camps.map(function(c, idx){ return Object.assign({ _idx: idx }, c, scoreCampaign(c)); })
+    .sort(function(a, b){ return parseFloat(b.spend||0) - parseFloat(a.spend||0); });
+  var cls = { 'BÜYÜT': 'scale', 'DURDUR': 'pause', 'İZLE': 'watch', 'BEKLE': 'watch' };
+  var txt = { 'BÜYÜT': 'Büyüt', 'DURDUR': 'Durdur', 'İZLE': 'İzle', 'BEKLE': 'Bekle' };
+  listEl.innerHTML = '<div class="g-title"><h3>Kampanyalar</h3><span>Son 7 gün</span></div><div class="g-list">' +
+    scored.map(function(c) {
+      var roas = c._roas || 0;
+      return '<div class="g-row noicon" onclick="openCampPopup(' + c._idx + ')">' +
+        '<div class="g-main"><div class="g-t">' + escapeHtml(c.campaign_name || 'Kampanya') + '</div><div class="g-s">' + escapeHtml(c.reason || '') + '</div></div>' +
+        '<div class="g-trail"><div class="g-num" style="color:' + (roas >= 3 ? 'var(--t-green)' : roas > 0 && roas < 1 ? '#d70015' : 'var(--text)') + '">' +
+          (roas > 0 ? roas.toFixed(2) + 'x' : '—') + '<small>' + wMoney(c.spend) + '</small></div>' +
+          '<span class="g-pill ' + (cls[c.decision] || 'watch') + '">' + (txt[c.decision] || c.decision) + '</span>' + G_CHEV + '</div></div>';
+    }).join('') + '</div>';
+}
 
 </script>
 </body>
