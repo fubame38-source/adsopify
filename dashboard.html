@@ -588,6 +588,14 @@ input:focus,textarea:focus,select:focus{border-color:rgba(0,0,0,0.35);box-shadow
 body.on-assistant #fab-asst{display:none}
 
 
+#plan-decision-cards{display:none!important}
+.pc-row{display:grid;grid-template-columns:minmax(0,1fr) 110px 80px 80px 90px;gap:12px;align-items:center;padding:14px 6px;border-top:1px solid var(--border);font-size:14px;color:var(--text);cursor:pointer;font-variant-numeric:tabular-nums}
+.pc-row:hover{background:var(--surface2);border-radius:12px}
+.pc-head{cursor:default;border-top:none;font-size:12px;color:var(--text3);padding:4px 6px 8px}
+.pc-head:hover{background:none}
+.pc-name{min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-name small{display:block;font-weight:400;font-size:12px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:720px){.pc-row{grid-template-columns:minmax(0,1fr) 64px 78px}.pc-ctr,.pc-sp{display:none}}
 /* sentence-case etiketler (Apple dili) */
 [style*="text-transform:uppercase"],.clabel,.kpi-label,.ov-stat-label,.cp-kpi-label,thead th,.nav-grp,label,.opp-badge,.cc-badge,.idea-badge,.brand-ov-stat-label,.ws-label{text-transform:none!important;letter-spacing:-0.005em!important}
 [style*="text-transform:uppercase"][style*="font-size:10px"],[style*="text-transform:uppercase"][style*="font-size:9px"]{font-size:12px!important;font-weight:600!important}
@@ -604,7 +612,7 @@ thead th{font-size:12px!important;font-weight:500!important}
   .x-hero{padding:24px 20px}
   .x-rec{flex-direction:column}
   .as-msg{max-width:90%}
-  #plan-decision-cards{grid-template-columns:1fr!important}
+  
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
@@ -612,7 +620,6 @@ thead th{font-size:12px!important;font-weight:500!important}
 </head>
 <body>
 
-<button id="fab-asst" onclick="nav('assistant')"><span class="av"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3.5h10v7H7l-3 2.5v-2.5H3v-7Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span><b>Hesap Asistanı</b><small>Verine göre cevap</small></span><span class="on"></span></button>
 <!-- ──────── KAMPANYA POPUP ──────── -->
 <div id="camp-popup-overlay" onclick="closeCampPopup(event)">
   <div id="camp-popup">
@@ -811,19 +818,17 @@ thead th{font-size:12px!important;font-weight:500!important}
 
   <div class="nav-div"></div>
   <div class="nav-item active" onclick="nav('plan')" data-sec="plan"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h6M5 8.5h4M5 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Günlük Plan</div>
-  <div class="nav-item" onclick="nav('dash')" data-sec="dash"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M2 12L5.5 7.5L8.5 9.5L12.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="7.5" r="1" fill="currentColor"/><circle cx="8.5" cy="9.5" r="1" fill="currentColor"/><circle cx="12.5" cy="4" r="1" fill="currentColor"/></svg>Reklamları Analiz</div>
+  <div class="nav-item" onclick="nav('dash')" data-sec="dash"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M2 12L5.5 7.5L8.5 9.5L12.5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="7.5" r="1" fill="currentColor"/><circle cx="8.5" cy="9.5" r="1" fill="currentColor"/><circle cx="12.5" cy="4" r="1" fill="currentColor"/></svg>Reklamlar</div>
   <div class="nav-item" onclick="nav('weekly')" data-sec="weekly"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Haftalık Özet</div>
   <div class="nav-item" onclick="nav('alarms')" data-sec="alarms"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 0 1 5 5v3l1.5 2h-13L3 10V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Alarmlar</div>
+  <div class="nav-grp">AI araçları</div>
+  <div class="nav-item" onclick="nav('otopilot')" data-sec="otopilot"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Otopilot</div>
+  <div class="nav-item" onclick="nav('creative-dna')" data-sec="creative-dna"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M5 2c0 4 6 4 6 8s-6 4-6 4M11 2c0 4-6 4-6 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Creative DNA</div>
+  <div class="nav-item" onclick="nav('assistant')" data-sec="assistant"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 3.5h10v7H7l-3 2.5v-2.5H3v-7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Hesap Asistanı</div>
   <div class="nav-item" onclick="nav('ad-wizard')" data-sec="ad-wizard"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Reklam Hazırla</div>
+  <div class="nav-item" onclick="nav('ai-analiz')" data-sec="ai-analiz"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.5 3.8.4-2.8 2.5.9 3.7L8 9.5l-3.1 2.1.9-3.7L3 5.4l3.8-.4L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Marka Analizi</div>
+  <div class="nav-div"></div>
   <div class="nav-item" onclick="nav('saved')" data-sec="saved"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 2.5h10v11l-5-3-5 3V2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Kaydedilenler</div>
-  <div class="nav-div"></div>
-  <div class="nav-item" onclick="nav('ai-analiz')" data-sec="ai-analiz"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.2 3.5 3.8.4-2.8 2.5.9 3.7L8 9.5l-3.1 2.1.9-3.7L3 5.4l3.8-.4L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>AI Analiz</div>
-  <div class="nav-div"></div>
-  <div class="nav-grp">AI Operatör</div>
-  <div class="nav-item" onclick="nav('otopilot')" data-sec="otopilot"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.5V8l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Otopilot<span class="nav-new" title="Yeni"></span></div>
-  <div class="nav-item" onclick="nav('creative-dna')" data-sec="creative-dna"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M5 2c0 4 6 4 6 8s-6 4-6 4M11 2c0 4-6 4-6 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Creative DNA<span class="nav-new" title="Yeni"></span></div>
-  <div class="nav-item" onclick="nav('assistant')" data-sec="assistant"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M3 3.5h10v7H7l-3 2.5v-2.5H3v-7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Hesap Asistanı<span class="nav-new" title="Yeni"></span></div>
-  <div class="nav-div"></div>
   <div class="nav-item" onclick="nav('settings')" data-sec="settings"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.5 3.5l1 1M11.5 11.5l1 1M12.5 3.5l-1 1M4.5 11.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Ayarlar</div>
   <div id="nav-meta-connect" class="nav-item" onclick="reconnectMeta()" style="color:var(--accent);display:none;background:var(--accent-light);border-color:rgba(0,0,0,0.1)"><svg class="ni-svg" viewBox="0 0 16 16" fill="none"><path d="M8 2a6 6 0 1 0 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10 2h4v4M14 2L9 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Meta Hesabını Bağla</div>
 </div>
@@ -926,43 +931,6 @@ thead th{font-size:12px!important;font-weight:500!important}
   <div id="plan-kpi-strip" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:14px;align-items:center;gap:0;overflow:hidden"></div>
 
 
-  <!-- LAUNCHPAD -->
-  <div class="lp">
-    <div class="lp-hero" onclick="nav('otopilot')">
-      <span class="lp-pill"><i></i>Bugün</span>
-      <div class="lp-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#1d1d1f" stroke-width="1.5"/><path d="M8 4.5V8l2.5 1.5" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div style="margin-top:28px">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:6px">Otopilot</div>
-        <div class="x-title">Bugün hangi reklamına dokunmalısın?</div>
-        <div class="x-sub" style="font-size:14px">Hesabını kurallarınla tarar; neyi büyütüp neyi durduracağını gerekçesiyle söyler. Onaylarsan tek tıkla uygular.</div>
-        <button class="x-cta" style="margin-top:20px" onclick="event.stopPropagation();nav('otopilot');otoScan()">Hesabı tara <span aria-hidden="true">→</span></button>
-      </div>
-    </div>
-    <div class="lp-tile" onclick="nav('creative-dna')">
-      <span class="lp-ai">AI</span>
-      <div class="lp-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 2c0 4 6 4 6 8s-6 4-6 4M11 2c0 4-6 4-6 8" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="lp-t">Creative DNA</div>
-      <div class="lp-s">Kazanan reklamlarının ortak geni</div>
-    </div>
-    <div class="lp-tile" onclick="nav('assistant')">
-      <span class="lp-ai">AI</span>
-      <div class="lp-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3.5h10v7H7l-3 2.5v-2.5H3v-7Z" stroke="#1d1d1f" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-      <div class="lp-t">Hesap Asistanı</div>
-      <div class="lp-s">Hesabına Türkçe soru sor</div>
-    </div>
-    <div class="lp-tile" onclick="nav('ad-wizard')">
-      <span class="lp-ai">AI</span>
-      <div class="lp-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10.5 2.5l3 3L6 13H3v-3l7.5-7.5Z" stroke="#1d1d1f" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-      <div class="lp-t">Reklam Hazırla</div>
-      <div class="lp-s">Metin, hook ve brief</div>
-    </div>
-    <div class="lp-tile" onclick="nav('weekly');loadWeekly()">
-      <div class="lp-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="3" width="11" height="10.5" rx="2" stroke="#1d1d1f" stroke-width="1.5"/><path d="M2.5 6.5h11M5.5 1.8v2.4M10.5 1.8v2.4" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <div class="lp-t">Haftalık Özet</div>
-      <div class="lp-s">Bu hafta vs geçen hafta</div>
-    </div>
-  </div>
-
   <!-- AI BRIFING BLOĞU -->
   <div style="margin-bottom:14px" id="plan-ai-empty-wrap">
 
@@ -1020,7 +988,7 @@ thead th{font-size:12px!important;font-weight:500!important}
   </div>
 
   <!-- ══ GÜNÜN STRATEJİ BRİFİNG — kampanya listesinden önce ══ -->
-  <div id="strateji-widget" style="margin-bottom:14px">
+  <div id="strateji-widget" style="display:none">
 
     <!-- IDLE STATE -->
     <div id="strateji-idle" style="background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(5,150,105,.04));border:1.5px solid rgba(16,185,129,.25);border-radius:20px;padding:22px 24px;display:flex;align-items:center;gap:18px">
@@ -1127,7 +1095,7 @@ thead th{font-size:12px!important;font-weight:500!important}
     <!-- Tüm kampanyalar — küçük liste -->
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <span style="font-size:12px;font-weight:700;color:var(--text2)">Tüm Kampanyalar</span>
+        <span class="x-h2" style="font-size:19px">Kampanyalar</span>
         <span style="font-size:11px;color:var(--text3)" id="plan-camp-period">Son 7 gün</span>
       </div>
       <div id="plan-camp-loading" style="display:none"><div class="loading-row"><div class="spinner"></div> Yükleniyor...</div></div>
@@ -1795,6 +1763,8 @@ thead th{font-size:12px!important;font-weight:500!important}
 // v26 ÇEKİRDEK — yerel tarih, worker auth
 // ═══════════════════════════════════════════════
 const WORKER_URL = 'https://adsopify-api.fubame38.workers.dev';
+// Worker'a oturum doğrulaması eklendikten SONRA true yap:
+const SEND_WORKER_AUTH = false;
 function localDate(d) {
   d = d || new Date();
   var m = d.getMonth() + 1, dd = d.getDate();
@@ -1807,7 +1777,7 @@ function daysAgo(n) { return localDate(new Date(Date.now() - n * 86400000)); }
   window.fetch = function(input, init) {
     try {
       var u = typeof input === 'string' ? input : (input && input.url) || '';
-      if (u.indexOf(WORKER_URL) === 0) {
+      if (SEND_WORKER_AUTH && u.indexOf(WORKER_URL) === 0) {
         init = init || {};
         var h = new Headers(init.headers || {});
         var t = localStorage.getItem('sb_token') || sessionStorage.getItem('sb_token');
@@ -2848,6 +2818,9 @@ function scoreCampaign(c) {
   } else if (freq >= 4) {
     decision = 'DURDUR'; color = 'var(--red)'; bg = 'var(--red-light)'; dotColor = 'var(--red)';
     reason = 'Frekans ' + freq.toFixed(1) + ' — kitle yorulmuş, creative yenile.';
+  } else if (roas > 0 && roas < 1) {
+    decision = 'DURDUR'; color = 'var(--red)'; bg = 'var(--red-light)'; dotColor = 'var(--red)';
+    reason = 'ROAS ' + roas.toFixed(2) + 'x — zararda çalışıyor, bütçeyi kes.';
   } else if (finalScore >= 38) {
     decision = 'BÜYÜT'; color = 'var(--green)'; bg = 'var(--green-light)'; dotColor = 'var(--green)';
     reason = roas > 0 ? 'ROAS ' + roas.toFixed(2) + 'x, CTR %' + ctr.toFixed(2) + ' — güçlü sinyal.' : 'CTR %' + ctr.toFixed(2) + ' — trafik kalitesi iyi.';
@@ -2928,54 +2901,24 @@ function renderPlanCampaigns() {
   var maxSpend = Math.max.apply(null, scored.map(function(c){ return parseFloat(c.spend||0); })) || 1;
   var maxCtr   = Math.max.apply(null, scored.map(function(c){ return parseFloat(c.ctr||0); })) || 1;
 
-  listEl.innerHTML = scored.map(function(c) {
-    var spend = parseFloat(c.spend||0);
-    var ctr   = parseFloat(c.ctr||0);
-    var roas  = c._roas||0;
-    var name  = (c.campaign_name||'Kampanya');
-    if (name.length > 38) name = name.substring(0,38)+'…';
-
-    var spendPct = Math.round((spend/maxSpend)*100);
-    var ctrPct   = Math.round((ctr/maxCtr)*100);
-    var roasStr  = roas > 0 ? roas.toFixed(2)+'x' : '—';
-
-    // Karar badge rengi
-    var badgeStyle = '';
-    if (c.decision === 'BÜYÜT')  badgeStyle = 'background:rgba(52,211,153,.12);color:#1f8f4e;border:1px solid rgba(52,211,153,.25)';
-    else if (c.decision === 'DURDUR') badgeStyle = 'background:rgba(248,113,113,.12);color:#d70015;border:1px solid rgba(248,113,113,.25)';
-    else badgeStyle = 'background:rgba(251,191,36,.1);color:#b25000;border:1px solid rgba(251,191,36,.2)';
-
-    return '<div onclick="openCampPopup('+c._idx+')" style="padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer">' +
-      // Üst satır: isim + karar badge
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
-        '<div style="width:6px;height:6px;border-radius:50%;background:'+c.dotColor+';flex-shrink:0"></div>' +
-        '<div style="flex:1;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escapeHtml(name)+'</div>' +
-        '<span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.05em;'+badgeStyle+'">'+c.decision+'</span>' +
-      '</div>' +
-      // Metrik satırı
-      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">' +
-        '<div style="min-width:0">' +
-          '<div style="font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.04em">₺'+spend.toFixed(0)+'</div>' +
-          '<div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Harcama</div>' +
-        '</div>' +
-        '<div style="width:1px;height:28px;background:var(--border);flex-shrink:0"></div>' +
-        '<div style="min-width:0">' +
-          '<div style="font-size:16px;font-weight:700;color:'+(roas>=3?'#1f8f4e':roas>0?'#b25000':'var(--text3)')+';letter-spacing:-.04em">'+roasStr+'</div>' +
-          '<div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">ROAS</div>' +
-        '</div>' +
-        '<div style="width:1px;height:28px;background:var(--border);flex-shrink:0"></div>' +
-        '<div style="flex:1;min-width:60px">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
-            '<span style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">CTR</span>' +
-            '<span style="font-size:12px;font-weight:700;color:var(--text)">%'+ctr.toFixed(2)+'</span>' +
-          '</div>' +
-          '<div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">' +
-            '<div style="height:100%;width:'+ctrPct+'%;background:'+(ctr>=2?'#1f8f4e':ctr>=1?'#b25000':'#d70015')+';border-radius:2px;transition:width .6s ease"></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  var _sum = camps.reduce(function(a,c){ return a + parseFloat(c.spend||0); }, 0);
+  var _ts = document.getElementById('top-spend-val'); if (_ts) _ts.textContent = '₺' + Math.round(_sum).toLocaleString('tr-TR');
+  planUpdateKpiStrip(camps);
+  var tagCls = { 'BÜYÜT': 'scale', 'DURDUR': 'pause', 'İZLE': 'watch', 'BEKLE': 'watch' };
+  var tagTxt = { 'BÜYÜT': 'Büyüt', 'DURDUR': 'Durdur', 'İZLE': 'İzle', 'BEKLE': 'Bekle' };
+  listEl.style.flexDirection = 'column';
+  listEl.style.gap = '0';
+  listEl.innerHTML = '<div class="pc-row pc-head"><span>Kampanya</span><span class="pc-sp">Harcama</span><span>ROAS</span><span class="pc-ctr">CTR</span><span style="text-align:right">Öneri</span></div>' +
+    scored.map(function(c) {
+      var spend = parseFloat(c.spend||0), ctr = parseFloat(c.ctr||0), roas = c._roas||0;
+      return '<div class="pc-row" onclick="openCampPopup(' + c._idx + ')" title="' + escapeAttr(c.reason || '') + '">' +
+        '<span class="pc-name">' + escapeHtml(c.campaign_name || 'Kampanya') + '<small>' + escapeHtml(c.reason || '') + '</small></span>' +
+        '<span class="pc-sp">₺' + Math.round(spend).toLocaleString('tr-TR') + '</span>' +
+        '<span style="color:' + (roas >= 3 ? 'var(--green)' : roas > 0 && roas < 1 ? 'var(--red)' : 'var(--text)') + '">' + (roas > 0 ? roas.toFixed(2) + 'x' : '—') + '</span>' +
+        '<span class="pc-ctr">%' + ctr.toFixed(2) + '</span>' +
+        '<span style="text-align:right"><span class="x-tag ' + (tagCls[c.decision] || 'watch') + '">' + (tagTxt[c.decision] || c.decision) + '</span></span>' +
+      '</div>';
+    }).join('');
 }
 
 
@@ -3223,7 +3166,7 @@ function planShowResults(actions, verdict, tagline) {
 
   // Verdict — tek satır
   if (verdict) {
-    html += '<div style="font-size:14px;color:var(--text2);margin-bottom:16px;padding:0 2px">' + escapeHtml(verdict) + '</div>';
+    html += '<div class="x-h2" style="margin:4px 2px 4px">Bugün yapılacaklar</div><div style="font-size:14px;color:var(--text2);margin:0 2px 14px;line-height:1.5">' + escapeHtml(verdict) + '</div>';
   }
 
   // Aksiyonlar — sadece başlık + ince gerekçe
@@ -3480,16 +3423,17 @@ async function analyzeWebsite(urlOverride) {
 }
 
 function planShowFallback() {
-  // API çalışmazsa statik fikirlerle devam
-  var pool = typeof ALL_CREATIVE_IDEAS !== 'undefined' ? ALL_CREATIVE_IDEAS : [];
-  var actions = shuffleArray(pool).slice(0, 4).map(function(i, idx) {
-    return { title: i.title, reason: i.desc, tone: ['blue','mid','low','high'][idx % 4], cta: 'Uygula', nav: 'creative-prompt' };
+  if (window._planLoadInt) clearInterval(window._planLoadInt);
+  var camps = (window._campData || []).map(function(c){ return Object.assign({}, c, scoreCampaign(c)); });
+  var acts = [];
+  camps.filter(function(c){ return c.decision === 'DURDUR'; }).sort(function(a,b){ return parseFloat(b.spend)-parseFloat(a.spend); }).slice(0,2).forEach(function(c){
+    acts.push({ title: (c.campaign_name || 'Kampanya') + ' — durdur', reason: c.reason, tone: 'high' });
   });
-  planShowResults(actions, 'Bugün üretim günü — en iyi creative\'ler sahaya çıksın.', 'Creative Günü');
-  // Ideas'ı direkt render et — refreshIdeas async fail'ini beklemeden
-  setTimeout(function() {
-    renderIdeaCards(shuffleArray(ALL_CREATIVE_IDEAS).slice(0, 4));
-  }, 100);
+  camps.filter(function(c){ return c.decision === 'BÜYÜT'; }).sort(function(a,b){ return b.score-a.score; }).slice(0,2).forEach(function(c){
+    acts.push({ title: (c.campaign_name || 'Kampanya') + ' — bütçeyi artır', reason: c.reason, tone: 'low' });
+  });
+  if (!acts.length) acts.push({ title: 'Acil müdahale gerekmiyor', reason: 'Kampanyaların kural eşiklerinin içinde. Yeni bir creative testi açmak için iyi bir gün.', tone: 'blue' });
+  planShowResults(acts.slice(0, 3), 'Kampanya verine göre bugünün öncelikleri.', '');
 }
 
 async function planRenderMemoryStrip() {
