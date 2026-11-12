@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>Adsopify</title>
+<script>(function(){try{var t=localStorage.getItem('adsopify_theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <script>
   window.fbAsyncInit = function() {
     FB.init({ appId: '1602280044394114', cookie: true, xfbml: false, version: 'v23.0' });
@@ -22,16 +23,27 @@
   --ink:#1c1c1e; --on-ink:#ffffff; --seg-on:#ffffff; --bar:rgba(249,249,249,.92);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",system-ui,sans-serif;
   --r:16px;
+  color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
-  :root{
+  :root:not([data-theme=light]){
     --bg:#000000; --card:#1c1c1e; --fill:rgba(120,120,128,.24); --sep:rgba(84,84,88,.6);
     --text:#ffffff; --text2:rgba(235,235,245,.62); --text3:rgba(235,235,245,.3);
     --accent:#0a84ff; --green:#30d158; --red:#ff453a; --orange:#ff9f0a;
     --green-t:#30d158; --red-t:#ff453a; --orange-t:#ff9f0a;
     --green-bg:rgba(48,209,88,.18); --red-bg:rgba(255,69,58,.18); --orange-bg:rgba(255,159,10,.18);
     --ink:#f2f2f7; --on-ink:#000000; --seg-on:#636366; --bar:rgba(22,22,24,.92);
+    color-scheme:dark;
   }
+}
+:root[data-theme=dark]{
+    --bg:#000000; --card:#1c1c1e; --fill:rgba(120,120,128,.24); --sep:rgba(84,84,88,.6);
+    --text:#ffffff; --text2:rgba(235,235,245,.62); --text3:rgba(235,235,245,.3);
+    --accent:#0a84ff; --green:#30d158; --red:#ff453a; --orange:#ff9f0a;
+    --green-t:#30d158; --red-t:#ff453a; --orange-t:#ff9f0a;
+    --green-bg:rgba(48,209,88,.18); --red-bg:rgba(255,69,58,.18); --orange-bg:rgba(255,159,10,.18);
+    --ink:#f2f2f7; --on-ink:#000000; --seg-on:#636366; --bar:rgba(22,22,24,.92);
+    color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
@@ -66,6 +78,9 @@ main{padding:16px 16px calc(96px + env(safe-area-inset-bottom));max-width:760px;
 .btn.block{display:flex;width:100%}
 .btn:disabled,.btn-text:disabled{opacity:.4;cursor:default}
 .btn:active{opacity:.8}
+.btn-gray{background:var(--fill);color:var(--text)}
+.prog{height:4px;border-radius:2px;background:var(--fill);overflow:hidden;margin-top:12px}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
 
 /* liste */
 .list{background:var(--card);border-radius:var(--r);overflow:hidden}
@@ -122,6 +137,7 @@ main{padding:16px 16px calc(96px + env(safe-area-inset-bottom));max-width:760px;
 .sw[aria-checked=true]::after{transform:translateX(20px)}
 .frow{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:48px;position:relative}
 .frow span{flex:none;font-size:15px}
+.frow select{flex:1;min-width:0;border:0;background:none;text-align:right;text-align-last:right;font-size:16px;height:48px;outline:none;color:var(--text)}
 .frow input{flex:1;min-width:0;border:0;background:none;text-align:right;font-size:16px;height:48px;outline:none}
 .field{display:block;margin-top:12px}
 .field span{display:block;font-size:13px;color:var(--text2);margin-bottom:4px}
@@ -329,7 +345,10 @@ details.list summary::-webkit-details-marker{display:none}
 
     <section id="v-creative" class="view">
       <div class="head"><h1>Kreatif</h1><p class="sub">Sıradaki reklamını neye göre yapacağını gösterir.</p></div>
-      <div class="sec" style="margin-top:16px"><h2>Kazanan reklamlarım</h2><button class="btn-text" onclick="loadCreative(true)">Yenile</button></div>
+      <div class="sec" style="margin-top:16px"><h2>Videoyu test et</h2><span class="pill gray">Öğreniyor</span></div>
+      <div id="sd-body"></div>
+      <input type="file" id="sd-file" accept="video/*" hidden onchange="sdPick(this)">
+      <div class="sec"><h2>Kazanan reklamlarım</h2><button class="btn-text" onclick="loadCreative(true)">Yenile</button></div>
       <div id="cr-grid"></div>
       <div class="sec"><h2>Ortak kalıplar</h2></div>
       <div id="cr-pat"></div>
@@ -371,6 +390,1096 @@ details.list summary::-webkit-details-marker{display:none}
 <div id="tip" hidden></div>
 <div id="toast" hidden></div>
 
+<script>
+/* ============================================================
+   SENDORA ENGINE — persona üretimi, Gemini, simülasyon, metrikler
+   ============================================================ */
+const Engine = (() => {
+
+  /* ---------- yardımcılar ---------- */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  function pickW(rng, items) { let s = 0; for (const it of items) s += it[1]; let r = rng() * s; for (const it of items) { if ((r -= it[1]) <= 0) return it[0]; } return items[items.length - 1][0]; }
+  const bell = rng => (rng() + rng() + rng()) / 3;
+  function gauss(rng) { let u = 0, v = 0; while (u === 0) u = rng(); while (v === 0) v = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function popcount(n) { n = n - ((n >> 1) & 0x55555555); n = (n & 0x33333333) + ((n >> 2) & 0x33333333); return (((n + (n >> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24; }
+  function shuffle(arr, rng) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+  const tr2ascii = s => s.toLowerCase().replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z0-9]/g, '');
+
+  /* ---------- Türkiye Instagram nüfusu ---------- */
+  const AGES = [["18-24", 30], ["25-34", 33], ["35-44", 20], ["45-54", 11], ["55+", 6]];
+  const AGE_RANGE = { "18-24": [18, 24], "25-34": [25, 34], "35-44": [35, 44], "45-54": [45, 54], "55+": [55, 68] };
+  const CITIES = [["İstanbul", 22], ["Ankara", 8], ["İzmir", 6], ["Bursa", 4], ["Antalya", 4], ["Kocaeli", 2.5], ["Konya", 3], ["Adana", 3], ["Gaziantep", 3], ["Kayseri", 2], ["Mersin", 2], ["Diyarbakır", 2], ["Samsun", 2], ["Eskişehir", 1.5], ["Trabzon", 1.5], ["Denizli", 1.5], ["Sakarya", 1.5], ["Hatay", 1.5], ["Manisa", 1.5], ["Şanlıurfa", 1.5], ["Malatya", 1], ["Erzurum", 1], ["Tekirdağ", 1.2], ["Van", 1], ["Balıkesir", 1.2], ["Aydın", 1.2], ["Muğla", 1], ["Sivas", 0.8], ["Ordu", 0.8], ["Rize", 0.5]];
+  const PLATE = { "İstanbul": 34, "Ankara": 6, "İzmir": 35, "Bursa": 16, "Antalya": 7, "Kocaeli": 41, "Konya": 42, "Adana": 1, "Gaziantep": 27, "Kayseri": 38, "Mersin": 33, "Diyarbakır": 21, "Samsun": 55, "Eskişehir": 26, "Trabzon": 61, "Denizli": 20, "Sakarya": 54, "Hatay": 31, "Manisa": 45, "Şanlıurfa": 63, "Malatya": 44, "Erzurum": 25, "Tekirdağ": 59, "Van": 65, "Balıkesir": 10, "Aydın": 9, "Muğla": 48, "Sivas": 58, "Ordu": 52, "Rize": 53 };
+  const INTERESTS = ["moda", "futbol", "yemek", "ev dekorasyonu", "teknoloji", "oyun", "mizah", "anne-bebek", "spor/fitness", "kişisel gelişim", "araba", "seyahat", "girişimcilik/para", "güzellik/makyaj", "maneviyat", "müzik", "gündem", "sağlık", "hayvanlar", "alışveriş/indirim"];
+  const INT_BASE = [8, 8, 10, 6, 6, 5, 10, 4, 6, 5, 4, 6, 5, 5, 4, 7, 6, 4, 6, 7];
+  const FEMALE_UP = ["moda", "ev dekorasyonu", "anne-bebek", "güzellik/makyaj", "alışveriş/indirim", "yemek"];
+  const MALE_UP = ["futbol", "araba", "oyun", "teknoloji", "girişimcilik/para", "spor/fitness"];
+  const NAMES_F = ["Ayşe", "Fatma", "Zeynep", "Elif", "Merve", "Büşra", "Esra", "Kübra", "Emine", "Hatice", "Özge", "Gamze", "Seda", "Derya", "Ebru", "Sibel", "Tuğba", "Melike", "Irmak", "Ecrin", "Defne", "Nisa", "Sena", "Buse", "Damla", "Ceren", "Yasemin", "Hülya", "Gül", "Selin", "Aslı", "Dilara", "Rabia", "Sevgi", "Nur"];
+  const NAMES_M = ["Mehmet", "Mustafa", "Ahmet", "Ali", "Hüseyin", "Hasan", "İbrahim", "Murat", "Emre", "Burak", "Furkan", "Yusuf", "Ömer", "Kerem", "Can", "Eren", "Berk", "Oğuz", "Serkan", "Volkan", "Kaan", "Onur", "Tolga", "Uğur", "Cem", "Barış", "Enes", "Arda", "Emir", "Selim", "Halil", "Recep", "Osman", "Batuhan", "Doğukan"];
+  const MOODS = [["sıkılmış", 25], ["yorgun", 20], ["keyifli", 25], ["stresli", 12], ["meraklı", 18]];
+  const TIMES = [["sabah toplu taşımada", 15], ["öğle arasında", 18], ["akşam kanepede", 30], ["gece yatakta", 27], ["işte gizlice", 10]];
+  const CSTYLE = [["sessiz izleyici", 62], ["arkadaşını etiketler", 12], ["esprili", 8], ["eleştirel", 7], ["soru soran", 7], ["emojici", 4]];
+  function jobFor(rng, age, g) {
+    if (age <= 24) return pickW(rng, [["öğrenci", 55], ["özel sektör çalışanı", 22], ["iş arıyor", 12], ["garson/kasiyer", 11]]);
+    if (age >= 58) return pickW(rng, [["emekli", 70], ["esnaf", 15], [g === "K" ? "ev hanımı" : "serbest çalışan", 15]]);
+    const base = [["özel sektör çalışanı", 30], ["memur", 14], ["esnaf", 10], ["serbest çalışan", 10], ["işçi", 12], ["öğretmen", 6], ["mühendis", 5], ["sağlık çalışanı", 5], ["satış temsilcisi", 6]];
+    if (g === "K") base.push(["ev hanımı", 22]);
+    return pickW(rng, base);
+  }
+
+  function generatePopulation(n, seed) {
+    const rng = mulberry32(seed);
+    const pop = new Array(n);
+    for (let i = 0; i < n; i++) {
+      const ageB = pickW(rng, AGES), ar = AGE_RANGE[ageB];
+      const age = ar[0] + Math.floor(rng() * (ar[1] - ar[0] + 1));
+      const g = rng() < 0.48 ? "K" : "E";
+      const city = pickW(rng, CITIES);
+      // ilgi alanları
+      const w = INT_BASE.map((b, k) => {
+        const it = INTERESTS[k]; let m = 1;
+        if (g === "K" && FEMALE_UP.includes(it)) m *= 2.4;
+        if (g === "E" && MALE_UP.includes(it)) m *= 2.4;
+        if (age <= 24 && ["oyun", "müzik", "mizah", "moda"].includes(it)) m *= 1.8;
+        if (age >= 35 && ["ev dekorasyonu", "sağlık", "maneviyat", "gündem", "yemek"].includes(it)) m *= 1.7;
+        if (it === "anne-bebek") m *= (g === "K" && age >= 24 && age <= 40) ? 3 : 0.25;
+        return [k, b * m];
+      });
+      const nI = 2 + Math.floor(rng() * 3);
+      const ints = []; let mask = 0;
+      while (ints.length < nI) { const k = pickW(rng, w); if (!(mask & (1 << k))) { mask |= 1 << k; ints.push(INTERESTS[k]); } }
+      const ageIdx = AGES.findIndex(a => a[0] === ageB);
+      const scroll = clamp(bell(rng) + (age <= 24 ? 0.12 : age >= 45 ? -0.1 : 0), 0, 1);
+      const skeptic = clamp(bell(rng) + (age >= 35 ? 0.08 : 0), 0, 1);
+      const attention = clamp(1 - scroll * 0.6 + (rng() - 0.5) * 0.3, 0, 1);
+      const soundOn = rng() < 0.6;
+      const name = g === "K" ? NAMES_F[Math.floor(rng() * NAMES_F.length)] : NAMES_M[Math.floor(rng() * NAMES_M.length)];
+      const uSuffix = rng() < 0.5 ? String(PLATE[city] || Math.floor(rng() * 81) + 1) : String(Math.floor(rng() * 99));
+      const user = tr2ascii(name) + (rng() < 0.4 ? "_" : ".") + (rng() < 0.5 ? tr2ascii(city).slice(0, 3) : "") + uSuffix;
+      pop[i] = {
+        id: i, name, user, age, ageB, ageIdx, g, city, job: jobFor(rng, age, g),
+        ints, mask, scroll, skeptic, attention, soundOn,
+        mood: pickW(rng, MOODS), time: pickW(rng, TIMES), cstyle: pickW(rng, CSTYLE),
+        buyer: bell(rng)
+      };
+    }
+    return pop;
+  }
+
+  const level = v => v < 0.2 ? "çok düşük" : v < 0.4 ? "düşük" : v < 0.6 ? "orta" : v < 0.8 ? "yüksek" : "çok yüksek";
+  function personaLine(p) {
+    return `#${p.id} ${p.name} (@${p.user}), ${p.age} yaş, ${p.g === "K" ? "kadın" : "erkek"}, ${p.city}, ${p.job}. İlgi: ${p.ints.join(", ")}. ${p.mood}, ${p.time}. Kaydırma hızı ${level(p.scroll)}, şüphecilik ${level(p.skeptic)}, dikkat ${level(p.attention)}, ses ${p.soundOn ? "açık" : "KAPALI"}, alışveriş eğilimi ${level(p.buyer)}, yorum tarzı: ${p.cstyle}.`;
+  }
+
+  function personaDist(a, b) {
+    const inter = popcount(a.mask & b.mask), uni = popcount(a.mask | b.mask) || 1;
+    return 1.6 * Math.pow((a.ageIdx - b.ageIdx) / 4, 2) + (a.g !== b.g ? 0.35 : 0)
+      + 1.2 * Math.pow(a.scroll - b.scroll, 2) + 0.8 * Math.pow(a.skeptic - b.skeptic, 2)
+      + 0.5 * Math.pow(a.attention - b.attention, 2) + (a.soundOn !== b.soundOn ? 0.3 : 0)
+      + 1.4 * (1 - inter / uni);
+  }
+
+  // Çekirdek: tabakalı örneklem (yaş x cinsiyet), nüfusu temsil etsin
+  function pickCore(pop, k, seed) {
+    const rng = mulberry32(seed ^ 0x9e3779b9);
+    const strata = {};
+    for (const p of pop) (strata[p.ageB + p.g] = strata[p.ageB + p.g] || []).push(p);
+    const out = [];
+    const keys = Object.keys(strata);
+    const quotas = keys.map(key => [key, strata[key].length / pop.length * k]);
+    let taken = 0;
+    for (const [key, q] of quotas) {
+      const arr = shuffle(strata[key].slice(), rng);
+      const nq = Math.floor(q);
+      for (let i = 0; i < nq && i < arr.length; i++) out.push(arr[i]);
+      taken += nq;
+    }
+    // kalanları rastgele tamamla
+    const rest = shuffle(pop.filter(p => !out.includes(p)), rng);
+    while (out.length < k && rest.length) out.push(rest.pop());
+    return out;
+  }
+
+  /* ---------- Gemini ---------- */
+  const BASE = "https://generativelanguage.googleapis.com";
+  const usage = { prompt: 0, output: 0, calls: 0, cost: 0 };
+  // Ücretli plan fiyatları ($ / 1M token, Ekim 2026). Ücretsiz planda maliyet 0'dır.
+  function priceOf(model) {
+    const m = String(model || "").toLowerCase();
+    if (/3\.1-flash-lite/.test(m)) return [0.25, 1.5];
+    if (/flash-lite/.test(m)) return [0.30, 2.5];
+    if (/flash/.test(m)) return [0.75, 3.75];
+    if (/pro/.test(m)) return [2.5, 15];
+    return [0.75, 3.75];
+  }
+  function costOf(model, pi, po) { const [a, b] = priceOf(model); return pi / 1e6 * a + po / 1e6 * b; }
+  let lowResSupported = true;
+
+  /* ---------- Sağlayıcı: google (AI Studio) | openrouter ---------- */
+  let PROVIDER = "google";
+  function setProvider(p) { PROVIDER = p === "openrouter" ? "openrouter" : "google"; }
+  const OR = "https://openrouter.ai/api/v1";
+
+  async function listModels(key) {
+    if (PROVIDER === "openrouter") {
+      const r = await fetch(`${OR}/models`);
+      if (!r.ok) throw new Error("OpenRouter modelleri alınamadı (" + r.status + ")");
+      const j = await r.json();
+      return (j.data || []).filter(m => /gemini/i.test(m.id) && ((m.architecture || {}).input_modalities || []).includes("video"))
+        .map(m => m.id);
+    }
+    const r = await fetch(`${BASE}/v1beta/models?pageSize=200&key=${encodeURIComponent(key)}`);
+    if (!r.ok) throw new Error("Modeller alınamadı (" + r.status + "): " + (await r.text()).slice(0, 200));
+    const j = await r.json();
+    return (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent") && /gemini/i.test(m.name))
+      .map(m => m.name.replace(/^models\//, ""));
+  }
+  function versionOf(name) { const m = name.match(/gemini-(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : 0; }
+  function pickDefaults(models) {
+    const stable = models.filter(m => !/(exp|preview|tts|image|live|embedding|audio|thinking|robotics|computer)/i.test(m));
+    const pool = stable.length ? stable : models;
+    const by = (re, not) => pool.filter(m => re.test(m) && (!not || !not.test(m))).sort((a, b) => versionOf(b) - versionOf(a))[0];
+    const main = by(/flash/, /lite/) || by(/pro/) || pool[0];
+    const agent = by(/flash-lite/) || main;
+    return { main, agent };
+  }
+
+  /* OpenRouter'da dosya yükleme yok: video her çağrıda base64 olarak gider. Büyük dosyayı önce küçültürüz. */
+  function blobToDataUrl(blob) {
+    return new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(new Error("Video okunamadı")); fr.readAsDataURL(blob); });
+  }
+  const OR_MAX_RAW = 12 * 1048576; // bunun altındaki video olduğu gibi gönderilir
+  async function shrinkVideo(file, onStatus) {
+    // Gerçek zamanlı yeniden kodlama: 480 px genişlik, ~900 kbps. Sekme açık kalmalı.
+    const url = URL.createObjectURL(file);
+    const v = document.createElement("video");
+    v.src = url; v.muted = false; v.playsInline = true; v.preload = "auto"; v.crossOrigin = "anonymous";
+    await new Promise((res, rej) => { v.onloadedmetadata = res; v.onerror = () => rej(new Error("Video açılamadı")); });
+    const W = Math.min(480, v.videoWidth || 480), H = Math.round(W * (v.videoHeight || 854) / (v.videoWidth || 480) / 2) * 2;
+    const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    const cx = cv.getContext("2d");
+    const stream = cv.captureStream(24);
+    let ac = null;
+    try {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ac.createMediaElementSource(v), dst = ac.createMediaStreamDestination();
+      src.connect(dst); dst.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+    } catch (e) { /* ses yakalanamazsa görüntüyle devam */ }
+    const mimes = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+    const mt = mimes.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m));
+    if (!mt) throw new Error("Tarayıcı video küçültmeyi desteklemiyor");
+    const rec = new MediaRecorder(stream, { mimeType: mt, videoBitsPerSecond: 900000, audioBitsPerSecond: 64000 });
+    const chunks = []; rec.ondataavailable = e => e.data && e.data.size && chunks.push(e.data);
+    const done = new Promise(res => { rec.onstop = res; });
+    let raf = 0; const draw = () => { cx.drawImage(v, 0, 0, W, H); raf = requestAnimationFrame(draw); };
+    rec.start(500); draw();
+    try { await v.play(); } catch (e) { cancelAnimationFrame(raf); throw new Error("Video oynatılamadı (sekmeyi açık tut)"); }
+    const dur = v.duration || 1;
+    await new Promise(res => {
+      const iv = setInterval(() => { onStatus && onStatus(`Video küçültülüyor… ${Math.round(v.currentTime)}/${Math.round(dur)} sn (sekmeyi kapatma)`); }, 500);
+      v.onended = () => { clearInterval(iv); res(); };
+    });
+    cancelAnimationFrame(raf); rec.stop(); await done;
+    try { ac && ac.close(); } catch (e) { }
+    URL.revokeObjectURL(url);
+    return new Blob(chunks, { type: "video/webm" });
+  }
+  async function prepareOR(file, onStatus) {
+    let blob = file;
+    if (file.size > OR_MAX_RAW) {
+      try { blob = await shrinkVideo(file, onStatus); }
+      catch (e) {
+        console.warn(e);
+        if (file.size > 20 * 1048576) throw new Error("Video büyük (" + (file.size / 1048576).toFixed(0) + " MB) ve küçültülemedi: " + e.message + ". Videoyu 20 MB altına düşürüp tekrar dene.");
+        blob = file;
+      }
+    }
+    onStatus && onStatus("Video hazırlanıyor…");
+    const mt = blob.type || "video/mp4";
+    let du = await blobToDataUrl(blob);
+    if (!/^data:video\//.test(du)) du = du.replace(/^data:[^;,]*/, "data:" + mt);
+    return { orVideo: du };
+  }
+
+  async function uploadVideo(key, file, onStatus) {
+    if (PROVIDER === "openrouter") return prepareOR(file, onStatus);
+    onStatus && onStatus("Video Gemini'ye yükleniyor…");
+    const mime = file.type || "video/mp4";
+    const start = await fetch(`${BASE}/upload/v1beta/files?key=${encodeURIComponent(key)}`, {
+      method: "POST",
+      headers: {
+        "X-Goog-Upload-Protocol": "resumable", "X-Goog-Upload-Command": "start",
+        "X-Goog-Upload-Header-Content-Length": String(file.size), "X-Goog-Upload-Header-Content-Type": mime,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ file: { display_name: (file.name || "video").slice(0, 100) } })
+    });
+    if (!start.ok) throw new Error("Yükleme başlatılamadı (" + start.status + "): " + (await start.text()).slice(0, 200));
+    const url = start.headers.get("x-goog-upload-url");
+    if (!url) throw new Error("Yükleme adresi alınamadı");
+    const up = await fetch(url, { method: "POST", headers: { "X-Goog-Upload-Offset": "0", "X-Goog-Upload-Command": "upload, finalize" }, body: file });
+    if (!up.ok) throw new Error("Yükleme başarısız (" + up.status + ")");
+    let f = (await up.json()).file;
+    let n = 0;
+    while (f && f.state === "PROCESSING") {
+      onStatus && onStatus("Gemini videoyu işliyor… " + (n * 2) + " sn");
+      await sleep(2000); n++;
+      const r = await fetch(`${BASE}/v1beta/${f.name}?key=${encodeURIComponent(key)}`);
+      f = await r.json();
+      if (n > 150) throw new Error("Video işleme zaman aşımı");
+    }
+    if (!f || f.state === "FAILED") throw new Error("Gemini videoyu işleyemedi");
+    return { fileData: { mimeType: f.mimeType || mime, fileUri: f.uri } };
+  }
+  async function inlineVideo(file) {
+    if (PROVIDER === "openrouter") return prepareOR(file);
+    const buf = await file.arrayBuffer();
+    let bin = ""; const bytes = new Uint8Array(buf); const CH = 0x8000;
+    for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    return { inlineData: { mimeType: file.type || "video/mp4", data: btoa(bin) } };
+  }
+
+  function parseJSON(txt) {
+    let t = (txt || "").trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+    try { return JSON.parse(t); } catch (e) { }
+    const a = t.indexOf("["), o = t.indexOf("{");
+    const s = (a >= 0 && (o < 0 || a < o)) ? a : o;
+    const e = s === a ? t.lastIndexOf("]") : t.lastIndexOf("}");
+    if (s >= 0 && e > s) return JSON.parse(t.slice(s, e + 1));
+    throw new Error("JSON çözülemedi");
+  }
+
+  const modelCaps = {};
+  let coolUntil = 0; // 429 gelince tüm çağrılar birlikte bekler
+  const log = { fn: null }; const say = (msg) => { try { log.fn && log.fn(msg); } catch (e) { } };
+  async function generate(key, model, parts, opt = {}) {
+    const fb = opt.fallback && opt.fallback !== model ? opt.fallback : null;
+    if (fb && deadModels.has(model)) return generateOnce(key, fb, parts, { ...opt, label: (opt.label || "Gemini") + " (yedek model)" });
+    try { return await generateOnce(key, model, parts, opt); }
+    catch (e) {
+      if (!fb || !/QUOTA_DAILY|denemede cevap vermedi/.test(e.message)) throw e;
+      if (/QUOTA_DAILY/.test(e.message)) deadModels.add(model);
+      say(`${model} kullanılamıyor, ${fb} ile devam ediliyor…`);
+      return generateOnce(key, fb, parts, { ...opt, label: (opt.label || "Gemini") + " (yedek model)" });
+    }
+  }
+  const deadModels = new Set(); // bu oturumda günlük kotası dolan modeller
+  /* OpenRouter (OpenAI uyumlu chat/completions). Gemini parçalarını dönüştürür. */
+  const orCaps = {};
+  async function orOnce(key, model, parts, opt = {}) {
+    const { json = true, temperature = 0.9, maxTokens, timeout = 120000, label = "OpenRouter", attempts = 8 } = opt;
+    const content = [];
+    for (const p of parts) {
+      if (p.orVideo) content.push({ type: "video_url", video_url: { url: p.orVideo } });
+      else if (p.text != null) content.push({ type: "text", text: p.text });
+      else throw new Error("OpenRouter için video hazırlanmamış (sağlayıcıyı değiştirdiysen videoyu yeniden yükle)");
+    }
+    let lastErr = "";
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      while (Date.now() < coolUntil) await sleep(Math.min(1000, coolUntil - Date.now() + 50));
+      const caps = orCaps[model] = orCaps[model] || { json: true, reason: true, prov: true };
+      const body = { model, messages: [{ role: "user", content }], temperature, usage: { include: true } };
+      if (json && caps.json) body.response_format = { type: "json_object" };
+      if (maxTokens) body.max_tokens = maxTokens;
+      if (caps.reason && /gemini|flash/i.test(model)) body.reasoning = { enabled: false };
+      const hasVid = content.some(c => c.type === "video_url");
+      if (hasVid && caps.prov && /^google\/gemini/i.test(model)) body.provider = { order: ["google-vertex"], allow_fallbacks: false };
+      const ctl = new AbortController(); const th = setTimeout(() => ctl.abort(), Math.max(timeout, hasVid ? 150000 : 0));
+      let r;
+      try {
+        r = await fetch(`${OR}/chat/completions`, {
+          method: "POST", signal: ctl.signal, body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key, "HTTP-Referer": location.origin && location.origin !== "null" ? location.origin : "https://sendora.app", "X-Title": "Sendora" }
+        });
+      } catch (e) {
+        clearTimeout(th);
+        lastErr = e.name === "AbortError" ? "zaman aşımı" : "Bağlantı hatası: " + e.message;
+        say(`${label}: ${lastErr}, tekrar deneniyor (${attempt + 1}/${attempts})…`);
+        await sleep(1500 * (attempt + 1)); continue;
+      }
+      clearTimeout(th);
+      const txt = await r.text();
+      let j = null; try { j = JSON.parse(txt); } catch (e) { }
+      if (r.ok && j && !j.error) {
+        usage.calls++;
+        const u = j.usage || {};
+        const pi = u.prompt_tokens || 0, po = u.completion_tokens || 0;
+        usage.prompt += pi; usage.output += po;
+        usage.cost += typeof u.cost === "number" ? u.cost : costOf(model, pi, po);
+        const out = ((((j.choices || [])[0] || {}).message || {}).content) || "";
+        const text = Array.isArray(out) ? out.map(x => x.text || "").join("") : out;
+        if (!text) { lastErr = "Boş cevap" + (((j.choices || [])[0] || {}).finish_reason ? " (" + j.choices[0].finish_reason + ")" : ""); say(`${label}: ${lastErr}, tekrar deneniyor…`); await sleep(800); continue; }
+        if (!json) return text;
+        try { return parseJSON(text); } catch (e) { lastErr = "Cevap JSON değil"; say(`${label}: cevap bozuk geldi, tekrar deneniyor…`); continue; }
+      }
+      const status = r.ok ? ((j && j.error && j.error.code) || 500) : r.status;
+      const em = (j && j.error && (j.error.message || "")) || txt.slice(0, 240);
+      const meta = JSON.stringify((j && j.error && j.error.metadata) || {}).slice(0, 300);
+      if (status === 401) throw new Error("OpenRouter anahtarı geçersiz (401). Ayarlar'da anahtarı kontrol et.");
+      if (status === 402) throw new Error("QUOTA_DAILY: OpenRouter kredin bitti (402). openrouter.ai/credits adresinden kredi yükle.");
+      if (status === 400 || status === 404) {
+        if (caps.prov && /provider|endpoint|no allowed|vertex/i.test(em + meta)) { caps.prov = false; say(`${label}: sağlayıcı kısıtı kaldırılıp tekrar deneniyor…`); attempt--; continue; }
+        if (caps.reason && /reason/i.test(em + meta)) { caps.reason = false; say(`${label}: ${model} düşünme ayarını desteklemiyor, kaldırılıp tekrar deneniyor…`); attempt--; continue; }
+        if (caps.json && /response_format|json/i.test(em + meta)) { caps.json = false; say(`${label}: JSON modu kaldırılıp tekrar deneniyor…`); attempt--; continue; }
+        if (caps.reason) { caps.reason = false; attempt--; continue; }
+        if (caps.json) { caps.json = false; attempt--; continue; }
+      }
+      if ([408, 429, 500, 502, 503, 504].includes(status)) {
+        const w = Math.min(30000, 2500 * Math.pow(1.8, attempt));
+        if (status === 429) coolUntil = Math.max(coolUntil, Date.now() + w);
+        lastErr = status === 429 ? "hız sınırı (429)" : "OpenRouter meşgul (" + status + ")";
+        say(`${label}: ${lastErr}, ${Math.round(w / 1000)} sn sonra tekrar deneniyor (${attempt + 1}/${attempts})…`);
+        await sleep(w + Math.random() * 800); continue;
+      }
+      throw new Error(`${label} · ${model} · OpenRouter hatası ${status}: ${String(em).slice(0, 240)} ${meta !== "{}" ? meta : ""}`);
+    }
+    throw new Error(`${label} ${attempts} denemede cevap vermedi. Son hata: ${lastErr}`);
+  }
+
+  async function generateOnce(key, model, parts, opt = {}) {
+    if (PROVIDER === "openrouter") return orOnce(key, model, parts, opt);
+    const { json = true, temperature = 0.9, lowRes = false, maxTokens, timeout = 120000, label = "Gemini", attempts = 8 } = opt;
+    let lastErr = "";
+    const MAX = attempts;
+    for (let attempt = 0; attempt < MAX; attempt++) {
+      while (Date.now() < coolUntil) await sleep(Math.min(1000, coolUntil - Date.now() + 50));
+      const body = { contents: [{ role: "user", parts }], generationConfig: { temperature } };
+      if (json) body.generationConfig.responseMimeType = "application/json";
+      if (maxTokens) body.generationConfig.maxOutputTokens = maxTokens;
+      const caps = modelCaps[model] = modelCaps[model] || { media: true, think: true };
+      const useMedia = lowRes && caps.media, useThink = caps.think && /flash/i.test(model);
+      if (useMedia) body.generationConfig.mediaResolution = "MEDIA_RESOLUTION_LOW";
+      if (useThink) body.generationConfig.thinkingConfig = { thinkingBudget: 0 };
+      const ctl = new AbortController(); const th = setTimeout(() => ctl.abort(), timeout);
+      let r;
+      try {
+        r = await fetch(`${BASE}/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`, {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctl.signal
+        });
+      } catch (e) {
+        clearTimeout(th);
+        lastErr = e.name === "AbortError" ? `${Math.round(timeout / 1000)} sn içinde cevap gelmedi` : "Bağlantı hatası: " + e.message;
+        say(`${label}: ${lastErr}, tekrar deneniyor (${attempt + 1}/${MAX})…`);
+        await sleep(1500 * (attempt + 1)); continue;
+      }
+      clearTimeout(th);
+      if (r.ok) {
+        const j = await r.json();
+        usage.calls++;
+        if (j.usageMetadata) {
+          const pi = j.usageMetadata.promptTokenCount || 0, po = (j.usageMetadata.candidatesTokenCount || 0) + (j.usageMetadata.thoughtsTokenCount || 0);
+          usage.prompt += pi; usage.output += po; usage.cost += costOf(model, pi, po);
+        }
+        const cand = (j.candidates || [])[0] || {};
+        const out = ((cand.content || {}).parts || []).filter(p => !p.thought).map(p => p.text || "").join("");
+        if (!out) {
+          lastErr = "Boş cevap" + (cand.finishReason ? " (" + cand.finishReason + ")" : "") + (j.promptFeedback && j.promptFeedback.blockReason ? " · engellendi: " + j.promptFeedback.blockReason : "");
+          say(`${label}: ${lastErr}, tekrar deneniyor…`); await sleep(800); continue;
+        }
+        if (!json) return out;
+        try { return parseJSON(out); } catch (e) { lastErr = "Cevap JSON değil"; say(`${label}: cevap bozuk geldi, tekrar deneniyor…`); continue; }
+      }
+      const errTxt = await r.text();
+      if (r.status === 400) {
+        // modelin desteklemediği isteğe bağlı ayarları sırayla kaldır ve tekrar dene
+        if (useThink && (/thinking/i.test(errTxt) || !/media/i.test(errTxt))) { caps.think = false; say(`${label}: ${model} düşünme ayarını desteklemiyor, ayar kaldırılıp tekrar deneniyor…`); attempt--; continue; }
+        if (useMedia) { caps.media = false; say(`${label}: ${model} düşük çözünürlüğü desteklemiyor, normal çözünürlükle deneniyor…`); attempt--; continue; }
+      }
+      if ([429, 500, 502, 503, 504].includes(r.status)) {
+        let w = Math.min(30000, 2500 * Math.pow(1.8, attempt));
+        const rd = errTxt.match(/"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"/); if (rd) w = Math.max(w, parseFloat(rd[1]) * 1000 + 500);
+        if (r.status === 429) {
+          const daily = /PerDay|per day|daily/i.test(errTxt);
+          if (daily) throw new Error(`QUOTA_DAILY: ${model} için günlük ücretsiz kota doldu. Yarın tekrar dene, başka bir model seç ya da AI Studio'da faturalandırmayı aç.`);
+          coolUntil = Math.max(coolUntil, Date.now() + w);
+          lastErr = "kota/hız sınırı (429)";
+        } else lastErr = "Gemini meşgul (" + r.status + ")";
+        say(`${label}: ${lastErr}, ${Math.round(w / 1000)} sn sonra tekrar deneniyor (${attempt + 1}/${MAX})…`);
+        await sleep(w + Math.random() * 800); continue;
+      }
+      let msg = errTxt; try { msg = JSON.parse(errTxt).error.message || errTxt; } catch (e) { }
+      throw new Error(`${label} · ${model} · Gemini hatası ${r.status}: ${String(msg).slice(0, 240)}`);
+    }
+    throw new Error(`${label} ${MAX} denemede cevap vermedi. Son hata: ${lastErr}`);
+  }
+
+  /* ---------- 1) Video analizi ---------- */
+  function analysisPrompt(d) {
+    const step = d <= 30 ? 1 : d <= 60 ? 2 : 3;
+    return `Bu bir Instagram Reels / TikTok videosu (yaklaşık ${Math.round(d)} saniye). Videoyu objektif ve eleştirel bir içerik analisti gibi saniye saniye incele. Övme, olanı yaz.
+SADECE şu JSON'u döndür:
+{
+ "sure_sn": sayı,
+ "kategori": "kısa",
+ "konu": "videonun ne anlattığı, 1 cümle",
+ "urun": "satılan/gösterilen ürün varsa adı, yoksa \\"\\"",
+ "hook": {"ilk_3_saniye": "ilk 3 saniyede tam olarak ne görülüyor/duyuluyor", "guc": 0-10, "neden": "kısa"},
+ "ses": {"konusma_var": true/false, "muzik": "kısa", "altyazi_var": true/false, "ses_kapaliyken_anlasilir_mi": true/false},
+ "tempo": "yavaş/orta/hızlı", "kesme_sayisi": sayı,
+ "reklam_gibi_mi": 0-10, "cta": "varsa çağrı", "duygu": "uyandırdığı duygu",
+ "uzman": {"siradisilik": 0-10, "paylasilabilirlik": 0-10, "durdurma_gucu": 0-10, "tartisma": 0-10, "aciklama": "kısa"},
+ "ozellik": {"yuz_ilk_saniye": true/false, "urun_ilk_3sn": true/false, "soru_ile_acilis": true/false, "ilk_kare_yazi": true/false, "insan_var": true/false, "evrensel_konu": 0-10, "mizah": 0-10, "merak": 0-10, "duygu": 0-10},
+ "zaman_cizelgesi": [{"sn": 0, "goruntu": "kısa", "konusma": "söylenen (kısa)", "ekran_yazisi": "", "dikkat": 0-10}]
+}
+zaman_cizelgesi her ${step} saniyede bir giriş içersin, videonun sonuna kadar.
+"uzman" puanlarını bir pazarlamacı gibi değil, Türkiye'de Reels'i milyonlara taşıyan dinamikleri bilen biri gibi ver. 5 = akıştaki ORTALAMA video, 8+ = milyonlarca izlenme potansiyeli. Videonun "reklam gibi" ya da "standart ürün tanıtımı" olması tek başına puanı düşürmez; Türkiye'de milyonlarca izlenen ürün videolarının çoğu, herkesin bildiği bir konuya (aile, ev, tuvalet, yemek, para, nostalji) dokunup insanları arkadaşını etiketlemeye veya yorumda tartışmaya ittiği için yayılır. siradisilik: akıştaki diğer videolardan ne kadar farklı/beklenmedik; paylasilabilirlik: insanların "bu tam sen", "bize lazım" diye birini etiketleme ya da DM ile gönderme isteği; durdurma_gucu: ilk 1 saniyenin kaydırmayı durdurma gücü; tartisma: yorumlarda insanları ikiye bölme, "doğru mu yanlış mı" dedirtme potansiyeli.`;
+  }
+  async function analyzeVideo(key, model, videoPart, d, lowRes, fallbackModel) {
+    const res = await generate(key, model, [videoPart, { text: analysisPrompt(d) }], { temperature: 0.2, lowRes, timeout: 75000, attempts: fallbackModel && fallbackModel !== model ? 3 : 6, label: "Video analizi", fallback: fallbackModel });
+    if (!res.zaman_cizelgesi) res.zaman_cizelgesi = [];
+    return res;
+  }
+  function compactTimeline(a) {
+    const lines = (a.zaman_cizelgesi || []).map(x => `${x.sn}sn: ${x.goruntu || ""}${x.konusma ? ' | söz: "' + x.konusma + '"' : ""}${x.ekran_yazisi ? " | yazı: " + x.ekran_yazisi : ""}`);
+    return `Konu: ${a.konu || ""}. Ürün: ${a.urun || "-"}. Kategori: ${a.kategori || ""}. İlk 3 sn: ${(a.hook || {}).ilk_3_saniye || ""}. Konuşma: ${(a.ses || {}).konusma_var ? "var" : "yok"}, altyazı: ${(a.ses || {}).altyazi_var ? "var" : "yok"}, müzik: ${(a.ses || {}).muzik || "-"}. Tempo: ${a.tempo || ""}. Reklam hissi: ${a.reklam_gibi_mi ?? "?"}/10.\n` + lines.join("\n");
+  }
+
+  /* ---------- 2) Çekirdek ajanlar izliyor ---------- */
+  // Gerçek akış hissi: her kişinin bu videodan hemen önce kaydırdığı videolar
+  const FEED_POOL = ["komik kedi videosu", "maç özeti, son dakika golü", "mahalle esnafı skeci", "makyaj dönüşümü", "AVM'de sokak röportajı", "popüler dizi kesiti", "5 dakikada börek tarifi", "fenomenin tatil vlogu", "araba drift videosu", "trend dans", "motivasyon konuşması", "dolandırıcılık uyarısı haberi", "bebeğin ilk kahkahası", "lüks ev turu", "rap klibi kesiti", "market fiyat karşılaştırması", "diş beyazlatma ürünü reklamı", "sokak lezzeti, dürüm ustası", "köpek sahibini karşılıyor", "evlilik teklifi anı", "kombin önerisi", "otomobil incelemesi", "çocukların komik soruları", "kapıda ödeme tencere seti reklamı", "gündem: akaryakıt zammı", "köy hayatı, ekmek yapımı", "spor salonu dönüşümü", "AI ile yapılmış tuhaf video", "ünlüden skandal açıklama", "ev temizliği hilesi", "ucuz tatil fırsatı", "hayvan kurtarma anı", "e-ticaretle para kazanma iddiası", "standup kesiti", "eski Türk filmi sahnesi", "kozmetik ürünü reklamı"];
+  function feedLine(p, seed) {
+    const rng = mulberry32((seed ^ (p.id * 2654435761)) >>> 0);
+    const prev = []; while (prev.length < 3) { const v = FEED_POOL[Math.floor(rng() * FEED_POOL.length)]; if (!prev.includes(v)) prev.push(v); }
+    const scrolled = 15 + Math.floor(rng() * 80);
+    const stopped = Math.max(1, Math.round(scrolled * (0.08 + (1 - p.scroll) * 0.12)));
+    return `   akış: bu videodan hemen önce "${prev.join('", "')}" geçti; bugün ~${scrolled} video kaydırdı, sadece ${stopped} tanesinde durdu.`;
+  }
+  const REALISM = `GERÇEKÇİLİK KURALLARI (en önemli kısım):
+- Bu bir kalabalık simülasyonu değil, gerçek dünyanın tahmini. Her kişi akışta yüzlerce videonun içinden kaydırıyor; dikkat çok kıt. Kişinin "akış" satırı ne kadar çok video geçtiğini ve ne kadar seçici olduğunu gösterir.
+- Ortalama bir Reels videosunda izleyicilerin %50-65'i ilk 3 saniyede kaydırır. Ürün tanıtımı/reklam gibi duran videolarda bu oran genelde DAHA YÜKSEKTİR. İlk 3 saniyede %20'nin altında kayıp ancak milyonlarca izlenen olağanüstü videolarda görülür.
+- Önce şu soruyu dürüstçe cevapla: bu video, kişinin az önce geçtiği videolardan daha mı ilgi çekici? Çoğu video ortalamadır; ortalama bir videoya ortalama davran. Her videoyu "iyi" bulmak simülasyonu değersiz yapar.
+- Kararı kişinin ilgi alanı, ruh hali, saati, kaydırma hızı, şüpheciliği ve sesin açık/kapalı olması belirler. Ses KAPALIYSA ve ekran yazısı/altyazı yoksa konuşmayı duyamaz.
+- Nazik olma, video sahibini memnun etmeye çalışma. Sıkıcı, yavaş açılan, reklam kokan, ilgisini çekmeyen videoda acımasızca geç.
+- Olasılıklar gerçek davranış gibi olsun: çoğu kişi için yorum, paylaşım ve takip 0-10 arasıdır. Yüksek değer sadece somut bir sebebi olan kişiye.
+- "yorum_metni"ni SADECE yorum olasılığı 25 üstündekiler yazsın. Gerçek Instagram Türkçesi: kısa, çoğu küçük harf, bazen yazım hatalı, emoji, @etiket, soru, espri, eleştiri; kişinin yorum tarzına uygun. Hiçbiri birbirini tekrar etmesin.
+- "neden": kişinin iç sesi, birinci tekil şahıs, kısa, videodaki somut bir ana referans versin.
+- "paylasim_kime": kişi bu videoyu gerçekten birine DM ile gönderir ya da yorumda etiketlerse kime (örn. "kankama", "eşime", "@ayse"); göndermezse boş bırak.
+- "tutum": kişinin videonun iddiasına/ürününe karşı tavrı: olumlu (ikna oldu/beğendi), olumsuz (karşı çıktı/eleştirdi), dalga (dalga geçti/komik buldu), soru (merak edip soru sordu), nötr.
+- "tiklar": kişinin reklamdaki bağlantıya tıklayıp siteye gitme olasılığı (0-100). Çoğu kişi için 0-5; yüksek değer sadece ürüne gerçekten ihtiyacı olana.`;
+  const OBJ = `{"cikis_sn":sayı,"tekrar_izler":bool,"neden":"...","durduran_an":"","begeni":0-100,"yorum":0-100,"paylasim":0-100,"kaydet":0-100,"takip":0-100,"yorum_metni":"","paylasim_kime":"","tutum":"olumlu|olumsuz|dalga|soru|nötr","tiklar":0-100}`;
+  function peopleBlock(batch, seed) { return batch.map(p => personaLine(p) + "\n" + feedLine(p, seed)).join("\n"); }
+  function agentPrompt(batch, d, tl, avoid, seed) {
+    return `Sen gerçekçi bir Instagram Reels izleyici simülatörüsün. Ekteki videoyu aşağıdaki ${batch.length} farklı Türk kullanıcının GÖZÜNDEN, her biri için AYRI AYRI izle. Her biri bu videoyu akışında SPONSORLU REKLAM olarak, hesabı takip etmeden görüyor.
+
+${REALISM}${avoid ? "\n- Şu yorumlar daha önce yazıldı, BUNLARA BENZEMESİN: " + avoid : ""}
+- cikis_sn: kişinin kaydırdığı saniye (ondalık olabilir). Sonuna kadar izlediyse TAM OLARAK ${Math.round(d * 10) / 10} yaz.
+
+VİDEO (${Math.round(d)} sn) ÖZETİ:
+${tl}
+
+KİŞİLER:
+${peopleBlock(batch, seed)}
+
+SADECE JSON dizisi döndür, her kişi için bir nesne, aynı sırayla:
+[{"id":sayı,${OBJ.slice(1)}]`;
+  }
+  function comparePrompt(batch, vids, avoid, seed) {
+    const labels = vids.map(v => v.label);
+    return `Sen gerçekçi bir Instagram Reels izleyici simülatörüsün. Ekte ${vids.length} video var: ${labels.map((l, i) => `VİDEO ${l} (${Math.round(vids[i].d)} sn)`).join(", ")}. Aşağıdaki ${batch.length} kişinin her biri bu videoların HER BİRİYLE farklı günlerde, akışta ayrı ayrı karşılaşıyor.
+
+KARŞILAŞTIRMA KURALI: Aynı kişi hepsini izlediği için videolar arasındaki gerçek kalite farkını davranışa yansıt. Hangisi daha durdurucu, hangisi daha akıcı, hangisi daha paylaşılabilir? Zayıf olanda daha erken geç, güçlü olanda daha uzun kal. Farkları yapay olarak küçültme ya da büyütme; gerçekte nasılsa öyle.
+
+${REALISM}${avoid ? "\n- Şu yorumlar daha önce yazıldı, BUNLARA BENZEMESİN: " + avoid : ""}
+- cikis_sn: o videoda kaydırdığı saniye. Sonuna kadar izlediyse o videonun süresi.
+
+${vids.map(v => `VİDEO ${v.label} ÖZETİ:\n${v.tl}`).join("\n\n")}
+
+KİŞİLER:
+${peopleBlock(batch, seed)}
+
+SADECE JSON dizisi döndür, her kişi için bir nesne, aynı sırayla:
+[{"id":sayı,${labels.map(l => `"${l}":${OBJ}`).join(",")}}]`;
+  }
+
+  async function runBatches({ batches, call, concurrency, onBatch, signal, errors }) {
+    let idx = 0, done = 0, failed = 0, fatal = null;
+    async function worker() {
+      while (idx < batches.length) {
+        if ((signal && signal.aborted) || fatal) return;
+        const b = batches[idx++];
+        try { const ids = await call(b); done++; if (!ids.length) { errors && errors.push("Model geçerli bir kişi listesi döndürmedi"); } onBatch && onBatch({ done, total: batches.length, ids, failed }); }
+        catch (e) { failed++; done++; console.warn("batch hata", e); errors && errors.push(e.message); if (/^QUOTA_DAILY/.test(e.message)) fatal = e; onBatch && onBatch({ done, total: batches.length, ids: [], failed, error: e.message }); }
+      }
+    }
+    await Promise.all(Array.from({ length: Math.min(concurrency, batches.length) }, worker));
+    if (fatal) throw new Error(fatal.message.replace(/^QUOTA_DAILY: /, ""));
+  }
+  const toBatches = (core, n) => { const b = []; for (let i = 0; i < core.length; i += n) b.push(core.slice(i, i + n)); return b; };
+  // Model cevabı farklı şekillerde gelebilir: dizi, {kisiler:[...]}, {"12":{...}}, tek nesne
+  function listOf(arr) {
+    if (Array.isArray(arr)) return arr.length === 1 && Array.isArray(arr[0]) ? arr[0] : arr;
+    if (!arr || typeof arr !== "object") return [];
+    for (const v of Object.values(arr)) if (Array.isArray(v) && v.length && typeof v[0] === "object") return v;
+    const vals = Object.entries(arr).filter(([, v]) => v && typeof v === "object");
+    if (vals.length) return vals.map(([k, v]) => ({ id: v.id ?? k.replace(/\D/g, ""), ...v }));
+    if ("cikis_sn" in arr) return [arr];
+    return [];
+  }
+  function pidFor(r, k, b) { return Number.isFinite(+r.id) && b.some(p => p.id === +r.id) ? +r.id : (b[k] ? b[k].id : null); }
+
+  async function runCore(opts) {
+    const { key, model, videoPart, textOnly, lowRes, core, d, analysis, batchSize = 10, concurrency = 5, onBatch, signal, seed = 1 } = opts;
+    const tl = compactTimeline(analysis);
+    const results = new Map(); const comments = []; results.errors = [];
+    await runBatches({
+      batches: toBatches(core, batchSize), concurrency, signal, errors: results.errors,
+      onBatch: x => onBatch && onBatch({ ...x, results }),
+      call: async b => {
+        const avoid = comments.slice(-25).map(c => '"' + c + '"').join(", ");
+        const text = { text: agentPrompt(b, d, tl, avoid, seed) };
+        const arr = await generate(key, model, textOnly ? [text] : [videoPart, text], { temperature: 0.8, lowRes, timeout: 120000, label: "Ajan grubu", fallback: opts.fallback });
+        const got = [];
+        if (!listOf(arr).length) throw new Error("Model beklenmeyen cevap döndürdü: " + JSON.stringify(arr).slice(0, 220));
+        listOf(arr).forEach((r, k) => {
+          const pid = pidFor(r, k, b); if (pid === null || results.has(pid) || !r || r.cikis_sn == null) return;
+          const clean = normalizeResult(r, d); results.set(pid, clean); got.push(pid);
+          if (clean.yorum_metni) comments.push(clean.yorum_metni);
+        });
+        return got;
+      }
+    });
+    return results;
+  }
+  // A/B: aynı ajanlar tüm versiyonları tek çağrıda izler
+  async function runCompare(opts) {
+    const { key, model, vids, textOnly, lowRes, core, batchSize = 8, concurrency = 5, onBatch, signal, seed = 1 } = opts;
+    const V = vids.map((v, i) => ({ label: "ABC"[i], d: v.d, tl: compactTimeline(v.analysis), part: v.part }));
+    const results = V.map(() => new Map()); const comments = []; results.errors = [];
+    await runBatches({
+      batches: toBatches(core, batchSize), concurrency, signal, errors: results.errors,
+      onBatch: x => onBatch && onBatch({ ...x, results }),
+      call: async b => {
+        const avoid = comments.slice(-20).map(c => '"' + c + '"').join(", ");
+        const parts = [];
+        if (!textOnly) V.forEach(v => { parts.push({ text: `VİDEO ${v.label}:` }); parts.push(v.part); });
+        parts.push({ text: comparePrompt(b, V, avoid, seed) });
+        const arr = await generate(key, model, parts, { temperature: 0.8, lowRes, timeout: 180000, label: "Ajan grubu", maxTokens: 32000, fallback: opts.fallback });
+        const got = [];
+        if (!listOf(arr).length) throw new Error("Model beklenmeyen cevap döndürdü: " + JSON.stringify(arr).slice(0, 220));
+        listOf(arr).forEach((r, k) => {
+          const pid = pidFor(r, k, b); if (pid === null || results[0].has(pid)) return;
+          if (!V.every(v => r[v.label])) return;
+          V.forEach((v, i) => { const c = normalizeResult(r[v.label], v.d); results[i].set(pid, c); if (c.yorum_metni) comments.push(c.yorum_metni); });
+          got.push(pid);
+        });
+        return got;
+      }
+    });
+    return results;
+  }
+  function normTutum(t) {
+    t = tr2ascii(String(t || ""));
+    if (/olumsuz|elestir|karsi|negatif/.test(t)) return "olumsuz";
+    if (/olumlu|pozitif|ikna|destek/.test(t)) return "olumlu";
+    if (/dalga|komik|alay|espri/.test(t)) return "dalga";
+    if (/soru|merak/.test(t)) return "soru";
+    return t ? "notr" : null;
+  }
+  // Sosyal sinyaller: arkadaşına gönderme/etiketleme dürtüsü ve yorumların ikiye bölünmesi
+  const TAG_RE = /(kanka|kankam|arkadaş|eşime|esime|anneme|babama|kardeş|kardes|gönder|gonder|attım|attim|atacağım|atacagim|atıcam|aticam|etiketle|dm)/i;
+  function socialSignals(list) {
+    const arr = Array.isArray(list) ? list : [...list.values()];
+    const n = arr.length || 1;
+    let tag = 0, pos = 0, neg = 0, op = 0, hasT = 0;
+    for (const r of arr) {
+      const watched = r.cikis_sn >= 3;
+      const t = /@[\w.]/.test(r.yorum_metni || "") || (r.paylasim_kime && r.paylasim_kime.trim().length > 1 && r.paylasim >= 15) || (watched && TAG_RE.test(r.neden || "") && r.paylasim >= 10);
+      if (t) tag++;
+      if (r.tutum) { hasT++; if (r.tutum === "olumlu") pos++; else if (r.tutum === "olumsuz" || r.tutum === "dalga") neg++; }
+      if ((r.tutum && r.tutum !== "notr") || r.yorum >= 30) op++;
+    }
+    const opined = pos + neg;
+    const balance = opined ? 1 - Math.abs(pos - neg) / opined : 0;     // 1 = tam ikiye bölünmüş
+    const debate = hasT ? balance * Math.min(1, opined / n / 0.5) : null;  // yeterince kişi fikir belirttiyse
+    return { tagRate: tag / n, debate, opinion: op / n };
+  }
+  function num(v, def) { const n = parseFloat(v); return Number.isFinite(n) ? n : def; }
+  function normalizeResult(r, d) {
+    const pct = v => clamp(num(v, 0), 0, 100);
+    let ex = num(r.cikis_sn, 0);
+    if (ex >= d - Math.max(0.8, d * 0.04)) ex = d; // "21" yazılan 21,6 sn'lik video = sonuna kadar izledi
+    return {
+      cikis_sn: clamp(ex, 0, d), tekrar_izler: !!r.tekrar_izler,
+      neden: String(r.neden || "").slice(0, 220), durduran_an: String(r.durduran_an || "").slice(0, 160),
+      begeni: pct(r.begeni), yorum: pct(r.yorum), paylasim: pct(r.paylasim), kaydet: pct(r.kaydet), takip: pct(r.takip),
+      yorum_metni: String(r.yorum_metni || "").trim().slice(0, 160), paylasim_kime: String(r.paylasim_kime || "").slice(0, 60),
+      tutum: normTutum(r.tutum), tiklar: pct(r.tiklar)
+    };
+  }
+
+  /* ---------- Demo: API olmadan sentetik davranış ---------- */
+  const DEMO_REASONS = {
+    early: ["ilk saniyede ne olduğunu anlamadım geçtim", "reklam olduğu belliydi direkt kaydırdım", "sesim kapalıydı yazı da yoktu anlamadım", "bana hitap etmiyor bu", "açılış çok yavaş sıkıldım", "yüzü bile görünmeden ürün gösterdi geçtim"],
+    mid: ["başı ilginçti ama sonra uzadı", "ne satacağını anlayınca çıktım", "konuşma çok yavaş, hızlandırsa izlerdim", "aynı şeyi tekrar ediyor gibi geldi", "fiyatı söylemedi merak edip yorumlara baktım"],
+    full: ["merak ettim sonunu görmek istedim", "tam benim sorunum bu, sonuna kadar izledim", "kurgusu hızlı akıp gitti", "esprili anlatımı hoşuma gitti", "eşime göstermek için sonuna kadar izledim"]
+  };
+  const DEMO_COMMENTS = ["fiyatı ne kadar", "@kankam bunu alalım ya", "bu bende de var bayıldım 😍", "reklam kokuyor ama iyiymiş", "nereden alınıyor link?", "ahahah sondaki an 😂", "işe yarıyor mu gerçekten", "pahalı bence", "tam ihtiyacım olan şey", "kargo kaç günde geliyor", "@annem bak bunu almalıyız", "bunu hep merak ediyordum", "biraz abartılı olmuş", "müzik ne", "denedim tavsiye ederim", "türkiyede var mı bu", "yine mi bu ürün akışım doldu", "kalitesi nasıl", "👏👏👏", "ilk defa görüyorum ilginç"];
+  function synthAnalysis(d, seed) {
+    const rng = mulberry32(seed);
+    const tz = []; const step = d <= 30 ? 1 : d <= 60 ? 2 : 3;
+    for (let t = 0; t <= d; t += step) tz.push({ sn: t, goruntu: "demo sahne", konusma: "", ekran_yazisi: "", dikkat: Math.round(4 + rng() * 5) });
+    return { sure_sn: d, kategori: "demo", konu: "API'siz demo modu", urun: "", hook: { ilk_3_saniye: "demo", guc: Math.round(3 + rng() * 6), neden: "" }, ses: {}, tempo: "orta", reklam_gibi_mi: 5, uzman: { siradisilik: Math.round(2 + rng() * 6), paylasilabilirlik: Math.round(2 + rng() * 6), durdurma_gucu: Math.round(2 + rng() * 6), tartisma: Math.round(2 + rng() * 6) }, zaman_cizelgesi: tz, demo: true };
+  }
+  function synthCore(core, d, seed) {
+    const rng = mulberry32(seed + 7);
+    const quality = 0.35 + rng() * 0.45; // videonun gizli kalitesi
+    const res = new Map();
+    for (const p of core) {
+      const earlyP = clamp(0.62 - quality * 0.55 + p.scroll * 0.35 + p.skeptic * 0.1 - p.attention * 0.15, 0.05, 0.92);
+      let exit;
+      if (rng() < earlyP) exit = rng() * Math.min(3, d * 0.5);
+      else {
+        const hazard = clamp(0.06 - quality * 0.05 + p.scroll * 0.03, 0.005, 0.12);
+        exit = Math.min(d, 3 + (-Math.log(1 - rng()) / hazard));
+      }
+      const full = exit >= d - 0.01;
+      const engage = full ? 1 : exit / d;
+      const reason = exit < 3 ? DEMO_REASONS.early : full ? DEMO_REASONS.full : DEMO_REASONS.mid;
+      const cp = Math.round(clamp(engage * (8 + quality * 30) + gauss(rng) * 8, 0, 90));
+      res.set(p.id, {
+        cikis_sn: Math.round(exit * 10) / 10, tekrar_izler: full && rng() < 0.15,
+        neden: reason[Math.floor(rng() * reason.length)], durduran_an: "",
+        begeni: Math.round(clamp(engage * (25 + quality * 50) + gauss(rng) * 12, 0, 100)),
+        yorum: cp, paylasim: Math.round(clamp(engage * (6 + quality * 35) + gauss(rng) * 8, 0, 100)),
+        kaydet: Math.round(clamp(engage * (5 + quality * 30) + gauss(rng) * 8, 0, 100)),
+        takip: Math.round(clamp(engage * (2 + quality * 15) + gauss(rng) * 4, 0, 100)),
+        yorum_metni: cp > 25 ? DEMO_COMMENTS[Math.floor(rng() * DEMO_COMMENTS.length)] : "",
+        paylasim_kime: engage > 0.7 && rng() < quality * 0.25 ? "kankama" : "",
+        tutum: ["olumlu", "olumsuz", "dalga", "soru", "notr"][Math.floor(rng() * 5)]
+      });
+    }
+    return res;
+  }
+
+  /* ---------- 3) Nüfusa genişletme ---------- */
+  const DEFAULT_CALIB = { like: 0.15, comment: 0.05, share: 0.15, save: 0.15, follow: 0.06 };
+  function expand(pop, coreRes, d, calib, seed) {
+    calib = Object.assign({}, DEFAULT_CALIB, calib || {});
+    const rng = mulberry32(seed + 99);
+    const core = pop.filter(p => coreRes.has(p.id));
+    const K = Math.min(6, core.length);
+    for (const p of pop) {
+      let r, src;
+      if (coreRes.has(p.id)) {
+        r = coreRes.get(p.id); p.isCore = true; src = p;
+        p.exit = r.cikis_sn; p.reason = r.neden; p.stopper = r.durduran_an;
+        p.commentText = r.yorum_metni; p.shareTo = r.paylasim_kime; p.rewatch = r.tekrar_izler;
+      } else {
+        p.isCore = false;
+        // en yakın K çekirdek
+        const best = [];
+        for (const c of core) {
+          const dist = personaDist(p, c);
+          if (best.length < K) { best.push([dist, c]); best.sort((a, b) => a[0] - b[0]); }
+          else if (dist < best[K - 1][0]) { best[K - 1] = [dist, c]; best.sort((a, b) => a[0] - b[0]); }
+        }
+        const ws = best.map(b => 1 / (b[0] + 0.05)); const wsum = ws.reduce((a, b) => a + b, 0);
+        // davranışı bir komşudan olasılıksal olarak "miras al" (ortalama almak çift tepeli dağılımı bozar)
+        let pick = rng() * wsum, nb = best[0][1];
+        for (let i = 0; i < best.length; i++) { if ((pick -= ws[i]) <= 0) { nb = best[i][1]; break; } }
+        const nr = coreRes.get(nb.id); src = nb;
+        const adj = Math.exp((nb.scroll - p.scroll) * 0.9 + (nb.attention - p.attention) * -0.5 + gauss(rng) * 0.22);
+        let exit;
+        if (nr.cikis_sn >= d - 0.05) exit = rng() < clamp(0.75 * adj, 0, 0.97) ? d : d * (0.55 + rng() * 0.45);
+        else if (nr.cikis_sn < 3) exit = nr.cikis_sn * (0.55 + rng() * 0.9) * Math.sqrt(adj);
+        else exit = nr.cikis_sn * adj;
+        p.exit = clamp(exit, 0.2, d);
+        // olasılıklar: ağırlıklı ortalama
+        r = { begeni: 0, yorum: 0, paylasim: 0, kaydet: 0, takip: 0 };
+        best.forEach((b, i) => { const rr = coreRes.get(b[1].id); for (const k in r) r[k] += rr[k] * ws[i] / wsum; });
+        p.reason = nr.neden; p.stopper = nr.durduran_an; p.commentText = ""; p.shareTo = nr.paylasim_kime; p.rewatch = false;
+        p.srcId = nb.id;
+      }
+      p.exit = clamp(p.exit, 0.15, d);
+      const wf = p.exit / d;
+      const cond = Math.pow(Math.min(1, wf / 0.6), 0.8);
+      p.like = rng() < r.begeni / 100 * calib.like * cond;
+      p.comment = p.isCore && p.commentText ? rng() < 0.7 : rng() < r.yorum / 100 * calib.comment * cond;
+      p.share = rng() < r.paylasim / 100 * calib.share * cond;
+      p.save = rng() < r.kaydet / 100 * calib.save * cond;
+      p.follow = rng() < r.takip / 100 * calib.follow * cond;
+      // olay zamanları (animasyon için)
+      p.likeT = p.exit * (0.45 + rng() * 0.55);
+      p.commentT = Math.max(0, p.exit - rng() * 0.8);
+      p.shareT = Math.max(0, p.exit - rng() * 0.5);
+      p.saveT = Math.max(0, p.exit - rng() * 0.6);
+      p.followT = p.exit;
+    }
+    return pop;
+  }
+
+  /* ---------- 4) Metrikler & skor ---------- */
+  function metrics(pop, d) {
+    const N = pop.length, step = d <= 20 ? 0.25 : 0.5;
+    const curve = [];
+    const exits = pop.map(p => p.exit).sort((a, b) => a - b);
+    let j = 0;
+    for (let t = 0; t <= d + 1e-9; t += step) { const tt = Math.min(t, d - 0.35); while (j < N && exits[j] < tt) j++; curve.push({ t: Math.round(t * 100) / 100, v: (N - j) / N }); }
+    const h3 = Math.min(3, d * 0.6);
+    const frac = f => pop.filter(f).length / N;
+    const m = {
+      N, d, curve,
+      hold3: frac(p => p.exit >= h3),
+      hold1: frac(p => p.exit >= Math.min(1, d * 0.3)),
+      avgWatch: pop.reduce((a, p) => a + p.exit, 0) / N / d,
+      avgWatchSec: pop.reduce((a, p) => a + p.exit, 0) / N,
+      completion: frac(p => p.exit >= d - 0.35),
+      like: frac(p => p.like), comment: frac(p => p.comment), share: frac(p => p.share), save: frac(p => p.save), follow: frac(p => p.follow),
+      counts: {}
+    };
+    for (const k of ["like", "comment", "share", "save", "follow"]) m.counts[k] = pop.filter(p => p[k]).length;
+    // segmentler
+    m.ageSeg = AGES.map(([b]) => { const s = pop.filter(p => p.ageB === b); return { k: b, n: s.length, hold3: s.filter(p => p.exit >= h3).length / (s.length || 1), comp: s.filter(p => p.exit >= d - 0.35).length / (s.length || 1) }; });
+    m.genderSeg = [["K", "Kadın"], ["E", "Erkek"]].map(([g, l]) => { const s = pop.filter(p => p.g === g); return { k: l, n: s.length, hold3: s.filter(p => p.exit >= h3).length / (s.length || 1), comp: s.filter(p => p.exit >= d - 0.35).length / (s.length || 1) }; });
+    m.intSeg = INTERESTS.map(it => { const s = pop.filter(p => p.ints.includes(it)); return { k: it, n: s.length, hold3: s.filter(p => p.exit >= h3).length / (s.length || 1) }; }).filter(x => x.n >= N * 0.04).sort((a, b) => b.hold3 - a.hold3);
+    m.soundSeg = [true, false].map(v => { const s = pop.filter(p => p.soundOn === v); return { k: v ? "Ses açık" : "Ses kapalı", n: s.length, hold3: s.filter(p => p.exit >= h3).length / (s.length || 1) }; });
+    // en büyük düşüşler (1 sn pencere)
+    const at = t => { let best = curve[0]; for (const c of curve) { if (c.t <= t) best = c; else break; } return best.v; };
+    const drops = [];
+    for (let t = 0; t < d; t += 1) drops.push({ t, loss: at(t) - at(Math.min(d, t + 1)) });
+    m.drops = drops.sort((a, b) => b.loss - a.loss).slice(0, 5).sort((a, b) => a.t - b.t);
+    return m;
+  }
+
+  const DEFAULT_WEIGHTS = { hook: 0.25, watch: 0.15, share: 0.10, engage: 0.05, expert: 0.15, social: 0.30 };
+  const COMP_KEYS = ["hook", "watch", "share", "engage", "expert", "social"];
+  function socialComp(m) {
+    if (m.tagRate == null) return 50;
+    const tag = clamp((m.tagRate - 0.02) / (0.18 - 0.02), 0, 1);
+    const deb = m.debate == null ? 0.4 : clamp(m.debate / 0.8, 0, 1);
+    return (0.7 * tag + 0.3 * deb) * 100;
+  }
+  function components(m, analysis) {
+    const expected = 0.15 + 0.5 * Math.exp(-m.d / 25); // süreye göre beklenen ort. izlenme oranı
+    const u = (analysis && analysis.uzman) || m.uzman || null;
+    const ex = u ? clamp(((+u.siradisilik || 0) + (+u.paylasilabilirlik || 0) * 1.5 + (+u.durdurma_gucu || 0) + (u.tartisma != null ? +u.tartisma || 0 : (+u.paylasilabilirlik || 0))) / 4.5, 0, 10) : null;
+    return {
+      social: socialComp(m),
+      expert: ex == null ? 50 : clamp((ex - 2) / 6, 0, 1) * 100,
+      hook: clamp((m.hold3 - 0.25) / (0.97 - 0.25), 0, 1) * 100,
+      watch: clamp(m.avgWatch / expected * 50, 0, 100),
+      share: clamp((m.share - 0.004) / (0.05 - 0.004), 0, 1) * 100,
+      engage: clamp(((m.save - 0.003) / 0.04 + (m.like - 0.01) / 0.10) / 2, 0, 1) * 100
+    };
+  }
+  function scoreFrom(comp, w) {
+    w = w || DEFAULT_WEIGHTS; let s = 0, t = 0;
+    for (const k of COMP_KEYS) { const wk = w[k] || 0; s += wk; t += (comp[k] ?? 50) * wk; }
+    return Math.round(t / (s || 1));
+  }
+  // geçmiş videolar arasında sıra (göreli skor)
+  function relativeRank(score, runs, w) {
+    const sc = runs.filter(r => !r.demo && r.comp).map(r => scoreFrom(r.comp, w));
+    if (sc.length < 3) return null;
+    const below = sc.filter(x => x < score).length, eq = sc.filter(x => x === score).length;
+    return { pct: (below + eq * 0.5) / sc.length, n: sc.length };
+  }
+  // Insights ile davranış düzeltmesi: simülasyon ile gerçek arasındaki sistematik farkı öğren
+  function behaviorCorrection(runs) {
+    const ins = runs.filter(r => !r.demo && r.ins && r.views > 0);
+    const med = a => { if (!a.length) return null; const b = a.slice().sort((x, y) => x - y); return b[Math.floor(b.length / 2)]; };
+    const c = { n: ins.length };
+    const h = ins.filter(r => r.ins.skip != null).map(r => (1 - r.ins.skip / 100) - r.m.hold3); if (h.length) c.hold3Off = med(h);
+    const w = ins.filter(r => r.ins.avgSec > 0).map(r => (r.ins.avgSec / r.d) / Math.max(0.02, r.m.avgWatch)); if (w.length) c.watchMul = med(w);
+    for (const [k, f] of [["like", "likes"], ["comment", "comments"], ["share", "shares"], ["save", "saves"]]) {
+      const a = ins.filter(r => r.ins[f] != null && r.m[k] > 0).map(r => (r.ins[f] / r.views) / r.m[k]); if (a.length) c[k + "Mul"] = med(a);
+    }
+    return c;
+  }
+  function applyCorrection(m, c) {
+    if (!c || !c.n) return m;
+    const o = Object.assign({}, m);
+    if (c.hold3Off != null) o.hold3 = clamp(m.hold3 + c.hold3Off, 0.01, 0.99);
+    if (c.watchMul != null) o.avgWatch = clamp(m.avgWatch * c.watchMul, 0.01, 1);
+    for (const k of ["like", "comment", "share", "save"]) if (c[k + "Mul"] != null) o[k] = clamp(m[k] * c[k + "Mul"], 0, 1);
+    o.corrected = true; return o;
+  }
+
+  // Skorun güven aralığı: gerçek ajanları yeniden örnekleyip skoru tekrar hesapla
+  function coreMetrics(list, d, calib) {
+    calib = Object.assign({}, DEFAULT_CALIB, calib || {});
+    const n = list.length || 1, h3 = Math.min(3, d * 0.6); let hold = 0, w = 0, comp = 0, like = 0, share = 0, save = 0;
+    for (const r of list) {
+      const e = r.cikis_sn; if (e >= h3) hold++; w += e; if (e >= d - 0.35) comp++;
+      const cond = Math.pow(Math.min(1, (e / d) / 0.6), 0.8);
+      like += r.begeni / 100 * calib.like * cond; share += r.paylasim / 100 * calib.share * cond; save += r.kaydet / 100 * calib.save * cond;
+    }
+    return Object.assign({ d, hold3: hold / n, avgWatch: w / n / d, completion: comp / n, like: like / n, share: share / n, save: save / n, comment: 0 }, socialSignals(list));
+  }
+  function scoreSpread(coreRes, d, analysis, opts) {
+    const { calib, weights, corr, B = 150, seed = 7 } = opts || {};
+    const arr = [...coreRes.values()]; if (arr.length < 10) return null;
+    const rng = mulberry32(seed); const scores = [];
+    for (let b = 0; b < B; b++) {
+      const sample = arr.map(() => arr[Math.floor(rng() * arr.length)]);
+      const m = applyCorrection(coreMetrics(sample, d, calib), corr);
+      scores.push(scoreFrom(components(m, analysis), weights));
+    }
+    scores.sort((a, b) => a - b);
+    const mean = scores.reduce((a, b) => a + b, 0) / B;
+    const sd = Math.sqrt(scores.reduce((a, b) => a + (b - mean) ** 2, 0) / B);
+    return { sd, mean };
+  }
+
+  /* ---------- 5) Kalibrasyon (gerçek izlenmelerle) ---------- */
+  function rank(arr) { const idx = arr.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]); const r = new Array(arr.length); let i = 0; while (i < idx.length) { let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++; for (let k = i; k <= j; k++) r[idx[k][1]] = (i + j) / 2; i = j + 1; } return r; }
+  function pearson(x, y) { const n = x.length; if (n < 3) return NaN; const mx = x.reduce((a, b) => a + b) / n, my = y.reduce((a, b) => a + b) / n; let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < n; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; } return sxx && syy ? sxy / Math.sqrt(sxx * syy) : NaN; }
+  const spearman = (x, y) => pearson(rank(x), rank(y));
+  function calibrationStats(runs, weights) {
+    const lab = runs.filter(r => r.views > 0 && r.comp);
+    const out = { n: lab.length };
+    if (lab.length < 3) return out;
+    const lv = lab.map(r => Math.log10(r.views));
+    const sc = lab.map(r => scoreFrom(r.comp, weights));
+    out.rho = spearman(sc, lv);
+    out.perMetric = ["hold3", "avgWatch", "completion", "share", "save", "like", "comment"].map(k => ({ k, rho: spearman(lab.map(r => r.m[k]), lv) }));
+    out.perMetric.push({ k: "expert", rho: spearman(lab.map(r => r.comp.expert ?? 50), lv) });
+    out.perMetric.push({ k: "tagRate", rho: spearman(lab.map(r => r.m.tagRate ?? 0), lv) });
+    out.perMetric.push({ k: "debate", rho: spearman(lab.map(r => r.m.debate ?? 0), lv) });
+    // doğrusal regresyon log10(views) ~ score
+    const n = sc.length, mx = sc.reduce((a, b) => a + b) / n, my = lv.reduce((a, b) => a + b) / n;
+    let sxy = 0, sxx = 0; for (let i = 0; i < n; i++) { sxy += (sc[i] - mx) * (lv[i] - my); sxx += (sc[i] - mx) ** 2; }
+    if (sxx > 0 && n >= 4) {
+      const b = sxy / sxx, a = my - b * mx;
+      const res = sc.map((s, i) => lv[i] - (a + b * s)); const sd = Math.sqrt(res.reduce((q, e) => q + e * e, 0) / Math.max(1, n - 2));
+      if (b > 0) out.fit = { a, b, sd: Math.max(0.2, sd) };
+    }
+    // ikili doğruluk: hangi video daha çok izlendi, doğru sıralandı mı
+    let ok = 0, tot = 0;
+    for (let i = 0; i < n; i++) for (let k = i + 1; k < n; k++) { if (lv[i] === lv[k]) continue; tot++; if ((sc[i] - sc[k]) * (lv[i] - lv[k]) > 0) ok++; }
+    out.pairAcc = tot ? ok / tot : NaN;
+    return out;
+  }
+  function autoWeights(runs) {
+    const lab = runs.filter(r => r.views > 0 && r.comp); if (lab.length < 6) return null;
+    const lv = lab.map(r => Math.log10(r.views)); let best = null;
+    const T = 10;
+    for (let a = 0; a <= T; a++) for (let b = 0; b <= T - a; b++) for (let c = 0; c <= T - a - b; c++) for (let e = 0; e <= T - a - b - c; e++) for (let f = 0; f <= T - a - b - c - e; f++) {
+      const w = { hook: a / T, watch: b / T, share: c / T, expert: e / T, social: f / T, engage: (T - a - b - c - e - f) / T };
+      const rho = spearman(lab.map(r => scoreFrom(r.comp, w)), lv);
+      if (!Number.isFinite(rho)) continue;
+      const dist = COMP_KEYS.reduce((q, k) => q + Math.pow((w[k] || 0) - (DEFAULT_WEIGHTS[k] || 0), 2), 0);
+      if (best && Math.abs(rho - best.rho) < 1e-9 && dist < best.dist) { best = { w, rho, dist }; continue; }
+      if (!best || rho > best.rho + 1e-9) best = { w, rho, dist };
+    }
+    return best;
+  }
+  function viewRange(score, cal) {
+    if (cal && cal.fit) { const c = cal.fit.a + cal.fit.b * score; return { lo: Math.pow(10, c - cal.fit.sd), mid: Math.pow(10, c), hi: Math.pow(10, c + cal.fit.sd), calibrated: true }; }
+    const c = 2.3 + 0.045 * score; return { lo: Math.pow(10, c - 0.45), mid: Math.pow(10, c), hi: Math.pow(10, c + 0.45), calibrated: false };
+  }
+
+  /* ---------- 7) Veri modeli: gerçek videolardan öğrenme ---------- */
+  // Her videonun ölçülebilir parmak izi (analizden)
+  const FEAT_KEYS = ["dur", "hook", "ad", "cuts", "tempo", "sx", "sp", "dg", "ts", "speech", "subs", "muteok", "face", "prod3", "q", "univ", "humor", "curio", "emo", "txt0", "human"];
+  const FEAT_LABEL = { dur: "Süre", hook: "Açılış gücü", ad: "Reklam hissi", cuts: "Kesme sıklığı", tempo: "Tempo", sx: "Sıra dışılık", sp: "Paylaşılabilirlik", dg: "Durdurma gücü", ts: "Tartışma", speech: "Konuşma", subs: "Altyazı", muteok: "Sessiz anlaşılır", face: "İlk saniyede yüz", prod3: "Ürün ilk 3 sn'de", q: "Soru ile açılış", univ: "Herkesin bildiği konu", humor: "Mizah", curio: "Merak", emo: "Duygu", txt0: "İlk karede yazı", human: "İnsan var" };
+  const b01 = v => v === true || v === "true" || v === 1 ? 1 : v === false || v === "false" || v === 0 ? 0 : null;
+  const n10 = v => { const x = parseFloat(v); return Number.isFinite(x) ? clamp(x, 0, 10) : null; };
+  function featuresOf(a, d) {
+    if (!a) return null;
+    const u = a.uzman || {}, o = a.ozellik || {}, s = a.ses || {};
+    const tempo = /hızlı|hizli/i.test(a.tempo || "") ? 2 : /yavaş|yavas/i.test(a.tempo || "") ? 0 : a.tempo ? 1 : null;
+    const cuts = Number.isFinite(+a.kesme_sayisi) && d ? clamp(+a.kesme_sayisi / d, 0, 3) : null;
+    return {
+      dur: d ? Math.log10(Math.max(3, d)) : null, hook: n10((a.hook || {}).guc), ad: n10(a.reklam_gibi_mi), cuts, tempo,
+      sx: n10(u.siradisilik), sp: n10(u.paylasilabilirlik), dg: n10(u.durdurma_gucu), ts: n10(u.tartisma),
+      speech: b01(s.konusma_var), subs: b01(s.altyazi_var), muteok: b01(s.ses_kapaliyken_anlasilir_mi),
+      face: b01(o.yuz_ilk_saniye), prod3: b01(o.urun_ilk_3sn), q: b01(o.soru_ile_acilis), univ: n10(o.evrensel_konu),
+      humor: n10(o.mizah), curio: n10(o.merak), emo: n10(o.duygu), txt0: b01(o.ilk_kare_yazi), human: b01(o.insan_var)
+    };
+  }
+  // Hedef: hesabın kendi ortalamasına göre performans (log10). Böylece model takipçi sayısını değil videoyu öğrenir.
+  function targets(rows) {
+    const byAcc = {};
+    rows.forEach(r => (byAcc[r.account || "_"] = byAcc[r.account || "_"] || []).push(Math.log10(r.views)));
+    const med = a => { const b = a.slice().sort((x, y) => x - y); const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
+    const all = rows.map(r => Math.log10(r.views)); const gm = all.length ? med(all) : 0;
+    const accMed = {}; for (const k in byAcc) accMed[k] = byAcc[k].length >= 3 ? med(byAcc[k]) : gm;
+    return { y: rows.map(r => Math.log10(r.views) - accMed[r.account || "_"]), accMed, gm };
+  }
+  function solve(A, b) { // Gauss-Jordan, küçük boyut
+    const n = b.length, M = A.map((r, i) => [...r, b[i]]);
+    for (let c = 0; c < n; c++) {
+      let p = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      [M[c], M[p]] = [M[p], M[c]]; const v = M[c][c] || 1e-9;
+      for (let k = c; k <= n; k++) M[c][k] /= v;
+      for (let r = 0; r < n; r++) if (r !== c) { const f = M[r][c]; if (f) for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k]; }
+    }
+    return M.map(r => r[n]);
+  }
+  function inverse(A) { const n = A.length; const cols = []; for (let j = 0; j < n; j++) cols.push(solve(A, A.map((_, i) => i === j ? 1 : 0))); return A.map((_, i) => cols.map(c => c[i])); }
+  function buildDataModel(rowsIn, opt = {}) {
+    const rows = rowsIn.filter(r => r.views > 0 && r.f);
+    const n = rows.length; if (n < 5) return { n, ready: false };
+    const keys = FEAT_KEYS.filter(k => rows.filter(r => r.f[k] != null).length >= Math.max(3, n * 0.4));
+    const mean = {}, sd = {};
+    for (const k of keys) { const v = rows.map(r => r.f[k]).filter(x => x != null); mean[k] = v.reduce((a, b) => a + b, 0) / v.length; sd[k] = Math.sqrt(v.reduce((a, b) => a + (b - mean[k]) ** 2, 0) / v.length) || 1; }
+    const vec = f => keys.map(k => f && f[k] != null ? (f[k] - mean[k]) / sd[k] : 0);
+    const X = rows.map(r => vec(r.f)); const T = targets(rows); const yRaw = T.y;
+    const ym = yRaw.reduce((a, b) => a + b, 0) / n; const y = yRaw.map(v => v - ym);
+    const d = keys.length, lambda = opt.lambda ?? Math.max(2, d * 0.6);
+    // ridge: w = (XᵀX + λI)⁻¹ Xᵀy
+    const XtX = Array.from({ length: d }, (_, i) => Array.from({ length: d }, (_, j) => { let s = 0; for (const x of X) s += x[i] * x[j]; return s + (i === j ? lambda : 0); }));
+    const Xty = Array.from({ length: d }, (_, i) => X.reduce((s, x, r) => s + x[i] * y[r], 0));
+    const inv = inverse(XtX); const w = inv.map(row => row.reduce((s, v, j) => s + v * Xty[j], 0));
+    const predR = x => ym + x.reduce((s, v, i) => s + v * w[i], 0);
+    // LOO (kapalı form): e_i / (1 - h_ii)
+    const looRidge = X.map((x, i) => { const hx = inv.map(row => row.reduce((s, v, j) => s + v * x[j], 0)); const h = x.reduce((s, v, j) => s + v * hx[j], 0); const e = yRaw[i] - predR(x); return yRaw[i] - e / Math.max(0.05, 1 - h); });
+    // kNN
+    const K = Math.min(8, Math.max(3, Math.round(Math.sqrt(n))));
+    const dist = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) { const t = a[i] - b[i]; s += t * t * (Math.abs(w[i]) + 0.15); } return Math.sqrt(s); };
+    const knn = (x, skip = -1) => {
+      const ds = []; for (let i = 0; i < n; i++) if (i !== skip) ds.push([dist(x, X[i]), i]);
+      ds.sort((a, b) => a[0] - b[0]); const nb = ds.slice(0, K);
+      const ws = nb.map(([dd]) => 1 / (dd + 0.3)); const sw = ws.reduce((a, b) => a + b, 0);
+      return { pred: nb.reduce((s, [, i], k) => s + yRaw[i] * ws[k], 0) / sw, nb };
+    };
+    const lim = Math.min(n, 1500);
+    const looKnn = yRaw.map((_, i) => i < lim ? knn(X[i], i).pred : null);
+    const looMix = looRidge.map((v, i) => looKnn[i] == null ? v : 0.6 * v + 0.4 * looKnn[i]);
+    const ev = p => { const idx = p.map((v, i) => v == null ? -1 : i).filter(i => i >= 0); return { pair: pairAcc(idx.map(i => p[i]), idx.map(i => yRaw[i])), rho: spearman(idx.map(i => p[i]), idx.map(i => yRaw[i])) }; };
+    const evals = { ridge: ev(looRidge), knn: ev(looKnn), mix: ev(looMix) };
+    const top = keys.map((k, i) => ({ k, label: FEAT_LABEL[k] || k, w: w[i] })).sort((a, b) => Math.abs(b.w) - Math.abs(a.w));
+    const resid = yRaw.map((v, i) => v - looMix[i]); const rsd = Math.sqrt(resid.reduce((a, b) => a + b * b, 0) / n);
+    return {
+      n, ready: true, keys, evals, top, rsd, accMed: T.accMed, gm: T.gm, loo: looMix, rows,
+      predict(f, account) {
+        const x = vec(f); const r = predR(x); const k = knn(x);
+        const rel = 0.6 * r + 0.4 * k.pred;
+        const base = T.accMed[account || "_"] ?? T.gm;
+        return { rel, mult: Math.pow(10, rel), views: Math.pow(10, base + rel), lo: Math.pow(10, base + rel - rsd), hi: Math.pow(10, base + rel + rsd), similar: k.nb.map(([dd, i]) => ({ row: rows[i], sim: 1 / (1 + dd) })) };
+      }
+    };
+  }
+  function pairAcc(p, y) {
+    let ok = 0, tot = 0;
+    for (let i = 0; i < p.length; i++) for (let k = i + 1; k < p.length; k++) { if (y[i] === y[k] || p[i] === p[k]) continue; tot++; if ((p[i] - p[k]) * (y[i] - y[k]) > 0) ok++; }
+    return tot ? ok / tot : NaN;
+  }
+  // Doğrulama: ajanlar vs veri modeli vs tek soruluk taban, görülmemiş videolarda
+  function validationReport(runs, weights) {
+    const lab = runs.filter(r => r.views > 0 && !r.demo && !r.rep);
+    const out = { n: lab.length };
+    const T = lab.length ? targets(lab) : null;
+    const yOf = r => Math.log10(r.views) - (T.accMed[r.account || "_"] ?? T.gm);
+    const sims = lab.filter(r => r.kind !== "analiz" && r.comp);
+    out.nSim = sims.length;
+    if (sims.length >= 3) out.agents = { pair: pairAcc(sims.map(r => scoreFrom(r.comp, weights)), sims.map(yOf)), n: sims.length };
+    const withU = lab.filter(r => r.f && r.f.sp != null);
+    if (withU.length >= 3) {
+      const base = r => (r.f.sx ?? 5) + (r.f.sp ?? 5) * 1.5 + (r.f.dg ?? 5) + (r.f.ts ?? r.f.sp ?? 5);
+      out.baseline = { pair: pairAcc(withU.map(base), withU.map(yOf)), n: withU.length };
+    }
+    const dm = buildDataModel(lab);
+    if (dm.ready) {
+      out.data = { pair: dm.evals.mix.pair, n: dm.n, top: dm.top.slice(0, 6) };
+      // birleşik: ajan skoru + veri modelinin görülmemiş tahmini
+      const idx = new Map(dm.rows.map((r, i) => [r, i]));
+      const both = sims.filter(r => idx.has(r));
+      if (both.length >= 3) {
+        const z = a => { const m = a.reduce((s, v) => s + v, 0) / a.length; const s = Math.sqrt(a.reduce((q, v) => q + (v - m) ** 2, 0) / a.length) || 1; return a.map(v => (v - m) / s); };
+        const za = z(both.map(r => scoreFrom(r.comp, weights))), zd = z(both.map(r => dm.loo[idx.get(r)]));
+        out.combined = { pair: pairAcc(za.map((v, i) => v + zd[i]), both.map(yOf)), n: both.length };
+      }
+    }
+    // tutarlılık: aynı videonun tekrar çalıştırmaları
+    const groups = {};
+    runs.filter(r => r.kind !== "analiz" && r.comp && !r.demo).forEach(r => { const k = r.name + "|" + Math.round(r.d * 10); (groups[k] = groups[k] || []).push(scoreFrom(r.comp, weights)); });
+    const diffs = []; for (const k in groups) { const g = groups[k]; if (g.length < 2) continue; const m = g.reduce((a, b) => a + b, 0) / g.length; diffs.push(Math.sqrt(g.reduce((a, b) => a + (b - m) ** 2, 0) / (g.length - 1))); }
+    if (diffs.length) out.stability = { sd: diffs.reduce((a, b) => a + b, 0) / diffs.length, n: diffs.length };
+    // karar
+    const best = [["Ajanlar", out.agents], ["Veri modeli", out.data], ["Birleşik", out.combined]].filter(x => x[1] && Number.isFinite(x[1].pair)).sort((a, b) => b[1].pair - a[1].pair)[0];
+    const bp = out.baseline && out.baseline.pair;
+    if (!best) out.verdict = { level: "wait", text: "Karar için henüz yeterli veri yok. En az 6 videoyu gerçek izlenmesiyle gir; 20+ video güvenilir sonuç verir." };
+    else if (best[1].n < 12) out.verdict = { level: "early", text: `İlk işaret: ${best[0]} şu an %${Math.round(best[1].pair * 100)} doğru, ama ${best[1].n} video kesin karar için az. 20+ videoya çıkınca sonuç oturur.` };
+    else if (best[1].pair >= 0.7 && (!Number.isFinite(bp) || best[1].pair >= bp + 0.03)) out.verdict = { level: "good", text: `Motor işe yarıyor: ${best[0]} görülmemiş videolarda ikililerin %${Math.round(best[1].pair * 100)}'ini doğru sıralıyor${Number.isFinite(bp) ? `, tek soruluk tahmin %${Math.round(bp * 100)}` : ""}. Satılabilir seviyede.` };
+    else if (best[1].pair >= 0.6) out.verdict = { level: "mid", text: `Umut verici ama henüz değil: en iyisi ${best[0]}, %${Math.round(best[1].pair * 100)}. Daha çok ve daha çeşitli videoyla tekrar ölç.` };
+    else out.verdict = { level: "bad", text: `Şu an tahmin gücü zayıf: en iyisi %${Math.round(best[1].pair * 100)} (yazı tura %50). Veri çeşitliliğini artır, gerekirse yöntemi değiştirelim.` };
+    return out;
+  }
+
+  /* ---------- 6) Rapor ---------- */
+  async function report(key, model, analysis, m, comp, score, pop, d, opts) {
+    const core = pop.filter(p => p.isCore);
+    const pct = v => (v * 100).toFixed(1) + "%";
+    const sample = (arr, k) => arr.slice().sort(() => Math.random() - 0.5).slice(0, k);
+    const early = sample(core.filter(p => p.exit < 3), 18).map(p => `${p.age}${p.g}, ${p.ints[0]}: ${p.reason}`);
+    const mid = sample(core.filter(p => p.exit >= 3 && p.exit < d - 0.35), 14).map(p => `${p.exit.toFixed(1)}sn, ${p.age}${p.g}: ${p.reason}`);
+    const full = sample(core.filter(p => p.exit >= d - 0.35), 14).map(p => `${p.age}${p.g}, ${p.ints[0]}: ${p.reason}`);
+    const cm = sample(core.filter(p => p.commentText), 15).map(p => p.commentText);
+    const prompt = `Sen üst düzey bir kısa video reklam stratejistisin. Bu video Meta'da reklam olarak yayınlanacak; değerlendirmeyi kaydırmayı durdurma ve siteye tıklatma açısından yap. Aşağıda bir videonun ${m.N.toLocaleString("tr-TR")} kişilik yapay izleyici simülasyonunun sonuçları var. Dürüst ve net ol, şişirme.
+
+VİDEO ANALİZİ:
+${compactTimeline(analysis)}
+
+ÖLÇÜMLER:
+İlk 3 sn kalan: ${pct(m.hold3)} | Ortalama izlenme: ${pct(m.avgWatch)} (${m.avgWatchSec.toFixed(1)} sn / ${d.toFixed(1)} sn) | Tamamlama: ${pct(m.completion)}
+Beğeni ${pct(m.like)}, yorum ${pct(m.comment)}, paylaşım ${pct(m.share)}, kaydetme ${pct(m.save)}, takip ${pct(m.follow)}
+Viral skoru: ${score}/100 (hook ${comp.hook.toFixed(0)}, izlenme ${comp.watch.toFixed(0)}, paylaşım ${comp.share.toFixed(0)}, etkileşim ${comp.engage.toFixed(0)}, uzman ${comp.expert.toFixed(0)})
+Etiketleme/DM dürtüsü (gerçek ajanların kaçı birini etiketledi ya da göndereceğini söyledi): ${m.tagRate != null ? pct(m.tagRate) : "-"} | Yorum tartışması (1 = tam ikiye bölünmüş): ${m.debate != null ? m.debate.toFixed(2) : "-"}
+En büyük kayıp anları: ${m.drops.map(x => x.t + "-" + (x.t + 1) + "sn: -" + pct(x.loss)).join(", ")}
+Yaş grubuna göre ilk 3 sn kalma: ${m.ageSeg.map(s => s.k + " " + pct(s.hold3)).join(", ")}
+Ses: ${m.soundSeg.map(s => s.k + " " + pct(s.hold3)).join(", ")}
+
+İLK 3 SANİYEDE GEÇENLERİN SESİ:
+${early.join("\n")}
+ORTADA ÇIKANLAR:
+${mid.join("\n")}
+SONUNA KADAR İZLEYENLER:
+${full.join("\n")}
+YORUMLAR:
+${cm.join(" | ")}
+
+SADECE şu JSON'u döndür (Türkçe):
+{
+ "karar": "YAYINLA" | "DÜZELT, SONRA YAYINLA" | "YENİDEN ÇEK",
+ "ozet": "2-3 cümlelik net değerlendirme",
+ "guclu": ["..."], "zayif": ["..."],
+ "kritik_anlar": [{"sn": sayı, "ne_oluyor": "...", "oneri": "somut düzeltme"}],
+ "hook_onerileri": ["ilk 3 saniye için 3 farklı somut açılış, çekilebilir netlikte"],
+ "duzenleme": ["kurgu/altyazı/ses/kapak için somut maddeler"],
+ "en_iyi_kitle": "en iyi tutan kitle ve neden",
+ "aciklama_onerisi": "Reels açıklaması önerisi"
+}`;
+    return generate(key, model, [{ text: prompt }], { temperature: 0.5, label: "Rapor", timeout: 90000, attempts: 4, fallback: opts && opts.fallback });
+  }
+  async function compareReport(key, model, items, opts) {
+    const pct = v => (v * 100).toFixed(1) + "%";
+    const txt = items.map(it => `VERSİYON ${it.label} (${it.d.toFixed(0)} sn, skor ${it.score}): ilk 3 sn ${pct(it.m.hold3)}, ort. izlenme ${pct(it.m.avgWatch)}, tamamlama ${pct(it.m.completion)}, paylaşım ${pct(it.m.share)}, kaydetme ${pct(it.m.save)}. Açılış: ${(it.analysis.hook || {}).ilk_3_saniye || ""}. Konu: ${it.analysis.konu || ""}. Örnek geçme sebepleri: ${it.reasons.join(" | ")}`).join("\n\n");
+    return generate(key, model, [{ text: `Aynı yapay izleyici kitlesine gösterilmiş ${items.length} video versiyonunun sonuçları:\n\n${txt}\n\nSADECE JSON döndür (Türkçe): {"kazanan":"A/B/C","neden":"2-3 cümle, somut","fark":"versiyonlar arasındaki belirleyici fark","birlestir":"kazananı daha da iyi yapmak için diğerlerinden alınacak parça"}` }], { temperature: 0.4, label: "Karşılaştırma raporu", fallback: opts && opts.fallback });
+  }
+  function demoReport(m, d) {
+    const weak = m.drops[0] || { t: 0 };
+    return {
+      karar: m.hold3 > 0.6 ? "PAYLAŞ" : "DÜZENLE, SONRA PAYLAŞ",
+      ozet: "Bu bir demo raporudur. API anahtarı girip gerçek simülasyon çalıştırdığında, videonun içeriğine özel analiz ve öneriler burada çıkar.",
+      guclu: ["Demo: sonuna kadar izleyenlerin oranı ortalamanın üstünde"], zayif: ["Demo: ilk saniyelerde ciddi bir kayıp var"],
+      kritik_anlar: [{ sn: weak.t, ne_oluyor: "En büyük izleyici kaybı bu saniyede", oneri: "Bu anı kısalt ya da buraya bir merak unsuru koy" }],
+      hook_onerileri: ["Sonucu en başta göster, sonra nasıl olduğunu anlat", "İlk kareye büyük bir soru yazısı koy", "İlk saniyede beklenmedik bir hareket ya da ses kullan"],
+      duzenleme: ["Altyazı ekle: ses kapalı izleyenler kaybediliyor", "İlk 3 saniyedeki durağan kısmı kes"], en_iyi_kitle: "Demo verisi", aciklama_onerisi: "Demo"
+    };
+  }
+
+  return {
+    mulberry32, hashStr, clamp, sleep, generatePopulation, pickCore, personaLine, listModels, pickDefaults, setProvider,
+    uploadVideo, inlineVideo, analyzeVideo, runCore, synthAnalysis, synthCore, expand, metrics, components,
+    scoreFrom, calibrationStats, autoWeights, viewRange, report, demoReport, usage, INTERESTS, AGES,
+    DEFAULT_WEIGHTS, DEFAULT_CALIB, compactTimeline, log, runCompare, compareReport, relativeRank, behaviorCorrection, applyCorrection, COMP_KEYS, scoreSpread, socialSignals, priceOf, costOf, featuresOf, buildDataModel, validationReport, pairAcc, FEAT_LABEL
+  };
+})();
+if (typeof module !== "undefined") module.exports = Engine;
+
+</script>
 <script>
 // ═══════════════════════════════════════════════
 // ÇEKİRDEK
@@ -787,7 +1896,7 @@ function renderToday(){
     const reason = !T.total ? 'Son 7 günde harcaması olan reklam yok.'
       : active.length && active.every(s => s.d.k === 'early') ? 'Reklamların henüz karar verecek kadar harcamadı.'
       : 'Zarar eden ya da yorulan reklam yok; kârda olanlar büyütme eşiğine henüz gelmedi.';
-    h += '<div class="card"><div class="lead" style="margin-top:0">Bugün dokunman gereken bir şey yok</div><p class="sub" style="margin-top:4px">' + reason + '</p></div>';
+    h += '<div class="card"><div class="lead" style="margin-top:0">Bugün dokunman gereken bir şey yok</div><p class="sub" style="margin-top:4px">' + reason + '</p>' + (!T.total ? '<button class="btn-text" onclick="go(\'creative\')">Reklam vermeden önce videonu test et</button>' : '') + '</div>';
   } else {
     h += T.acts.slice(0, 3).map((a, i) => {
       const tone = a.type === 'pause' ? 'red' : a.type === 'scale' ? 'green' : 'orange';
@@ -976,7 +2085,7 @@ async function loadComment(level, r, st, p){
 // ═══════════════════════════════════════════════
 function dnaKey(){ return 'dna2_' + S.accountId + '_' + localDate(); }
 async function loadCreative(force){
-  renderStars();
+  renderStars(); renderSendora();
   if (S.dna && !force) { renderCreative(); return; }
   if (!S.token || !S.accountId) return;
   if (!force) { const c = getJSON(dnaKey(), null); if (c && c.ads) { S.dna = c; renderCreative(); if (!c.patterns) loadPatterns(); return; } }
@@ -1091,6 +2200,119 @@ function renderStars(){
 }
 
 // ═══════════════════════════════════════════════
+// VİDEO TESTİ — Sendora motoru (Engine), reklam bağlamında
+// Şimdilik tarayıcıdan, kullanıcının kendi anahtarıyla. Faz 2'de sunucuya taşınacak.
+// ═══════════════════════════════════════════════
+const AD_W = { hook:.45, watch:.20, expert:.20, social:.05, share:.05, engage:.05 }; // reklamda hedef: kaydırmayı durdurma
+const SD = { busy:false, ctl:null, status:'', prog:0 };
+function sdKey(){ return 'adsopify_sendora_' + uid(); }
+function sdRaw(){ const c = getJSON(sdKey(), {}) || {}; c.provider = c.provider === 'openrouter' ? 'openrouter' : 'google'; c.core = [100,200,300].indexOf(c.core) > -1 ? c.core : 200; c.pv = c.pv || {}; return c; }
+function sdCfg(){ const c = sdRaw(), p = c.pv[c.provider] || {}; return { provider:c.provider, core:c.core, key:p.key || '', main:p.main || '', agent:p.agent || '' }; }
+function sdSet(k, v){ const c = sdRaw();
+  if (k === 'provider') c.provider = v === 'openrouter' ? 'openrouter' : 'google';
+  else if (k === 'core') c.core = parseInt(v) || 200;
+  else { const p = c.pv[c.provider] = c.pv[c.provider] || {}; p[k] = String(v).trim(); }
+  setJSON(sdKey(), c); if (k === 'provider') renderSettings(); }
+async function sdModels(btn){
+  const c = sdCfg(); if (!c.key) { toast('Önce API anahtarını gir.'); return; }
+  btn.disabled = true;
+  try { Engine.setProvider(c.provider); const ms = await Engine.listModels(c.key);
+    if (!ms.length) throw new Error('Bu hesapta uygun model bulunamadı.');
+    const d = Engine.pickDefaults(ms); sdSet('main', d.main || ''); sdSet('agent', d.agent || '');
+    toast(ms.length + ' model bulundu, önerilenler seçildi.'); if (S.view === 'settings') renderSettings();
+  } catch(e){ toast(e.message); }
+  btn.disabled = false;
+}
+function sdLast(){ return getJSON('adsopify_sdlast_' + uid(), null); }
+function sdStatus(t, p){ SD.status = t; if (p != null) SD.prog = p; const s = $('#sd-status'), b = $('#sd-prog'); if (s) s.textContent = t; if (b) b.style.width = Math.round(SD.prog * 100) + '%'; }
+function sdStop(){ if (SD.ctl) SD.ctl.abort(); sdStatus('Durduruluyor…'); }
+function sdDur(url){ return new Promise(res => { const v = document.createElement('video'); v.preload = 'metadata'; v.muted = true;
+  v.onloadedmetadata = () => res(isFinite(v.duration) && v.duration > 0 ? v.duration : 30); v.onerror = () => res(null); v.src = url; }); }
+function sdVerdict(L){
+  const k = String(L.karar || '').toLocaleUpperCase('tr-TR');
+  if (/YENİDEN/.test(k)) return ['Yeniden çek', 'red'];
+  if (/DÜZELT|DÜZENLE/.test(k)) return ['Yayına almadan önce düzelt', 'orange'];
+  if (k) return ['Yayına alınabilir', 'green'];
+  return L.score >= 60 ? ['Yayına alınabilir', 'green'] : L.score >= 40 ? ['Yayına almadan önce düzelt', 'orange'] : ['Yeniden çek', 'red'];
+}
+function sdResultHtml(L){
+  const v = sdVerdict(L);
+  const acts = t => '<div class="out-a"><button class="btn-text" data-t="' + esc(t) + '" onclick="copyT(this)">Kopyala</button><button class="btn-text" data-k="Açılış" data-t="' + esc(t) + '" onclick="star(this)">' + (isStarred(t) ? 'Yıldızlandı' : 'Yıldızla') + '</button></div>';
+  let h = '<div class="card"><div class="sub">' + esc(L.name) + ' · ' + esc(L.date) + '</div><p class="lead"><span class="dot ' + v[1] + '" style="display:inline-block;margin-right:8px"></span>' + v[0] + '</p>' +
+    (L.ozet ? '<p class="sub" style="margin-top:8px;line-height:1.45">' + esc(L.ozet) + '</p>' : '') + '</div>' +
+    '<div class="wgrid" style="grid-template-columns:1fr 1fr;margin-top:12px">' +
+      widget('Skor', L.score + ' / 100', L.lo != null ? '<span class="dl">' + L.lo + '–' + L.hi + ' aralığında</span>' : '') +
+      widget('İlk 3 saniyede kalan', '%' + Math.round(L.hold3 * 100), '<span class="dl">' + L.n + ' izleyici</span>') + '</div>';
+  if ((L.drops || []).length) h += '<div class="list" style="margin-top:12px">' + L.drops.map(x => '<div class="row"><span class="row-main"><span class="row-t wrap">' + x.t + '–' + (x.t + 1) + '. saniye: izleyicilerin %' + Math.round(x.loss * 100) + '\'i burada ayrılıyor</span>' + (x.tip ? '<span class="row-s">' + esc(x.tip) + '</span>' : '') + '</span></div>').join('') + '</div>';
+  if ((L.hooks || []).length) h += '<div class="list" style="margin-top:12px">' + L.hooks.map(t => '<div class="row"><span class="row-main"><span class="row-s" style="margin:0">Açılış önerisi</span><span class="row-t wrap">' + esc(t) + '</span>' + acts(t) + '</span></div>').join('') + '</div>';
+  return h;
+}
+function renderSendora(){
+  const box = $('#sd-body'); if (!box) return;
+  if (SD.busy) { box.innerHTML = '<div class="card"><div class="row-t wrap" id="sd-status">' + esc(SD.status) + '</div><div class="prog"><i id="sd-prog" style="width:' + Math.round(SD.prog * 100) + '%"></i></div>' +
+    '<p class="sub" style="margin-top:12px">Test birkaç dakika sürer. Bitene kadar bu sekmeyi açık tut.</p><button class="btn-text red" onclick="sdStop()">Durdur</button></div>'; return; }
+  const c = sdCfg(), L = sdLast(), ready = c.key && c.main && c.agent;
+  let h = L ? sdResultHtml(L) : '';
+  h += '<div class="card"' + (L ? ' style="margin-top:12px"' : '') + '>' +
+    (L ? '' : '<p style="line-height:1.45">Videonu yayına almadan önce yapay bir izleyici kitlesine reklam olarak izletir. Kaçının ilk 3 saniyede kaydıracağını, nerede koptuklarını ve açılışı nasıl güçlendireceğini söyler.</p>') +
+    (ready ? '<button class="btn btn-gray block"' + (L ? '' : ' style="margin-top:16px"') + ' onclick="$(\'#sd-file\').click()">' + (L ? 'Başka video test et' : 'Video seç') + '</button>'
+           : '<p class="sub" style="margin-top:8px">Test için bir yapay zekâ anahtarı gerekiyor.</p><button class="btn-text" onclick="go(\'settings\')">Ayarlar\'dan anahtarı gir</button>') + '</div>' +
+    '<p class="foot">Tahmin, garanti değil. Skor henüz gerçek reklam sonuçlarınla karşılaştırılmadı; iki videoyu kıyaslamak için tek bir skora güvenmekten daha sağlıklıdır.' +
+    (L && L.calls ? ' Son test ' + L.calls + ' çağrı kullandı, ücretli planda yaklaşık ' + dec(L.cost || 0, 2) + ' dolar.' : '') + '</p>';
+  box.innerHTML = h;
+}
+async function sdPick(inp){
+  const f = inp.files[0]; inp.value = ''; if (!f || SD.busy) return;
+  const c = sdCfg(), E = Engine;
+  if (!c.key || !c.main || !c.agent) { toast('Önce Ayarlar\'dan video testi anahtarını ve modelleri gir.'); return; }
+  const url = URL.createObjectURL(f), d = await sdDur(url); URL.revokeObjectURL(url);
+  if (d == null) { toast('Video açılamadı. MP4 biçiminde dene.'); return; }
+  SD.busy = true; SD.ctl = new AbortController(); SD.prog = 0; SD.status = 'Video yükleniyor…'; renderSendora();
+  const stop = () => { if (SD.ctl.signal.aborted) throw new Error('Durduruldu'); };
+  const u0 = Object.assign({}, E.usage);
+  E.setProvider(c.provider); E.log.fn = msg => sdStatus(msg);
+  try {
+    let part;
+    try { part = await E.uploadVideo(c.key, f, t => sdStatus(t, .05)); }
+    catch(e){ if (f.size < 15 * 1048576) part = await E.inlineVideo(f); else throw e; }
+    stop(); sdStatus('Video saniye saniye inceleniyor…', .12);
+    const analysis = await E.analyzeVideo(c.key, c.main, part, d, true, c.agent);
+    stop();
+    const seed = E.hashStr(f.name + f.size), pop = E.generatePopulation(2000, seed), core = E.pickCore(pop, Math.min(c.core, 2000), seed);
+    sdStatus('0 / ' + core.length + ' izleyici videoyu izledi', .2);
+    const res = await E.runCore({ key:c.key, model:c.agent, videoPart:part, textOnly:false, lowRes:true, core, d, analysis, batchSize:10, concurrency:5, seed, fallback:c.main, signal:SD.ctl.signal,
+      onBatch: x => sdStatus(x.results.size + ' / ' + core.length + ' izleyici videoyu izledi', .2 + .65 * x.done / x.total) });
+    stop();
+    if (res.size < core.length * .5) { const errs = res.errors || []; throw new Error('İzleyicilerin yarısından fazlası sonuç vermedi (' + res.size + '/' + core.length + ').' + (errs.length ? ' Son hata: ' + errs[errs.length - 1] : '')); }
+    sdStatus('Sonuç hazırlanıyor…', .9);
+    E.expand(pop, res, d, null, seed);
+    const m = Object.assign(E.metrics(pop, d), E.socialSignals(res));
+    const comp = E.components(m, analysis), score = E.scoreFrom(comp, AD_W), sp = E.scoreSpread(res, d, analysis, { weights:AD_W, seed });
+    let rep = null; try { rep = await E.report(c.key, c.main, analysis, m, comp, score, pop, d, { fallback:c.agent }); } catch(e){}
+    const crit = (rep && Array.isArray(rep.kritik_anlar)) ? rep.kritik_anlar : [];
+    const drops = m.drops.slice().sort((a, b) => b.loss - a.loss).slice(0, 2).filter(x => x.loss > 0).sort((a, b) => a.t - b.t).map(x => {
+      const k = crit.find(q => Math.abs((parseFloat(q.sn) || 0) - x.t) <= 1.5); return { t:x.t, loss:x.loss, tip: k ? String(k.oneri || '') : '' }; });
+    let click = 0; res.forEach(r => { click += r.tiklar || 0; }); click = click / res.size;
+    const out = { id:Date.now(), name:f.name, date:new Date().toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}), d, n:res.size, score,
+      lo: sp ? Math.max(0, Math.round(score - 1.3 * sp.sd)) : null, hi: sp ? Math.min(100, Math.round(score + 1.3 * sp.sd)) : null,
+      hold3:m.hold3, avgWatch:m.avgWatch, click, drops, karar: rep ? String(rep.karar || '') : '', ozet: rep ? String(rep.ozet || '') : '',
+      hooks: (rep && Array.isArray(rep.hook_onerileri) ? rep.hook_onerileri : []).slice(0, 3).map(String),
+      calls: E.usage.calls - u0.calls, cost: E.usage.cost - u0.cost };
+    setJSON('adsopify_sdlast_' + uid(), out);
+    // ileride gerçek reklam sonucuyla karşılaştırmak için sakla (Faz 2: otomatik kalibrasyon)
+    const runs = getJSON('adsopify_sdruns_' + uid(), []) || []; runs.unshift({ id:out.id, name:out.name, size:f.size, d, score, hold3:m.hold3, click, comp, f:E.featuresOf(analysis, d) });
+    setJSON('adsopify_sdruns_' + uid(), runs.slice(0, 100));
+    toast('Test tamamlandı.');
+  } catch(e){ toast(e.message === 'Durduruldu' ? 'Test durduruldu.' : e.message); }
+  E.log.fn = null; SD.busy = false; SD.ctl = null; renderSendora();
+}
+function setTheme(t, btn){
+  if (t === 'light' || t === 'dark') { setStored('adsopify_theme', t); document.documentElement.setAttribute('data-theme', t); }
+  else { removeStored('adsopify_theme'); document.documentElement.removeAttribute('data-theme'); }
+  if (btn) btn.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+}
+
+// ═══════════════════════════════════════════════
 // ASİSTAN — her ekrandan açılan sağ panel
 // ═══════════════════════════════════════════════
 function openAsst(){ $('#scrim').hidden = false; $('#asst').classList.add('on');
@@ -1151,7 +2373,11 @@ function sw(k, on){ return '<button class="sw" role="switch" aria-checked="' + (
 function renderSettings(){
   const p = S.product || {}, b = S.brand || {}, n = notif(), r = rules();
   const plan = getStored('adsopify_plan'), planT = { active:'Aktif', trial:'Deneme', mlynr:'MLYNR' }[plan] || plan || '—';
-  let h = '<div class="sec" style="margin-top:8px"><h2>Ürün</h2></div><div class="list">' +
+  const th = getStored('adsopify_theme') || 'auto', sd = sdCfg();
+  let h = '<div class="sec" style="margin-top:8px"><h2>Görünüm</h2></div><div class="seg block">' +
+    [['auto','Otomatik'],['light','Açık'],['dark','Koyu']].map(x => '<button class="' + (th === x[0] ? 'on' : '') + '" onclick="setTheme(\'' + x[0] + '\',this)">' + x[1] + '</button>').join('') + '</div>' +
+    '<p class="foot">Otomatik, cihazının ayarını izler.</p>' +
+    '<div class="sec"><h2>Ürün</h2></div><div class="list">' +
     '<label class="frow"><span>Marka adı</span><input id="st-name" type="text" value="' + esc(b.brandName || '') + '"></label>' +
     '<label class="frow"><span>Ne satıyorsun</span><input id="st-prod" type="text" value="' + esc(b.product || '') + '"></label>' +
     '<label class="frow"><span>Ortalama satış fiyatı</span><input id="st-price" type="number" inputmode="decimal" min="0" value="' + esc(p.price || '') + '" oninput="beHint(\'st\')"></label>' +
@@ -1162,6 +2388,14 @@ function renderSettings(){
     (S.accounts.length ? S.accounts.map(a => '<button class="row" onclick="switchAccount(\'' + esc(a.id) + '\')"><span class="row-main"><span class="row-t">' + esc(a.name || a.id) + '</span><span class="row-s">' + esc(a.currency || '') + '</span></span>' + (a.id === S.accountId ? '<span class="t-green" style="font-weight:600">Seçili</span>' : '') + '</button>').join('')
       : '<div class="row"><span class="row-main"><span class="row-t">' + esc(S.accountName || '—') + '</span></span></div>') +
     '<button class="row" onclick="reconnect()"><span class="row-main" style="color:var(--accent)">Facebook ile yeniden bağlan</span></button></div>';
+  h += '<div class="sec"><h2>Video testi</h2></div><div class="list">' +
+    '<label class="frow"><span>Sağlayıcı</span><select onchange="sdSet(\'provider\',this.value)"><option value="google"' + (sd.provider === 'google' ? ' selected' : '') + '>Google AI Studio</option><option value="openrouter"' + (sd.provider === 'openrouter' ? ' selected' : '') + '>OpenRouter</option></select></label>' +
+    '<label class="frow"><span>API anahtarı</span><input type="password" autocomplete="off" value="' + esc(sd.key) + '" placeholder="' + (sd.provider === 'google' ? 'AIza…' : 'sk-or-v1-…') + '" onchange="sdSet(\'key\',this.value)"></label>' +
+    '<label class="frow"><span>Analiz modeli</span><input type="text" value="' + esc(sd.main) + '" onchange="sdSet(\'main\',this.value)"></label>' +
+    '<label class="frow"><span>İzleyici modeli</span><input type="text" value="' + esc(sd.agent) + '" onchange="sdSet(\'agent\',this.value)"></label>' +
+    '<label class="frow"><span>İzleyici sayısı</span><select onchange="sdSet(\'core\',this.value)">' + [100,200,300].map(n => '<option' + (sd.core === n ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
+    '<button class="row" onclick="sdModels(this)"><span class="row-main" style="color:var(--accent)">Modelleri hesabımdan getir</span></button></div>' +
+    '<p class="foot">' + (sd.provider === 'google' ? 'Anahtar aistudio.google.com üzerinden alınır.' : 'Anahtar openrouter.ai üzerinden alınır; önce kredi yüklemen gerekir.') + ' Sadece bu tarayıcıda saklanır. Anahtarı girip "Modelleri hesabımdan getir"e basınca iki model alanı kendiliğinden dolar. 300 izleyicili bir test ücretli planda yaklaşık 0,20–0,30 dolar tutar.</p>';
   h += '<div class="sec"><h2>Bildirimler</h2></div><div class="list">' +
     '<div class="row"><span class="row-main">E-posta</span>' + sw('email', n.email) + '</div>' +
     '<div class="row"><span class="row-main">WhatsApp</span>' + sw('wa', n.wa) + '</div>' +
