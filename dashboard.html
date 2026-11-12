@@ -360,6 +360,7 @@ details.list summary{list-style:none;cursor:pointer}details.list summary::-webki
         <p>Reklam verilerini okumak için izin isteriz. Bu adımda reklamlarında hiçbir şey değişmez.</p>
         <div id="su-1-err" class="err" hidden></div>
         <button class="btn btn-primary block" id="su-fb" onclick="setupConnect()">Facebook ile bağlan</button>
+        <details style="margin-top:16px"><summary class="btn-text" style="cursor:pointer;display:inline-flex;align-items:center">Düğme çalışmıyorsa erişim anahtarıyla bağlan</summary><p class="sub" style="margin-top:8px">developers.facebook.com/tools/explorer adresinde uygulamanı seç, ads_read iznini ekle, "Generate Access Token" de ve çıkan anahtarı buraya yapıştır. Reklamları buradan durdurmak ya da bütçe artırmak istiyorsan ads_management iznini de ekle.</p><label class="field"><span>Erişim anahtarı</span><input type="password" id="su-token" autocomplete="off" placeholder="EAA…"></label><button class="btn btn-gray block" id="su-tok-btn" onclick="setupToken()">Anahtarla bağlan</button></details>
         <div class="ov-foot"><button class="btn-text" onclick="setDemo(true)">Önce örnek veriyle gez</button></div>
       </div>
       <div id="su-2" hidden>
@@ -1783,13 +1784,25 @@ async function insights(level, since, until, extra){
 function sumRows(rows){ const t = { spend:0, purchases:0, revenue:0 }; rows.forEach(r => { t.spend += r.spend; t.purchases += r.purchases; t.revenue += r.revenue; }); t.roas = t.spend > 0 ? t.revenue / t.spend : 0; return t; }
 function idx(rows){ const m = {}; rows.forEach(r => { m[r.id] = r; }); return m; }
 
+function fbProblem(){
+  if (location.protocol !== 'https:') return 'Facebook girişi yalnızca https adresinde çalışır. Bu dosyayı bilgisayardan ya da önizlemeden açtıysan düğme çalışmaz: dosyayı sitene yükleyip oradan aç ya da aşağıdan erişim anahtarını yapıştır.';
+  if (typeof FB === 'undefined') return 'Facebook bileşeni yüklenemedi. Reklam engelleyici ya da tarayıcının izleme koruması açıksa kapatıp sayfayı yenile ya da aşağıdan erişim anahtarını yapıştır.';
+  return '';
+}
 function fbLogin(manage, cb){
-  if (typeof FB === 'undefined') { toast('Facebook yüklenemedi. Sayfayı yenileyip tekrar dene.'); cb && cb(false); return; }
+  let done = false, timer = null;
+  const fin = (ok, msg) => { if (done) return; done = true; clearTimeout(timer); if (msg) toast(msg); cb && cb(ok, msg); };
+  const p = fbProblem(); if (p) { fin(false, p); return; }
   const opt = { scope: manage ? 'ads_read,ads_management' : 'ads_read', return_scopes: true }; if (manage) opt.auth_type = 'rerequest';
-  FB.login(function(r){ if (!r.authResponse) { cb && cb(false); return; }
-    S.token = r.authResponse.accessToken; setStored('adsopify_token', S.token);
-    const g = r.authResponse.grantedScopes || '';
-    if (g) { S.canManage = /ads_management/.test(g); cb && cb(true); } else refreshPerms().then(() => cb && cb(true)); }, opt);
+  timer = setTimeout(() => fin(false, 'Facebook penceresi açılmadı ya da yanıt vermedi. Tarayıcın açılır pencereyi engellemiş olabilir; izin verip tekrar dene.'), 90000);
+  try {
+    FB.login(function(r){
+      if (!r || !r.authResponse) { fin(false, 'Facebook girişi tamamlanmadı. Pencereyi kapattıysan tekrar dene.'); return; }
+      S.token = r.authResponse.accessToken; setStored('adsopify_token', S.token);
+      const g = r.authResponse.grantedScopes || '';
+      if (g) { S.canManage = /ads_management/.test(g); fin(true); } else refreshPerms().then(() => fin(true));
+    }, opt);
+  } catch(e){ fin(false, 'Facebook girişi açılamadı: ' + (e && e.message ? e.message : 'bilinmeyen hata')); }
 }
 async function refreshPerms(){ try { const d = await gql('/me/permissions'); S.canManage = (d.data || []).some(p => p.permission === 'ads_management' && p.status === 'granted'); } catch(e){} }
 async function loadAccounts(){
@@ -1803,7 +1816,8 @@ function selectAccount(id){ const a = S.accounts.find(x => x.id === id); if (!a)
   setStored('adsopify_account_id', a.id); setStored('adsopify_account_name', S.accountName); setStored('adsopify_cur_' + a.id, S.currency);
   S.R = null; S.L = null; S.dna = null; S.open = {}; }
 function tokenExpired(){ $('#banner').hidden = false; }
-function reconnect(){ fbLogin(S.canManage, ok => { if (!ok) return; $('#banner').hidden = true; refresh(); }); }
+function reconnect(){ const p = fbProblem(); if (p) { showSetup(1); const e = $('#su-1-err'); e.textContent = p; e.hidden = false; return; }
+  fbLogin(S.canManage, ok => { if (!ok) return; $('#banner').hidden = true; refresh(); }); }
 
 // ═══════════════════════════════════════════════
 // ÖRNEK VERİ — hesap boşken ya da tanıtım için. Her yerde açıkça etiketlenir.
@@ -2090,7 +2104,7 @@ function askAction(i){
   html += '<p class="sub">Değişiklik Meta hesabına hemen uygulanır. 24 saat içinde geri alabilirsin.</p>';
   if (!S.canManage) html += '<p class="sub">İlk değişikliğin olduğu için Facebook reklamları yönetme izni isteyecek.</p>';
   sheet({ title: pause ? 'Reklam seti durdurulsun mu?' : 'Bütçe artırılsın mı?', html, ok: pause ? 'Durdur' : 'Artır', danger: pause,
-    onOk: () => { if (S.canManage) applyAction(a); else fbLogin(true, ok => { if (ok && S.canManage) applyAction(a); else toast('İzin verilmedi, değişiklik uygulanmadı.'); }); } });
+    onOk: () => { if (S.canManage) applyAction(a); else fbLogin(true, (ok, msg) => { if (ok && S.canManage) applyAction(a); else if (!msg) toast('İzin verilmedi, değişiklik uygulanmadı.'); }); } });
 }
 async function applyAction(a){ const s = a.s;
   try { const entry = { id: String(Date.now()), ts: Date.now(), day: localDate(), time: new Date().toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}), name: s.name, action: a.type };
@@ -2593,7 +2607,13 @@ function showSetup(step){ $('#app').hidden = true; $('#setup').hidden = false; $
   [1,2,3].forEach(i => { $('#su-' + i).hidden = i !== step; }); if (step === 2) setupAccounts();
   if (step === 3) { const p = S.product || {}; if (p.price) $('#su-price').value = p.price; if (p.cost) $('#su-cost').value = p.cost; if (S.brand && S.brand.product) $('#su-prod').value = S.brand.product; beHint('su'); } }
 function setupConnect(){ const btn = $('#su-fb'), err = $('#su-1-err'); btn.disabled = true; err.hidden = true;
-  fbLogin(false, ok => { btn.disabled = false; if (!ok) { err.textContent = 'Bağlantı tamamlanmadı. Tekrar dene.'; err.hidden = false; return; } showSetup(2); }); }
+  fbLogin(false, (ok, msg) => { btn.disabled = false; if (!ok) { err.textContent = msg || 'Bağlantı tamamlanmadı. Tekrar dene.'; err.hidden = false; return; } showSetup(2); }); }
+async function setupToken(){ const v = ($('#su-token').value || '').trim(), err = $('#su-1-err'), btn = $('#su-tok-btn');
+  if (v.length < 20) { err.textContent = 'Erişim anahtarını eksiksiz yapıştır.'; err.hidden = false; return; }
+  btn.disabled = true; err.hidden = true; const old = S.token; S.token = v;
+  try { await loadAccounts(); if (!S.accounts.length) throw new Error('Bu anahtarla reklam hesabı bulunamadı. Anahtarı oluştururken ads_read iznini seçtiğinden emin ol.');
+    setStored('adsopify_token', v); $('#banner').hidden = true; await refreshPerms(); btn.disabled = false; showSetup(2);
+  } catch(e){ S.token = old; $('#banner').hidden = true; btn.disabled = false; err.textContent = e.code === 190 ? 'Anahtar geçersiz ya da süresi dolmuş. Yenisini oluşturup tekrar dene.' : (e instanceof TypeError ? 'Meta\'ya ulaşılamadı. İnternet bağlantını kontrol edip tekrar dene.' : e.message); err.hidden = false; } }
 async function setupAccounts(){ const box = $('#su-2-list'); box.innerHTML = '<div style="padding:0 20px 20px">' + skel(48) + '</div>';
   try { await loadAccounts(); if (!S.accounts.length) { box.innerHTML = '<p class="err" style="padding:0 20px 20px">Bu Facebook hesabında reklam hesabı bulunamadı.</p>'; return; }
     if (S.accounts.length === 1) { setupPick(S.accounts[0].id); return; }
