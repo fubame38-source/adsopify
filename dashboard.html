@@ -290,6 +290,31 @@ details.list summary{list-style:none;cursor:pointer}details.list summary::-webki
 .ov-foot{text-align:center;margin-top:12px}
 #toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;font-size:14.5px;font-weight:500;z-index:70;max-width:90vw;text-align:center}
 
+.gbar.g{display:block}
+.tap{cursor:pointer;transition:transform .12s,border-color .12s}.tap:hover{transform:translateY(-2px);border-color:var(--acc)}
+.kpi .l .ask{margin-left:auto;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--acc-bg);color:var(--acc)}
+.kpi.hero .l .ask{background:rgba(255,255,255,.2);color:#fff}
+.mini div span+b+span{margin-top:2px}
+.gbar u{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--ink2)}
+.trow .n .det{min-height:0;font-size:13px;flex:none;opacity:.85}
+.trow .n .dot{margin-right:2px}
+.mbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--card2);gap:2px}
+.mbar i{display:block;height:100%}.mbar i.red{background:var(--bad)}.mbar i.orange{background:var(--warn)}.mbar i.green{background:var(--good)}.mbar i.gray{background:var(--ink3)}
+.seg{max-width:100%;overflow-x:auto}.seg button{white-space:nowrap;flex:none}
+.crumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 2px 12px;font-size:14.5px}
+.crumb button{color:var(--acc);font-weight:550}.crumb span{font-weight:600}
+.sg{display:grid;grid-template-columns:92px 1fr 44px;gap:10px;align-items:center;font-size:13px;padding:4px 0}
+.sg span{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sg b{text-align:right;font-weight:600}.sg .gbar{margin:0;height:8px;border-radius:4px}
+.cm{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.4}
+.cm:first-child{border-top:0}.cm .dot{margin-top:6px}.cm small{display:block;color:var(--ink2);font-size:12px}
+.ev{display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.ev:first-child{border-top:0;padding-top:0}
+.ev .dt{width:52px;height:56px;border-radius:14px;background:var(--card2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;line-height:1.1}
+.ev .dt b{font-size:19px;font-weight:700}.ev .dt span{font-size:11.5px;color:var(--ink2)}
+.ev .b{flex:1;min-width:0}
+.pl{padding:10px 0;border-top:1px solid var(--line)}.pl:first-of-type{border-top:0}.pl b{display:block;font-size:13px;color:var(--acc)}
+.rep{white-space:pre-wrap;font-size:14px;line-height:1.5;background:var(--card2);border-radius:14px;padding:14px;margin-top:10px;max-height:46vh;overflow:auto}
+@media print{#side,#tabs,#top .tb,#demo-bar,#banner,#asst,#scrim,#sheet,#toast,.btn,.btn-text,.q{display:none!important}main{margin:0!important;padding:0!important}body{background:#fff!important}.card,.list{box-shadow:none!important;break-inside:avoid}}
 @media (max-width:699px){
   #top h1{flex:1 1 100%}
   #sd-phone{top:38%;height:52%}
@@ -395,6 +420,7 @@ details.list summary{list-style:none;cursor:pointer}details.list summary::-webki
     <button class="nb" data-v="creative" onclick="go('creative')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg>Kreatif stüdyo</button>
     <div class="ngrp">Hesap</div>
     <button class="nb" data-v="asst" onclick="openAsst()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h14v10h-8l-4 3v-3H5z"/></svg>Asistan</button>
+    <button class="nb" data-v="accounts" onclick="go('accounts')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="6" rx="2"/><rect x="3.5" y="14" width="17" height="6" rx="2"/><path d="M7 7h.01M7 17h.01"/></svg>Tüm hesaplar</button>
     <button class="nb" data-v="settings" onclick="go('settings')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h9M18 8h1M5 16h1M10 16h9"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg>Ayarlar</button>
     <div class="side-foot"><span class="sub">Reklam hesabı</span><b id="sf-acct">—</b></div>
   </nav>
@@ -439,11 +465,12 @@ details.list summary{list-style:none;cursor:pointer}details.list summary::-webki
               <div><span>Yorum</span><b id="k-c">0</b></div><div><span>Paylaşım</span><b id="k-s">0</b></div><div><span>Kaydetme</span><b id="k-v">0</b></div>
             </div>
           </div>
-          <p class="foot">Ekrandaki her nokta bir yapay izleyici. Mavi izliyor, kırmızı o an kaydırıp geçti, yeşil sonuna kadar izledi.</p>
+          <p class="foot">Ekrandaki her nokta bir yapay izleyici. Mavi izliyor, kırmızı o an kaydırıp geçti, yeşil sonuna kadar izledi. Her videonu aynı 2.000 kişi izler; böylece testlerin birbiriyle karşılaştırılabilir.</p>
+          <div id="sd-under"></div>
         </div>
         <div class="c4" id="sd-side"></div>
       </div>
-      <input type="file" id="sd-file" accept="video/*" hidden onchange="sdPick(this)">
+      <input type="file" id="sd-file" accept="video/*" multiple hidden onchange="sdPick(this)">
     </section>
 
     <section id="v-library" class="view"><div id="lib-body"></div></section>
@@ -458,6 +485,7 @@ details.list summary{list-style:none;cursor:pointer}details.list summary::-webki
       <div id="cr-stars"></div>
     </section>
 
+    <section id="v-accounts" class="view"><div id="acc-body"></div></section>
     <section id="v-settings" class="view"><div id="set-body" style="max-width:720px"></div></section>
   </main>
 
@@ -1562,8 +1590,15 @@ SADECE şu JSON'u döndür (Türkçe):
     };
   }
 
+  /* ---------- Senaryo testi: çekilmemiş videonun metninden analiz ---------- */
+  async function analyzeScript(key, model, script, d, fallbackModel) {
+    const pre = `Aşağıda henüz ÇEKİLMEMİŞ bir Meta video reklamının senaryosu var (yaklaşık ${Math.round(d)} saniye sürecek). Bu senaryo olduğu gibi çekilseydi izleyicinin ne göreceğini ve duyacağını saniye saniye çıkar. Senaryoda yazmayan bir şeyi uydurma; belirsiz kalan yerde sade, ortalama bir telefon çekimi varsay. Aşağıdaki talimatta "video" denen şey bu senaryonun çekilmiş hâlidir.\n\nSENARYO:\n${String(script).slice(0, 4000)}\n\n`;
+    const res = await generate(key, model, [{ text: pre + analysisPrompt(d) }], { temperature: 0.2, timeout: 75000, attempts: fallbackModel && fallbackModel !== model ? 3 : 6, label: "Senaryo analizi", fallback: fallbackModel });
+    if (!res.zaman_cizelgesi) res.zaman_cizelgesi = [];
+    return res;
+  }
   return {
-    mulberry32, hashStr, clamp, sleep, generatePopulation, pickCore, personaLine, listModels, pickDefaults, setProvider,
+    analyzeScript, mulberry32, hashStr, clamp, sleep, generatePopulation, pickCore, personaLine, listModels, pickDefaults, setProvider,
     uploadVideo, inlineVideo, analyzeVideo, runCore, synthAnalysis, synthCore, expand, metrics, components,
     scoreFrom, calibrationStats, autoWeights, viewRange, report, demoReport, usage, INTERESTS, AGES,
     DEFAULT_WEIGHTS, DEFAULT_CALIB, compactTimeline, log, runCompare, compareReport, relativeRank, behaviorCorrection, applyCorrection, COMP_KEYS, scoreSpread, socialSignals, priceOf, costOf, featuresOf, buildDataModel, validationReport, pairAcc, FEAT_LABEL
@@ -1598,7 +1633,7 @@ function uid(){ return getStored('sb_user_id') || 'default'; }
 function localDate(d){ d = d || new Date(); const m = d.getMonth()+1, dd = d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd; }
 function daysAgo(n){ return localDate(new Date(Date.now() - n*86400000)); }
 function addDays(iso, n){ const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return localDate(d); }
-function fmtDay(iso){ return new Date(iso+'T12:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'short'}); }
+function fmtDay(iso){ const o = { day:'numeric', month:'short' }; if (iso.slice(0, 4) !== String(new Date().getFullYear())) o.year = 'numeric'; return new Date(iso+'T12:00:00').toLocaleDateString('tr-TR', o); }
 function extractJson(text, fb){ if (text && typeof text === 'object') return text; if (typeof text !== 'string') return fb;
   const m = text.replace(/```json|```/g,'').match(/\{[\s\S]*\}/); if (!m) return fb; try { return JSON.parse(m[0]); } catch(e){ return fb; } }
 
@@ -1639,7 +1674,7 @@ function toast(msg){ const t = $('#toast'); t.textContent = msg; t.hidden = fals
 let _shOk = null;
 function sheet(o){ $('#sh-t').textContent = o.title; $('#sh-b').innerHTML = o.html || '';
   const b = $('#sh-ok'); b.hidden = !o.ok; b.textContent = o.ok || ''; b.className = 'btn block ' + (o.danger ? 'btn-danger' : 'btn-primary');
-  $('#sh-no').textContent = o.ok ? 'Vazgeç' : 'Kapat'; _shOk = o.onOk; $('#sheet').hidden = false; }
+  $('#sh-no').textContent = o.ok ? 'Vazgeç' : 'Kapat'; _shOk = o.onOk; document.querySelector('.sh').style.maxWidth = o.wide ? '620px' : ''; $('#sheet').hidden = false; document.querySelector('.sh').scrollTop = 0; }
 function closeSheet(){ $('#sheet').hidden = true; _shOk = null; }
 function copyT(btn){ const t = btn.getAttribute('data-t') || '';
   const done = () => { const o = btn.textContent; btn.textContent = 'Kopyalandı'; setTimeout(() => { btn.textContent = o; }, 1500); };
@@ -1814,7 +1849,7 @@ async function loadAccounts(){
 function selectAccount(id){ const a = S.accounts.find(x => x.id === id); if (!a) return;
   S.accountId = a.id; S.accountName = a.name || a.id; S.currency = a.currency || 'TRY';
   setStored('adsopify_account_id', a.id); setStored('adsopify_account_name', S.accountName); setStored('adsopify_cur_' + a.id, S.currency);
-  S.R = null; S.L = null; S.dna = null; S.open = {}; }
+  S.R = null; S.L = null; S.dna = null; S.open = {}; if (typeof SD !== 'undefined') SD.real = null; }
 function tokenExpired(){ $('#banner').hidden = false; }
 function reconnect(){ const p = fbProblem(); if (p) { showSetup(1); const e = $('#su-1-err'); e.textContent = p; e.hidden = false; return; }
   fbLogin(S.canManage, ok => { if (!ok) return; $('#banner').hidden = true; refresh(); }); }
@@ -1838,7 +1873,7 @@ function demoDay(i, iso){
   const a = DEMO_ADS[i], age = Math.round((Date.parse(localDate()) - Date.parse(iso)) / 864e5); if (age > a[7] || age < 0) return null;
   const rng = Engine.mulberry32(Engine.hashStr(i + '|' + iso)), price = (eco() || { price:1799 }).price;
   const spend = a[3] * (.75 + rng() * .5), exp = spend * a[4] / price; let pur = Math.floor(exp); if (rng() < exp - pur) pur++;
-  const imp = Math.round(spend / (90 + rng() * 40) * 1000); let ctr = a[6] * (.85 + rng() * .3); if (i === 3 && age < 3) ctr *= .5;
+  const imp = Math.round(spend / (90 + rng() * 40) * 1000); let ctr = a[6] * (.85 + rng() * .3); if (i === 3 && age < 3) ctr *= .5; if (i === 4 && age < 12) ctr *= .8 + .2 * age / 12;
   return { spend, purchases:pur, revenue: pur * price * (.96 + rng() * .08), impressions:imp, linkClicks: Math.round(imp * ctr / 100), fw: a[5] * imp, hv: a[2].indexOf('Video') === 0 ? imp * (.16 + a[4] * .05) : 0 };
 }
 function demoInsights(level, since, until, extra){
@@ -1909,7 +1944,7 @@ function setRange(kind, a, b, name){
   if ((kind === 'custom' || kind === 'saved') && (!a || !b || a > b)) { toast('Başlangıç tarihi bitişten önce olmalı.'); return; }
   S.range = makeRange(kind, a, b, name);
   setJSON('adsopify_range_' + uid(), (kind === 'custom' || kind === 'saved') ? { kind, since:S.range.since, until:S.range.until, name:name || '' } : { kind:S.range.kind });
-  S.open = {}; closeRp(); renderRangePill(); go(S.view === 'ads' || S.view === 'detail' ? 'ads' : 'dash');
+  S.open = {}; S.adv.camp = null; S.adv.set = null; if (S.adv.level !== 'campaign' && false) S.adv.level = 'campaign'; closeRp(); renderRangePill(); go(S.view === 'ads' || S.view === 'detail' ? 'ads' : 'dash');
 }
 function rangeLen(r){ return Math.round((Date.parse(r.until) - Date.parse(r.since)) / 864e5) + 1; }
 function savedRanges(){ return getJSON('adsopify_ranges_' + uid(), []) || []; }
@@ -1992,7 +2027,18 @@ async function loadLive(){
   items.sort((a, b) => b.lost - a.lost);
   const w7 = sumRows(x[2].filter(r => r.date >= s7)), p7 = sumRows(x[2].filter(r => r.date < s7 && r.date >= daysAgo(13)));
   w7.net = w7.revenue - w7.spend - w7.purchases * e.cost; p7.net = p7.revenue - p7.spend - p7.purchases * e.cost;
-  S.L = { sets, acts, leak:{ total: items.reduce((a, b) => a + b.lost, 0), items }, w7, p7 };
+  // yorulma tahmini: son günlerin tıklama oranına doğru uydur, %25 düşüşe kaç gün kaldığını kestir
+  const fat = [];
+  sets.filter(s => s.active).forEach(s => { const ds = (bySet[s.id] || []).filter(r => r.impressions >= 200).slice(-10), n = ds.length; if (n < 5) return;
+    const ys = ds.map(r => r.ctr), mx = (n - 1) / 2, my = ys.reduce((a, b) => a + b, 0) / n; let nu = 0, de = 0;
+    ys.forEach((y, i) => { nu += (i - mx) * (y - my); de += (i - mx) * (i - mx); });
+    const b = nu / de, start = my - b * mx, now = start + b * (n - 1), drop = start > 0 ? (start - now) / start : 0; let state = 'ok', days = null;
+    if (s.d.k === 'tired') state = 'tired';
+    else if (b < 0 && drop >= .08) { days = drop >= .25 ? 1 : Math.max(1, Math.round((now - .75 * start) / -b)); if (days <= 14) state = 'soon'; }
+    fat.push({ id:s.id, name:s.name, state, days, drop, freq:s.freq, ys }); });
+  fat.sort((a, b) => (a.state === 'tired' ? 0 : a.state === 'soon' ? 1 : 2) - (b.state === 'tired' ? 0 : b.state === 'soon' ? 1 : 2) || (a.days || 99) - (b.days || 99));
+  S.L = { sets, acts, leak:{ total: items.reduce((a, b) => a + b.lost, 0), items }, w7, p7, fat };
+  benchSend(w7);
   return S.L;
 }
 
@@ -2001,7 +2047,7 @@ async function loadLive(){
 // ═══════════════════════════════════════════════
 function delta(cur, prev, good){
   if (prev == null || (!prev && !cur)) return '';
-  if (prev <= 0) { if (cur === prev) return ''; const up0 = cur > prev; return '<span class="dl ' + (good == null ? '' : (up0 === good ? 'ok' : 'bad')) + '">' + (up0 ? '↑' : '↓') + '</span>'; }
+  if (prev <= 0) return '';
   const ch = (cur - prev) / prev * 100; if (Math.abs(ch) < 1) return '<span class="dl">aynı</span>';
   const up = ch > 0; return '<span class="dl ' + (good == null ? '' : (up === good ? 'ok' : 'bad')) + '">' + (up ? '↑' : '↓') + ' %' + Math.round(Math.abs(ch)) + '</span>';
 }
@@ -2012,7 +2058,7 @@ function spark(vals, color){
   const line = pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
   return '<svg class="sp" viewBox="0 0 100 38" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,38 ' + line + ' 100,38" fill="' + color + '" opacity=".14"/><polyline points="' + line + '" fill="none" stroke="' + color + '" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 }
-function kpi(cls, icon, label, value, d, sp){ return '<div class="card kpi c3 ' + cls + '"><div class="l"><i>' + icon + '</i>' + label + '</div><div class="v">' + value + '</div><div class="d">' + (d || '') + '</div>' + sp + '</div>'; }
+function kpi(cls, icon, label, value, d, sp){ const k = { 'Net kâr':'net', 'Harcama':'spend', 'Gelir':'revenue', 'Satış':'sales' }[label]; return '<div class="card kpi tap c3 ' + cls + '" role="button" tabindex="0" onclick="insight(\'' + k + '\')" onkeydown="if(event.key===\'Enter\')insight(\'' + k + '\')"><div class="l"><i>' + icon + '</i>' + label + '<span class="ask">Yorumla</span></div><div class="v">' + value + '</div><div class="d">' + (d || '') + '</div>' + sp + '</div>'; }
 let _chDays = [];
 function chartSVG(days, e){
   _chDays = days; const W = 720, H = 250, L = 46, R = 8, T = 10, B = 26, n = days.length, w = (W - L - R) / n;
@@ -2064,7 +2110,8 @@ function renderDash(){
   h += '<div class="card c8"><div class="card-h"><div><h2>Harcama ve gelir</h2><p class="sub">Gün gün; çubuğun üstüne gelince o günün kârını gör.</p></div><div class="legend"><span><i></i>Harcama</span><span><i class="l"></i>Gelir</span></div></div><div class="chartbox">' + chartSVG(R.days, e) + '<div id="ctip" hidden></div></div></div>' +
     '<div class="card c4"><div class="card-h"><div><h2>Reklam getirisi' + q('roas') + '</h2><p class="sub">Üstteki çizgi başa baş noktası.</p></div><span class="pill ' + (t.roas >= e.be ? 'green">Kârda' : 'red">Zararda') + '</span></div>' +
       '<div class="gauge">' + gaugeSVG(frac) + '<div class="mid"><b>' + per1(t.roas) + '</b><span>her ' + one() + ' reklam için</span></div></div>' +
-      '<div class="mini"><div><span>Başa baş' + q('be') + '</span><b>' + per1(e.be) + '</b></div><div><span>Satış başı reklam' + q('cpa') + '</span><b>' + (t.purchases > 0 ? money(t.spend / t.purchases) : '—') + '</b></div></div></div>';
+      '<div class="mini"><div><span>Başa baş' + q('be') + '</span><b>' + per1(e.be) + '</b></div><div><span>Satış başı reklam' + q('cpa') + '</span><b>' + (t.purchases > 0 ? money(t.spend / t.purchases) : '—') + '</b></div></div>' +
+      '<p class="sub" style="margin-top:12px">' + (bench().on ? 'Sektör kıyası: yeterli sayıda mağaza katıldığında burada görünecek.' : '<button class="btn-text" style="min-height:0" onclick="go(\'settings\')">Sektör kıyasına katıl</button>') + '</p><button class="btn btn-gray btn-sm block" style="margin-top:12px" onclick="insight(\'roas\')">Yorumla</button></div>';
   // bugün yapılacaklar + kaçak
   h += '<div class="card c7"><div class="card-h"><div><h2>Bugün yapılacaklar</h2><p class="sub">Aktif reklam setlerinin son 7 gününe göre.</p></div>' + (L && L.acts.length > 3 ? '<button class="btn-text" onclick="go(\'ads\')">' + (L.acts.length - 3) + ' tane daha</button>' : '') + '</div>';
   if (!L) h += skel(150);
@@ -2073,14 +2120,28 @@ function renderDash(){
   else h += L.acts.slice(0, 3).map((a, i) => { const tone = a.type === 'pause' ? 'red' : a.type === 'scale' ? 'green' : 'orange';
     return '<div class="act"><div class="ic ' + tone + '">' + (a.type === 'pause' ? IC.pause : a.type === 'scale' ? IC.up : IC.film) + '</div><div class="b"><div class="n">' + esc(a.s.name) + '</div><div class="w">' + esc(a.why) + '</div>' +
       '<button class="btn btn-sm ' + (i === 0 ? 'btn-primary' : 'btn-gray') + '" onclick="askAction(' + i + ')">' + esc(a.btn) + '</button>&nbsp;&nbsp;<button class="btn-text" onclick="openDetail(\'adset\',\'' + esc(a.s.id) + '\')">Detay</button></div></div>'; }).join('');
-  h += '</div><div class="card c5"><div class="card-h"><div><h2>Kaçak raporu' + q('leak') + '</h2><p class="sub">Son 30 gün. Durdurulması gerektiği halde açık kalan reklamların yazdığı zarar.</p></div></div>';
+  h += '</div><div class="card c5"><div class="card-h"><div><h2>Kaçak raporu' + q('leak') + '</h2><p class="sub">Son 30 gün. Durdurulması gerektiği halde açık kalan reklamların yazdığı zarar.</p></div><button class="btn-text" style="flex:none" onclick="insight(\'leak\')">Yorumla</button></div>';
   if (!L) h += skel(150);
   else if (!L.leak.items.length) h += '<div class="big" style="color:var(--good)">' + money(0) + '</div><p class="sub" style="margin-top:6px">Son 30 günde durdurma kuralına takıldığı halde açık kalan reklam yok.</p>';
   else h += '<div class="big" style="color:var(--bad)">' + money(L.leak.total) + '</div><div style="margin-top:12px">' + L.leak.items.slice(0, 3).map(x => '<div class="act" style="padding:10px 0"><div class="b"><div class="row-t">' + esc(x.name) + '</div><div class="row-s">' + fmtDay(x.stop) + ' tarihinde durmalıydı. Sonrasında ' + money(x.spend) + ' harcadı, ' + Math.round(x.purchases) + ' satış getirdi.</div></div><div class="row-v" style="color:var(--bad);font-weight:600">' + money(x.lost) + '</div></div>').join('') + '</div>';
+  const saved = savedThisMonth();
+  if (saved > 0) h += '<p class="sub" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">Bu ay durdurduğun reklamlar yaklaşık <b style="color:var(--good)">' + money(saved) + '</b> zararı önledi (durdurulduğu günkü zarar hızına göre tahmin).</p>';
   h += '</div>';
+  // yorulma tahmini + özel günler
+  h += '<div class="card c6"><div class="card-h"><div><h2>Yorulma tahmini</h2><p class="sub">Tıklama oranının gidişine göre, reklam setlerinin ne zaman yorulacağı.</p></div><button class="btn-text" style="flex:none" onclick="insight(\'fatigue\')">Yorumla</button></div>';
+  if (!L) h += skel(140);
+  else if (!L.fat.length) h += '<p class="sub">Tahmin için en az 5 günlük verisi olan aktif reklam seti gerekiyor.</p>';
+  else h += L.fat.slice(0, 4).map(f => '<div class="ev"><div class="b"><div class="row-t">' + esc(f.name) + '</div><div class="row-s">' +
+      (f.state === 'tired' ? 'Yoruldu. Aynı kişiler çok gördü, tıklama düştü.' : f.state === 'soon' ? 'Tıklama oranı %' + Math.round(f.drop * 100) + ' geriledi. ' + (f.drop >= .25 ? 'Yorulmak üzere; yeni videoyu hemen hazırla.' : 'Bu hızla yaklaşık ' + f.days + ' gün sonra yorulur; yeni videoyu şimdiden hazırla.') : 'Tıklama oranı sabit. Şimdilik yeni videoya gerek yok.') + '</div></div>' +
+      '<div style="width:84px;flex:none">' + spark(f.ys, f.state === 'ok' ? 'var(--good)' : f.state === 'soon' ? 'var(--warn)' : 'var(--bad)') + '</div>' +
+      '<span class="pill ' + (f.state === 'tired' ? 'red">Yoruldu' : f.state === 'soon' ? 'orange">' + (f.drop >= .25 ? 'Yorulmak üzere' : '~' + f.days + ' gün') : 'green">Sağlıklı') + '</span></div>').join('') +
+      (L.fat.some(f => f.state !== 'ok') ? '<button class="btn btn-gray btn-sm" style="margin-top:6px" onclick="go(\'creative\');writeAd()">Yeni reklam yaz</button>' : '') + '<p class="sub" style="margin-top:10px">Tahmindir; bütçe ya da kitle değişirse sapar.</p>';
+  h += '</div><div class="card c6"><div class="card-h"><div><h2>Yaklaşan özel günler</h2><p class="sub">Hazırlığa iki hafta önce başlayanlar kazanır.</p></div></div>' +
+    events().map((ev, i) => '<div class="ev"><div class="dt"><b>' + ev.d.getDate() + '</b><span>' + ev.d.toLocaleDateString('tr-TR', { month:'short' }) + '</span></div><div class="b"><div class="row-t">' + ev.n + (ev.approx ? ' <span class="sub">(yaklaşık tarih)</span>' : '') + '</div><div class="row-s">' + (ev.left === 0 ? 'Bugün' : ev.left + ' gün kaldı') + (ev.left <= 14 ? '. Hazırlık zamanı.' : '') + '</div></div>' +
+      '<button class="btn-text" onclick="evPlan(' + i + ')">Plan</button><button class="btn-text" onclick="evLast(' + i + ')">Geçen yıl</button></div>').join('') + '</div>';
   // kampanyalar
   const camps = R.campaign.slice().sort((a, b) => b.spend - a.spend);
-  h += '<div class="c12"><div class="sec" style="margin-top:14px"><h2>Kampanyalar</h2><button class="btn-text" onclick="go(\'ads\')">Tüm reklamlar</button></div><div class="list">' + trowHead() + camps.slice(0, 6).map(c => trow('campaign', c, 1, true)).join('') + '</div></div></div>';
+  h += '<div class="c12"><div class="sec" style="margin-top:14px"><h2>Kampanyalar</h2><span><button class="btn-text" onclick="shareReport()">Raporu paylaş</button>&nbsp;&nbsp;&nbsp;<button class="btn-text" onclick="go(\'ads\')">Tüm reklamlar</button></span></div><div class="list">' + trowHead('Kampanya') + camps.slice(0, 6).map(c => trow('campaign', c)).join('') + '</div></div></div>';
   const log = actionLog().slice(0, 5);
   if (log.length) h += '<div class="sec"><h2>Son değişiklikler</h2></div><div class="list">' + log.map(l => { const what = l.field === 'status' ? 'Durduruldu' : 'Bütçe ' + money(l.from / minor()) + ' → ' + money(l.to / minor());
     return '<div class="row"><span class="row-main"><span class="row-t">' + esc(l.name) + '</span><span class="row-s">' + (l.undone ? 'Geri alındı, ' : '') + what + ', ' + esc(l.time || '') + '</span></span>' + (!l.undone && l.ts && Date.now() - l.ts < 86400000 ? '<button class="btn-text" onclick="undoAction(\'' + esc(l.id) + '\')">Geri al</button>' : '') + '</div>'; }).join('') + '</div><p class="foot">Değişiklikler 24 saat içinde geri alınabilir.</p>';
@@ -2090,6 +2151,96 @@ function loadDash(){
   renderDash();
   loadRange().then(r => { if (r && S.view === 'dash') renderDash(); }).catch(e => { if (e.code !== 190 && S.view === 'dash') $('#dash-body').innerHTML = errCard(e.message, 'refresh()'); });
   loadLive().then(l => { if (l && S.view === 'dash') renderDash(); }).catch(() => {});
+}
+
+// Kurtarılan para, özel günler, rapor, sektör kıyası
+function savedThisMonth(){ const m0 = new Date(); m0.setDate(1); m0.setHours(0, 0, 0, 0);
+  return actionLog().filter(l => l.action === 'pause' && !l.undone && l.lossDay > 0 && l.ts >= m0.getTime()).reduce((a, l) => a + l.lossDay * Math.max(1, Math.floor((Date.now() - l.ts) / 864e5)), 0); }
+function nthDow(y, m, dow, n){ const d = new Date(y, m, 1); return new Date(y, m, 1 + (dow - d.getDay() + 7) % 7 + 7 * (n - 1)); }
+function events(){ const now = new Date(localDate() + 'T00:00:00'), y = now.getFullYear(), out = [];
+  [y, y + 1].forEach(yr => { [['Sevgililer Günü',1,14],['8 Mart Kadınlar Günü',2,8],['Okula dönüş',8,1],['11.11 indirimleri',10,11],['Yılbaşı',11,31]].forEach(f => out.push({ n:f[0], d:new Date(yr, f[1], f[2]) }));
+    out.push({ n:'Anneler Günü', d:nthDow(yr, 4, 0, 2) }, { n:'Babalar Günü', d:nthDow(yr, 5, 0, 3) }); const th = nthDow(yr, 10, 4, 4); out.push({ n:'Kasım indirimleri (Black Friday)', d:new Date(yr, 10, th.getDate() + 1) }); });
+  [['Ramazan Bayramı','2027-03-09'],['Kurban Bayramı','2027-05-16'],['Ramazan Bayramı','2028-02-26'],['Kurban Bayramı','2028-05-05']].forEach(x => out.push({ n:x[0], d:new Date(x[1] + 'T00:00:00'), approx:true }));
+  return out.filter(ev => ev.d >= now).sort((a, b) => a.d - b.d).slice(0, 4).map(ev => { ev.iso = localDate(ev.d); ev.left = Math.round((ev.d - now) / 864e5); return ev; }); }
+function evLast(i){ const ev = events()[i]; if (!ev) return; const d = new Date(ev.d); d.setFullYear(d.getFullYear() - 1); const iso = localDate(d); setRange('custom', addDays(iso, -14), addDays(iso, 2)); toast('Geçen yılın aynı dönemi gösteriliyor.'); }
+function evPlan(i){ const ev = events()[i]; if (!ev) return; const t = localDate(), e = eco();
+  const steps = [[-14,'Üç farklı açılışla video çek','Aynı ürünü üç ayrı açılışla çek ve üçünü birlikte Sendora\'da test et.'],[-10,'Kazanan videoyu küçük bütçeyle yayına al','Sendora\'da en yüksek skoru alan videoyu günlük düşük bütçeyle başlat; veri toplasın.'],[-6,'Kârdaysa bütçeyi artır','Her ' + one() + ' reklam ' + (e ? per1(e.be * 1.5) : '—') + ' ve üzeri getiriyorsa bütçeyi %20 artır. Üç günde bir, daha sık değil.'],[-2,'İndirim metnini ve tarihini kontrol et','Reklam metnindeki indirim ve son tarih sitedekiyle aynı olmalı.'],[0,ev.n,'Bütçeye dokunma; zarar eden seti durdur, gerisini izle.'],[2,'Dönemi kapat','Bu dönemi kaydet; gelecek yıl aynı günlerle karşılaştır.']];
+  sheet({ title: ev.n + ' planı', html: steps.map(s => { const d = addDays(ev.iso, s[0]); return '<div class="pl"><b>' + (d < t ? 'Gecikti, hemen yap' : d === t ? 'Bugün' : fmtDay(d)) + '</b><div class="row-t wrap">' + s[1] + '</div><div class="row-s">' + s[2] + '</div></div>'; }).join(''),
+    ok:'Bu dönemi kaydet', onOk: () => { const n = ev.n + ' ' + ev.d.getFullYear(), l = savedRanges().filter(x => x.name !== n); l.unshift({ id:String(Date.now()), name:n, since:addDays(ev.iso, -14), until:addDays(ev.iso, 2) }); setJSON('adsopify_ranges_' + uid(), l.slice(0, 30)); toast('Dönem kaydedildi. Tarih menüsünde duruyor.'); if (S.view === 'dash') renderDash(); } }); }
+function reportText(){ const R = S.R, e = eco(), L = S.L; if (!R || !e) return ''; const t = R.tot, net = t.revenue - t.spend - t.purchases * e.cost;
+  const cs = R.campaign.map(c => ({ n:c.name, net:c.revenue - c.spend - c.purchases * e.cost })).sort((a, b) => b.net - a.net);
+  let s = (S.demo ? 'ÖRNEK VERİ\n' : '') + (S.accountName && !S.demo ? S.accountName + '\n' : '') + 'Reklam raporu: ' + S.range.label + ' (' + fmtDay(S.range.since) + ' – ' + fmtDay(S.range.until) + ')\n\n' +
+    'Harcama: ' + money(t.spend) + '\nSatış: ' + Math.round(t.purchases) + '\nGelir: ' + money(t.revenue) + '\nNet ' + (net >= 0 ? 'kâr: ' + money(net) : 'zarar: ' + money(-net)) + '\nHer ' + one() + ' reklam ' + per1(t.roas) + ' satış getirdi (başa baş ' + per1(e.be) + ').\n';
+  if (cs.length) s += '\nEn kârlı kampanya: ' + cs[0].n + ' (' + money(cs[0].net) + ')' + (cs.length > 1 && cs[cs.length - 1].net < 0 ? '\nEn çok zarar eden: ' + cs[cs.length - 1].n + ' (' + money(cs[cs.length - 1].net) + ')' : '') + '\n';
+  if (L && L.acts.length) s += '\nYapılacaklar:\n' + L.acts.slice(0, 4).map(a => '- ' + a.s.name + ': ' + a.why).join('\n') + '\n';
+  if (L && L.leak.total > 0) s += '\nSon 30 günde geç durdurulan reklamların zararı: ' + money(L.leak.total) + '\n';
+  return s; }
+function shareReport(){ const t = reportText(); if (!t) { toast('Rapor için önce veri yüklenmeli.'); return; }
+  sheet({ title:'Raporu paylaş', html:'<p class="sub">Müşterine ya da ortağına gönderebileceğin sade özet.</p><div class="rep">' + esc(t) + '</div><div class="out-a" style="margin-top:10px"><button class="btn-text" data-t="' + esc(t) + '" onclick="copyT(this)">Kopyala</button><button class="btn-text" onclick="closeSheet();setTimeout(()=>window.print(),200)">Paneli yazdır ya da PDF yap</button></div>',
+    ok:'WhatsApp\'ta paylaş', onOk: () => window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank', 'noopener') }); }
+function bench(){ return Object.assign({ on:false, sector:'' }, getJSON('adsopify_bench_' + uid(), {}) || {}); }
+function benchSet(k, v){ const b = bench(); b[k] = v; setJSON('adsopify_bench_' + uid(), b); if (k === 'on') renderSettings(); }
+function benchSend(w7){ const b = bench(); if (S.demo || !b.on || !b.sector || !(w7.spend > 0)) return; const d = new Date(), wk = d.getFullYear() + '-' + Math.ceil(((d - new Date(d.getFullYear(), 0, 1)) / 864e5 + 1) / 7); if (b.week === wk) return;
+  b.week = wk; setJSON('adsopify_bench_' + uid(), b); sbInsert('benchmarks', { sector:b.sector, week:wk, roas:+w7.roas.toFixed(2), currency:S.currency }); }
+
+// ═══════════════════════════════════════════════
+// KART YORUMU — karta dokun: rakamlar ve yapılacaklar kurallardan gelir, anlatımı AI yazar
+// ═══════════════════════════════════════════════
+const INS = { net:'Net kâr', spend:'Harcama', revenue:'Gelir', sales:'Satış', roas:'Reklam getirisi', leak:'Kaçak raporu', fatigue:'Yorulma tahmini' };
+function insFacts(kind){
+  const R = S.R, L = S.L, e = eco(), netOf = x => x.revenue - x.spend - x.purchases * e.cost;
+  const val = { net:netOf, spend:x => x.spend, revenue:x => x.revenue, sales:x => x.purchases, roas:x => x.roas }[kind] || netOf;
+  const fmt = v => kind === 'sales' ? String(Math.round(v)) : kind === 'roas' ? per1(v) : money(v);
+  const F = { kind, lines:[], movers:[], acts:[], cur:null, prev:null, fmt };
+  if (kind === 'leak') { if (!L) return F; F.cur = L.leak.total; F.movers = L.leak.items.slice(0, 5).map(x => ({ n:x.name, t:fmtDay(x.stop) + ' tarihinde durmalıydı; sonrasında ' + money(x.spend) + ' harcadı, ' + Math.round(x.purchases) + ' satış getirdi', v:-x.lost, bad:true }));
+    F.lines.push('Son 30 günde geç durdurulan reklamların yazdığı toplam zarar: ' + Math.round(L.leak.total) + '.'); }
+  else if (kind === 'fatigue') { if (!L) return F; F.movers = L.fat.slice(0, 6).map(f => ({ n:f.name, t: f.state === 'tired' ? 'Yoruldu' : f.state === 'soon' ? 'Tıklama oranı %' + Math.round(f.drop * 100) + ' geriledi' + (f.drop >= .25 ? ', yorulmak üzere' : ', yaklaşık ' + f.days + ' gün sonra yorulur') : 'Sağlıklı', bad:f.state !== 'ok', v:null }));
+    F.lines.push('Aktif ' + L.fat.length + ' reklam setinden ' + L.fat.filter(f => f.state !== 'ok').length + ' tanesi yorulmuş ya da yorulmak üzere.'); }
+  else { if (!R) return F; const t = R.tot, p = R.prevTot; F.cur = val(t); F.prev = p.spend > 0 ? val(p) : null;
+    F.lines.push(S.range.label + ' (' + R.n + ' gün): harcama ' + Math.round(t.spend) + ', satış ' + Math.round(t.purchases) + ', gelir ' + Math.round(t.revenue) + ', net kâr ' + Math.round(netOf(t)) + ', 1 birim reklamın getirdiği satış ' + t.roas.toFixed(2) + ' (kâr için en az ' + e.be.toFixed(2) + ').');
+    if (p.spend > 0) F.lines.push('Önceki ' + R.n + ' gün: harcama ' + Math.round(p.spend) + ', satış ' + Math.round(p.purchases) + ', gelir ' + Math.round(p.revenue) + ', net kâr ' + Math.round(netOf(p)) + ', getiri ' + p.roas.toFixed(2) + '.');
+    const mv = kind === 'roas' ? netOf : val, ids = {}; R.campaign.forEach(c => { ids[c.id] = c.name; }); Object.keys(R.prev.campaign).forEach(id => { if (!ids[id]) ids[id] = R.prev.campaign[id].name; });
+    const cur = idx(R.campaign), z = { spend:0, purchases:0, revenue:0, roas:0 };
+    F.movers = Object.keys(ids).map(id => { const c = cur[id] || z, pv = R.prev.campaign[id] || z, d = p.spend > 0 ? mv(c) - mv(pv) : mv(c);
+      return { n:ids[id], d, v:mv(c), t: (kind === 'sales' ? Math.round(mv(c)) + ' satış' : money(mv(c))) + (p.spend > 0 ? ', önceki döneme göre ' + (d >= 0 ? '+' : '') + (kind === 'sales' ? Math.round(d) : money(d)) : '') + (kind === 'roas' ? ', getiri ' + per1(c.roas) : ''), bad: kind === 'spend' ? false : (p.spend > 0 ? d < 0 : mv(c) < 0) }; })
+      .sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 4);
+    const ds = R.days.filter(d => d.spend > 0); if (ds.length > 2) { const dv = d => kind === 'roas' ? d.revenue / d.spend : val(d), s2 = ds.slice().sort((a, b) => dv(b) - dv(a)), hi = s2[0], lo = s2[s2.length - 1];
+      F.days = { hi:{ d:hi.d, v:dv(hi) }, lo:{ d:lo.d, v:dv(lo) } }; F.lines.push('En yüksek gün ' + fmtDay(hi.d) + ' (' + fmt(dv(hi)) + '), en düşük gün ' + fmtDay(lo.d) + ' (' + fmt(dv(lo)) + ').'); } }
+  F.movers.forEach(m => F.lines.push('- ' + m.n + ': ' + m.t));
+  if (L) { const pri = kind === 'revenue' || kind === 'sales' ? ['scale','creative','pause'] : kind === 'fatigue' ? ['creative','pause','scale'] : ['pause','scale','creative'];
+    F.acts = L.acts.map((a, i) => ({ a, i })).sort((x, y) => pri.indexOf(x.a.type) - pri.indexOf(y.a.type)).slice(0, 3);
+    if (kind === 'fatigue') F.acts = F.acts.filter(x => x.a.type === 'creative');
+    F.lines.push(F.acts.length ? 'KURALLARIN VERDİĞİ KARARLAR (değiştirme):' : 'Kurallara göre şu an uygulanacak bir değişiklik yok.');
+    F.acts.forEach(x => F.lines.push('* ' + (x.a.type === 'pause' ? 'DURDUR' : x.a.type === 'scale' ? 'BÜTÇE ARTIR' : 'YENİ VİDEO') + ' — ' + x.a.s.name + ': ' + x.a.why));
+    if (kind !== 'leak' && L.leak.total > 0) F.lines.push('Son 30 günde geç durdurulan reklamların zararı: ' + Math.round(L.leak.total) + '.'); }
+  return F;
+}
+function insight(kind){
+  const F = insFacts(kind), e = eco(); if (!e || (!S.R && !S.L)) { toast('Veri yüklenince tekrar dene.'); return; }
+  let h = '';
+  if (F.cur != null) h += '<div class="big" style="margin-top:6px;color:' + (kind === 'leak' ? (F.cur > 0 ? 'var(--bad)' : 'var(--good)') : kind === 'net' ? (F.cur >= 0 ? 'var(--good)' : 'var(--bad)') : 'var(--ink)') + '">' + (kind === 'leak' ? money(F.cur) : F.fmt(F.cur)) + '</div>' +
+    '<p class="sub" style="margin-top:4px">' + (kind === 'leak' ? 'Son 30 gün' : esc(S.range.label) + (F.prev != null ? ', önceki ' + S.R.n + ' günde ' + F.fmt(F.prev) + ' ' + delta(F.cur, F.prev, kind === 'spend' ? null : true) : '')) + '</p>';
+  h += '<div id="ins-ai" style="margin-top:16px"><div class="sk" style="height:14px;margin-bottom:8px"></div><div class="sk" style="height:14px;margin-bottom:8px"></div><div class="sk" style="height:14px;width:60%"></div></div>';
+  if (F.movers.length) h += '<h3 style="margin-top:18px">' + (kind === 'leak' ? 'Zararı yazan reklam setleri' : kind === 'fatigue' ? 'Reklam setlerinin durumu' : 'En çok etkileyen kampanyalar') + '</h3><div style="margin-top:4px">' + F.movers.map(m => '<div class="cm"><i class="dot ' + (m.bad ? 'red' : 'green') + '"></i><div style="flex:1;min-width:0"><div class="row-t">' + esc(m.n) + '</div><small>' + esc(m.t) + '</small></div></div>').join('') + '</div>';
+  if (F.days) h += '<div class="mini"><div><span>En iyi gün</span><b>' + fmtDay(F.days.hi.d) + '</b><span>' + F.fmt(F.days.hi.v) + '</span></div><div><span>En zayıf gün</span><b>' + fmtDay(F.days.lo.d) + '</b><span>' + F.fmt(F.days.lo.v) + '</span></div></div>';
+  if (F.acts.length) h += '<h3 style="margin-top:18px">Şimdi yapılacaklar</h3>' + F.acts.map(x => '<div class="act" style="padding:12px 0"><div class="ic ' + (x.a.type === 'pause' ? 'red' : x.a.type === 'scale' ? 'green' : 'orange') + '">' + (x.a.type === 'pause' ? IC.pause : x.a.type === 'scale' ? IC.up : IC.film) + '</div><div class="b"><div class="n">' + esc(x.a.s.name) + '</div><div class="w" style="font-size:14.5px">' + esc(x.a.why) + '</div><button class="btn btn-gray btn-sm" onclick="closeSheet();askAction(' + x.i + ')">' + esc(x.a.btn) + '</button></div></div>').join('');
+  h += '<div style="display:flex;gap:8px;margin-top:16px"><input class="inp" id="ins-q" type="text" placeholder="Bu konuda bir şey sor" onkeydown="if(event.key===\'Enter\')insAsk(\'' + kind + '\')"><button class="btn btn-ink" onclick="insAsk(\'' + kind + '\')">Sor</button></div>';
+  sheet({ title:INS[kind], html:h, wide:true }); insAI(kind, F);
+}
+function insAsk(kind){ const v = ($('#ins-q').value || '').trim(); if (!v) return; closeSheet(); openAsst(); asstAsk(INS[kind] + ' hakkında: ' + v); }
+async function insAI(kind, F){
+  const key = 'ins_' + kind + '_' + (S.accountId || 'd') + '_' + S.range.since + S.range.until + '_' + Engine.hashStr(F.lines.join('|'));
+  const put = o => { const el = $('#ins-ai'); if (!el || $('#sh-t').textContent !== INS[kind]) return;
+    el.innerHTML = (o.ozet ? '<p style="font-size:15.5px;line-height:1.5;font-weight:500">' + md(o.ozet) + '</p>' : '') +
+      ((o.neden || []).length ? '<h3 style="margin-top:14px">Neden böyle</h3>' + o.neden.slice(0, 3).map(t => '<div class="cm"><i class="dot gray"></i><div>' + md(String(t)) + '</div></div>').join('') : '') +
+      ((o.adimlar || []).length ? '<h3 style="margin-top:14px">Sırayla ne yapmalısın</h3>' + o.adimlar.slice(0, 3).map((a, i) => '<div class="cm"><b style="flex:none;width:18px;color:var(--acc)">' + (i + 1) + '</b><div><div style="font-weight:600">' + esc(a.baslik || '') + '</div><small style="font-size:13px">' + esc(a.neden || '') + (a.etki ? ' Beklenen etki: ' + esc(a.etki) : '') + '</small></div></div>').join('') : ''); };
+  try { const c = sessionStorage.getItem(key); if (c) { put(JSON.parse(c)); return; } } catch(x){}
+  const b = S.brand || {};
+  const sys = 'Reklam bilmeyen bir e-ticaretçiye kendi Meta reklam hesabını anlatan kıdemli bir reklam danışmanısın. Türkçe, sade ve net yazarsın. KESİN KURALLAR: Sadece sana verilen rakamları ve kampanya adlarını kullan, rakam uydurma. Durdurma ve bütçe artırma kararları kurallarla verilmiştir; bunlarla çelişme, listede olmayan bir reklamı durdurmayı ya da bütçesini artırmayı önerme. Kural kararı yoksa adımlar izleme, yeni video hazırlama, Sendora\'da test etme ya da ürün sayfasını kontrol etme gibi risksiz işler olsun. ROAS, CPM, CTR, frekans gibi terimler kullanma. Emoji kullanma. Sadece geçerli JSON döndür.';
+  const msg = 'KART: ' + INS[kind] + '\nMarka: ' + (b.brandName || '—') + ' | Ürün: ' + (b.product || '—') + ' | Para birimi: ' + (S.currency || 'TRY') + (S.demo ? ' | NOT: örnek veri' : '') + '\nÜrün fiyatı ' + eco().price + ', satış başı maliyet ' + eco().cost + '.\n\nVERİ:\n' + F.lines.join('\n') +
+    '\n\nGörev: Bu kartı yorumla. JSON: {"ozet":"en fazla 2 cümle; ne oldu ve iyi mi kötü mü","neden":["2-3 kısa madde; hangi kampanya ya da gün bunu yarattı, rakamıyla"],"adimlar":[{"baslik":"kısa eylem","neden":"1 cümle, rakamla","etki":"1 kısa cümle, abartısız"}]}. adimlar en fazla 3 madde, önem sırasıyla; önce kural kararları.';
+  try { const o = extractJson(await xAI(sys, msg), null); if (!o || !o.ozet) throw new Error('parse'); try { sessionStorage.setItem(key, JSON.stringify(o)); } catch(x){} put(o); }
+  catch(err){ const el = $('#ins-ai'); if (el && $('#sh-t').textContent === INS[kind]) el.innerHTML = '<p class="sub">Yorum şu an yazılamadı. Rakamlar ve yapılacaklar aşağıda; bunlar yapay zekâya bağlı değil.</p>'; }
 }
 
 // Aksiyon: onay → Meta'ya uygula → 24 saat geri al
@@ -2108,7 +2259,7 @@ function askAction(i){
 }
 async function applyAction(a){ const s = a.s;
   try { const entry = { id: String(Date.now()), ts: Date.now(), day: localDate(), time: new Date().toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}), name: s.name, action: a.type };
-    if (a.type === 'pause') { await metaPost(s.id, { status:'PAUSED' }); entry.targetId = s.id; entry.field = 'status'; entry.from = 'ACTIVE'; entry.to = 'PAUSED'; }
+    if (a.type === 'pause') { await metaPost(s.id, { status:'PAUSED' }); entry.targetId = s.id; entry.field = 'status'; entry.from = 'ACTIVE'; entry.to = 'PAUSED'; entry.lossDay = Math.max(0, -s.d.net / 7); }
     else { await metaPost(s.target.id, { daily_budget: String(s.newBudget) }); entry.targetId = s.target.id; entry.field = 'daily_budget'; entry.from = s.target.budget; entry.to = s.newBudget; entry.level = s.target.level; }
     const log = actionLog(); log.unshift(entry); setJSON(logKey(), log.slice(0, 100));
     sbInsert('auto_actions', { account_id:S.accountId, target_id:entry.targetId, action:entry.action, field:entry.field, from_value:String(entry.from), to_value:String(entry.to), name:entry.name });
@@ -2126,36 +2277,56 @@ function statusOf(level, r){
   if (level === 'adset' && S.range.kind === '7' && S.L) { const s = S.L.sets.find(x => x.id === r.id); if (s) return { k:s.d.k, why:s.note || s.d.why, net:s.d.net }; }
   return decide(r, eco(), {});
 }
-function trowHead(){ return '<div class="trow th"><span>Ad</span><span class="hm">Durum</span><span class="num hm">Harcama</span><span class="num hm">Satış</span><span class="num hm">Gelir</span><span class="hm">Getiri</span><span class="num">Net kâr</span></div>'; }
-function trow(level, r, lv, flat){
-  const st = statusOf(level, r), lab = ST[st.k], prev = S.R.prev[level][r.id], e = eco();
-  const pnet = prev ? prev.revenue - prev.spend - prev.purchases * e.cost : null, key = (level === 'campaign' ? 'c' : 's') + r.id;
-  const disc = flat ? '' : level === 'ad' ? '<span class="disc none"></span>' : '<button class="disc' + (S.open[key] ? ' on' : '') + '" onclick="toggleRow(\'' + key + '\')" aria-label="Altındakileri göster" aria-expanded="' + (S.open[key] ? 'true' : 'false') + '">' + CHEV + '</button>';
-  const gf = Math.max(0, Math.min(100, r.roas / (2 * e.be) * 100));
-  return '<div class="trow' + (lv > 1 ? ' lv' + lv : '') + '"><span class="n">' + disc + '<button class="hit" onclick="openDetail(\'' + level + '\',\'' + esc(r.id) + '\')"><span class="row-t">' + esc(r.name) + '</span><span class="row-s">' + esc(st.why) + '</span></button></span>' +
-    '<span class="hm"><span class="pill ' + lab[1] + '"><i class="dot ' + lab[1] + '"></i>' + lab[0] + '</span></span>' +
+S.adv = { level:'campaign', camp:null, set:null, filter:'all', sort:'spend' };
+const GRP = { loss:['Zarar ettiriyor','red'], watch:['İzle','orange'], win:['Kâr ettiriyor','green'], early:['Henüz erken','gray'] };
+function grpOf(k){ return k === 'loss' || k === 'nosale' ? 'loss' : k === 'win' ? 'win' : k === 'early' ? 'early' : 'watch'; }
+function trowHead(first){ return '<div class="trow th"><span>' + (first || 'Ad') + '</span><span class="hm">Durum</span><span class="num hm">Harcama</span><span class="num hm">Satış</span><span class="num hm">Gelir</span><span class="hm">Getiri' + q('roas') + '</span><span class="num">Net kâr</span></div>'; }
+function trow(level, r){
+  const st = statusOf(level, r), lab = ST[st.k], e = eco(), R = S.R, prev = R.prev[level][r.id], hasPrev = R.prevTot.spend > 0;
+  const pnet = prev ? prev.revenue - prev.spend - prev.purchases * e.cost : null, gf = Math.max(0, Math.min(100, r.roas / (2 * e.be) * 100));
+  let sub, click;
+  if (level === 'campaign') { const n = R.adset.filter(a => a.campaignId === r.id).length; sub = n + ' reklam seti'; click = 'adsDrill(\'campaign\',\'' + esc(r.id) + '\')'; }
+  else if (level === 'adset') { sub = esc(r.campaignName || ''); click = 'adsDrill(\'adset\',\'' + esc(r.id) + '\')'; }
+  else { sub = esc(r.adsetName || ''); click = 'openDetail(\'ad\',\'' + esc(r.id) + '\')'; }
+  return '<div class="trow"><span class="n"><i class="dot ' + lab[1] + '"></i><button class="hit" onclick="' + click + '" title="' + esc(st.why) + '"><span class="row-t">' + esc(r.name) + '</span><span class="row-s">' + sub + '</span></button>' +
+    (level === 'ad' ? '' : '<button class="btn-text det" onclick="openDetail(\'' + level + '\',\'' + esc(r.id) + '\')">Detay</button>') + '</span>' +
+    '<span class="hm"><span class="pill ' + lab[1] + '">' + lab[0] + '</span></span>' +
     '<span class="num hm">' + money(r.spend) + '</span><span class="num hm">' + Math.round(r.purchases) + '</span><span class="num hm">' + money(r.revenue) + '</span>' +
-    '<span class="hm">' + per1(r.roas) + '<div class="gbar ' + (r.roas >= e.be * 1.5 ? 'g' : r.roas >= e.be ? 'o' : 'r') + '"><i style="width:' + gf.toFixed(0) + '%"></i></div></span>' +
-    '<span class="num"><b style="font-weight:650;color:' + (st.net >= 0 ? 'var(--good)' : 'var(--bad)') + '">' + money(st.net) + '</b><div style="margin-top:4px">' + (pnet == null ? '<span class="dl">yeni</span>' : delta(st.net, pnet, true)) + '</div></span></div>';
+    '<span class="hm">' + per1(r.roas) + '<div class="gbar ' + (r.roas >= e.be * 1.5 ? 'g' : r.roas >= e.be ? 'o' : 'r') + '"><i style="width:' + gf.toFixed(0) + '%"></i><u></u></div></span>' +
+    '<span class="num"><b style="font-weight:650;color:' + (st.net >= 0 ? 'var(--good)' : 'var(--bad)') + '">' + money(st.net) + '</b>' + (hasPrev ? '<div style="margin-top:4px">' + (pnet == null ? '<span class="dl">yeni</span>' : delta(st.net, pnet, true)) + '</div>' : '') + '</span></div>';
 }
-async function toggleRow(key){ S.open[key] = !S.open[key]; renderAds();
-  if (key[0] === 's' && S.open[key] && S.R && !S.R.ad) { try { await loadAdLevel(); } catch(e){ toast(e.message); } renderAds(); } }
+function adsLevel(l){ S.adv.level = l; S.adv.camp = null; S.adv.set = null; S.adv.filter = 'all'; renderAds(); }
+function adsDrill(level, id){ const A = S.adv; A.filter = 'all';
+  if (level === 'campaign') { A.level = 'adset'; A.camp = id; A.set = null; } else { A.level = 'ad'; A.set = id; const s = S.R && S.R.adset.find(x => x.id === id); if (s) A.camp = s.campaignId; }
+  if (S.view !== 'ads') go('ads'); else { renderAds(); window.scrollTo(0, 0); } }
+function adsUp(to){ const A = S.adv; if (to === 'all') { A.level = 'campaign'; A.camp = null; A.set = null; } else { A.level = 'adset'; A.set = null; } A.filter = 'all'; renderAds(); }
+function adsSet(k, v){ S.adv[k] = v; renderAds(); }
 function renderAds(){
-  const R = S.R, box = $('#ads-body'), e = eco(); if (!e) return;
-  if (!R) { box.innerHTML = skel(90) + '<div style="height:14px"></div>' + skel(360); return; }
-  const t = R.tot, pt = R.prevTot, net = t.revenue - t.spend - t.purchases * e.cost, pnet = pt.revenue - pt.spend - pt.purchases * e.cost;
-  let h = '<div class="g">' + [['Harcama', money(t.spend), delta(t.spend, pt.spend, null)], ['Satış', String(Math.round(t.purchases)), delta(t.purchases, pt.purchases, true)], ['Gelir', money(t.revenue), delta(t.revenue, pt.revenue, true)], ['Net kâr', money(net), delta(net, pnet, true)]]
-    .map(x => '<div class="card kpi c3" style="padding:16px 18px"><div class="l">' + x[0] + '</div><div class="v" style="font-size:22px;margin-top:6px">' + x[1] + '</div><div class="d">' + x[2] + '</div></div>').join('') + '</div>';
-  const camps = R.campaign.slice().sort((a, b) => b.spend - a.spend);
-  if (!camps.length) { box.innerHTML = h + '<div class="card" style="margin-top:14px"><h3>' + esc(S.range.phrase) + ' harcaması olan reklam yok</h3><p class="sub" style="margin-top:4px">Sağ üstten başka bir dönem seçebilirsin.</p></div>'; return; }
-  h += '<div class="list" style="margin-top:14px">' + trowHead();
-  camps.forEach(c => { h += trow('campaign', c, 1);
-    if (!S.open['c' + c.id]) return;
-    R.adset.filter(a => a.campaignId === c.id).sort((a, b) => b.spend - a.spend).forEach(a => { h += trow('adset', a, 2);
-      if (!S.open['s' + a.id]) return;
-      if (!R.ad) { h += '<div class="trow lv3"><div class="sk" style="height:16px;width:60%"></div></div>'; return; }
-      R.ad.filter(d => d.adsetId === a.id).sort((x, y) => y.spend - x.spend).forEach(d => { h += trow('ad', d, 3); }); }); });
-  box.innerHTML = h + '</div><p class="foot">Kampanyanın solundaki oka dokununca reklam setleri, setin okuna dokununca reklamlar açılır. Oklar önceki ' + R.n + ' güne göre değişimi gösterir.</p>';
+  const R = S.R, box = $('#ads-body'), e = eco(), A = S.adv; if (!e) return;
+  if (!R) { box.innerHTML = skel(120) + '<div style="height:14px"></div>' + skel(360); return; }
+  if (A.level === 'ad' && !R.ad) { box.innerHTML = skel(120) + '<div style="height:14px"></div>' + skel(360); if (!R._adq) { R._adq = true; loadAdLevel().then(() => { if (S.view === 'ads') renderAds(); }).catch(err => { R.ad = []; toast(err.message); if (S.view === 'ads') renderAds(); }); } return; }
+  if (!R.campaign.length) { box.innerHTML = '<div class="card"><h3>' + esc(S.range.phrase) + ' harcaması olan reklam yok</h3><p class="sub" style="margin-top:4px">Sağ üstten başka bir dönem seçebilirsin.</p></div>'; return; }
+  const unit1 = { campaign:'kampanya', adset:'reklam seti', ad:'reklam' }[A.level];
+  let rows = (R[A.level] || []).filter(r => A.level === 'campaign' || ((!A.camp || r.campaignId === A.camp) && (!A.set || A.level !== 'ad' || r.adsetId === A.set)));
+  rows = rows.map(r => { const st = statusOf(A.level, r); return { r, g: grpOf(st.k), net: st.net }; });
+  const G = { loss:{ n:0, sp:0 }, watch:{ n:0, sp:0 }, win:{ n:0, sp:0 }, early:{ n:0, sp:0 } }; let tot = 0;
+  rows.forEach(x => { G[x.g].n++; G[x.g].sp += x.r.spend; tot += x.r.spend; });
+  const camp = A.camp && R.campaign.find(c => c.id === A.camp), set = A.set && R.adset.find(s => s.id === A.set);
+  // özet: para nereye gitti
+  const head = G.loss.n ? G.loss.n + ' ' + unit1 + ' zarar ettiriyor' + (G.win.n ? ', ' + G.win.n + ' ' + unit1 + ' kâr ettiriyor' : '') : G.win.n ? G.win.n + ' ' + unit1 + ' kâr ettiriyor, zarar eden yok' : 'Zarar eden ' + unit1 + ' yok';
+  let h = '<div class="card"><div class="card-h" style="margin-bottom:10px"><div><h2>' + head + '</h2><p class="sub">' + esc(S.range.phrase) + ' harcanan ' + money(tot) + ' nereye gitti' + (G.loss.sp > 0 && tot > 0 ? ': ' + money(G.loss.sp) + ' zarar edenlere (yüzde ' + Math.round(G.loss.sp / tot * 100) + ').' : '.') + '</p></div></div>' +
+    '<div class="mbar">' + ['loss','watch','win','early'].map(k => G[k].sp > 0 ? '<i class="' + GRP[k][1] + '" style="width:' + (G[k].sp / (tot || 1) * 100).toFixed(1) + '%"></i>' : '').join('') + '</div>' +
+    '<div class="chips" style="margin-top:14px"><button class="chip' + (A.filter === 'all' ? ' on' : '') + '" onclick="adsSet(\'filter\',\'all\')">Tümü ' + rows.length + '</button>' +
+    ['loss','watch','win','early'].map(k => G[k].n ? '<button class="chip' + (A.filter === k ? ' on' : '') + '" onclick="adsSet(\'filter\',\'' + k + '\')"><i class="dot ' + GRP[k][1] + '"></i>' + GRP[k][0] + ' ' + G[k].n + '</button>' : '').join('') + '</div></div>';
+  // seviye + sıralama
+  h += '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:18px 0 12px"><div class="seg">' + [['campaign','Kampanyalar'],['adset','Reklam setleri'],['ad','Reklamlar']].map(x => '<button class="' + (A.level === x[0] ? 'on' : '') + '" onclick="adsLevel(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div>' +
+    '<div class="seg">' + [['spend','En çok harcayan'],['net','En çok zarar eden'],['best','En kârlı']].map(x => '<button class="' + (A.sort === x[0] ? 'on' : '') + '" onclick="adsSet(\'sort\',\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div></div>';
+  if (camp || set) h += '<div class="crumb"><button onclick="adsUp(\'all\')">Tüm kampanyalar</button>' + (camp ? CHEV + (set ? '<button onclick="adsUp(\'camp\')">' + esc(camp.name) + '</button>' + CHEV + '<span>' + esc(set.name) + '</span>' : '<span>' + esc(camp.name) + '</span>') : CHEV + '<span>' + esc(set.name) + '</span>') + '</div>';
+  let list = rows.filter(x => A.filter === 'all' || x.g === A.filter);
+  list.sort(A.sort === 'net' ? (a, b) => a.net - b.net : A.sort === 'best' ? (a, b) => b.net - a.net : (a, b) => b.r.spend - a.r.spend);
+  h += list.length ? '<div class="list">' + trowHead({ campaign:'Kampanya', adset:'Reklam seti', ad:'Reklam' }[A.level]) + list.map(x => trow(A.level, x.r)).join('') + '</div>' : '<div class="card"><p class="sub">Bu süzgece uyan ' + unit1 + ' yok.</p></div>';
+  h += '<p class="foot">' + (A.level === 'campaign' ? 'Bir kampanyaya dokununca içindeki reklam setleri açılır. ' : A.level === 'adset' ? 'Bir reklam setine dokununca içindeki reklamlar açılır. ' : 'Bir reklama dokununca ayrıntısı açılır. ') + 'Getiri çubuğundaki çizgi başa baş noktası: her ' + one() + ' reklamın en az ' + per1(e.be) + ' satış getirmesi gerekir.' + (R.prevTot.spend > 0 ? ' Oklar önceki ' + R.n + ' güne göre değişimi gösterir.' : '') + '</p>';
+  box.innerHTML = h;
 }
 function loadAds(){ renderAds(); loadRange().then(r => { if (r && S.view === 'ads') renderAds(); }).catch(e => { if (e.code !== 190) $('#ads-body').innerHTML = errCard(e.message, 'refresh()'); }); loadLive().then(() => { if (S.view === 'ads' && S.R) renderAds(); }).catch(() => {}); }
 
@@ -2373,72 +2544,153 @@ function sdVerdict(L){ const k = String(L.karar || '').toLocaleUpperCase('tr-TR'
 function curveSVG(curve, d){ if (!curve || curve.length < 2) return ''; const W = 300, H = 90;
   const pts = curve.map(p => (p.t / d * W).toFixed(1) + ',' + (4 + (1 - p.v) * (H - 8)).toFixed(1)).join(' ');
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="display:block;width:100%;height:auto" role="img" aria-label="İzlenme eğrisi"><line x1="' + (Math.min(3, d) / d * W).toFixed(1) + '" x2="' + (Math.min(3, d) / d * W).toFixed(1) + '" y1="0" y2="' + H + '" stroke="var(--warn)" stroke-dasharray="3 4"/><polygon points="0,' + H + ' ' + pts + ' ' + W + ',' + H + '" fill="var(--acc)" opacity=".13"/><polyline points="' + pts + '" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linejoin="round"/></svg>'; }
+SD.mem = []; SD.queue = []; SD.mode = 'video'; SD.show = null; SD.real = null; SD.script = ''; SD.batch = null; SD.batchN = 0; SD.batchWin = null;
+function sdRunsKey(){ return 'adsopify_sdruns_' + uid(); }
+function demoRuns(){ return [0,1,3,5,6].map(i => { const a = DEMO_ADS[i], rng = Engine.mulberry32(900 + i);
+  return { id:'demo' + i, name:a[2].replace('Video – ', '') + '.mp4', date:'örnek', kind:'video', score: Math.round(Math.max(18, Math.min(88, 30 + a[4] * 11 + (rng() - .5) * 34))), hold3: .42 + a[4] * .09, adId:'da' + i, adName:a[2], sample:true }; }); }
+function sdRuns(){ return SD.mem.concat(getJSON(sdRunsKey(), []) || []).concat(S.demo ? demoRuns() : []); }
+async function sdRealLoad(){ if (SD.real) return SD.real; try { SD.real = idx(await insights('ad', daysAgo(29), localDate())); } catch(e){ SD.real = {}; } return SD.real; }
+function sdKarne(runs){ const R = SD.real || {}, m = runs.filter(r => r.adId && R[r.adId] && R[r.adId].impressions >= 500 && R[r.adId].hook > 0); let tot = 0, ok = 0;
+  for (let i = 0; i < m.length; i++) for (let j = i + 1; j < m.length; j++) { const ds = m[i].score - m[j].score, dr = R[m[i].adId].hook - R[m[j].adId].hook; if (!ds || !dr) continue; tot++; if ((ds > 0) === (dr > 0)) ok++; }
+  const offs = m.map(r => r.hold3 * 100 - R[r.adId].hook).sort((a, b) => a - b);
+  return { m, tot, ok, off: offs.length ? offs[Math.floor(offs.length / 2)] : null }; }
+function segBar(label, v, best){ return '<div class="sg"><span>' + esc(label) + '</span><div class="gbar' + (best ? ' g' : '') + '"><i style="width:' + Math.round(v * 100) + '%"></i></div><b>%' + Math.round(v * 100) + '</b></div>'; }
+function sdAudience(L){ const s = L.seg; if (!s || !s.age.length) return ''; const a = s.age.slice().sort((x, y) => y.v - x.v), g = s.gender.slice().sort((x, y) => y.v - x.v), t = [], gw = { 'Kadın':'kadınlarda', 'Erkek':'erkeklerde' };
+  const gd = g.length > 1 && g[0].v - g[1].v >= .05;
+  if (a[0].v - a[a.length - 1].v >= .06) t.push('En çok ' + a[0].k + ' yaşta tutuyor' + (gd ? ', özellikle ' + gw[g[0].k] : '') + '. En zayıf olduğu grup ' + a[a.length - 1].k + ' yaş.');
+  else if (gd) t.push(g[0].k + ' izleyicilerde daha iyi tutuyor; yaşa göre belirgin fark yok.');
+  else t.push('Yaşa ve cinsiyete göre belirgin fark yok. Geniş kitleyle başlayabilirsin.');
+  const on = s.sound.find(x => x.k === 'Ses açık'), off = s.sound.find(x => x.k === 'Ses kapalı');
+  if (on && off && on.v - off.v >= .08) t.push('Sesi kapalı izleyenlerde %' + Math.round((on.v - off.v) * 100) + ' puan daha az tutuyor: altyazı ya da ekran yazısı ekle.');
+  return t.join(' '); }
+function sdResultHtml(L){
+  const v = sdVerdict(L), circ = 2 * Math.PI * 44, col = v[1] === 'green' ? 'var(--good)' : v[1] === 'red' ? 'var(--bad)' : 'var(--warn)';
+  let h = '<div class="card" style="margin-top:14px"><div style="display:flex;gap:16px;align-items:center"><div class="ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="var(--card2)" stroke-width="9"/><circle cx="52" cy="52" r="44" fill="none" stroke="' + col + '" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + (circ * (1 - L.score / 100)).toFixed(1) + '"/></svg><div><b>' + L.score + '</b><span>100 üzerinden</span></div></div>' +
+    '<div style="min-width:0"><span class="pill ' + v[1] + '">' + v[0] + '</span>' + (L.demo ? ' <span class="pill lime">Demo verisi</span>' : '') + (L.kind === 'script' ? ' <span class="pill blue">Senaryo</span>' : '') + '<p class="sub" style="margin-top:8px">' + esc(L.name) + (L.lo != null ? '<br>Skor ' + L.lo + '–' + L.hi + ' aralığında' : '') + '</p></div></div>' +
+    (L.ozet ? '<p style="margin-top:14px;line-height:1.5;font-size:14px">' + esc(L.ozet) + '</p>' : '') +
+    '<div class="mini"><div><span>İlk 3 saniyede kalan</span><b>%' + Math.round(L.hold3 * 100) + '</b></div><div><span>Sonuna kadar izleyen</span><b>%' + Math.round((L.completion || 0) * 100) + '</b></div></div>' +
+    (L.curve ? '<div style="margin-top:16px"><div class="sub" style="margin-bottom:6px">İzlenme eğrisi. Kesik çizgi 3. saniye.</div>' + curveSVG(L.curve, L.d) + '</div>' : '') +
+    (SD.run && SD.run.out === L ? '<button class="btn btn-gray btn-sm block" style="margin-top:14px" onclick="sdReplay()">Kalabalığı tekrar oynat</button>' : '') + '</div>';
+  if (L.seg && L.seg.age.length) { const s = L.seg, ba = Math.max.apply(null, s.age.map(x => x.v)), bg = Math.max.apply(null, s.gender.map(x => x.v));
+    h += '<div class="card" style="margin-top:14px"><h3>Kimde tutuyor</h3><p class="sub" style="margin:4px 0 10px;line-height:1.45">' + esc(sdAudience(L)) + '</p>' +
+      s.age.map(x => segBar(x.k + ' yaş', x.v, x.v === ba)).join('') + '<div style="height:8px"></div>' + s.gender.map(x => segBar(x.k, x.v, x.v === bg)).join('') + s.sound.map(x => segBar(x.k, x.v, false)).join('') +
+      (s.ints.length ? '<p class="sub" style="margin-top:10px">En çok tutan ilgi alanları: ' + s.ints.map(x => esc(x.k) + ' (%' + Math.round(x.v * 100) + ')').join(', ') + '.</p>' : '') +
+      '<p class="sub" style="margin-top:8px">Çubuklar, o gruptakilerin kaçının ilk 3 saniyede kaldığını gösterir.</p></div>'; }
+  if ((L.guclu || []).length || (L.zayif || []).length || (L.duzenleme || []).length) h += '<div class="list" style="margin-top:14px">' +
+    (L.guclu || []).map(t => '<div class="row"><i class="dot green"></i><span class="row-main"><span class="row-t wrap">' + esc(t) + '</span></span></div>').join('') +
+    (L.zayif || []).map(t => '<div class="row"><i class="dot red"></i><span class="row-main"><span class="row-t wrap">' + esc(t) + '</span></span></div>').join('') +
+    (L.duzenleme || []).map(t => '<div class="row"><i class="dot orange"></i><span class="row-main"><span class="row-s" style="margin:0">Düzeltme</span><span class="row-t wrap">' + esc(t) + '</span></span></div>').join('') + '</div>';
+  if ((L.drops || []).length) h += '<div class="list" style="margin-top:14px">' + L.drops.map(x => '<div class="row"><span class="row-main"><span class="row-t wrap">' + x.t + '–' + (x.t + 1) + '. saniye: izleyicilerin %' + Math.round(x.loss * 100) + '\'i burada ayrılıyor</span>' + (x.tip ? '<span class="row-s">' + esc(x.tip) + '</span>' : '') + '</span></div>').join('') + '</div>';
+  if ((L.comments || []).length || (L.reasons || []).length) { const tc = { olumlu:'green', olumsuz:'red', dalga:'red', soru:'orange' }, cs = L.comments || [], cnt = k => cs.filter(c => c.a === k).length;
+    h += '<div class="card" style="margin-top:14px"><h3>İzleyiciler ne dedi</h3>' +
+      (cs.some(c => c.a && c.a !== 'notr') ? '<p class="sub" style="margin:4px 0 8px">' + cnt('olumlu') + ' olumlu, ' + (cnt('olumsuz') + cnt('dalga')) + ' olumsuz, ' + cnt('soru') + ' soru.</p>' : '<div style="height:8px"></div>') +
+      cs.slice(0, 6).map(c => '<div class="cm"><i class="dot ' + (tc[c.a] || 'gray') + '"></i><div><small>@' + esc(c.u) + ', ' + c.age + '</small>' + esc(c.t) + '</div></div>').join('') +
+      (cs.length > 6 ? '<details><summary class="btn-text" style="cursor:pointer;display:inline-flex;align-items:center">' + (cs.length - 6) + ' yorum daha</summary>' + cs.slice(6).map(c => '<div class="cm"><i class="dot ' + (tc[c.a] || 'gray') + '"></i><div><small>@' + esc(c.u) + ', ' + c.age + '</small>' + esc(c.t) + '</div></div>').join('') + '</details>' : '') +
+      ((L.reasons || []).length ? '<h3 style="margin-top:14px">İlk 3 saniyede geçenler neden geçti</h3>' + L.reasons.map(r => '<div class="cm"><i class="dot red"></i><div>' + esc(r) + '</div></div>').join('') : '') + '</div>'; }
+  if ((L.hooks || []).length) h += '<div class="list" style="margin-top:14px">' + L.hooks.map(t => '<div class="row"><span class="row-main"><span class="row-s" style="margin:0">Açılış önerisi</span><span class="row-t wrap">' + esc(t) + '</span>' + outActs('Açılış', t) + '</span></div>').join('') + '</div>';
+  return h;
+}
 function renderSdSide(){
   const box = $('#sd-side'); if (!box) return;
-  if (SD.busy) { box.innerHTML = '<div class="card"><h2>İzleyiciler izliyor</h2><p class="sub" id="sd-status" style="margin-top:8px">' + esc(SD.status) + '</p><div class="prog"><i id="sd-prog" style="width:' + Math.round(SD.prog * 100) + '%"></i></div><p class="sub" style="margin-top:14px">Gerçek test birkaç dakika sürer. Bitene kadar bu sekmeyi açık tut.</p><button class="btn-text red" onclick="sdStop()">Durdur</button></div>'; return; }
-  const c = sdCfg(), ready = c.key && c.main && c.agent, L = (SD.run && SD.run.out) || sdLast();
-  let h = '';
-  if (L) { const v = sdVerdict(L), circ = 2 * Math.PI * 44, col = v[1] === 'green' ? 'var(--good)' : v[1] === 'red' ? 'var(--bad)' : 'var(--warn)';
-    h += '<div class="card"><div style="display:flex;gap:16px;align-items:center"><div class="ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="var(--card2)" stroke-width="9"/><circle cx="52" cy="52" r="44" fill="none" stroke="' + col + '" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + (circ * (1 - L.score / 100)).toFixed(1) + '"/></svg><div><b>' + L.score + '</b><span>100 üzerinden</span></div></div>' +
-      '<div style="min-width:0"><span class="pill ' + v[1] + '">' + v[0] + '</span>' + (L.demo ? ' <span class="pill lime">Demo verisi</span>' : '') + '<p class="sub" style="margin-top:8px">' + esc(L.name) + (L.lo != null ? '<br>Skor ' + L.lo + '–' + L.hi + ' aralığında' : '') + '</p></div></div>' +
-      (L.ozet ? '<p style="margin-top:14px;line-height:1.5;font-size:14px">' + esc(L.ozet) + '</p>' : '') +
-      '<div class="mini"><div><span>İlk 3 saniyede kalan</span><b>%' + Math.round(L.hold3 * 100) + '</b></div><div><span>Sonuna kadar izleyen</span><b>%' + Math.round((L.completion || 0) * 100) + '</b></div></div>' +
-      (L.curve ? '<div style="margin-top:16px"><div class="sub" style="margin-bottom:6px">İzlenme eğrisi. Kesik çizgi 3. saniye.</div>' + curveSVG(L.curve, L.d) + '</div>' : '') +
-      (SD.run ? '<button class="btn btn-gray btn-sm block" style="margin-top:14px" onclick="sdReplay()">Kalabalığı tekrar oynat</button>' : '') + '</div>';
-    if ((L.drops || []).length) h += '<div class="list" style="margin-top:14px">' + L.drops.map(x => '<div class="row"><span class="row-main"><span class="row-t wrap">' + x.t + '–' + (x.t + 1) + '. saniye: izleyicilerin %' + Math.round(x.loss * 100) + '\'i burada ayrılıyor</span>' + (x.tip ? '<span class="row-s">' + esc(x.tip) + '</span>' : '') + '</span></div>').join('') + '</div>';
-    if ((L.hooks || []).length) h += '<div class="list" style="margin-top:14px">' + L.hooks.map(t => '<div class="row"><span class="row-main"><span class="row-s" style="margin:0">Açılış önerisi</span><span class="row-t wrap">' + esc(t) + '</span>' + outActs('Açılış', t) + '</span></div>').join('') + '</div>';
-  }
-  h += '<div class="card"' + (L ? ' style="margin-top:14px"' : '') + '>' + (L ? '' : '<h2>Videonu yayından önce test et</h2><p class="sub" style="margin-top:8px;line-height:1.5">Sendora videonu binlerce yapay izleyiciye reklam olarak izletir. Kaçının ilk 3 saniyede kaydıracağını, nerede koptuklarını ve açılışı nasıl güçlendireceğini söyler.</p>') +
-    '<div style="display:flex;flex-direction:column;gap:10px' + (L ? '' : ';margin-top:16px') + '">' +
-    (ready ? '<button class="btn btn-primary block" onclick="$(\'#sd-file\').click()">' + (L ? 'Başka video test et' : 'Video seç ve test et') + '</button>' : '<button class="btn btn-primary block" onclick="go(\'settings\')">Gerçek test için anahtarı gir</button>') +
-    '<button class="btn btn-gray block" onclick="sdStart(null,true)">Demoyu izle</button></div>' +
-    '<p class="sub" style="margin-top:12px;line-height:1.45">' + (ready ? '' : 'Gerçek test için Ayarlar\'da bir yapay zekâ anahtarı gerekiyor. ') + 'Demo, anahtar ve video olmadan sahnenin nasıl çalıştığını gösterir; rakamları gerçek değildir.</p></div>' +
-    '<p class="foot">Tahmin, garanti değil. Skor henüz gerçek reklam sonuçlarınla karşılaştırılmadı.' + (L && L.calls ? ' Son test ' + L.calls + ' çağrı kullandı, ücretli planda yaklaşık ' + dec(L.cost || 0, 2) + ' dolar.' : '') + '</p>';
+  if (SD.busy) { box.innerHTML = '<div class="card"><h2>İzleyiciler izliyor</h2><p class="sub" id="sd-status" style="margin-top:8px">' + esc(SD.status) + '</p><div class="prog"><i id="sd-prog" style="width:' + Math.round(SD.prog * 100) + '%"></i></div><p class="sub" style="margin-top:14px">' + (SD.queue.length ? 'Sırada ' + SD.queue.length + ' video daha var. ' : '') + 'Gerçek test birkaç dakika sürer. Bitene kadar bu sekmeyi açık tut.</p><button class="btn-text red" onclick="sdStop()">Durdur</button></div>'; return; }
+  const c = sdCfg(), ready = c.key && c.main && c.agent, L = SD.show || (SD.run && SD.run.out) || sdLast();
+  let h = '<div class="card"><div class="seg block" style="margin-bottom:14px"><button class="' + (SD.mode === 'video' ? 'on' : '') + '" onclick="SD.mode=\'video\';renderSdSide()">Video testi</button><button class="' + (SD.mode === 'script' ? 'on' : '') + '" onclick="SD.mode=\'script\';renderSdSide()">Senaryo testi</button></div>';
+  if (SD.mode === 'video') h += (L ? '' : '<h2>Videonu yayından önce test et</h2><p class="sub" style="margin:8px 0 16px;line-height:1.5">Sendora videonu 2.000 yapay izleyiciye reklam olarak izletir. Kaçının ilk 3 saniyede kaydıracağını, kimde tuttuğunu, nerede koptuklarını ve açılışı nasıl güçlendireceğini söyler.</p>') +
+    '<div style="display:flex;flex-direction:column;gap:10px">' + (ready ? '<button class="btn btn-primary block" onclick="$(\'#sd-file\').click()">' + (L ? 'Başka video test et' : 'Video seç ve test et') + '</button>' : '<button class="btn btn-primary block" onclick="go(\'settings\')">Gerçek test için anahtarı gir</button>') +
+    '<button class="btn btn-gray block" onclick="sdStart(null,true)">Demoyu izle</button></div><p class="sub" style="margin-top:12px;line-height:1.45">' + (ready ? 'Aynı anda en fazla 4 video seçebilirsin; hepsi aynı kitleye izletilir ve kazanan belirlenir. ' : 'Gerçek test için Ayarlar\'da bir yapay zekâ anahtarı gerekiyor. ') + 'Demo, anahtar ve video olmadan sahneyi gösterir; rakamları gerçek değildir.</p>';
+  else h += '<p class="sub" style="line-height:1.5;margin-bottom:10px">Çekmeden önce test et. Videoda ne görüneceğini ve ne söyleneceğini sırasıyla yaz; izleyiciler bu senaryonun çekilmiş hâlini izlemiş gibi tepki verir.</p>' +
+    '<textarea class="inp" id="sd-script" style="height:150px;padding:12px 14px;resize:vertical;line-height:1.45" placeholder="Örn. İlk kare: tuvalette ayakları yere değmeyen çocuk. Ses: &quot;Çocuğunuz tuvalette böyle mi oturuyor?&quot; Sonra tabure geliyor…" oninput="SD.script=this.value">' + esc(SD.script) + '</textarea>' +
+    (ready ? '<button class="btn btn-primary block" style="margin-top:10px" onclick="sdScript()">Senaryoyu test et</button>' : '<button class="btn btn-primary block" style="margin-top:10px" onclick="go(\'settings\')">Test için anahtarı gir</button>') +
+    '<p class="sub" style="margin-top:12px;line-height:1.45">Senaryo testi görüntüyü değil metni değerlendirir; çekim kalitesi sonucu değiştirir. Hangi fikri çekeceğine karar vermek için kullan.</p>';
+  h += '</div>';
+  if (L) h += sdResultHtml(L);
+  h += '<p class="foot">Tahmin, garanti değil. Ne kadar tutturduğunu sahnenin altındaki karneden izleyebilirsin.' + (L && L.calls ? ' Bu test ' + L.calls + ' çağrı kullandı, ücretli planda yaklaşık ' + dec(L.cost || 0, 2) + ' dolar.' : '') + '</p>';
   box.innerHTML = h;
 }
-function sdPick(inp){ const f = inp.files[0]; inp.value = ''; if (f) sdStart(f, false); }
-async function sdStart(file, demo){
-  if (SD.busy) return; const c = sdCfg(), E = Engine;
+function renderSdUnder(){
+  const box = $('#sd-under'); if (!box) return; const runs = sdRuns(); let h = '';
+  if (SD.batchWin) { const w = SD.batchWin; h += '<div class="card" style="margin-top:18px"><span class="pill lime">Karşılaştırma bitti</span><h2 style="margin-top:10px">Kazanan: ' + esc(w[0].name) + '</h2><p class="sub" style="margin-top:4px">Aynı 2.000 kişiye izletildi. Yayına bununla başla.</p><div style="margin-top:12px">' +
+    w.map((r, i) => '<div class="sg" style="grid-template-columns:minmax(0,1fr) 120px 44px"><span style="color:var(--ink)">' + esc(r.name) + '</span><div class="gbar' + (i === 0 ? ' g' : '') + '"><i style="width:' + r.score + '%"></i></div><b>' + r.score + '</b></div>').join('') + '</div></div>'; }
+  h += '<div class="sec"><div><h2>Sendora karnesi</h2><p class="sub">Tahminler, yayına giren reklamların gerçek sonucuyla karşılaştırılır.</p></div></div>';
+  const matched = runs.filter(r => r.adId);
+  if (!matched.length) h += '<div class="card"><h3>Henüz eşleşen test yok</h3><p class="sub" style="margin-top:4px;line-height:1.5;max-width:64ch">Test ettiğin video yayına girince aşağıdaki listeden reklamıyla eşleştir. Sendora\'nın "şu daha iyi" dediği videoların gerçekte de daha çok izlenip izlenmediğini burada görürsün.</p></div>';
+  else if (!SD.real) { h += skel(140); sdRealLoad().then(() => { if (S.view === 'sendora') renderSdUnder(); }); }
+  else { const K = sdKarne(runs), R = SD.real;
+    h += '<div class="card">' + (K.tot ? '<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><div class="big">' + K.ok + ' / ' + K.tot + '</div><p style="flex:1;min-width:220px;line-height:1.45">Sendora\'nın "bu daha iyi" dediği ' + K.tot + ' karşılaştırmanın ' + K.ok + ' tanesinde gerçek reklam da ilk 3 saniyede daha çok izlendi.' + (K.tot < 6 ? ' <span class="sub">Kesin konuşmak için az; eşleşme arttıkça netleşir.</span>' : '') + '</p></div>' : '<p class="sub">Karşılaştırma için gösterimi yeterli en az 2 eşleşen video reklam gerekiyor.</p>') +
+      (K.off != null && K.m.length >= 2 ? '<p class="sub" style="margin-top:10px">Sendora ilk 3 saniyeyi gerçekte olduğundan ortalama ' + Math.abs(Math.round(K.off)) + ' puan ' + (K.off >= 0 ? 'yüksek' : 'düşük') + ' tahmin ediyor. Sıralama doğruysa bu fark sorun değildir; mutlak yüzdeye değil sıraya güven.</p>' : '') +
+      (K.m.length ? '<div style="margin-top:12px">' + K.m.map(r => { const a = R[r.adId]; return '<div class="cm"><div style="flex:1;min-width:0"><div class="row-t">' + esc(r.adName || r.name) + '</div><small>Sendora skoru ' + r.score + ', tahmini ilk 3 sn %' + Math.round(r.hold3 * 100) + '</small></div><div style="text-align:right;white-space:nowrap"><b>%' + Math.round(a.hook) + '</b><small>gerçek ilk 3 sn</small></div></div>'; }).join('') + '</div>' : '') +
+      (S.demo ? '<p class="sub" style="margin-top:10px">Örnek veriyle gösteriliyor.</p>' : '') + '</div>'; }
+  if (runs.length) h += '<div class="sec"><h2>Test geçmişi</h2><span class="sub">' + runs.length + ' test</span></div><div class="list">' + runs.slice(0, 15).map(r => '<div class="row"><span class="row-main"><span class="row-t">' + esc(r.name) + '</span><span class="row-s">' + esc(r.date || '') + ', ' + (r.kind === 'script' ? 'senaryo' : 'video') + ', ilk 3 sn %' + Math.round((r.hold3 || 0) * 100) + (r.adName ? ', eşleşen reklam: ' + esc(r.adName) : '') + '</span></span><b style="font-size:17px">' + r.score + '</b>' +
+      (r.out ? '<button class="btn-text" onclick="sdShow(\'' + r.id + '\')">Aç</button>' : '') +
+      (r.sample || r.demo || r.kind === 'script' ? '' : r.adId ? '<button class="btn-text" onclick="sdSetAd(\'' + r.id + '\',\'\')">Eşleşmeyi kaldır</button>' : '<button class="btn-text" onclick="sdMatch(\'' + r.id + '\')">Reklamla eşleştir</button>') + '</div>').join('') + '</div>';
+  box.innerHTML = h;
+}
+function sdShow(id){ const r = sdRuns().find(x => String(x.id) === String(id)); if (!r || !r.out) return; SD.show = r.out; renderSdSide(); window.scrollTo(0, 0); }
+async function sdMatch(id){ sheet({ title:'Bu video hangi reklam oldu?', html:'<div id="sdm">' + skel(120) + '</div>' });
+  const R = await sdRealLoad(), ads = Object.values(R).filter(a => a.spend > 0).sort((a, b) => b.spend - a.spend).slice(0, 30), el = $('#sdm'); if (!el) return;
+  el.innerHTML = ads.length ? '<p class="sub">Son 30 günde harcaması olan reklamlar.</p><div class="list" style="margin-top:10px">' + ads.map(a => '<button class="row" onclick="sdSetAd(\'' + id + '\',\'' + esc(a.id) + '\')"><span class="row-main"><span class="row-t">' + esc(a.name) + '</span><span class="row-s">' + esc(a.campaignName || '') + '</span></span>' + CHEV + '</button>').join('') + '</div>' : '<p class="sub">Son 30 günde harcaması olan reklam bulunamadı.</p>'; }
+function sdSetAd(id, adId){ const runs = getJSON(sdRunsKey(), []) || [], r = runs.find(x => String(x.id) === String(id)); if (!r) return;
+  if (adId) { r.adId = adId; r.adName = ((SD.real || {})[adId] || {}).name || ''; } else { delete r.adId; delete r.adName; }
+  setJSON(sdRunsKey(), runs); closeSheet(); renderSdUnder(); }
+function sdPick(inp){ const fs = Array.prototype.slice.call(inp.files, 0, 4); inp.value = ''; if (!fs.length) return;
+  SD.batchN = fs.length; SD.batch = fs.length > 1 ? Date.now() : null; SD.batchWin = null; SD.queue = fs.slice(1); sdStart(fs[0], false); }
+function sdScript(){ const t = (SD.script || '').trim(); if (t.split(/\s+/).length < 15) { toast('Senaryoyu biraz daha ayrıntılı yaz: en az birkaç cümle.'); return; }
+  SD.batchN = 1; SD.batch = null; SD.batchWin = null; SD.queue = []; sdStart(null, false, { script:t }); }
+async function sdStart(file, demo, o){
+  if (SD.busy) return; const c = sdCfg(), E = Engine, script = o && o.script;
   if (!demo && (!c.key || !c.main || !c.agent)) { toast('Önce Ayarlar\'dan Sendora anahtarını ve modelleri gir.'); return; }
   let d = 22, url = null;
+  if (script) d = Math.max(8, Math.min(60, Math.round(script.split(/\s+/).length / 2.3)));
   if (file) { url = URL.createObjectURL(file); d = await sdDur(url); if (d == null) { URL.revokeObjectURL(url); toast('Video açılamadı. MP4 biçiminde dene.'); return; } }
   if (SD.url) URL.revokeObjectURL(SD.url); SD.url = url; const v = $('#sd-vid');
-  if (url) { v.src = url; v.hidden = false; $('#sd-ph').hidden = true; } else { v.pause(); v.removeAttribute('src'); v.hidden = true; $('#sd-ph').hidden = false; $('#sd-ph').lastElementChild.textContent = 'Demo: video yok, ' + d + ' saniyelik örnek'; }
-  SD.busy = true; SD.run = null; SD.ctl = new AbortController(); SD.prog = 0; SD.status = 'Kalabalık toplanıyor…'; SD.clock = false; renderSdSide(); $('#sd-hud').hidden = false; $('#sd-live').textContent = 'izleniyor';
+  if (url) { v.src = url; v.hidden = false; $('#sd-ph').hidden = true; } else { v.pause(); v.removeAttribute('src'); v.hidden = true; $('#sd-ph').hidden = false; $('#sd-ph').lastElementChild.textContent = script ? 'Senaryo testi: video yok, yaklaşık ' + d + ' saniye' : 'Demo: video yok, ' + d + ' saniyelik örnek'; }
+  SD.busy = true; SD.run = null; SD.show = null; SD.ctl = new AbortController(); SD.prog = 0; SD.status = 'Kalabalık toplanıyor…'; renderSdSide(); $('#sd-hud').hidden = false; $('#sd-live').textContent = 'izleniyor';
   const stop = () => { if (SD.ctl.signal.aborted) throw new Error('Durduruldu'); };
-  const seed = E.hashStr((file ? file.name + file.size : 'demo') + (demo ? 'demo' : '')), pop = E.generatePopulation(2000, seed), core = E.pickCore(pop, Math.min(demo ? 200 : c.core, 2000), seed), u0 = Object.assign({}, E.usage);
+  const name = script ? 'Senaryo: ' + script.slice(0, 36).replace(/\s+/g, ' ') + (script.length > 36 ? '…' : '') : file ? file.name : 'Demo';
+  const popSeed = E.hashStr('kitle' + uid()), seed = E.hashStr(name + (file ? file.size : script ? script.length : 'demo'));
+  const pop = E.generatePopulation(2000, popSeed), core = E.pickCore(pop, Math.min(demo ? 200 : c.core, 2000), popSeed), u0 = Object.assign({}, E.usage);
   Crowd.set(pop, d); Crowd.warm(true); if (url) { v.loop = true; v.muted = true; v.currentTime = 0; v.play().catch(() => {}); }
   E.log.fn = msg => sdStatus(msg);
   try { let analysis, res, rep = null, shown = 0;
-    const onIds = (ids, R) => { Crowd.light(ids); ids.forEach(id => { const r = R.get(id); pop[id].commentText = r.yorum_metni; if (r.yorum_metni && shown < 40 && Math.random() < .6) { Crowd.say(id); shown++; } }); };
+    const onIds = (ids, R) => { Crowd.light(ids); ids.forEach(id => { const r = R.get(id); if (!r) return; pop[id].commentText = r.yorum_metni; if (r.yorum_metni && shown < 40 && Math.random() < .6) { Crowd.say(id); shown++; } }); };
     if (demo) { analysis = E.synthAnalysis(d, seed); res = E.synthCore(core, d, seed); const ids = core.map(p => p.id);
       for (let i = 0; i < ids.length; i += 10) { stop(); onIds(ids.slice(i, i + 10), res); sdStatus(Math.min(i + 10, ids.length) + ' / ' + ids.length + ' izleyici videoyu izledi', (i + 10) / ids.length); await E.sleep(120); } }
-    else { E.setProvider(c.provider); let part;
-      try { part = await E.uploadVideo(c.key, file, t => sdStatus(t, .05)); } catch(e){ if (file.size < 15 * 1048576) part = await E.inlineVideo(file); else throw e; }
-      stop(); sdStatus('Video saniye saniye inceleniyor…', .12); analysis = await E.analyzeVideo(c.key, c.main, part, d, true, c.agent); stop();
-      sdStatus('0 / ' + core.length + ' izleyici videoyu izledi', .2);
-      res = await E.runCore({ key:c.key, model:c.agent, videoPart:part, textOnly:false, lowRes:true, core, d, analysis, batchSize:10, concurrency:5, seed, fallback:c.main, signal:SD.ctl.signal,
-        onBatch: x => { onIds(x.ids, x.results); sdStatus(x.results.size + ' / ' + core.length + ' izleyici videoyu izledi', .2 + .65 * x.done / x.total); } });
+    else { E.setProvider(c.provider); let part = null;
+      if (script) { sdStatus('Senaryo sahne sahne çıkarılıyor…', .1); analysis = await E.analyzeScript(c.key, c.main, script, d, c.agent); }
+      else { try { part = await E.uploadVideo(c.key, file, t => sdStatus(t, .05)); } catch(e){ if (file.size < 15 * 1048576) part = await E.inlineVideo(file); else throw e; }
+        stop(); sdStatus('Video saniye saniye inceleniyor…', .12); analysis = await E.analyzeVideo(c.key, c.main, part, d, true, c.agent); }
+      stop(); sdStatus('0 / ' + core.length + ' izleyici ' + (script ? 'senaryoyu okudu' : 'videoyu izledi'), .2);
+      res = await E.runCore({ key:c.key, model:c.agent, videoPart:part, textOnly:!!script, lowRes:!script, core, d, analysis, batchSize:10, concurrency:5, seed, fallback:c.main, signal:SD.ctl.signal,
+        onBatch: x => { onIds(x.ids, x.results); sdStatus(x.results.size + ' / ' + core.length + ' izleyici ' + (script ? 'senaryoya tepki verdi' : 'videoyu izledi'), .2 + .65 * x.done / x.total); } });
       stop(); if (res.size < core.length * .5) { const errs = res.errors || []; throw new Error('İzleyicilerin yarısından fazlası sonuç vermedi (' + res.size + '/' + core.length + ').' + (errs.length ? ' Son hata: ' + errs[errs.length - 1] : '')); } }
     sdStatus('Sonuç hazırlanıyor…', .92); E.expand(pop, res, d, null, seed);
     const m = Object.assign(E.metrics(pop, d), E.socialSignals(res)), comp = E.components(m, analysis), score = E.scoreFrom(comp, AD_W), sp = E.scoreSpread(res, d, analysis, { weights:AD_W, seed });
     if (demo) rep = E.demoReport(m, d); else { try { rep = await E.report(c.key, c.main, analysis, m, comp, score, pop, d, { fallback:c.agent }); } catch(e){} }
-    const crit = (rep && Array.isArray(rep.kritik_anlar)) ? rep.kritik_anlar : [];
+    const arr = x => (rep && Array.isArray(rep[x]) ? rep[x] : []).slice(0, 4).map(String), crit = (rep && Array.isArray(rep.kritik_anlar)) ? rep.kritik_anlar : [];
     const drops = m.drops.slice().sort((a, b) => b.loss - a.loss).slice(0, 2).filter(x => x.loss > 0).sort((a, b) => a.t - b.t).map(x => { const k = crit.find(q => Math.abs((parseFloat(q.sn) || 0) - x.t) <= 1.5); return { t:x.t, loss:x.loss, tip: k ? String(k.oneri || '') : '' }; });
-    let click = 0; res.forEach(r => { click += r.tiklar || 0; }); click = click / res.size;
-    const out = { id:Date.now(), demo:!!demo, name: file ? file.name : 'Demo', date:new Date().toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}), d, n:res.size, score,
+    let click = 0; const comments = [], reasons = []; res.forEach((r, id) => { click += r.tiklar || 0; const p = pop[id];
+      if (r.yorum_metni && comments.length < 30 && p) comments.push({ u:p.user, age:p.age, t:r.yorum_metni, a:r.tutum || '' });
+      if (r.cikis_sn < 3 && r.neden && reasons.length < 5) reasons.push(r.neden); }); click = click / res.size;
+    const sg = l => (l || []).map(x => ({ k:x.k, v:x.hold3 }));
+    const out = { id:Date.now(), demo:!!demo, kind: script ? 'script' : 'video', name, date:new Date().toLocaleString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}), d, n:res.size, score,
       lo: sp ? Math.max(0, Math.round(score - 1.3 * sp.sd)) : null, hi: sp ? Math.min(100, Math.round(score + 1.3 * sp.sd)) : null, hold3:m.hold3, completion:m.completion, avgWatch:m.avgWatch, click, drops,
       curve: m.curve.filter((p, i) => i % Math.max(1, Math.round(m.curve.length / 60)) === 0 || i === m.curve.length - 1), karar: rep ? String(rep.karar || '') : '', ozet: rep ? String(rep.ozet || '') : '',
-      hooks: (rep && Array.isArray(rep.hook_onerileri) ? rep.hook_onerileri : []).slice(0, 3).map(String), calls: E.usage.calls - u0.calls, cost: E.usage.cost - u0.cost };
+      hooks: arr('hook_onerileri').slice(0, 3), guclu: demo ? [] : arr('guclu'), zayif: demo ? [] : arr('zayif'), duzenleme: demo ? [] : arr('duzenleme'),
+      seg: { age: sg(m.ageSeg), gender: sg(m.genderSeg), sound: sg(m.soundSeg), ints: sg((m.intSeg || []).slice(0, 3)) }, comments, reasons, calls: E.usage.calls - u0.calls, cost: E.usage.cost - u0.cost };
     SD.run = { pop, d, out };
-    if (!demo) { setJSON('adsopify_sdlast_' + uid(), out);
-      const runs = getJSON('adsopify_sdruns_' + uid(), []) || []; runs.unshift({ id:out.id, name:out.name, size:file.size, d, score, hold3:m.hold3, click, comp, f:E.featuresOf(analysis, d) }); setJSON('adsopify_sdruns_' + uid(), runs.slice(0, 100)); }
-    E.log.fn = null; SD.busy = false; SD.ctl = null; renderSdSide(); sdReplay();
-  } catch(e){ E.log.fn = null; SD.busy = false; SD.ctl = null; Crowd.warm(false); Crowd.reset(); if (url) { v.loop = false; v.pause(); } $('#sd-hud').hidden = true; renderSdSide(); toast(e.message === 'Durduruldu' ? 'Test durduruldu.' : e.message); }
+    const entry = { id:out.id, name, date:out.date, kind:out.kind, demo:!!demo, size: file ? file.size : 0, d, score, hold3:m.hold3, click, comp, f:E.featuresOf(analysis, d), batch:SD.batch, out };
+    if (demo) SD.mem.unshift(entry);
+    else { setJSON('adsopify_sdlast_' + uid(), out); const runs = getJSON(sdRunsKey(), []) || []; runs.unshift(entry); runs.forEach((r, i) => { if (i >= 12) delete r.out; }); setJSON(sdRunsKey(), runs.slice(0, 60)); }
+    E.log.fn = null; SD.busy = false; SD.ctl = null;
+    if (SD.queue.length) { const nx = SD.queue.shift(); renderSdSide(); renderSdUnder(); toast('Skor ' + score + '. Sıradaki video başlıyor.'); setTimeout(() => sdStart(nx, false), 1800); return; }
+    if (SD.batch && SD.batchN > 1) SD.batchWin = sdRuns().filter(r => r.batch === SD.batch).sort((a, b) => b.score - a.score).map(r => ({ name:r.name, score:r.score }));
+    renderSdSide(); renderSdUnder(); sdReplay();
+  } catch(e){ E.log.fn = null; SD.busy = false; SD.ctl = null; SD.queue = []; Crowd.warm(false); Crowd.reset(); if (url) { v.loop = false; v.pause(); } $('#sd-hud').hidden = true; renderSdSide(); toast(e.message === 'Durduruldu' ? 'Test durduruldu.' : e.message); }
 }
 function sdReplay(){ const R = SD.run; if (!R) return; const v = $('#sd-vid'), d = R.d; $('#sd-hud').hidden = false; $('#sd-live').textContent = 'canlı simülasyon';
   if (SD.url) { v.loop = false; v.pause(); v.currentTime = 0; v.play().catch(() => {}); Crowd.replay(() => v.ended ? d : v.currentTime); }
   else { SD.t0 = performance.now(); Crowd.replay(() => Math.min(d, (performance.now() - SD.t0) / 1000)); } }
+
 
 // ═══════════════════════════════════════════════
 // KAZANAN REKLAMLAR — Meta Reklam Kütüphanesi'ne kısayol, koleksiyon, toplu kütüphane (veri kaynağı bağlıysa)
@@ -2476,6 +2728,11 @@ async function libWhy(id, btn){ const a = (LIB.rows || []).find(x => x.id === id
     LIB.why[id] = '<div class="cad-x" style="-webkit-line-clamp:12;color:var(--ink)">' + md(ans) + '</div>'; box.innerHTML = LIB.why[id]; } catch(e){ box.innerHTML = '<span class="sub">Şu an açıklanamadı.</span>'; }
   btn.disabled = false; }
 function libAdapt(id){ const a = (LIB.rows || []).find(x => x.id === id) || col().find(x => x.id === id); if (!a) return; go('creative'); writeAd((a.title ? a.title + '\n' : '') + (a.text || '')); }
+function rivals(){ return getJSON('adsopify_rivals_' + uid(), []) || []; }
+function rivAdd(){ const n = ($('#riv-name').value || '').trim(); if (!n) { toast('Marka adını yaz.'); return; } const l = rivals(); if (l.length >= 12) { toast('En fazla 12 rakip takip edebilirsin.'); return; }
+  l.push({ id:String(Date.now()), name:n, seen:null }); setJSON('adsopify_rivals_' + uid(), l); renderLibrary(); }
+function rivDel(id){ setJSON('adsopify_rivals_' + uid(), rivals().filter(x => x.id !== id)); renderLibrary(); }
+function rivOpen(id){ const l = rivals(), r = l.find(x => x.id === id); if (!r) return; window.open(libUrl(r.name), '_blank', 'noopener'); r.seen = Date.now(); setJSON('adsopify_rivals_' + uid(), l); renderLibrary(); }
 function renderLibrary(){
   const box = $('#lib-body'), b = S.brand || {}, src = (getStored('adsopify_lib_src') || '').trim();
   let h = '<div class="g"><div class="card c7"><div class="card-h"><div><h2>Sektöründe en çok gösterilen reklamlar</h2><p class="sub" style="max-width:56ch">Bir reklam aylarca yayında kalıyorsa sahibi ondan para kazanıyor demektir. Aramayı Meta Reklam Kütüphanesi\'nde, Türkiye için ve en çok gösterilenden başlayarak açar.</p></div></div>' +
@@ -2486,6 +2743,13 @@ function renderLibrary(){
     '<div style="display:flex;gap:8px"><input class="inp" id="col-link" type="url" placeholder="Reklamın bağlantısı (isteğe bağlı)"><button class="btn btn-ink" onclick="colAdd()">Ekle</button></div></div></div>';
   const c = col();
   if (c.length) h += '<div class="sec"><h2>Koleksiyonum</h2><span class="sub">' + c.length + ' reklam</span></div><div class="cgrid">' + c.map(a => libCard(a, true)).join('') + '</div>';
+  const rv = rivals();
+  h += '<div class="sec"><div><h2>Rakip nöbeti</h2><p class="sub">Takip ettiğin markaların reklamlarına tek dokunuşla bak; ne zaman baktığını biz tutarız.</p></div></div><div class="list">' +
+    rv.map(r => { const nm = r.name.toLocaleLowerCase('tr-TR'), ads = (LIB.rows || []).filter(a => (a.page || '').toLocaleLowerCase('tr-TR').indexOf(nm) > -1), seenD = r.seen ? Math.floor((Date.now() - r.seen) / 864e5) : null, nw = ads.filter(a => a.days != null && (seenD == null || a.days <= seenD)).length;
+      return '<div class="row"><span class="row-main"><span class="row-t">' + esc(r.name) + '</span><span class="row-s">' + (seenD == null ? 'Henüz bakmadın.' : seenD === 0 ? 'Bugün baktın.' : 'En son ' + seenD + ' gün önce baktın.') + (ads.length ? ' Kütüphanede ' + ads.length + ' reklamı var, en uzunu ' + Math.max.apply(null, ads.map(a => a.days || 0)) + ' gündür yayında.' : '') + '</span></span>' +
+        (nw ? '<span class="pill lime">' + nw + ' yeni</span>' : seenD != null && seenD >= 7 ? '<span class="pill orange">Bakma zamanı</span>' : '') + '<button class="btn-text" onclick="rivOpen(\'' + r.id + '\')">Reklamlarını aç</button><button class="btn-text red" onclick="rivDel(\'' + r.id + '\')">Sil</button></div>'; }).join('') +
+    '<div class="row"><input class="inp" id="riv-name" type="text" maxlength="60" placeholder="Rakip marka adı" onkeydown="if(event.key===\'Enter\')rivAdd()"><button class="btn btn-ink btn-sm" onclick="rivAdd()">Takibe al</button></div></div>' +
+    '<p class="foot">Yeni reklam sayısı toplu kütüphane bağlıyken hesaplanır. Bağlı değilken haftada bir "bakma zamanı" hatırlatması görürsün.</p>';
   h += '<div class="sec"><div><h2>Toplu kütüphane</h2><p class="sub">Yüzlerce reklamı panelin içinde süz, sırala, markana en yakın olanları gör.</p></div>' + (src ? '<button class="btn-text" onclick="libLoad(true)">Yenile</button>' : '') + '</div>';
   if (!src) h += '<div class="card"><h3>Toplu kütüphane henüz bağlı değil</h3><p class="sub" style="margin-top:6px;max-width:70ch;line-height:1.5">Reklamları panelin içinde göstermek için Meta Reklam Kütüphanesi\'nden düzenli veri çeken bir kaynak gerekiyor. Kaynak hazır olduğunda kimliğini Ayarlar\'a girmen yeterli; filtreler, sıralama ve "markana en yakın" eşleştirmesi burada çalışır.</p><button class="btn-text" onclick="go(\'settings\')">Ayarlar\'da veri kaynağını gir</button></div>';
   else if (LIB.loading || !LIB.rows) h += '<div class="cgrid">' + skel(300) + skel(300) + skel(300) + skel(300) + '</div>';
@@ -2577,6 +2841,10 @@ function renderSettings(){
     '<button class="row" onclick="sdModels(this)"><span class="row-main" style="color:var(--acc)">Modelleri hesabımdan getir</span></button></div>' +
     '<p class="foot">' + (sd.provider === 'google' ? 'Anahtar aistudio.google.com üzerinden alınır.' : 'Anahtar openrouter.ai üzerinden alınır; önce kredi yüklemen gerekir.') + ' Sadece bu tarayıcıda saklanır. Anahtarı girip "Modelleri hesabımdan getir"e basınca iki model alanı kendiliğinden dolar. 300 izleyicili bir test ücretli planda yaklaşık 0,20–0,30 dolar tutar.</p>';
   h += '<div class="sec"><h2>Kazanan reklamlar</h2></div><div class="list"><label class="frow"><span>Veri kaynağı kimliği</span><input type="text" placeholder="Apify dataset kimliği" value="' + esc(getStored('adsopify_lib_src') || '') + '" onchange="setStored(\'adsopify_lib_src\',this.value.trim());LIB.rows=null"></label></div><p class="foot">Toplu kütüphane, Meta Reklam Kütüphanesi\'nden çekilmiş bir veri kümesini okur. Boş bırakırsan kütüphane kısayolları ve koleksiyonun yine çalışır.</p>';
+  const bn = bench();
+  h += '<div class="sec"><h2>Sektör kıyası</h2></div><div class="list"><label class="frow"><span>Sektörün</span><select onchange="benchSet(\'sector\',this.value)"><option value="">Seç</option>' + SECTORS.map(x => '<option' + (bn.sector === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label>' +
+    '<div class="row"><span class="row-main"><span class="row-t">Kıyasa katıl</span><span class="row-s">Haftada bir, yalnızca sektörün ve reklam getirin isimsiz olarak paylaşılır.</span></span><button class="sw" role="switch" aria-checked="' + (bn.on ? 'true' : 'false') + '" onclick="benchSet(\'on\',' + (!bn.on) + ')"></button></div></div>' +
+    '<p class="foot">Yeterli sayıda mağaza katıldığında "senin sektöründe ortalama getiri şu, sen şuradasın" karşılaştırması Genel bakış\'ta açılır. Şu an gösterilecek kıyas verisi yok.</p>';
   h += '<div class="sec"><h2>Bildirimler</h2></div><div class="list"><div class="row"><span class="row-main">E-posta</span>' + sw('email', n.email) + '</div><div class="row"><span class="row-main">WhatsApp</span>' + sw('wa', n.wa) + '</div>' +
     (n.wa ? '<label class="frow"><span>WhatsApp numarası</span><input type="tel" value="' + esc(n.phone) + '" placeholder="05xx xxx xx xx" onchange="setNotifPhone(this.value)"></label>' : '') + '</div><div class="list" style="margin-top:12px">' +
     '<div class="row"><span class="row-main"><span class="row-t">Para kaybı uyarısı</span><span class="row-s">Satış getirmeden para harcayan reklam olduğunda.</span></span>' + sw('loss', n.loss) + '</div>' +
@@ -2599,6 +2867,25 @@ function saveSettings(){ const price = parseFloat($('#st-price').value), cost = 
   if (!(price > 0) || !(cost >= 0) || cost >= price) { toast('Fiyat ve maliyeti kontrol et. Maliyet fiyattan düşük olmalı.'); return; }
   saveProductData(price, cost, $('#st-prod').value.trim(), $('#st-name').value.trim(), $('#st-aud').value.trim()); toast('Kaydedildi.'); }
 function switchAccount(id){ if (id === S.accountId) return; selectAccount(id); refreshPerms(); $('#sf-acct').textContent = S.accountName; toast('Hesap değişti: ' + S.accountName); renderSettings(); }
+
+// ═══════════════════════════════════════════════
+// TÜM HESAPLAR — birden fazla reklam hesabını tek ekranda gör (ajanslar için)
+// ═══════════════════════════════════════════════
+function moneyC(n, c){ n = Math.round(n || 0); if (!c || c === 'TRY') return n.toLocaleString('tr-TR') + ' TL'; try { return new Intl.NumberFormat('tr-TR', { style:'currency', currency:c, maximumFractionDigits:0 }).format(n); } catch(e){ return n.toLocaleString('tr-TR') + ' ' + c; } }
+async function loadAccountsView(){ const box = $('#acc-body'); box.innerHTML = skel(260);
+  try { let rows;
+    if (S.demo) { const cur = sumRows(demoInsights('account', daysAgo(6), localDate())), prev = sumRows(demoInsights('account', daysAgo(13), daysAgo(7)));
+      rows = [['Örnek hesap', 1, 1], ['Örnek hesap 2', .42, .5], ['Örnek hesap 3', 2.3, 1.9]].map((x, i) => ({ id:'demo' + i, name:x[0], currency:'TRY', cur:{ spend:cur.spend * x[1], purchases:Math.round(cur.purchases * x[1]), revenue:cur.revenue * x[1] * (i === 1 ? .6 : 1) }, prev:{ spend:prev.spend * x[2] }, sel:i === 0 })); rows.forEach(r => { r.cur.roas = r.cur.revenue / r.cur.spend; }); }
+    else { if (!S.accounts.length) await loadAccounts();
+      const one7 = async (id, a, b) => { const d = await gql('/' + id + '/insights', { fields:'spend,actions,action_values', time_range: JSON.stringify({ since:a, until:b }) }); const r = (d.data || [])[0] || {}; const sp = parseFloat(r.spend || 0), rv = pickPurchase(r.action_values); return { spend:sp, purchases:pickPurchase(r.actions), revenue:rv, roas: sp > 0 ? rv / sp : 0 }; };
+      rows = await Promise.all(S.accounts.slice(0, 20).map(async a => { try { const x = await Promise.all([one7(a.id, daysAgo(6), localDate()), one7(a.id, daysAgo(13), daysAgo(7))]); return { id:a.id, name:a.name || a.id, currency:a.currency, cur:x[0], prev:x[1], sel:a.id === S.accountId }; } catch(e){ return { id:a.id, name:a.name || a.id, currency:a.currency, err:true, sel:a.id === S.accountId }; } })); }
+    if (S.view !== 'accounts') return; rows.sort((a, b) => ((b.cur || {}).spend || 0) - ((a.cur || {}).spend || 0));
+    box.innerHTML = '<p class="say">Bağlı ' + rows.length + ' reklam hesabının son 7 günü.</p><div class="list"><div class="trow th"><span>Hesap</span><span class="hm"></span><span class="num hm">Harcama</span><span class="num hm">Satış</span><span class="num hm">Gelir</span><span class="hm">Getiri</span><span class="num">Harcama değişimi</span></div>' +
+      rows.map(r => '<div class="trow"><span class="n"><button class="hit" onclick="' + (S.demo ? 'toast(\'Örnek veride hesap değişmez.\')' : 'switchAccount(\'' + esc(r.id) + '\');go(\'dash\')') + '"><span class="row-t">' + esc(r.name) + '</span><span class="row-s">' + (r.err ? 'Veri alınamadı.' : r.cur.spend > 0 ? moneyC(r.cur.spend, r.currency) + ' harcama, ' + Math.round(r.cur.purchases) + ' satış' : 'Son 7 günde harcama yok.') + '</span></button></span>' +
+        '<span class="hm">' + (r.sel ? '<span class="pill green">Seçili</span>' : '') + '</span>' + (r.err ? '<span class="hm"></span><span class="hm"></span><span class="hm"></span><span class="hm"></span><span class="num">—</span>' :
+        '<span class="num hm">' + moneyC(r.cur.spend, r.currency) + '</span><span class="num hm">' + Math.round(r.cur.purchases) + '</span><span class="num hm">' + moneyC(r.cur.revenue, r.currency) + '</span><span class="hm">' + (r.cur.spend > 0 ? dec(r.cur.roas, 2) : '—') + '</span><span class="num">' + (delta(r.cur.spend, r.prev.spend, null) || '<span class="dl">—</span>') + '</span>') + '</div>').join('') + '</div>' +
+      '<p class="foot">Bir hesaba dokununca o hesaba geçersin. Kâr hesabı ürün fiyatı ve maliyetine bağlı olduğu için burada yalnızca harcama, satış ve getiri gösterilir. Müşteriye göndermek için hesaba geçip Genel bakış\'taki "Raporu paylaş"ı kullan.</p>';
+  } catch(e){ if (e.code !== 190) box.innerHTML = errCard(e.message, 'go(\'accounts\')'); } }
 
 // ═══════════════════════════════════════════════
 // KURULUM — 3 adım
@@ -2627,11 +2914,11 @@ function setupSave(){ const price = parseFloat($('#su-price').value), cost = par
 // ═══════════════════════════════════════════════
 // GEZİNME + BAŞLANGIÇ
 // ═══════════════════════════════════════════════
-const TITLES = { dash:'Genel bakış', ads:'Reklamlar', detail:'Reklamlar', sendora:'Sendora', library:'Kazanan reklamlar', creative:'Kreatif stüdyo', settings:'Ayarlar' };
+const TITLES = { dash:'Genel bakış', ads:'Reklamlar', detail:'Reklamlar', sendora:'Sendora', library:'Kazanan reklamlar', creative:'Kreatif stüdyo', accounts:'Tüm hesaplar', settings:'Ayarlar' };
 function go(v){
   if (!TITLES[v]) v = 'dash'; S.view = v; if (v !== 'detail') S.detail = null;
   document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
-  const navV = v === 'detail' ? 'ads' : v, more = ['creative','settings'].indexOf(v) > -1;
+  const navV = v === 'detail' ? 'ads' : v, more = ['creative','settings','accounts'].indexOf(v) > -1;
   document.querySelectorAll('#side .nb').forEach(b => b.classList.toggle('on', b.getAttribute('data-v') === navV));
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.getAttribute('data-v') === (more ? 'more' : navV)));
   if (v !== 'detail') setStored('adsopify_last_section', v);
@@ -2640,12 +2927,13 @@ function go(v){
   if (v === 'dash') loadDash();
   if (v === 'ads') loadAds();
   if (v === 'creative') loadCreative();
-  if (v === 'sendora') { renderSdSide(); requestAnimationFrame(() => Crowd.init()); }
+  if (v === 'sendora') { renderSdSide(); renderSdUnder(); requestAnimationFrame(() => Crowd.init()); }
+  if (v === 'accounts') loadAccountsView();
   if (v === 'library') { renderLibrary(); libLoad(); }
   if (v === 'settings') renderSettings();
 }
-function refresh(){ S.R = null; S.L = null; S.dna = null; LIB.rows = null; go(S.view === 'detail' ? 'ads' : S.view); }
-function moreSheet(){ sheet({ title:'Diğer', html:'<div class="list" style="margin-top:8px">' + [['creative','Kreatif stüdyo'],['asst','Asistan'],['settings','Ayarlar']].map(x => '<button class="row" onclick="closeSheet();' + (x[0] === 'asst' ? 'openAsst()' : 'go(\'' + x[0] + '\')') + '"><span class="row-main">' + x[1] + '</span>' + CHEV + '</button>').join('') + '</div>' }); }
+function refresh(){ S.R = null; S.L = null; S.dna = null; LIB.rows = null; SD.real = null; go(S.view === 'detail' ? 'ads' : S.view); }
+function moreSheet(){ sheet({ title:'Diğer', html:'<div class="list" style="margin-top:8px">' + [['creative','Kreatif stüdyo'],['accounts','Tüm hesaplar'],['asst','Asistan'],['settings','Ayarlar']].map(x => '<button class="row" onclick="closeSheet();' + (x[0] === 'asst' ? 'openAsst()' : 'go(\'' + x[0] + '\')') + '"><span class="row-main">' + x[1] + '</span>' + CHEV + '</button>').join('') + '</div>' }); }
 async function startApp(){
   S.token = getStored('adsopify_token'); S.accountId = getStored('adsopify_account_id'); S.accountName = getStored('adsopify_account_name');
   S.brand = getJSON('adsopify_brand_' + uid(), null); if (S.brand && S.brand.skipped) S.brand = null;
